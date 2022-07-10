@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+<!-- 이름 선택했을 때 상세보기 -->
+	<h1>친구목록</h1>
+
+	<table border="1">
+		<thead>
+			<tr>
+				<td>NO</td>
+				<td>ID</td>
+				<td>이름</td>
+				<td>전화번호</td>
+				<td>생년월일</td>
+				<td>성별</td>
+				<td>이메일</td>
+				<td>그룹</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="friends, status: ${friends}">
+				<td th:text="${status.index}"></td>
+				<td th:text="${friends.memId}"></td>
+				<td th:text="${friends.name}"></td>
+				<td th:text="${friends.mobile}"></td>
+				<td th:text="${friends.birth}"></td>
+				<td th:text="${friends.gender}"></td>
+				<td th:text="${friends.email}"></td>
+				<td th:text="${friends.group}"></td>				
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
