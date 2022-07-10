@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/alice")
+@RequestMapping("/AliceDiary")
 public class AliceController {
-	@GetMapping
+	@GetMapping("/alice")
 	public String calendar() {
 		return "alice/calendar";
 	}
