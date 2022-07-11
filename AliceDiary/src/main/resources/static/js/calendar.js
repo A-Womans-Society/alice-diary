@@ -1,3 +1,12 @@
+var jsonData = eventsList.replace(/&quot;/g, '"');
+console.log(jsonData);
+var jsonData = jsonData.replace(/\\"/g, '');
+console.log(jsonData);
+
+var jsonConvertList = JSON.parse(jsonData);
+console.log(jsonConvertList);
+
+console.log(eval(JSON.stringify(jsonConvertList.items)));
 document.addEventListener('DOMContentLoaded', function() {
 	var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -13,18 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		// limit events per day
 		dayMaxEvents : 2,
 
-		events : eventsList,
+		events : eval(JSON.stringify(jsonConvertList.items)),
 		dateClick : function(info) {
-			// info.dateStr : 클릭한 날짜
-			// info.jsEvent.pageX/Y : 클릭한 날짜의 화면상 위치
-			// info.view.type: 현재 view 타입 정보(dayGridMonth)
-			// alert('Clicked on: ' + info.dateStr);
-			//alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-			// alert('Current view: ' + info.view.type);
-			
-			// change the day's background color just for fun
-			// info.dayEl.style.backgroundColor = 'red';
-			
 			// popup modal
 			document.getElementById("startDate").value = info.dateStr;
 			document.getElementById("endDate").value = info.dateStr;
@@ -54,4 +53,3 @@ function checkOnlyOne(element) {
 	})
 	element.checked = true;
 }
-

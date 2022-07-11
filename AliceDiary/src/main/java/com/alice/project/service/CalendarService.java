@@ -1,5 +1,7 @@
 package com.alice.project.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,5 +22,10 @@ public class CalendarService {
 	public void addEvent(CalendarFormDto dto) {
 		Calendar cal = Calendar.createCalendar(dto);
 		calendarRepository.save(cal);
+	}
+
+	public List<Calendar> eventsList() {
+		List<Calendar> events = calendarRepository.findAll();
+		return events;
 	}
 }

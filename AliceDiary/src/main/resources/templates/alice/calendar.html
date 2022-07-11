@@ -37,97 +37,14 @@
 	rel="stylesheet" />
 <script th:src="@{/lib/fullcalendar-5.11.0/main.js}"></script>
 <script th:src="@{/lib/fullcalendar-5.11.0/main.min.js}"></script>
-<!-- <script th:src="@{/js/calendar.js}"></script>
- -->
-<script type="text/javascript">
-var eventsList = [ {
-	title : 'My Event',
-	start : '2022-07-01',
-	end : '2022-07-10',
-	backgroundColor : '#008404',
-}, {
-	title : 'My Event2',
-	start : '2022-07-02',
-	url : 'http://google.com/'
-}, {			title : 'My Event2',
-	start : '2022-07-02',
-	url : 'http://google.com/'
-}, {
-			title : 'My Event2',
-	start : '2022-07-02',
-	url : 'http://google.com/'
-}, {
-			title : 'My Event2',
-	start : '2022-07-02',
-	url : 'http://google.com/'
-}, {
-	title : 'My Event',
-	start : '2022-07-25',
-}, {
-	title : 'My Event',
-	start : '2022-07-25',
-}, {
-	title : 'My Event',
-	start : '2022-07-25',
-}, {
-	title : 'My Event',
-	start : '2022-07-25',
-}, {
-	title : 'My Event',
-	start : '2022-07-25',
-}, {
-	title : 'My Event',
-	start : '2022-07-25',
-} ];
-document.addEventListener('DOMContentLoaded', function() {
-	var calendarEl = document.getElementById('calendar');
-	var calendar = new FullCalendar.Calendar(calendarEl, {
-	    timeZone: 'UTC',
-	    
-		// set calendar view type
-		initialView : 'dayGridMonth',
 
-		// set row height
-		height: '100%',
-		aspectRatio: 2.5,
-		
-		// limit events per day
-		dayMaxEvents : 2,
-
-		events : eventsList,
-		dateClick : function(info) {
-			// popup modal
-			document.getElementById("startDate").value = info.dateStr;
-			document.getElementById("endDate").value = info.dateStr;
-			$("#addEvent").modal();
-		},
-		eventClick : function(info) {
-			alert('Event: ' + info.event.title);
-			alert('Coordinates: ' + info.jsEvent.pageX + ','
-					+ info.jsEvent.pageY);
-			alert('View: ' + info.view.type);
-
-			// change the border color just for fun
-			info.el.style.borderColor = 'red';
-		}
-
-	});
-	calendar.render();
-});
-
-// checkbox check one element
-function checkOnlyOne(element) {
-	const checkboxes 
-		= document.getElementsByName("public");
-  
-	checkboxes.forEach((cb) => {
-		cb.checked = false;
-	})
-	element.checked = true;
-}
-
-
+<script th:inline="javascript">
+/*<![CDATA[*/
+var eventsList = /*[[${list}]]*/;
+console.log(eventsList);
+/*]]>*/
 </script>
+<script th:src="@{/js/calendar.js}"></script>
 <style>
 #calendar-container {
 	position: fixed;
