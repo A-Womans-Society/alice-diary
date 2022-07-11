@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+</head>
+<body>
+<div class="container">
+	<div>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>회원번호</th>
+					<th>아이디</th>
+					<th>이름</th>
+					<th>전화번호</th>
+					<th>이메일</th>
+					<th>신고 누적횟수</th>
+					<th>내보내기</th>
+				</tr>
+			</thead>
+			<tbody align="center">
+				<tr th:each="member, i: ${members}">
+				<td th:text="${i.count}"></td>
+				<td th:text="${member.num}"></td>
+				<td th:text="${member.id}"><a th:href="@{/profile/{member.num}}"></a></td>
+				<td th:text="${member.name}"></td>
+				<td th:text="${member.mobile}"></td>
+				<td th:text="${member.email}"></td>
+				<td th:text="${member.reportCnt}"></td>
+				<td><button th:onclick="memberDelete()" type="button">내보내기</button></td> <!-- /profile/memberNum으로 이동 "'location.href=\''+ @{${/profile}} + '\''" -->
+<!-- 				<td th:text="${member.address?.zipcode}"></td> -->
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div> <!-- /container -->
+
+<script th:inline="javascript">   
+	var = memNum = [[${member.num}]];
+	function memberDelete() {
+		var memNum = document.getElementById("memberList"); <!--'[[${num}]]';-->
+		if(confirm('정말로 내보내기하시겠습니까?')) {
+			$.ajax({
+		        type : 'POST'
+		       ,url : "/member/" + memNum
+		       ,dataType : 'json'
+		       ,data : JSON.stringify(memNum)
+		       ,contentType: 'application/json'
+		       ,success : function(result) {
+					alert("해당 회원이 정상적으로 탈퇴되었습니다.");
+					location.href = "/";
+		       },
+		       error: function(request, status, error) {
+
+		       }
+		   })
+		}
+}
+</script>
+
+</body>
+</html>
