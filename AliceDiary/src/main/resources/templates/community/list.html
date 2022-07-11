@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Alice</title>
+</head>
+<body>
+<div id="sidemenu" style="width: auto; height: 700px; border: 1px solid purple; float: left; padding: 0px 10px 0px 0px; margin: 0px 20px 0px 0px;">
+		<ul id="community">
+			<li class="sidemenu"><a href="#">공개게시판</a></li>
+			<li class="sidemenu"><a href="#">*생성커뮤니티 메뉴*</a></li>
+			<li class="sidemenu"><a href="#">컨텐츠</a></li>
+			<li class="sidemenu"><a href="#">커뮤니티만들기</a></li>
+		</ul>
+	</div>
+<div style="float: left;">
+<h2>공개게시판</h2>
+<form th:action="@{/community/list}" method="post">
+<input type="text" name="keyword" placeholder="검색어를 입력해주세요">
+<button type="submit">검색</button>
+</form>
+<table border="1">
+	<thead>
+	<tr>
+		<td>번호</td>
+		<td>제목</td>
+		<td>작성자</td>
+		<td>작성일</td>
+		<td>조회수</td>
+	</tr>
+	</thead>
+	<tbody>
+              <tr th:each="list : ${list}">
+              	<td th:text="${list.post_num}"></td>
+                <td>
+                      <a th:text="${list.title}" th:href="@{/community/view(num=${list.post_num})}"></a>
+                 </td>
+                 <td th:text="${list.writer}"></td>
+                 <td th:text="${list.post_date}"></td>
+                 <td th:text="${list.view_cnt}"></td>
+              </tr>
+          </tbody>
+	
+</table>
+	<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+		<a th:if="${page != nowPage}" th:href="@{/community/list(page = ${page -1}, keyword=${param.keyword}})" th:text="${page}"></a>
+		<strong th:if="${page == nowPage}" th:text="${page}" style="color : red"></strong>
+	<a th:href="@{/AliceDiary/community/write}"><input type="button" value="글쓰기"></a>
+</div>
+</body>
+</html>
