@@ -2,7 +2,6 @@ package com.alice.project.service;
 
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
 import com.alice.project.repository.MemberRepository;
@@ -27,4 +26,6 @@ public class MemberService {
 			throw new IllegalStateException("이미 가입된 회원입니다.");
 		}
 	}
+	
+	
  }

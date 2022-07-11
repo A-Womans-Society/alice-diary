@@ -1,5 +1,9 @@
 package com.alice.project.controller;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -18,12 +22,10 @@ import com.alice.project.web.MemberDto;
 
 import lombok.RequiredArgsConstructor;
 
-@RequestMapping("/AliceDiary")
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
-
 
 	private final MemberService memberService;
 	private final PasswordEncoder passwordEncoder;
@@ -35,21 +37,34 @@ public class MemberController {
 		return "login/registerForm";
 	}
 
-	
-	//회원가입 후 메인페이지로 이동
-	@PostMapping(value="/register")
-	public String memberForm(@Valid MemberDto memberDto, BindingResult bindingResult, Model model) {
+	// 회원가입 후 메인페이지로 이동
+	@PostMapping(value = "/register")
+	public String memberForm(@Valid MemberDto memberDto, BindingResult bindingResult, Model model,
+			HttpSession session) {
 		logger.info("POST 나옴");
-		if(bindingResult.hasErrors()) {
+
+		if (bindingResult.hasErrors()) {
 			return "login/registerForm";
 		}
-		try {
-			Member member = Member.createUser(memberDto, passwordEncoder);
-			memberService.saveMember(member);
-		}catch(IllegalStateException e) {
-			model.addAttribute("errorMessage", e.getMessage());
-			return "login/registerForm";
+		if (!memberDto.getProfileImg().getOriginalFilename().equals("")) {
+			String originName = memberDto.getProfileImg().getOriginalFilename();
+			String saveName = memberDto.getId() + "." + originName.split("\\.")[1];
+			String savePath = session.getServletContext().getRealPath("c:\\Temp\\upload");
+
+			try {
+				memberDto.getProfileImg().transferTo(new File(savePath, saveName));
+				memberDto.setSaveName(saveName);
+
+				Member member = Member.createMember(memberDto, passwordEncoder);
+				memberService.saveMember(member);
+
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
 		return "redirect:/";
 	}
 }

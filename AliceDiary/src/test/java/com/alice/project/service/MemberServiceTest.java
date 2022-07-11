@@ -30,7 +30,7 @@ class MemberServiceTest {
 	public Member createMember() {
 		MemberDto memberDto = new MemberDto();
 		memberDto.setId("exampleID");
-		memberDto.setPassword("5678");
+		memberDto.setPwd("5678");
 		memberDto.setName("이순신");
 		memberDto.setBirth(LocalDate.of(1925, 10, 12));
 		memberDto.setGender(Gender.MALE);
@@ -38,7 +38,7 @@ class MemberServiceTest {
 		memberDto.setMobile("010-1234-5678");
 		memberDto.setMbti("INFP");
 		memberDto.setWishList("아무거나123");
-		return Member.createUser(memberDto, passwordEncoder);
+		return Member.createMember(memberDto, passwordEncoder);
 	}
 	
 	
@@ -50,7 +50,7 @@ class MemberServiceTest {
 		Member savedMember = memberService.saveMember(member);
 		
 		assertEquals(member.getId(), savedMember.getId());
-		assertEquals(member.getPassword(), savedMember.getPassword());
+		assertEquals(member.getPwd(), savedMember.getPwd());
 		assertEquals(member.getName(), savedMember.getName());
 		assertEquals(member.getBirth(), savedMember.getBirth());
 		assertEquals(member.getGender(), savedMember.getGender());

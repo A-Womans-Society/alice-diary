@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 >
+<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 
-<form action="/AliceDiary/register" role="form" method="post"  th:object="${memberDto}">
-         <div>
+<form action="/AliceDiary/register" method="post"  th:object="${memberDto}" enctype="multipart/form-data">
+         <div>프로필 사진 등록<br/>
+         <img id="profileImage" style="width:150px; height:190px;">
+         	<input type="file" th:field="*{profileImg}" id="file" onchange="PreviewImage();" /><br/>
+		</div>			
+		<div>
             <label th:for="id">아이디</label>
-            <input type="text" th:field="*{id}" placeholder="아이디를 입력해주세요">
+            <input type="text" th:field="*{id}" >
             <p th:if="${#fields.hasErrors('id')}" th:errors="*{id}" >Incorrect data</p>
         </div>
          <div>
-            <label th:for="password">비밀번호</label>
-            <input type="password" th:field="*{password}" placeholder="비밀번호를 입력해주세요">
-            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" >Incorrect data</p>
+            <label th:for="pwd">비밀번호</label>
+            <input type="password" th:field="*{pwd}" >
+            <p th:if="${#fields.hasErrors('pwd')}" th:errors="*{pwd}" >Incorrect data</p>
         </div>
         <div>
             <label th:for="confirmPassword">비밀번호 확인</label>
-            <input type="password" th:field="*{confirmPassword}" placeholder="비밀번호 확인을 입력해주세요">
+            <input type="password" th:field="*{confirmPassword}" th:onkeyup="checkPwd()">&nbsp;&nbsp;<span id="confirmMsg"></span>
             <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" >Incorrect data</p>
         </div>
          <div>
             <label th:for="name">이름</label>
-            <input type="text" th:field="*{name}" placeholder="이름을 입력해주세요">
+            <input type="text" th:field="*{name}" >
             <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" >Incorrect data</p>
         </div>
         <div>
@@ -29,18 +34,26 @@
             <p th:if="${#fields.hasErrors('birth')}" th:errors="*{birth}" >Incorrect data</p>
         </div>
         <div>
+            <label th:for="gender">성별</label>
+            <select name="genderEnum" >
+				<option selected>=== 선택 ===</option>
+				<option th:each="genderEnum : ${T(com.alice.project.domain.Gender).values()}" th:value="${genderEnum}" th:text="${genderEnum}" />
+			</select>
+        </div>
+        
+        <div>
             <label th:for="email">이메일</label>
-            <input type="email" th:field="*{email}" placeholder="이메일을 입력해주세요">
+            <input type="email" th:field="*{email}" >
             <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" >Incorrect data</p>
         </div>
         <div>
             <label th:for="mobile">전화번호</label>
-            <input type="text" th:field="*{mobile}" placeholder="전화번호를 입력해주세요">
+            <input type="text" th:field="*{mobile}" placeholder="(-제외)">
             <p th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" >Incorrect data</p>
         </div>
          <div>
             <label th:for="mbti">MBTI</label>
-            <input type="text" th:field="*{mbti}" placeholder="MBTI를 입력해주세요">
+            <input type="text" th:field="*{mbti}">
             <p th:if="${#fields.hasErrors('mbti')}" th:errors="*{mbti}" >Incorrect data</p>
         </div>
         <div>
@@ -50,10 +63,35 @@
         </div>
         
         <div style="text-align: center">
-            <button type="submit">가입</button>
+            <button type="submit" onclick="confirmPassword()">가입</button>
              <button type="button">취소</button>
         </div>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     </form>
+
+<script type="text/javascript">
+	function checkPwd() {
+		var password = document.getElementById('pwd');
+ 		var confirmPassword = document.getElementById('confirmPassword');
+		var confirmMsg = document.getElementById('confirmMsg');
+		var correctColor = "#00ff00";
+		var wrongColor = "#ff0000";
+		
+		if(password.value == confirmPassword.value) {
+			confirmMsg.style.color = correctColor;
+			confirmMsg.innerHTML = "비밀번호 일치";
+		}else {
+			confirmMsg.style.color = wrongColor;
+			confirmMsg.innerHTML = "비밀번호 불일치";
+		}
+	}
+	function PreviewImage() {
+		var preview = new FileReader();
+		preview.onload = function(e) {
+			document.getElementById("profileImage").src = e.target.result;
+		};
+		preview.readAsDataURL(document.getElementById("file").files[0]);
+	};
+</script>
 
 </html>
