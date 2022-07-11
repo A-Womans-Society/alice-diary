@@ -16,16 +16,17 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	
 	public Member saveMember(Member member) {
-		validateDuplicateMember(member);
+//		validateDuplicateMember(member);
 		return memberRepository.save(member); //insert
 	}
 	
-	private void validateDuplicateMember(Member member) {
-		Member findMember = memberRepository.findById(member.getId());
-		if(findMember != null) {
-			throw new IllegalStateException("이미 가입된 회원입니다.");
+	public int checkIdDuplicate(String id) {
+		boolean check = memberRepository.existsById(id);
+		if(check) {
+			return 1; //아이디 중복이면 1
+		}else {
+			return 0; //사용 가능 아이디면 0
 		}
 	}
-	
 	
  }

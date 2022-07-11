@@ -14,7 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Member;
 import com.alice.project.service.MemberService;
@@ -66,5 +67,16 @@ public class MemberController {
 		}
 
 		return "redirect:/";
+	}
+	
+
+	@PostMapping("/register/idCheck")
+    @ResponseBody
+	public int checkIdDuplication(@RequestParam(value = "id") String id) {
+		logger.info("userIdCheck 진입");
+        logger.info("전달받은 id:"+id);
+	    int check = memberService.checkIdDuplicate(id);
+	    logger.info("확인 결과:"+check);
+	    return check;
 	}
 }
