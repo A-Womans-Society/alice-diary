@@ -2,11 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Title</title>
+<title>친구목록</title>
+<th:block layout:fragment="css">
+    <style>
+        select{
+            margin-right:10px;
+        }
+    </style>
+</th:block>
+
 </head>
 <body>
-<!-- 이름 선택했을 때 상세보기 -->
-	<h1>친구목록</h1>
+	<h4>친구목록</h4>
+<form th:action="@{'search'}" role="form" method="get" th:object="${Member}">	
+<input type="text" class="form-control" placeholder="친구 검색(아이디/이름/전화번호)">
+<button type="submit" class="btn btn-primary mb-2">검색</button>
 
 	<table border="1">
 		<thead>
@@ -24,8 +34,8 @@
 		<tbody>
 			<tr th:each="friends, status: ${friends}">
 				<td th:text="${status.index}"></td>
-				<td th:text="${friends.memId}"></td>
-				<td th:text="${friends.name}"></td>
+				<td th:text="${friends.id}"></td>
+				<td th:text="${friends.name}"></td> <!--이름 선택 시 상세보기 모달 설정 -->
 				<td th:text="${friends.mobile}"></td>
 				<td th:text="${friends.birth}"></td>
 				<td th:text="${friends.gender}"></td>
@@ -34,6 +44,6 @@
 			</tr>
 		</tbody>
 	</table>
-
+</form>
 </body>
 </html>
