@@ -31,13 +31,103 @@
 <script
 	th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js}"></script>
 
+<link th:href="@{/css/calendar.css}" rel="stylesheet" />
 <link th:href="@{/lib/fullcalendar-5.11.0/main.css}" rel="stylesheet" />
 <link th:href="@{/lib/fullcalendar-5.11.0/main.min.css}"
 	rel="stylesheet" />
 <script th:src="@{/lib/fullcalendar-5.11.0/main.js}"></script>
 <script th:src="@{/lib/fullcalendar-5.11.0/main.min.js}"></script>
-<script th:src="@{/js/calendar.js}"></script>
+<!-- <script th:src="@{/js/calendar.js}"></script>
+ -->
+<script type="text/javascript">
+var eventsList = [ {
+	title : 'My Event',
+	start : '2022-07-01',
+	end : '2022-07-10',
+	backgroundColor : '#008404',
+}, {
+	title : 'My Event2',
+	start : '2022-07-02',
+	url : 'http://google.com/'
+}, {			title : 'My Event2',
+	start : '2022-07-02',
+	url : 'http://google.com/'
+}, {
+			title : 'My Event2',
+	start : '2022-07-02',
+	url : 'http://google.com/'
+}, {
+			title : 'My Event2',
+	start : '2022-07-02',
+	url : 'http://google.com/'
+}, {
+	title : 'My Event',
+	start : '2022-07-25',
+}, {
+	title : 'My Event',
+	start : '2022-07-25',
+}, {
+	title : 'My Event',
+	start : '2022-07-25',
+}, {
+	title : 'My Event',
+	start : '2022-07-25',
+}, {
+	title : 'My Event',
+	start : '2022-07-25',
+}, {
+	title : 'My Event',
+	start : '2022-07-25',
+} ];
+document.addEventListener('DOMContentLoaded', function() {
+	var calendarEl = document.getElementById('calendar');
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+	    timeZone: 'UTC',
+	    
+		// set calendar view type
+		initialView : 'dayGridMonth',
 
+		// set row height
+		height: '100%',
+		aspectRatio: 2.5,
+		
+		// limit events per day
+		dayMaxEvents : 2,
+
+		events : eventsList,
+		dateClick : function(info) {
+			// popup modal
+			document.getElementById("startDate").value = info.dateStr;
+			document.getElementById("endDate").value = info.dateStr;
+			$("#addEvent").modal();
+		},
+		eventClick : function(info) {
+			alert('Event: ' + info.event.title);
+			alert('Coordinates: ' + info.jsEvent.pageX + ','
+					+ info.jsEvent.pageY);
+			alert('View: ' + info.view.type);
+
+			// change the border color just for fun
+			info.el.style.borderColor = 'red';
+		}
+
+	});
+	calendar.render();
+});
+
+// checkbox check one element
+function checkOnlyOne(element) {
+	const checkboxes 
+		= document.getElementsByName("public");
+  
+	checkboxes.forEach((cb) => {
+		cb.checked = false;
+	})
+	element.checked = true;
+}
+
+
+</script>
 <style>
 #calendar-container {
 	position: fixed;
@@ -66,27 +156,28 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<form>
+				<form th:action="@{/AliceDiary/addEvent}" th:object="${CalForm}"
+					method="post">
 					<div class="modal-body">
 						<div class="container-fulid">
 							<div class="row">
 								<div class="col-12">
 									<p>
 										<strong>일자</strong><input id="startDate" type="date"
-											name="startDate"> ~ <input id="endDate" type="date"
-											name="endDate">
+											th:field="*{startDateStr}"> ~ <input id="endDate"
+											type="date" th:field="*{endDateStr}">
 									</p>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-6">
 									<p>
-										<strong>내용</strong><input type="text" id="content"
-											name="content">
+										<strong>내용</strong>&nbsp;<input type="text" id="content"
+											th:field="*{content}">
 									</p>
 									<p>
 										<strong>멤버</strong> <select class="selectpicker"
-											data-live-search="true" name="memberList" multiple>
+											data-live-search="true" th:field="*{memberList}" multiple>
 											<option value="ALVA">Aluva</option>
 											<option value="PNCU">Pulinchudu</option>
 											<option value="CPPY">CompanyPady</option>
@@ -97,37 +188,64 @@
 
 									<p>
 										<strong>장소</strong><input type="text" id="location"
-											name="location">
+											th:field="*{location}">
 									</p>
 									<p>
-										<strong>색상</strong><input id="color" type="color">
+										<strong>색상</strong>
+									<div class="btn-group" data-toggle="buttons">
+
+										<label class="btn btn-success active" for="option2"> <input
+											type="radio" th:field="*{color}" id="option2"
+											autocomplete="off" chacked value="red"> <span
+											class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn btn-primary" for="option1"> <input
+											type="radio" th:field="*{color}" id="option1"
+											autocomplete="off" value="orange"> <span
+											class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn btn-info"> <input type="radio"
+											th:field="*{color}" id="option2" autocomplete="off"
+											value="yellow"> <span class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn btn-default"> <input type="radio"
+											th:field="*{color}" id="option2" autocomplete="off"
+											value="green"> <span class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn btn-warning"> <input type="radio"
+											th:field="*{color}" id="option2" autocomplete="off"
+											value="puple"> <span class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn btn-danger"> <input type="radio"
+											th:field="*{color}" id="option2" autocomplete="off"
+											value="black"> <span class="glyphicon glyphicon-ok"></span>
+										</label>
+
+									</div>
 									</p>
 
 								</div>
 								<div class="col-6">
 									<p>
-										<strong>공개여부</strong> <input type="checkbox" value="true"
-											id="public" name="public" onclick='checkOnlyOne(this)'
-											checked><label for="public">공개</label> <input
-											type="checkbox" value="false" id="private" name="public"
-											onclick='checkOnlyOne(this)'><label for="private">비공개</label>
+										<strong>공개여부</strong> <input type="radio" value="true"
+											id="public" th:field="*{publicity}" checked><label
+											for="public">공개</label> <input type="radio" value="false"
+											id="private" th:field="*{publicity}"><label
+											for="private">비공개</label>
 									</p>
 									<p>
-										<strong>알림</strong><input type="text" id="alarm" name="alarm">
+										<strong>알림</strong> <select th:field="*{alarm}">
+											<option value="1일전">1일전</option>
+											<option value="3일전">3일전</option>
+											<option value="1주일전">1주일전</option>
+											<option value="한달전">한달전</option>
+										</select>
 									</p>
 									<p>
 										<strong>메모</strong>
-										<textarea id="memo" name="memo"></textarea>
+										<textarea id="memo" th:field="*{memo}"></textarea>
 									</p>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary">Save
-							changes</button>
-						<button type="button" class="btn btn-secondary"
-							data-dismiss="modal">Close</button>
+						<input type="submit" class="btn btn-dark" value="일정 등록">
 					</div>
 				</form>
 			</div>

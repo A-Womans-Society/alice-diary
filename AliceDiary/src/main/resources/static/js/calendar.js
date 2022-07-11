@@ -13,45 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// limit events per day
 		dayMaxEvents : 2,
 
-		events : [ {
-			title : 'My Event',
-			start : '2022-07-01',
-			end : '2022-07-10',
-			backgroundColor : '#008404',
-		}, {
-			title : 'My Event2',
-			start : '2022-07-02',
-			url : 'http://google.com/'
-		}, {			title : 'My Event2',
-			start : '2022-07-02',
-			url : 'http://google.com/'
-		}, {
-					title : 'My Event2',
-			start : '2022-07-02',
-			url : 'http://google.com/'
-		}, {
-					title : 'My Event2',
-			start : '2022-07-02',
-			url : 'http://google.com/'
-		}, {
-			title : 'My Event',
-			start : '2022-07-25',
-		}, {
-			title : 'My Event',
-			start : '2022-07-25',
-		}, {
-			title : 'My Event',
-			start : '2022-07-25',
-		}, {
-			title : 'My Event',
-			start : '2022-07-25',
-		}, {
-			title : 'My Event',
-			start : '2022-07-25',
-		}, {
-			title : 'My Event',
-			start : '2022-07-25',
-		} ],
+		events : eventsList,
 		dateClick : function(info) {
 			// info.dateStr : 클릭한 날짜
 			// info.jsEvent.pageX/Y : 클릭한 날짜의 화면상 위치
