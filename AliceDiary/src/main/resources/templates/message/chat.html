@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel='stylesheet' type='text/css' href='./css/chatt.css'>
+</head>
+<body>
+	<div id='chatt'>
+		<h1>채팅방1</h1>
+		<!-- 아이디 입력과 로그인 -->
+		<p>
+			아이디 입력 : <input type='text' id='mid'>
+			<input type='button' value='로그인' id='btnLogin'>
+		</p>
+		<!-- 메시지 스택 -->
+		<div id='talk'></div>
+		<!-- 메시지 전송 -->
+		<div id='sendZone'>
+			<textarea id='msg'></textarea> <!-- value='hi...' -->
+			<input type='button' value='전송' id='btnSend'>
+		</div>
+	</div>
+	<script src='./js/chatt.js'></script>
+</body>
+</html>
