@@ -22,17 +22,15 @@ public class ListController {
 
 	@GetMapping("/community/list")
 	public String list(Model model, 
-			@PageableDefault(page=0, size=5, sort="writer", direction=Sort.Direction.DESC)Pageable pageable,
-			String keyword) {
+			@PageableDefault(page=0, size=5, sort="num", direction=Sort.Direction.DESC)Pageable pageable
+			) {
 		//page = 현재페이지, size=보여줄 게시물수, sort=페이징 조건, direction=오름정렬 
 		Page<Post> list = null;
-		
-		if(keyword != null) {
-			list = listService.list(pageable);
-		} else {
-			list = listService.searchList(keyword, pageable);
-		}
-		
+		list = listService.list(pageable);
+		/*
+		 * if(keyword != null) { list = listService.list(pageable); } else { list =
+		 * listService.searchList(keyword, pageable); }
+		 */
 		System.out.println("service run");
 		
 		int nowPage = list.getPageable().getPageNumber() + 1;

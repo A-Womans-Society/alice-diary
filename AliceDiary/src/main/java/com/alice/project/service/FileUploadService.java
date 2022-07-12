@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alice.project.domain.AttachedFile;
 import com.alice.project.repository.FileRepository;
 
 @Service
@@ -25,8 +26,9 @@ public class FileUploadService {
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		
-		Long memberNum = (Long) session.getAttribute("member_num");
-		String sfile = memberNum+ "_" + currentTime + "_" + ofile;
+		//String sfile = 사용자 아이디+ "_" + currentTime + "_" + ofile;
+		
+		String sfile = currentTime + "_" + ofile;
 
 		System.out.println("ofile:" + ofile);
 		System.out.println("sfile:" + sfile);
@@ -54,11 +56,8 @@ public class FileUploadService {
 				
 				System.out.println("service run222222222");
 
-				File file =file.builder(ofi)
-				regcom.setImage(ofile);
-				regcom.setImage(ofile);
-				regcom.setImage(ofile);
-				
+				AttachedFile file = new AttachedFile(ofile, sfile, savePath);
+			
 				fileRepository.save(file);
 				System.out.println("service run444444444");
 

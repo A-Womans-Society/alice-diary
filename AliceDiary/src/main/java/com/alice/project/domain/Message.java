@@ -37,7 +37,7 @@ public class Message {
 	private Member member; // 쪽지 보내는회원 객체
 	
 	@OneToOne(mappedBy="message")
-	private File file = new File();
+	private AttachedFile file = new AttachedFile();
 	
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {

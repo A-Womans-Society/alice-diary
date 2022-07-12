@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Alice</title>
+</head>
+<body>
+	<div id="sidemenu"
+		style="width: auto; height: 700px; border: 1px solid purple; float: left; padding: 0px 10px 0px 0px; margin: 0px 20px 0px 0px;">
+		<ul id="community">
+			<li class="sidemenu"><a href="#">공개게시판</a></li>
+			<li class="sidemenu"><a href="#">*생성커뮤니티 메뉴*</a></li>
+			<li class="sidemenu"><a href="#">컨텐츠</a></li>
+			<li class="sidemenu"><a href="#">커뮤니티만들기</a></li>
+		</ul>
+	</div>
+	<div style="float: left;">
+		<h2>게시글 상세보기</h2>
+		<table border="1">
+
+			<tr>
+				<th th:text="${post.title}"></th>
+			</tr>
+			<tr>
+				작성자<td th:text="${post.postDate}"></td>
+			</tr>
+			<tr> 
+				<td th:text="${post.content}"></td>
+			</tr>
+
+		</table>
+		<a href="<c:url value='/update?num=${books.num }'/>"><input
+			type="button" value="수정"></a> <a
+			href="<c:url value='/delete?num=${books.num }'/>"><input
+			type="button" value="삭제"></a> <a href="<c:url value='/list'/>"><input
+			type="button" value="목록"></a>
+</div>
+</body>
+</html>

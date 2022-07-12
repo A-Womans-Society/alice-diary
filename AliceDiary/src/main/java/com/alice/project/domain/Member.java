@@ -56,9 +56,10 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 	
-	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
-	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물 
-	
+	/*
+	 * @OneToMany(mappedBy="member", cascade = CascadeType.ALL) private List<Post>
+	 * posts = new ArrayList<>(); // 사용자가 쓴 게시물
+	 */
 	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
 	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글 
 	
@@ -75,7 +76,7 @@ public class Member {
 	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
 	
 	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
-	private List<Group> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
+	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
 	
 	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
 	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트	

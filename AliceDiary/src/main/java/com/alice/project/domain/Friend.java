@@ -29,7 +29,7 @@ public class Friend {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="group_num")
-	private Group group; // 친구 소속 그룹
+	private FriendsGroup group; // 친구 소속 그룹
 	
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="member_num")	
@@ -37,7 +37,7 @@ public class Friend {
 	
 	
 	// 연관관계 메서드 (양방향관계)
-	public void setGroup(Group group) {
+	public void setGroup(FriendsGroup group) {
 		this.group = group;
 		group.getFriends().add(this);
 	}
@@ -47,7 +47,7 @@ public class Friend {
 	}
 	
 	// 친구 객체 생성 메서드
-	public static Friend createFriend(Group group, Member member) {
+	public static Friend createFriend(FriendsGroup group, Member member) {
 		Friend friend = new Friend();
 		friend.setGroup(group);
 		friend.setMember(member);

@@ -1,12 +1,14 @@
 package com.alice.project.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import com.alice.project.domain.Member;
 
-public class MemberRepository {
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Long> {
 	
-	public Member findByMemberNum(Long num) {
+	 Member findBynum(Long num);
 		
-		return null;
-	}
 
 }

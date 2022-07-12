@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="file")
+@Table(name="attachedFile")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
-public class File {
+public class AttachedFile {
 	
 	@Id @GeneratedValue
 	@Column(name="file_num")
@@ -46,11 +46,10 @@ public class File {
 		post.getFiles().add(this);
 	}
 	
-	
 
 
 	@Builder
-	public File(String originName, String saveName, String filePath) {
+	public AttachedFile(String originName, String saveName, String filePath) {
 		this.originName = originName;
 		this.saveName = saveName;
 		this.filePath = filePath;

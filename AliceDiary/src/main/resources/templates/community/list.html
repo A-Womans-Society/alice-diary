@@ -24,26 +24,26 @@
 	<tr>
 		<td>번호</td>
 		<td>제목</td>
-		<td>작성자</td>
+	<!--	<td>작성자</td>-->
 		<td>작성일</td>
 		<td>조회수</td>
 	</tr>
 	</thead>
 	<tbody>
-              <tr th:each="list : ${list}">
-              	<td th:text="${list.post_num}"></td>
+              <tr th:each="post : ${list}">
+              	<td th:text="${post.num}"></td>
                 <td>
-                      <a th:text="${list.title}" th:href="@{/community/view(num=${list.post_num})}"></a>
+                      <a th:text="${post.title}" th:href="@{/community/get(num=${post.num})}"></a>
                  </td>
-                 <td th:text="${list.writer}"></td>
-                 <td th:text="${list.post_date}"></td>
-                 <td th:text="${list.view_cnt}"></td>
+               <!--    <td th:text="${post.writer}"></td>-->
+                 <td th:text="${post.postDate}"></td>
+                 <td th:text="${post.viewCnt}"></td>
               </tr>
           </tbody>
 	
 </table>
 	<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-		<a th:if="${page != nowPage}" th:href="@{/community/list(page = ${page -1}, keyword=${param.keyword}})" th:text="${page}"></a>
+		<a th:if="${page != nowPage}" th:href="@{/community/list(page = ${page -1}" th:text="${page}"></a>
 		<strong th:if="${page == nowPage}" th:text="${page}" style="color : red"></strong>
 	<a th:href="@{/AliceDiary/community/write}"><input type="button" value="글쓰기"></a>
 </div>

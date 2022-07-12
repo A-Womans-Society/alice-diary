@@ -1,5 +1,11 @@
 package com.alice.project.web;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.alice.project.domain.PostType;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,13 +13,13 @@ import lombok.Setter;
 @Setter
 public class WriteFormDto {
 
- 
 	private String title;
 	
 	private String content;
+		
+	private PostType postType;
 	
-	private String originName;
-	
+	private List<MultipartFile> originName;
 	
 	
 }

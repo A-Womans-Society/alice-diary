@@ -19,11 +19,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="group")
+@Table(name="friendsGroup")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
-public class Group {
+public class FriendsGroup {
 	
 	@Id @GeneratedValue
 	@Column(name="group_num")
