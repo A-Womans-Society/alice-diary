@@ -40,8 +40,7 @@ public class MemberController {
 
 	// 회원가입 후 메인페이지로 이동
 	@PostMapping(value = "/register")
-	public String memberForm(@Valid MemberDto memberDto, BindingResult bindingResult, Model model,
-			HttpSession session) {
+	public String memberForm(@Valid MemberDto memberDto, BindingResult bindingResult, HttpSession session) {
 		logger.info("POST 나옴");
 
 		if (bindingResult.hasErrors()) {
@@ -64,6 +63,9 @@ public class MemberController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}else {
+			Member member = Member.createMember(memberDto, passwordEncoder);
+			memberService.saveMember(member);
 		}
 
 		return "redirect:/";
@@ -79,4 +81,16 @@ public class MemberController {
 	    logger.info("확인 결과:"+check);
 	    return check;
 	}
+	
+	/*
+	 * @PostMapping("/register/emailCheck")
+	 * 
+	 * @ResponseBody public void checkEmailKey(String email) throws Exception {
+	 * logger.info("EmailCheck 진입"); logger.info("전달받은 email:"+email);
+	 * memberService.sendSimpleMessage(email); logger.info("email 보냄!");
+	 * 
+	 * }
+	 */
+	
+	
 }

@@ -14,19 +14,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alice.project.controller.MemberController;
 import com.alice.project.web.MemberDto;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "member")
@@ -34,8 +31,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Slf4j
 public class Member {
-	private static final Logger logger = LoggerFactory.getLogger(Member.class);
 
 	@Id
 	@GeneratedValue // (strategy = GenerationType.IDENTITY)
@@ -124,6 +121,7 @@ public class Member {
 		member.setName(memberDto.getName());
 		member.setBirth(memberDto.getBirth());
 		member.setGender(memberDto.getGender());
+		log.info("이거시 젠더다" + memberDto.getGender());
 		member.setEmail(memberDto.getEmail());
 		member.setMobile(memberDto.getMobile());
 		member.setMbti(memberDto.getMbti());

@@ -2,6 +2,8 @@ package com.alice.project.web;
 
 import java.time.LocalDate;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -36,7 +38,8 @@ public class MemberDto {
 	@NotNull(message = "생년월일은 필수 입력 값입니다.")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birth;
-
+	
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
 	@NotEmpty(message = "이메일은 필수 입력 값입니다.")
@@ -54,4 +57,6 @@ public class MemberDto {
 	private String saveName;
 	
 	private MultipartFile profileImg;
+	
+	private String key;
 }
