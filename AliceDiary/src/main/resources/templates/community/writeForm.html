@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>Alice</title>
+</head>
+<body>
+	<div id="sidemenu" style="width: auto; height: 700px; border: 1px solid purple; float: left; padding: 0px 10px 0px 0px; margin: 0px 20px 0px 0px;">
+		<ul id="community">
+			<li class="sidemenu"><a href="#">공개게시판</a></li>
+			<li class="sidemenu"><a href="#">*생성커뮤니티 메뉴*</a></li>
+			<li class="sidemenu"><a href="#">컨텐츠</a></li>
+			<li class="sidemenu"><a href="#">커뮤니티만들기</a></li>
+		</ul>
+	</div>
+	<div style="float: left;">
+		<h2>글쓰기</h2>
+		<form th:action="@{/AliceDiary/community/post}"  method="post" th:object="${writeFormDto}"
+			enctype="multipart/form-data">
+			<table border="1">
+				<tr>
+					<td>제목</td>
+					<td><input type="text" th:field="*{title}"></td>
+				</tr>
+				<tr>
+					<td>내용</td>
+					<td><textarea th:field="*{content}" cols="50" rows="10"></textarea></td>
+				</tr>
+				<tr>
+					<td>파일첨부</td>
+					<td><input type="file" th:field="*{originName}" multiple> 
+				</tr>
+			</table>
+			<input type="submit" value="작성"> 
+			<a th:href="@{/AliceDiary/community/list}"><input type="button" value="취소"></a>
+
+
+		</form>
+
+	</div>
+
+</body>
+</html>
