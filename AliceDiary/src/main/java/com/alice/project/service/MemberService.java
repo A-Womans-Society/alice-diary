@@ -10,6 +10,10 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.alice.project.domain.Member;
@@ -20,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 //@Transactional //로직을 처리하다가 에러 발생 시 변경된 데이터를 로직 수행 이전 상태로 콜백
 @RequiredArgsConstructor //final 필드 생성자 생성해줌
-public class MemberService {
+public class MemberService implements UserDetailsService{ //MemberService가 UserDetailService를 구현
 
 	private final MemberRepository memberRepository;
 	
@@ -113,5 +117,26 @@ public class MemberService {
 	        }
 	        return ePw;
 	    }
+
+
+		@Override
+		public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException { //로그인 할 유저의 id를 파라미터로 전달받음
+			Member member = memberRepository.findById(id);
+			
+			if(member == null) {
+				throw new UsernameNotFoundException(id);
+			}
+			/*UserDetail을 구현하고 있는 User 객체 반환
+			  User객체를 생성하기 위해 생성자로 회원의 아이디, 비밀번호, status를 파라미터로 넘겨 줌
+			*/
+			return User.builder()
+					.username(member.getId())
+					.password(member.getPwd())
+					.roles(member.getStatus().toString())
+					.build();
+		}
+	    
+	    
+	    
 	
  }
