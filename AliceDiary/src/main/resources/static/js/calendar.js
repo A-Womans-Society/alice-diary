@@ -1,12 +1,7 @@
 var jsonData = eventsList.replace(/&quot;/g, '"');
-console.log(jsonData);
 var jsonData = jsonData.replace(/\\"/g, '');
-console.log(jsonData);
-
 var jsonConvertList = JSON.parse(jsonData);
-console.log(jsonConvertList);
 
-console.log(eval(JSON.stringify(jsonConvertList.items)));
 document.addEventListener('DOMContentLoaded', function() {
 	var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -30,18 +25,54 @@ document.addEventListener('DOMContentLoaded', function() {
 			$("#addEvent").modal();
 		},
 		eventClick : function(info) {
-			alert('Event: ' + info.event.title);
-			alert('Coordinates: ' + info.jsEvent.pageX + ','
-					+ info.jsEvent.pageY);
-			alert('View: ' + info.view.type);
+//			alert('Event: ' + info.event.title);
+//			alert('Coordinates: ' + info.jsEvent.pageX + ','
+//					+ info.jsEvent.pageY);
+//			alert('View: ' + info.view.type);
 
 			// change the border color just for fun
-			info.el.style.borderColor = 'red';
+//			info.el.style.borderColor = 'red';
+			makeRequest(info.event.id);
+
 		}
 
 	});
 	calendar.render();
 });
+
+
+
+
+
+function makeRequest(id) {
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
+	
+	if(!httpRequest) {
+		alert('XMLHTTP 인스턴스를 만들 수가 없어요 ㅠㅠ');
+	    return false;
+	}
+    httpRequest.onreadystatechange = function(){
+	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+	    	if (httpRequest.status === 200) {
+	//	    	document.getElementById("idCheckResult").innerHTML = httpRequest.responseText;
+				 var result = JSON.parse(httpRequest.response);
+				console.log(result);
+				$("#showEvent").modal();
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
+
+    //POST로 요청
+    httpRequest.open('POST', "showDetail", true);
+    httpRequest.setRequestHeader(header,token);
+    httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    httpRequest.send("id=" + id);
+}
+
 
 // checkbox check one element
 function checkOnlyOne(element) {
