@@ -68,10 +68,41 @@ var eventsList = /*[[${list}]]*/;
 	th:content="${_csrf.headerName}" />
 
 </head>
-<body>
-	<div id='calendar-container'>
-		<div id='calendar'></div>
+<body style="height: 100vh;">
+	<div class="container-fluid h-100">
+		<div class="row justify-content-end h-100">
+			<div class="col-9" id='calendar-container' style="padding: 0;">
+				<div id='calendar'></div>
+			</div>
+			<div class="col-3">
+				<div class="row h-50">
+					<div class="col-12">
+						<div id="alarmTitle">
+							<strong>앨리스가 알려드려요</strong> <span
+								class="badge badge-primary badge-pill"
+								th:text="${#lists.size(alarmList)}"></span>
+						</div>
+						<th:block th:if="${!alarmList.isEmpty}">
+							<ul>
+								<li th:each="alarm: ${alarmList}">
+									<p>
+										<strong><span th:text="${alarm.content}"></span></strong> <small>
+											<span th:if="${!#strings.isEmpty(alarm.memberList)}"
+											th:text="|with ${alarm.memberList}|"> </span>
+										</small>
+									</p>
+								</li>
+							</ul>
+						</th:block>
+					</div>
+
+				</div>
+				<div class="row bg-danger h-50">asdfasdf</div>
+			</div>
+		</div>
 	</div>
+
+
 	<div id="resultDiv">
 		<p th:if="${msg}!=null" th:text="${msg}"></p>
 	</div>
@@ -154,17 +185,20 @@ var eventsList = /*[[${list}]]*/;
 								<div class="col-6">
 									<p>
 										<strong>공개여부</strong> <input type="radio" value="true"
-											id="public" th:field="*{publicity}" checked><label
-											for="public">공개</label> <input type="radio" value="false"
-											id="private" th:field="*{publicity}"><label
+											id="public" th:field="*{publicity}" name="publicity">
+										<label for="public">공개</label> <input type="radio"
+											name="publicity" value="false" id="private"
+											th:field="*{publicity}" checked="checked"> <label
 											for="private">비공개</label>
 									</p>
 									<p>
 										<strong>알림</strong> <select th:field="*{alarm}">
-											<option value="1일전">1일전</option>
-											<option value="3일전">3일전</option>
-											<option value="1주일전">1주일전</option>
-											<option value="한달전">한달전</option>
+											<option value="1">1일 전</option>
+											<option value="3">3일 전</option>
+											<option value="7">1주 전</option>
+											<option value="14">2주 전</option>
+											<option value="21">3주 전</option>
+											<option value="30">한 달 전</option>
 										</select>
 									</p>
 									<p>
@@ -176,7 +210,8 @@ var eventsList = /*[[${list}]]*/;
 						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btn btn-dark" value="일정 등록">
+						<input type="submit" class="btn btn-dark" value="일정 등록"
+							onclick="return checkNull();">
 					</div>
 				</form>
 			</div>
@@ -231,10 +266,9 @@ var eventsList = /*[[${list}]]*/;
 							</div>
 							<div class="col-6">
 								<p>
-									<strong>공개여부</strong> <input type="radio" id="detailPublic"><label
-										for="detailPublic" onclick="return(false);">공개</label> <input
-										type="radio" id="detailPrivate" onclick="return(false);"><label
-										for="detailPrivate">비공개</label>
+									<strong>공개여부</strong> <input type="radio" id="detailPublic"
+										onclick="return(false);"><label>공개</label> <input
+										type="radio" id="detailPrivate" onclick="return(false);"><label>비공개</label>
 								</p>
 								<p>
 									<strong>알림</strong> <input type="text" id="detailAlarm"

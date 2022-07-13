@@ -1,5 +1,6 @@
 package com.alice.project.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -37,5 +38,9 @@ public class CalendarService {
 	@Transactional
 	public void deleteEvent(Long id) {
 		calendarRepository.deleteById(id);
+	}
+
+	public List<Calendar> alarm(LocalDate today) {
+		return calendarRepository.getAlarmEvents(today);
 	}
 }
