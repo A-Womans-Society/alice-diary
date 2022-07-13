@@ -109,17 +109,6 @@ function deleteEvent() {
     httpRequest.send("id=" + document.getElementById("eventId").value);
 }
 
-const formtag = document.getElementById("addEventForm");
-function init() {
-	formtag.addEventListener("submit", handleSubmit)
-}
-function handleSubmit(event) {
-	if (document.getElementById("content").value.length == 0){
-		alert("내용을 입력해주세요.");
-		event.preventDefault();
-	} 
-}
-
 
 function checkNull(){
 	if (document.getElementById("content").value.length == 0){
