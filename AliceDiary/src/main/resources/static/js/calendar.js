@@ -1,7 +1,11 @@
+
 var jsonData = eventsList.replace(/&quot;/g, '"');
 var jsonData = jsonData.replace(/\\"/g, '');
-var jsonConvertList = JSON.parse(jsonData);
-
+if (jsonData.length == 14){
+	var jsonConvertList = [];
+} else {
+	var jsonConvertList = eval(JSON.stringify(JSON.parse(jsonData).items))
+}
 document.addEventListener('DOMContentLoaded', function() {
 	var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -17,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// limit events per day
 		dayMaxEvents : 2,
 
-		events : eval(JSON.stringify(jsonConvertList.items)),
+		events : jsonConvertList,
 		dateClick : function(info) {
 			// popup modal
 			document.getElementById("startDate").value = info.dateStr;
@@ -103,4 +107,24 @@ function deleteEvent() {
     httpRequest.setRequestHeader(header,token);
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     httpRequest.send("id=" + document.getElementById("eventId").value);
+}
+
+const formtag = document.getElementById("addEventForm");
+function init() {
+	formtag.addEventListener("submit", handleSubmit)
+}
+function handleSubmit(event) {
+	if (document.getElementById("content").value.length == 0){
+		alert("내용을 입력해주세요.");
+		event.preventDefault();
+	} 
+}
+
+
+function checkNull(){
+	if (document.getElementById("content").value.length == 0){
+		alert("내용을 입력해주세요.");
+		return false;
+	} 
+	return true;
 }

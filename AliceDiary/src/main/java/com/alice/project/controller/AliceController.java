@@ -55,13 +55,6 @@ public class AliceController {
 			}
 		} else {
 			JSONObject jObj = new JSONObject();
-
-			jObj.put("title", "test");
-			jObj.put("start", "2022-07-11");
-			jObj.put("end", "2022-07-11");
-			jObj.put("backgroundColor", "red");
-			jObj.put("borderColor", "red");
-
 			jArray.add(jObj);
 		}
 		obj.put("items", jArray);
