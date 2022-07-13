@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alice.project.domain.Post;
 import com.alice.project.domain.PostType;
 
 import lombok.Getter;

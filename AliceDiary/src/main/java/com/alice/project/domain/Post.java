@@ -47,6 +47,8 @@ public class Post {
 	private String title; // 게시물 제목
 	private LocalDateTime postDate; // 게시물 작성일자
 	private LocalDateTime updateDate; // 게시물 수정일자
+	
+	@Column(length = 50000)
 	private String content; // 게시물 내용
 	private Long viewCnt = 0L; // 게시물 조회수 (default=0)
 
@@ -112,4 +114,8 @@ public class Post {
 		return post;
 	}
 
+	//조회수 증가 메소드
+	public void viewCntUp() {
+		this.viewCnt++;
+	}
 }

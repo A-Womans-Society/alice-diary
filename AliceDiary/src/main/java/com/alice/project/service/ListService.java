@@ -12,18 +12,20 @@ import com.alice.project.repository.PostRepository;
 @Service
 @Transactional
 public class ListService {
-	
+
 	@Autowired
 	private PostRepository postRepository;
-		
-	public Page<Post> list(Pageable pageable){
-		
-		return postRepository.findAll(pageable);	
-		
+
+	public Page<Post> list(Pageable pageable) {
+
+		return postRepository.findAll(pageable);
+
 	}
+
 	
-	public Page<Post> searchList(String keyword, Pageable pageable){
-		
+
+	public Page<Post> searchList(String keyword, Pageable pageable) {
+
 		return postRepository.findByTitleContaining(keyword, pageable);
 	}
 

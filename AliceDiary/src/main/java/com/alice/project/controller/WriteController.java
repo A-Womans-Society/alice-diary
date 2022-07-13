@@ -1,7 +1,5 @@
 package com.alice.project.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.Post;
-import com.alice.project.service.FileUploadService;
+import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.WriteService;
 import com.alice.project.web.WriteFormDto;
 
@@ -25,7 +22,7 @@ public class WriteController {
 	private WriteService writeService;
 
 	@Autowired
-	private FileUploadService fileUploadService;
+	private AttachedFileService fileUploadService;
 
 	@GetMapping("/community/post")
 	public String writeform(Model model) {
@@ -36,13 +33,18 @@ public class WriteController {
 
 	@PostMapping("/community/post")
 	public String writeSubmit(WriteFormDto writeFormDto, HttpSession session) {
-		System.out.println("service 도착");
-		Post post = Post.createPost(writeFormDto);
-		System.out.println("post 객세생성");
-		writeService.write(post);
+		System.out.println("controller 실행");
 
-		fileUploadService.postFileUpload(writeFormDto.getOriginName(), session);
-		
+		if (!writeFormDto.getOriginName().isEmpty()) {
+			Post post = Post.createPost(writeFormDto);
+
+			fileUploadService.postFileUpload(writeFormDto.getOriginName(), writeService.write(post), session);
+		} else {
+			Post post = Post.createPost(writeFormDto);
+
+			writeService.write(post);
+		}
+
 		System.out.println("service 이동");
 		return "redirect:list";
 	}
