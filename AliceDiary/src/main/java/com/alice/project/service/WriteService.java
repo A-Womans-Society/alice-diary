@@ -13,12 +13,11 @@ public class WriteService {
 
 	@Autowired
 	private PostRepository postRepository;
-	
+
 	public Post write(Post post) {
-		
+
 		return postRepository.save(post);
 
 	}
-	
-	
+
 }

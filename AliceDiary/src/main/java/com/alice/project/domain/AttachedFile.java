@@ -19,7 +19,7 @@ import lombok.ToString;
 @Table(name="attachedFile")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
+@ToString(exclude = "post")
 public class AttachedFile {
 	
 	@Id @GeneratedValue
@@ -54,6 +54,16 @@ public class AttachedFile {
 		this.saveName = saveName;
 		this.filePath = filePath;
 		
+	}
+
+
+	@Builder
+	public AttachedFile(String originName, String saveName, String filePath, Post post) {
+		super();
+		this.originName = originName;
+		this.saveName = saveName;
+		this.filePath = filePath;
+		this.post = post;
 	}
 	
 	

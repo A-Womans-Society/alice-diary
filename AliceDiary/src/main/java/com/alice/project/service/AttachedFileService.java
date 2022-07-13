@@ -14,12 +14,14 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.AttachedFile;
+import com.alice.project.domain.Post;
 import com.alice.project.repository.AttachedFileRepository;
 
 @Service
@@ -28,7 +30,7 @@ public class AttachedFileService {
 	@Autowired
 	private AttachedFileRepository attachedFileRepository;
 
-	public void postFileUpload(List<MultipartFile> files, HttpSession session) {
+	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session) {
 		System.out.println("list size : " + files.size());
 		if (files.size() != 0) {
 			System.out.println("service run");
@@ -40,7 +42,8 @@ public class AttachedFileService {
 
 				System.out.println("service run222222222");
 
-				AttachedFile file = new AttachedFile(ofile, sfile, savePath);
+//				AttachedFile file = new AttachedFile(ofile, sfile, savePath);
+				AttachedFile file = new AttachedFile(ofile, sfile, savePath, post);
 
 				attachedFileRepository.save(file);
 				System.out.println("service run444444444");
@@ -96,7 +99,18 @@ public class AttachedFileService {
 					.header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath)
 					.body(resource);
 			
-		
-		
 	}
+	
+	public List<AttachedFile> fileView(Post post,Pageable pageable) {
+		System.out.println("service run file");
+		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+		System.out.println("asf.size:" + afs.size());
+		for (AttachedFile af : afs) {
+			String oriName = af.getOriginName();
+			System.out.println("AFS의 fileView!!! af : " + oriName);
+		}
+		return attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+	}
+	
+	
 }

@@ -30,11 +30,11 @@
 			<tr>
 				<td><div th:text="${postView.content}" style="padding: 10px; height: auto; min-height: 100px; overflow: auto;"></div></td>
 			</tr>
-			<tr>
-				<td>첨부파일: <div th:if="${fileView.originName != null}" >
-							<a th:href="|/AliceDiary/community/download/${fileView.num}|" th:text="${fileView.originName}"></a>
+			<tr th:each="file : ${files}">
+				<td>첨부파일: <div th:if="${file.originName != null}" >
+							<a th:href="|/AliceDiary/community/download/${file.num}|" th:text="${file.originName}"></a>
 							</div>
-							<div th:if="${fileView.originName == null}">첨부파일 없음.</div>
+							<div th:if="${file.originName == null}">첨부파일 없음.</div>
 				</td>
 			</tr>
 			
