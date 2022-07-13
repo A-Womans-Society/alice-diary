@@ -20,4 +20,5 @@ public class CalendarFormDto {
 	private String color; // 일정 색
 	private Boolean publicity; // 일정 공개여부
 	private String alarm; // 일정 알람
+	private LocalDate alarmDate; // 일정 알람
 }

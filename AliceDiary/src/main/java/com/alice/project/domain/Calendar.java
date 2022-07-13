@@ -41,7 +41,7 @@ public class Calendar {
 	private String location; // 일정 장소
 	private String color; // 일정 색
 	private Boolean publicity; // 일정 공개여부
-	private Integer alarm; // 일정 알람
+	private LocalDate alarm; // 일정 알람
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mem_num")
@@ -62,7 +62,7 @@ public class Calendar {
 
 	@Builder
 	public Calendar(Long num, String memberList, LocalDate startDate, LocalDate endDate, String content, String memo,
-			String location, String color, Boolean publicity, int alarm) {
+			String location, String color, Boolean publicity, LocalDate alarm) {
 		super();
 		this.num = num;
 		this.memberList = memberList;
@@ -78,7 +78,7 @@ public class Calendar {
 
 	@Builder
 	public Calendar(String memberList, LocalDate startDate, LocalDate endDate, String content, String memo,
-			String location, String color, Boolean publicity, int alarm) {
+			String location, String color, Boolean publicity, LocalDate alarm) {
 		super();
 		this.memberList = memberList;
 		this.startDate = startDate;
@@ -94,7 +94,7 @@ public class Calendar {
 	// 일정 객체 생성 메서드
 	public static Calendar createCalendar(CalendarFormDto dto) {
 		Calendar calendar = new Calendar(dto.getMemberList(), dto.getStartDate(), dto.getEndDate(), dto.getContent(),
-				dto.getMemo(), dto.getLocation(), dto.getColor(), dto.getPublicity(), Integer.parseInt(dto.getAlarm()));
+				dto.getMemo(), dto.getLocation(), dto.getColor(), dto.getPublicity(), dto.getAlarmDate());
 
 		return calendar;
 	}

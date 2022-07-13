@@ -1,7 +1,5 @@
 package com.alice.project.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -15,15 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Calendar;
-import com.alice.project.repository.CalendarRepository;
 import com.alice.project.service.CalendarService;
-import com.alice.project.web.CalendarEventFormDto;
 import com.alice.project.web.CalendarFormDto;
 
 import lombok.RequiredArgsConstructor;
@@ -58,8 +53,12 @@ public class AliceController {
 			jArray.add(jObj);
 		}
 		obj.put("items", jArray);
+		LocalDate today = LocalDate.now();
+		List<Calendar> alarmList = calendarService.alarm(today);
+		model.addAttribute("alarmList", alarmList);
 		model.addAttribute("list", obj.toString());
 		model.addAttribute("CalForm", new CalendarFormDto());
+		model.addAttribute("today", today);
 		return "alice/calendar";
 	}
 
@@ -67,8 +66,10 @@ public class AliceController {
 	public String calendar(CalendarFormDto dto) {
 		LocalDate startDate = LocalDate.parse(dto.getStartDateStr(), DateTimeFormatter.ISO_DATE);
 		LocalDate endDate = LocalDate.parse(dto.getEndDateStr(), DateTimeFormatter.ISO_DATE);
+		LocalDate alarmDate = startDate.minusDays(Long.parseLong(dto.getAlarm()));
 		dto.setStartDate(startDate);
 		dto.setEndDate(endDate.plusDays(1));
+		dto.setAlarmDate(alarmDate);
 		calendarService.addEvent(dto);
 		return "redirect:/AliceDiary/alice";
 	}

@@ -68,18 +68,41 @@ var eventsList = /*[[${list}]]*/;
 	th:content="${_csrf.headerName}" />
 
 </head>
-<body>
-	<div class="container-fluid">
-		<div class="row">
+<body style="height: 100vh;">
+	<div class="container-fluid h-100">
+		<div class="row justify-content-end h-100">
 			<div class="col-9" id='calendar-container' style="padding: 0;">
 				<div id='calendar'></div>
 			</div>
-			<div class="col-3" style="padding: 0;"></div>
+			<div class="col-3">
+				<div class="row h-50">
+					<div class="col-12">
+						<div id="alarmTitle">
+							<strong>앨리스가 알려드려요</strong> <span
+								class="badge badge-primary badge-pill"
+								th:text="${#lists.size(alarmList)}"></span>
+						</div>
+						<th:block th:if="${!alarmList.isEmpty}">
+							<ul>
+								<li th:each="alarm: ${alarmList}">
+									<p>
+										<strong><span th:text="${alarm.content}"></span></strong> <small>
+											<span th:if="${!#strings.isEmpty(alarm.memberList)}"
+											th:text="|with ${alarm.memberList}|"> </span>
+										</small>
+									</p>
+								</li>
+							</ul>
+						</th:block>
+					</div>
+
+				</div>
+				<div class="row bg-danger h-50">asdfasdf</div>
+			</div>
 		</div>
 	</div>
-	<!-- 	<div id='calendar-container'>
-		<div id='calendar'></div>
-	</div> -->
+
+
 	<div id="resultDiv">
 		<p th:if="${msg}!=null" th:text="${msg}"></p>
 	</div>
@@ -187,7 +210,8 @@ var eventsList = /*[[${list}]]*/;
 						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btn btn-dark" value="일정 등록" onclick="return checkNull();">
+						<input type="submit" class="btn btn-dark" value="일정 등록"
+							onclick="return checkNull();">
 					</div>
 				</form>
 			</div>
