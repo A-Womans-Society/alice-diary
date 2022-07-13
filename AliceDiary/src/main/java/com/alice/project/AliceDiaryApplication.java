@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AliceDiaryApplication {
 
 	public static void main(String[] args) {
+	    System.setProperty("server.servlet.context-path", "/AliceDiary");
 		SpringApplication.run(AliceDiaryApplication.class, args);
 	}
 

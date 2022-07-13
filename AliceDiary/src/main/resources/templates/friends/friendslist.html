@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>친구목록</title>
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+<meta id="_csrf_header" name="_csrf_header"
+	th:content="${_csrf.headerName}" />
+
+<!-- bootstrap 4 -->
+<link rel="stylesheet"
+	th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css}"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+
+<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"></script>
+<script
+	th:src="@{https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js}"
+	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	crossorigin="anonymous"></script>
+<script
+	th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js}"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
+
+<!-- <script th:href="@{/js/friendsList.js}"></script> -->
+
+<th:block layout:fragment="css">
+	<style>
+a {
+	text-decoration: none;
+}
+
+img {
+	width: 100px;
+	height: 100px;
+	object-fit: contain;
+}
+</style>
+</th:block>
+
+
+<script>
+	document.addEventListener('keydown', function(event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+		}
+		;
+	}, true);
+	
+	function openModal() {
+		$("#addFriend").modal();
+	};
+
+	function loadMembers() {
+		let token = $("meta[name='_csrf']").attr("content");
+		let header = $("meta[name='_csrf_header']").attr("content");
+		let httpRequest = new XMLHttpRequest();
+		let id = document.getElementById("searchId").value;
+		
+		httpRequest.onreadystatechange = function() {
+			if (httpRequest.readyState === XMLHttpRequest.DONE) {
+				if (httpRequest.status === 200) {
+					if (httpRequest.response) {
+						console.log(httpRequest.response);
+						let result = JSON.parse(httpRequest.response);
+						console.log(result);
+
+						let html = "<img src=\"img/image.png\"><p>" + result.id
+								+ " / " + result.mbti + "</p>";
+						document.getElementById("memberInfo").innerHTML = html;
+
+					} else {
+						document.getElementById("memberInfo").innerText = "일치하는 회원이 없습니다.";
+					}
+				} else {
+					alert('request에 뭔가 문제가 있어요.');
+				}
+			}
+		}
+		//POST로 요청
+		httpRequest.open('POST', "friends/searchMember", true);
+		httpRequest.setRequestHeader(header, token);
+		httpRequest.setRequestHeader('Content-type',
+				'application/x-www-form-urlencoded');
+		httpRequest.send("id=" + id);
+	};
+	/* 
+	 function PreviewImage() {
+	 var preview = new FileReader();
+	 preview.onload = function(e) {
+	 document.getElementById("profileimg").src = e.target.result;
+	 };
+	 preview.readAsDataURL(document.getElementById("profileimg").files[0]);
+	 }; */
+</script>
+</head>
+<body>
+	<form th:action="@{/AliceDiary/search}" method="post">
+		<input type="text" class="form-control"
+			placeholder="친구 검색(아이디/이름/전화번호)">
+		<button type="submit" class="btn btn-primary mb-2">검색</button>
+	</form>
+
+	<button id="openModal" onclick="openModal()">친구 추가</button>
+	<table border="1">
+		<thead>
+			<tr>
+				<td>NO</td>
+				<td>ID</td>
+				<td>이름</td>
+				<td>전화번호</td>
+				<td>생년월일</td>
+				<td>성별</td>
+				<td>이메일</td>
+				<td>그룹</td>
+			</tr>
+		</thead>
+		<!-- addee의 정보가 나와야 함. addee의 정보를 출력하려면? -->
+		<tbody>
+			<tr th:each="friendshipDto, status: ${friendshipDto}">
+				<td th:text="${status.index}"></td>
+				<td th:text="${friendshipDto.id}"></td>
+				<td th:text="${friendshipDto.name}"></td>
+				<!--이름 선택 시 상세보기 모달 설정 -->
+				<td th:text="${friendshipDto.mobile}"></td>
+				<td th:text="${friendshipDto.birth}"></td>
+				<td th:text="${friendshipDto.gender}"></td>
+				<td th:text="${friendshipDto.email}"></td>
+				<td th:text="${friendshipDto.groupName}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- Modal -->
+	<div class="modal" tabindex="-1" role="dialog" id="addFriend">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="align-items: baseline;">
+					<h1 class="modal-title">친구 추가</h1>
+					<span>ID로 추가</span>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<form th:action="@{/friends/add}" method="post">
+					<div class="modal-body">
+						ID <input type="text" id="searchId" name="searchId"> <input
+							type="button" class="btn" value="검색" onclick="loadMembers()"><br />
+						<div id="memberInfo"></div>
+					</div>
+					<div class="modal-footer">
+						<input type="submit" class="btnbtn-dark" VALUE="친구 추가">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
