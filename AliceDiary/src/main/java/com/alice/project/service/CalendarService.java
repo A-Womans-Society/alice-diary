@@ -28,4 +28,14 @@ public class CalendarService {
 		List<Calendar> events = calendarRepository.findAll();
 		return events;
 	}
+
+	public Calendar eventDetail(Long id) {
+		Calendar event = calendarRepository.getById(id);
+		return event;
+	}
+
+	@Transactional
+	public void deleteEvent(Long id) {
+		calendarRepository.deleteById(id);
+	}
 }

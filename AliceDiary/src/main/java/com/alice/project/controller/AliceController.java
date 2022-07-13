@@ -1,8 +1,13 @@
 package com.alice.project.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,11 +15,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Calendar;
 import com.alice.project.repository.CalendarRepository;
 import com.alice.project.service.CalendarService;
+import com.alice.project.web.CalendarEventFormDto;
 import com.alice.project.web.CalendarFormDto;
 
 import lombok.RequiredArgsConstructor;
@@ -36,9 +45,12 @@ public class AliceController {
 				JSONObject jObj = new JSONObject();
 
 				jObj.put("title", cal.getContent());
+				jObj.put("id", cal.getNum());
 				jObj.put("start", "\"" + cal.getStartDate() + "\"");
 				jObj.put("end", "\"" + cal.getEndDate() + "\"");
 				jObj.put("backgroundColor", cal.getColor());
+				jObj.put("borderColor", cal.getColor());
+
 				jArray.add(jObj);
 			}
 		} else {
@@ -48,6 +60,8 @@ public class AliceController {
 			jObj.put("start", "2022-07-11");
 			jObj.put("end", "2022-07-11");
 			jObj.put("backgroundColor", "red");
+			jObj.put("borderColor", "red");
+
 			jArray.add(jObj);
 		}
 		obj.put("items", jArray);
@@ -64,5 +78,35 @@ public class AliceController {
 		dto.setEndDate(endDate.plusDays(1));
 		calendarService.addEvent(dto);
 		return "redirect:/AliceDiary/alice";
+	}
+
+	@PostMapping("/showDetail")
+	@ResponseBody
+	public JSONObject showDetail(@RequestParam(value = "id") String id, HttpServletRequest req,
+			HttpServletResponse resp, Model model) {
+		Calendar event = calendarService.eventDetail(Long.parseLong(id));
+		JSONObject jObj = new JSONObject();
+
+		jObj.put("title", event.getContent());
+		jObj.put("id", event.getNum());
+		jObj.put("start", event.getStartDate());
+		jObj.put("end", event.getEndDate());
+		jObj.put("backgroundColor", event.getColor());
+		jObj.put("memberList", event.getMemberList());
+		jObj.put("location", event.getLocation());
+		jObj.put("memo", event.getMemo());
+		jObj.put("publicity", event.getPublicity());
+		jObj.put("alarm", event.getAlarm());
+
+		return jObj;
+	}
+
+	@PostMapping("/deleteEvent")
+	@ResponseBody
+	public boolean deleteEvent(@RequestParam(value = "id") String id, HttpServletRequest req,
+			HttpServletResponse resp) {
+		calendarService.deleteEvent(Long.parseLong(id));
+
+		return true;
 	}
 }
