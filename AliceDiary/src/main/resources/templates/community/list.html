@@ -33,19 +33,23 @@
               <tr th:each="post : ${list}">
               	<td th:text="${post.num}"></td>
                 <td>
-                      <a th:text="${post.title}" th:href="@{/community/get(num=${post.num})}"></a>
+                      <a th:text="${post.title}" th:href="@{/AliceDiary/community/get(num=${post.num})}"></a>
                  </td>
                <!--    <td th:text="${post.writer}"></td>-->
-                 <td th:text="${post.postDate}"></td>
+                 <td th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
                  <td th:text="${post.viewCnt}"></td>
               </tr>
           </tbody>
 	
 </table>
-	<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-		<a th:if="${page != nowPage}" th:href="@{/community/list(page = ${page -1}" th:text="${page}"></a>
+	<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}" >
+		<a th:if="${page != nowPage}" th:href="@{/AliceDiary/community/list(page = ${page-1})}" th:text="${page}"></a>
 		<strong th:if="${page == nowPage}" th:text="${page}" style="color : red"></strong>
-	<a th:href="@{/AliceDiary/community/write}"><input type="button" value="글쓰기"></a>
+	</th:block>
+ 	
+	
+	<a th:href="@{/AliceDiary/community/post}"><input type="button" value="글쓰기"></a>
+	
 </div>
 </body>
 </html>

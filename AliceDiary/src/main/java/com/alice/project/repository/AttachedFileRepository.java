@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.alice.project.domain.AttachedFile;
 
 @Repository
-public interface FileRepository extends JpaRepository<AttachedFile, Long> {
+public interface AttachedFileRepository extends JpaRepository<AttachedFile, Long> {
 	
 	
 

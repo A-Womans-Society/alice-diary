@@ -53,6 +53,7 @@ public class AttachedFile {
 		this.originName = originName;
 		this.saveName = saveName;
 		this.filePath = filePath;
+		
 	}
 	
 	
