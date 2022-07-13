@@ -22,16 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			// popup modal
 			document.getElementById("startDate").value = info.dateStr;
 			document.getElementById("endDate").value = info.dateStr;
+			document.getElementById("endDate").setAttribute('min', info.dateStr);
 			$("#addEvent").modal();
 		},
 		eventClick : function(info) {
-//			alert('Event: ' + info.event.title);
-//			alert('Coordinates: ' + info.jsEvent.pageX + ','
-//					+ info.jsEvent.pageY);
-//			alert('View: ' + info.view.type);
-
-			// change the border color just for fun
-//			info.el.style.borderColor = 'red';
 			makeRequest(info.event.id);
 
 		}
@@ -43,22 +37,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
 function makeRequest(id) {
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
 	let httpRequest = new XMLHttpRequest();
 	
-	if(!httpRequest) {
-		alert('XMLHTTP 인스턴스를 만들 수가 없어요 ㅠㅠ');
-	    return false;
-	}
     httpRequest.onreadystatechange = function(){
 	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	    	if (httpRequest.status === 200) {
-	//	    	document.getElementById("idCheckResult").innerHTML = httpRequest.responseText;
-				 var result = JSON.parse(httpRequest.response);
+				var result = JSON.parse(httpRequest.response);
 				console.log(result);
+				document.getElementById("detailMemo").value = result.memo;
+				document.getElementById("detailStartDate").value = result.start;
+				document.getElementById("detailEndDate").value = result.end;
+				document.getElementById("detailContent").value = result.title;
+				document.getElementById("detailLocation").value = result.location;
+				document.getElementById("detailAlarm").value = result.alarm;
+
+				if (result.memberList){
+					document.getElementById("detailMemberList").value = result.memberList;
+				} else {
+					document.getElementById("detailMemberList").value = "";
+				}
+
+				if(result.publicity){
+					document.getElementById("detailPublic").checked = true;
+					document.getElementById("detailPrivate").checked = false;
+				} else {
+					document.getElementById("detailPublic").checked = false;
+					document.getElementById("detailPrivate").checked = true;
+				}
+				document.getElementById("colorbtn").style.background = result.backgroundColor;
+				document.getElementById("eventId").value = result.id;
 				$("#showEvent").modal();
 			} else {
 				alert('request에 뭔가 문제가 있어요.');
@@ -73,14 +83,24 @@ function makeRequest(id) {
     httpRequest.send("id=" + id);
 }
 
+function deleteEvent() {
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
+	
+    httpRequest.onreadystatechange = function(){
+	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+	    	if (httpRequest.status === 200) {
+				window.location = "alice";
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
 
-// checkbox check one element
-function checkOnlyOne(element) {
-	const checkboxes 
-		= document.getElementsByName("public");
-  
-	checkboxes.forEach((cb) => {
-		cb.checked = false;
-	})
-	element.checked = true;
+    //POST로 요청
+    httpRequest.open('POST', "deleteEvent", true);
+    httpRequest.setRequestHeader(header,token);
+    httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    httpRequest.send("id=" + document.getElementById("eventId").value);
 }

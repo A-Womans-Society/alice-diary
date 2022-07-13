@@ -85,14 +85,12 @@ public class AliceController {
 	public JSONObject showDetail(@RequestParam(value = "id") String id, HttpServletRequest req,
 			HttpServletResponse resp, Model model) {
 		Calendar event = calendarService.eventDetail(Long.parseLong(id));
-		JSONObject obj = new JSONObject();
-		JSONArray jArray = new JSONArray();
 		JSONObject jObj = new JSONObject();
 
 		jObj.put("title", event.getContent());
 		jObj.put("id", event.getNum());
-		jObj.put("start", "\"" + event.getStartDate() + "\"");
-		jObj.put("end", "\"" + event.getEndDate() + "\"");
+		jObj.put("start", event.getStartDate());
+		jObj.put("end", event.getEndDate());
 		jObj.put("backgroundColor", event.getColor());
 		jObj.put("memberList", event.getMemberList());
 		jObj.put("location", event.getLocation());
@@ -100,9 +98,15 @@ public class AliceController {
 		jObj.put("publicity", event.getPublicity());
 		jObj.put("alarm", event.getAlarm());
 
-		jArray.add(jObj);
-		obj.put("data", jArray);
+		return jObj;
+	}
 
-		return obj;
+	@PostMapping("/deleteEvent")
+	@ResponseBody
+	public boolean deleteEvent(@RequestParam(value = "id") String id, HttpServletRequest req,
+			HttpServletResponse resp) {
+		calendarService.deleteEvent(Long.parseLong(id));
+
+		return true;
 	}
 }

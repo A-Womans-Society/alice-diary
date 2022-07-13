@@ -33,4 +33,9 @@ public class CalendarService {
 		Calendar event = calendarRepository.getById(id);
 		return event;
 	}
+
+	@Transactional
+	public void deleteEvent(Long id) {
+		calendarRepository.deleteById(id);
+	}
 }
