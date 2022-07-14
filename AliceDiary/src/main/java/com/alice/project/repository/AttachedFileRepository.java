@@ -1,6 +1,5 @@
 package com.alice.project.repository;
 
-
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -11,7 +10,11 @@ import com.alice.project.domain.AttachedFile;
 
 @Repository
 public interface AttachedFileRepository extends JpaRepository<AttachedFile, Long> {
-	
+
 	List<AttachedFile> findAllByPostNum(Long post, Pageable pageable);
+
+	AttachedFile findByNum(Long num);
+
+	AttachedFile findByPostNum(Long num);
 
 }

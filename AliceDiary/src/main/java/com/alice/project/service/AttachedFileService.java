@@ -112,5 +112,24 @@ public class AttachedFileService {
 		return attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
 	}
 	
+	public void deleteFile(Long num) {
+		System.out.println("num:"+num);
+		AttachedFile deleteFile = attachedFileRepository.findByNum(num);
+		
+		attachedFileRepository.delete(deleteFile);
+			
+	}
+	
+	public void deletePostwithFile(Long num) {
+		System.out.println("num:"+num);
+		AttachedFile deleteFile = attachedFileRepository.findByPostNum(num);
+		
+		attachedFileRepository.delete(deleteFile);
+			
+	}
+	
+	
+	
+	
 	
 }

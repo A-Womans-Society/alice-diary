@@ -19,5 +19,9 @@ public class WriteService {
 		return postRepository.save(post);
 
 	}
+	
+	public Post findOne(Long num) {
+		return postRepository.findByNum(num);
+	}
 
 }

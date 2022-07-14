@@ -8,23 +8,16 @@ import com.alice.project.domain.Post;
 import com.alice.project.repository.PostRepository;
 
 @Service
-public class ViewService {
-
+public class DeleteService {
+	
 	@Autowired
 	private PostRepository postRepository;
-
-
-	public Post postView(Long num) {
-
-		System.out.println("service run post");
-
-		return postRepository.findById(num).get();
-	}
-
+	
 	@Transactional
-	public int viewCntUp(Long num) {       
-		
-		return postRepository.viewCntUp(num);    
+	public void deletePost(Long num) {
+		Post deletePost = postRepository.findByNum(num);
+		postRepository.delete(deletePost);
 	}
+	
 
 }
