@@ -22,7 +22,7 @@ public class WriteController {
 	private WriteService writeService;
 
 	@Autowired
-	private AttachedFileService fileUploadService;
+	private AttachedFileService attachedFileService;
 
 	@GetMapping("/community/post")
 	public String writeform(Model model) {
@@ -38,7 +38,7 @@ public class WriteController {
 		if (!writeFormDto.getOriginName().isEmpty()) {
 			Post post = Post.createPost(writeFormDto);
 
-			fileUploadService.postFileUpload(writeFormDto.getOriginName(), writeService.write(post), session);
+			attachedFileService.postFileUpload(writeFormDto.getOriginName(), writeService.write(post), session);
 		} else {
 			Post post = Post.createPost(writeFormDto);
 

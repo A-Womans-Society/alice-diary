@@ -1,10 +1,7 @@
 package com.alice.project.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -23,7 +20,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.alice.project.web.UpdateFormDto;
 import com.alice.project.web.WriteFormDto;
 
 import lombok.AccessLevel;
@@ -48,7 +44,7 @@ public class Post {
 	private String title; // 게시물 제목
 	private LocalDateTime postDate; // 게시물 작성일자
 	private LocalDateTime updateDate; // 게시물 수정일자
-	
+
 	@Column(length = 50000)
 	private String content; // 게시물 내용
 	private Long viewCnt = 0L; // 게시물 조회수 (default=0)
@@ -98,12 +94,14 @@ public class Post {
 	// 게시물 객체 생성 메서드
 	public static Post createPost(WriteFormDto wirteFormDto) {
 		Post post = new Post();
-		Date date = new Date(); // 2. Date -> LocalDate
-		LocalDate localDate = date.toInstant() // Date ->
-				.atZone(ZoneId.systemDefault()) // Instant -> ZonedDateTime
-				.toLocalDate();
-		Member member = new Member("test", "12341234", "tester", localDate, Gender.FEMALE, "test@test.com",
-				"01012341234", localDate, Status.USER_IN);
+		/*
+		 * Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
+		 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
+		 * ZonedDateTime .toLocalDate();
+		 * 
+		 * Member member = new Member("test", "12341234", "tester", localDate,
+		 * Gender.FEMALE, "test@test.com", "01012341234", localDate, Status.USER_IN);
+		 */
 		post.setTitle(wirteFormDto.getTitle());
 		post.setPostDate(post.getPostDate());
 		post.setUpdateDate(post.getPostDate());
@@ -115,25 +113,40 @@ public class Post {
 		return post;
 	}
 
-	//조회수 증가 메소드
+	// 조회수 증가 메소드
 	public void viewCntUp() {
 		this.viewCnt++;
 	}
-	
-	public static Post updatePost(UpdateFormDto updateFormDto) {
+
+	public static Post updatePost(WriteFormDto updateDto) {
 		Post post = new Post();
-		Date date = new Date(); // 2. Date -> LocalDate
-		LocalDate localDate = date.toInstant() // Date ->
-				.atZone(ZoneId.systemDefault()) // Instant -> ZonedDateTime
-				.toLocalDate();
-		Member member = new Member("test", "12341234", "tester", localDate, Gender.FEMALE, "test@test.com",
-				"01012341234", localDate, Status.USER_IN);
-		post.setTitle(updateFormDto.getTitle());
+		/*
+		 * Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
+		 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
+		 * ZonedDateTime .toLocalDate(); Member member = new Member("test", "12341234",
+		 * "tester", localDate, Gender.FEMALE, "test@test.com", "01012341234",
+		 * localDate, Status.USER_IN);
+		 */
+		post.setTitle(updateDto.getTitle());
 		post.setUpdateDate(post.getUpdateDate());
-		post.setContent(updateFormDto.getContent());
-	
+		post.setContent(updateDto.getContent());
+
 //		post.setMember(member);
 
 		return post;
 	}
+	/*
+	 * public static Post updatePost(UpdateFormDto updateFormDto) { Post post = new
+	 * Post(); Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
+	 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
+	 * ZonedDateTime .toLocalDate(); Member member = new Member("test", "12341234",
+	 * "tester", localDate, Gender.FEMALE, "test@test.com", "01012341234",
+	 * localDate, Status.USER_IN); post.setTitle(updateFormDto.getTitle());
+	 * post.setUpdateDate(post.getUpdateDate());
+	 * post.setContent(updateFormDto.getContent());
+	 * 
+	 * // post.setMember(member);
+	 * 
+	 * return post; }
+	 */
 }

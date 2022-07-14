@@ -2,26 +2,22 @@ package com.alice.project.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-// import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Post;
 import com.alice.project.repository.PostRepository;
 
 @Service
-// @Transactional
-public class WriteService {
-
+public class DeleteService {
+	
 	@Autowired
 	private PostRepository postRepository;
-
-	public Post write(Post post) {
-
-		return postRepository.save(post);
-
+	
+	@Transactional
+	public void deletePost(Long num) {
+		Post deletePost = postRepository.findByNum(num);
+		postRepository.delete(deletePost);
 	}
 	
-	public Post findOne(Long num) {
-		return postRepository.findByNum(num);
-	}
 
 }
