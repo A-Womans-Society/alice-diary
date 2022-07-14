@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.service.FriendService;
+import com.alice.project.service.FriendsGroupService;
 import com.alice.project.service.MemberService;
+import com.alice.project.web.FriendshipDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ public class FriendsController {
 
 	private final FriendService friendService;
 	private final MemberService memberService;
+	private final FriendsGroupService friendsGroupService;
 
 	// 친구 추가(회원 id검색)
 	@PostMapping("/friends/add")
@@ -38,17 +41,22 @@ public class FriendsController {
 
 		List<Friend> friendList = friendService.friendship(adderNum);
 
-		List<Member> friendship = new ArrayList<>();
-		
-		for (Friend f : friendList) {
-			friendship.add(memberService.findByNum(f.getAddeeNum()));
-		}
+		List<FriendshipDto> friendship = new ArrayList<>();
 
+		for (Friend f : friendList) {
+			Member m = memberService.findByNum(f.getAddeeNum());
+			String groupName = friendsGroupService.getGroupName(f.getGroupNum());
+			FriendshipDto dto = new FriendshipDto(m.getNum(),m.getId(),
+					m.getName(), m.getMobile(), m.getBirth(),
+					m.getGender(),m.getEmail(), groupName);
+			
+			friendship.add(dto);		
+		}
+		
 		model.addAttribute("friendList", friendship);
 		return "friends/friendslist";
 	}
 
-	
 	// 친구 검색해서 추가
 	@PostMapping("/friends/searchMember")
 	@ResponseBody

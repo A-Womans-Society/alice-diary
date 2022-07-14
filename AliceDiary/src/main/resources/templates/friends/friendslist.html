@@ -26,56 +26,11 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 
-<script>
-	document.addEventListener('keydown', function(event) {
-		if (event.keyCode === 13) {
-			event.preventDefault();
-		}
-		;
-	}, true);
-	
-	function openModal() {
-		$("#addFriend").modal();
-	};
-	function loadMembers() {
-		let token = $("meta[name='_csrf']").attr("content");
-		let header = $("meta[name='_csrf_header']").attr("content");
-		let httpRequest = new XMLHttpRequest();
-		let id = document.getElementById("searchId").value;
-		
-		httpRequest.onreadystatechange = function() {
-			if (httpRequest.readyState === XMLHttpRequest.DONE) {
-				if (httpRequest.status === 200) {
-					if (httpRequest.response) {
-						console.log(httpRequest.response);
-						let result = JSON.parse(httpRequest.response);
-						console.log(result);
-
-						let html = "<img src=\"img/image.png\"><p>" + result.id
-								+ " / " + result.mbti + "</p>";
-						document.getElementById("memberInfo").innerHTML = html;
-
-					} else {
-						document.getElementById("memberInfo").innerText = "일치하는 회원이 없습니다.";
-					}
-				} else {
-					alert('request에 뭔가 문제가 있어요.');
-				}
-			}
-		}
-		// POST로 요청
-		httpRequest.open('POST', "friends/searchMember", true);
-		httpRequest.setRequestHeader(header, token);
-		httpRequest.setRequestHeader('Content-type',
-				'application/x-www-form-urlencoded');
-		httpRequest.send("id=" + id);
-	};
-</script>
+<script type="text/javascript" th:src="@{/js/friendsList.js}"></script>
 </head>
 <body>
 	<form th:action="@{/AliceDiary/search}" method="post">
-		<input type="text" class="form-control"
-			placeholder="친구 검색(아이디/이름/전화번호)">
+		<input type="text" placeholder="친구 검색(아이디/이름/전화번호)">
 		<button type="submit" class="btn btn-primary mb-2">검색</button>
 	</form>
 
@@ -95,16 +50,16 @@
 		</thead>
 		<!--  -->
 		<tbody>
-			<tr th:each="friend : ${friendList}">
-				<!-- <td th:text="${status.index}"></td> -->
+			<tr th:each="friend, status : ${friendList}">
+				<td th:text="${status.index}"></td>
 				<td th:text="${friend.id}"></td>
 				<td th:text="${friend.name}"></td>
-			
+
 				<td th:text="${friend.mobile}"></td>
 				<td th:text="${friend.birth}"></td>
 				<td th:text="${friend.gender}"></td>
 				<td th:text="${friend.email}"></td>
-			<!-- 	<td th:text="${friend.groupName}"></td> -->
+				<td th:text="${friend.groupName}"></td>
 			</tr>
 		</tbody>
 	</table>
