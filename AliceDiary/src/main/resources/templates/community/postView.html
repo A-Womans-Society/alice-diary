@@ -22,10 +22,12 @@
 			</tr>
 			<tr>
 				<td>작성자 
+					<div align="right" th:if="${postView.updateDate == null}"
+						th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
 					<div align="right" th:if="${postView.updateDate != null}"
 						th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
-					<div align="right" th:if="${postView.updateDate == null}"
-						th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}+ '   (수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></div>
+					<div align="right" style="color: grey; font-size: 15px;"
+					th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></div>
 				</td>
 			<tr>
 				<td><div th:text="${postView.content}" style="padding: 10px; height: auto; min-height: 100px; overflow: auto;"></div></td>
