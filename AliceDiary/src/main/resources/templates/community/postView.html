@@ -31,20 +31,30 @@
 				<td><div th:text="${postView.content}" style="padding: 10px; height: auto; min-height: 100px; overflow: auto;"></div></td>
 			</tr>
 			<tr th:each="file : ${files}">
-				<td>첨부파일: <div th:if="${file.originName != null}" >
-							<a th:href="|/AliceDiary/community/download/${file.num}|" th:text="${file.originName}"></a>
-							</div>
-							<div th:if="${file.originName == null}">첨부파일 없음.</div>
+				<td>첨부파일: 	<a th:href="|/AliceDiary/community/download/${file.num}|" th:text="${file.originName}"></a>
+							
 				</td>
 			</tr>
 			
 		</table>
 	<div align="left" th:href="@{/AliceDiary/community/list}"><input type="button" value="신고"></div>
 	<div align="right">
-		<a th:href="@{/AliceDiary/community/list}"><input type="button" value="수정"></a> 
+		<a th:href="@{/AliceDiary/community/put(num=${postView.num})}"><input type="button" value="수정"></a> 
 		<a th:href="@{/AliceDiary/community/list}"><input type="button" value="삭제"></a> 
 		<a th:href="@{/AliceDiary/community/list}"><input type="button" value="목록"></a>
 	</div>
+	</div>
+	<hr />
+	<div class="card" style="float: left;">
+		<form>
+			<input type="hidden" id="postid" value="${postView.num}">
+			<div class="card-body">
+				<textarea id="reply-content" class="form-cotrol" rows="1"></textarea>
+			</div>
+			<div class="card-folder">
+				<button type="button" id="btn-reply-save" class="brn btn-primary">등록</button>
+			</div>
+		</form>
 	</div>
 
 </body>

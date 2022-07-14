@@ -1,14 +1,10 @@
 package com.alice.project.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Post;
-import com.alice.project.repository.AttachedFileRepository;
 import com.alice.project.repository.PostRepository;
 
 @Service

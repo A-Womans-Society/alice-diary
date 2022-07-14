@@ -23,6 +23,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.alice.project.web.UpdateFormDto;
 import com.alice.project.web.WriteFormDto;
 
 import lombok.AccessLevel;
@@ -117,5 +118,22 @@ public class Post {
 	//조회수 증가 메소드
 	public void viewCntUp() {
 		this.viewCnt++;
+	}
+	
+	public static Post updatePost(UpdateFormDto updateFormDto) {
+		Post post = new Post();
+		Date date = new Date(); // 2. Date -> LocalDate
+		LocalDate localDate = date.toInstant() // Date ->
+				.atZone(ZoneId.systemDefault()) // Instant -> ZonedDateTime
+				.toLocalDate();
+		Member member = new Member("test", "12341234", "tester", localDate, Gender.FEMALE, "test@test.com",
+				"01012341234", localDate, Status.USER_IN);
+		post.setTitle(updateFormDto.getTitle());
+		post.setUpdateDate(post.getUpdateDate());
+		post.setContent(updateFormDto.getContent());
+	
+//		post.setMember(member);
+
+		return post;
 	}
 }
