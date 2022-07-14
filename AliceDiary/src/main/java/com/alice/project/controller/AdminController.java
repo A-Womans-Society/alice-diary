@@ -29,16 +29,26 @@ public class AdminController {
 		log.info("showMemberList 컨트롤러 실행");
 		List<Member> members = memberService.findMembers();
 		model.addAttribute("members", members);
-		return "admin/memberList";
+		return "/admin/memberList";
 	}
 	
-	/* 회원 삭제 */
-	@PostMapping(value = "/member/{memberNum}")
-	public String deleteMember(@PathVariable("memberNum") Long memberNum, Model model) {
-		
-		memberService.deleteOne(memberNum);
+	/* 회원 정보 상세보기 */
+	@GetMapping(value = "/member/{num}")
+	public String showMemberOne(@PathVariable("num") Long num, Model model) {
+		log.info("회원 상세보기 컨트롤러 실행!");
+		Member member = memberService.findOne(num);
+//		model.addAttribute("message", "정상적으로 처리되었습니다.");
+		model.addAttribute("member", member);
+	  return "/admin/memberDetail";
+	}	
+	
+	/* 회원 내보내기 */
+	@PostMapping(value = "/member/{num}")
+	public String changeMemberOut(@PathVariable("num") Long num, Model model) {
+		log.info("회원 내보내기 컨트롤러 실행!");
+		memberService.deleteOne(num);
 		model.addAttribute("message", "정상적으로 처리되었습니다.");
-	  return "redirect:/member";
+	  return "redirect:/admin/member";
 	}
 	
 	

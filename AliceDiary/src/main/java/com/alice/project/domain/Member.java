@@ -21,12 +21,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name="member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@Slf4j
 public class Member {
 	
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MEMBER_SEQ_GENERATOR")
@@ -71,8 +73,8 @@ public class Member {
 	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
 	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
 	
-	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
-	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
+//	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
+//	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
 	
 	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
 	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
@@ -83,8 +85,8 @@ public class Member {
 	// 필수값만 가진 생성자
 	@Builder
 	public Member(String id, String pwd, String name, LocalDate birth, 
-			Gender gender, String email, String mobile,
-			LocalDate regDate, Status status) {
+			Gender gender, String email, String mobile, String mbti, String wishlist,
+			String profileImg, Status status) {
 		this.id = id;
 		this.pwd = pwd;
 		this.name = name;
@@ -92,22 +94,30 @@ public class Member {
 		this.gender = gender;
 		this.email = email;
 		this.mobile = mobile;
-		this.regDate = regDate;
-		this.status = status;
+		this.mbti = mbti;
+		this.wishlist = wishlist;
+		this.regDate = LocalDate.now();
+		this.profileImg = profileImg;
+		this.status = Status.USER_IN;
 	}
 	
-	// 필수값만 가진 회원객체 생성 메서드 (정적 팩토리 메서드)
+	// 회원객체 생성 메서드 (정적 팩토리 메서드)
 	public static Member createMember(String id, String pwd, String name, 
 			LocalDate birth, Gender gender, String email, 
-			String mobile, LocalDate regDate, Status status) {
+			String mobile, String mbti, String wishlist, String profileImg, Status status) {
 		Member member = new Member(id, pwd, name, birth, gender, email, 
-				mobile, regDate, status);
+				mobile, mbti, wishlist, profileImg, status);
 		return member;
 	}
 	
-	// 회원 내보내기 기능
+	public Member(Status status) {
+		this.status = Status.USER_OUT;
+	}
+	
+	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {
 		member.status = Status.USER_OUT;
+		log.info("엔티티 changeMemberOut메서드에서 status바꾸기 : " + member.status);
 		return member;
 	}
 

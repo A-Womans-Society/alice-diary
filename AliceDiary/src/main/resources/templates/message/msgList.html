@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+	<link rel="stylesheet" 
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" 
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+	crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+	crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" 
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" 
+	crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" 
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
+	crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<h1 th:text="${fromId} + '님의 쪽지함'" align="center"></h1>
+	<h3 th:align="center">친구들과 1:1로 대화해보세요! </h3>
+	
+    <!--/* 검색 영역 */-->
+    <div class="input-group" id="adv-search" th:align="center">
+        <select id="searchType" class="form-control" style="width: 100px;">
+            <option value="">전체</option>
+            <option value="id">받는사람 아이디</option>
+            <option value="tonum">받는사람 회원번호</option>
+            <option value="content">내용</option>
+        </select>
+        <input type="text" id="searchKeyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;" />
+        <button type="button">검색</button>
+    </div>
+    
+<!--/* 쪽지함 목록 영역 */-->
+<div class="container-fluid" th:align="center">
+	<th:block th:each="m : ${mldtos}">
+		<div th:attr="class='row'" style="height:100px; background: #F0D9FF;">			
+		<p>
+			<a th:href="@{'/member/' + ${m.messageToNum}}">
+				<span th:text="${m.messageToId}"></span>
+			</a>
+			<span th:text="'님과의 쪽지함'"></span>
+		</p>
+		<p>
+			<a th:href="@{'/messagebox/' + ${m.messageFromNum} + '/' + ${m.messageToNum}}">
+				<span th:text="${m.recentContent}"></span>
+			</a> &nbsp;
+		</p>
+		<p th:align="right">
+			<button class="btn btn-primary" th:onclick="deleteMessage([[${m.messageFromNum}]], [[${m.messageToNum}]])" type="button">쪽지함 삭제</button>
+		</p>
+	</div>
+</div> <!-- /container -->
+
+<!-- 쪽지 보내기 모달창 -->
+<div>
+<button type="button" class="btn btn-primary" data-toggle="modal" 
+data-target="#exampleModal" data-whatever="@mdo">쪽지 보내기</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">쪽지 보내기✉️</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">받는 사람: </label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">쪽지 내용: </label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary">쪽지 보내기</button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<script th:inline="javascript">   
+/*<![CDATA[*/
+$('#exampleModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var recipient = button.data('whatever') // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('.modal-title').text('New message to ' + recipient)
+  modal.find('.modal-body input').val(recipient)
+})	
+	
+function deleteMessage(fnum, tnum) {
+	if (!confirm('정말 이 쪽지함을 삭제하시겠습니까? 돌이킬 수 없습니다!')) {
+		return false;
+	}
+	console.log(fnum);
+	console.log(tnum);
+	$.ajax({
+		type: 'delete',
+		url: "./"+fnum+"/"+tnum
+	}).done(function(result) {
+		console.log(result);
+		if (result == 0) {
+			alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
+		} else if (result == 1) {
+			alert("쪽지함이 성공적으로 삭제되었습니다!");
+			return false;
+		} else {
+			console.log("에러에러에러");
+		}
+	}).fail(function(error) {
+		console.log(error);
+	});
+	
+}
+
+function makeMessagebox() {
+	if (!confirm('정말 이 쪽지함을 삭제하시겠습니까? 돌이킬 수 없습니다!')) {
+		return false;
+	}
+	console.log(fnum);
+	console.log(tnum);
+	$.ajax({
+		type: 'get',
+		url: "./"+fnum+"/"+tnum
+	}).done(function(result) {
+		console.log(result);
+		if (result == 0) {
+			alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
+		} else if (result == 1) {
+			alert("쪽지함이 성공적으로 삭제되었습니다!");
+			return false;
+		} else {
+			console.log("에러에러에러");
+		}
+	}).fail(function(error) {
+		console.log(error);
+	});
+	
+}
+/*]]>*/
+</script>
+
+</body>
+</html>

@@ -55,8 +55,8 @@ public class Post {
 	private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
 	
 	/* files가 null일 수 있음 */
-	@OneToMany(mappedBy="post")
-	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
+//	@OneToMany(mappedBy="post")
+//	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
 	
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {

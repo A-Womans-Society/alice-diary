@@ -21,7 +21,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name="community")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) //JPA 사용을위해 기본 생성자 생성은 필수 =  protected Community() { }
 @Getter
 @ToString
 public class Community {

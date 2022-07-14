@@ -26,7 +26,7 @@ class MemberRepositoryTest {
 	@Rollback(false)
 	public void createMemberList() {
 		for (int i = 1; i <= 9; i++) {
-			Member member = Member.createMember("id"+i, "pwd"+i*2, "이름"+i, LocalDate.now(), Gender.FEMALE, "aaa@fff"+i+".com", "010-5654-564"+i, LocalDate.now(), Status.USER_IN);
+			Member member = Member.createMember("id"+i, "pwd"+i*2, "이름"+i, LocalDate.now(), Gender.FEMALE, "aaa@fff"+i+".com", "010-5654-564"+i, "enfp", "화장품", "mdjf.jpg", Status.USER_IN);
 			Member savedMember = memberRepository.save(member);
 		}
 	}
