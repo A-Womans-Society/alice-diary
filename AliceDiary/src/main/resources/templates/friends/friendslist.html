@@ -26,23 +26,6 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 
-<!-- <script th:href="@{/js/friendsList.js}"></script> -->
-
-<th:block layout:fragment="css">
-	<style>
-a {
-	text-decoration: none;
-}
-
-img {
-	width: 100px;
-	height: 100px;
-	object-fit: contain;
-}
-</style>
-</th:block>
-
-
 <script>
 	document.addEventListener('keydown', function(event) {
 		if (event.keyCode === 13) {
@@ -54,7 +37,6 @@ img {
 	function openModal() {
 		$("#addFriend").modal();
 	};
-
 	function loadMembers() {
 		let token = $("meta[name='_csrf']").attr("content");
 		let header = $("meta[name='_csrf_header']").attr("content");
@@ -81,21 +63,13 @@ img {
 				}
 			}
 		}
-		//POST로 요청
+		// POST로 요청
 		httpRequest.open('POST', "friends/searchMember", true);
 		httpRequest.setRequestHeader(header, token);
 		httpRequest.setRequestHeader('Content-type',
 				'application/x-www-form-urlencoded');
 		httpRequest.send("id=" + id);
 	};
-	/* 
-	 function PreviewImage() {
-	 var preview = new FileReader();
-	 preview.onload = function(e) {
-	 document.getElementById("profileimg").src = e.target.result;
-	 };
-	 preview.readAsDataURL(document.getElementById("profileimg").files[0]);
-	 }; */
 </script>
 </head>
 <body>
@@ -119,18 +93,18 @@ img {
 				<td>그룹</td>
 			</tr>
 		</thead>
-		<!-- addee의 정보가 나와야 함. addee의 정보를 출력하려면? -->
+		<!--  -->
 		<tbody>
-			<tr th:each="friendshipDto, status: ${friendshipDto}">
-				<td th:text="${status.index}"></td>
-				<td th:text="${friendshipDto.id}"></td>
-				<td th:text="${friendshipDto.name}"></td>
-				<!--이름 선택 시 상세보기 모달 설정 -->
-				<td th:text="${friendshipDto.mobile}"></td>
-				<td th:text="${friendshipDto.birth}"></td>
-				<td th:text="${friendshipDto.gender}"></td>
-				<td th:text="${friendshipDto.email}"></td>
-				<td th:text="${friendshipDto.groupName}"></td>
+			<tr th:each="friend : ${friendList}">
+				<!-- <td th:text="${status.index}"></td> -->
+				<td th:text="${friend.id}"></td>
+				<td th:text="${friend.name}"></td>
+			
+				<td th:text="${friend.mobile}"></td>
+				<td th:text="${friend.birth}"></td>
+				<td th:text="${friend.gender}"></td>
+				<td th:text="${friend.email}"></td>
+			<!-- 	<td th:text="${friend.groupName}"></td> -->
 			</tr>
 		</tbody>
 	</table>

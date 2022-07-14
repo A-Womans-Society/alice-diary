@@ -19,4 +19,24 @@ public class FriendshipDto {
 	
 	private String groupName; // 회원 그룹 이름(기본그룹으로 default)
 
+	public FriendshipDto(Long num, String id, String name, String mobile, LocalDate birth, Gender gender, String email,
+			String groupName) {
+		super();
+		this.num = num;
+		this.id = id;
+		this.name = name;
+		this.mobile = mobile;
+		this.birth = birth;
+		this.gender = gender;
+		this.email = email;
+		this.groupName = groupName;
+	}
+
+	public FriendshipDto() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+	
+	
 }

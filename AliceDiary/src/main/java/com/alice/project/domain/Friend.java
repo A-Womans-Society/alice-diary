@@ -63,12 +63,5 @@ public class Friend {
 //		friend.setMember(member);
 //		return friend;
 //	}
-	
-	// 등록된 친구 객체 생성 메서드
-//	public static Friend friendship(FriendshipDto friendshipDto) {
-//		
-//		Friend friend = new Friend();	
-//		
-//	
 	}
 	
