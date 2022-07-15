@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security">
+
+
+<h1 align="center">main 페이지 입니다.</h1>
+
+<th:block sec:authorize="isAuthenticated()">
+	<div align="center">
+		<!-- 스프링 시큐리티가 제공하는 Principal 객체는 담겨있는것이
+		     아이디, 패스워드, 권한 3가지만 담겨있다 만약 다른 정보들도 같이담고싶으면 개인적으로 커스텀 마이징해야한다! -->
+		<h2>
+			<span sec:authentication="Principal.username"></span>님 환영합니다!
+		</h2>
+		<button onclick="location.href='./logout'">로그아웃</button>
+		<button th:onclick="|location.href='member/@{${#authentication.name}}'|">내 프로필</button>
+	</div>
+</th:block>
+<!-- 권한이 없는 사용자 일시 -->
+<th:block sec:authorize="isAnonymous()">
+	<div align="center">
+		<h3>로그인이 필요한 서비스입니다.</h3>
+		<button onclick="location.href='./login'">로그인</button>
+		<button onclick="location.href='./agree'">회원가입</button>
+	</div>
+</th:block>

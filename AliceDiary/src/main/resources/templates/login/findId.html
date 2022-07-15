@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+
+<script>
+	function makeRequest() {
+		let token = $("meta[name='_csrf']").attr("content");
+		let header = $("meta[name='_csrf_header']").attr("content");
+		let httpRequest = new XMLHttpRequest();
+
+		let param = 'name=' + document.getElementById("name").value
+				+ '&mobile=' + document.getElementById("mobile").value
+				+ '&email=' + document.getElementById("email").value;
+
+		httpRequest.onreadystatechange = function() {
+			if (httpRequest.readyState === XMLHttpRequest.DONE) {
+				if (httpRequest.status === 200) {
+					if (httpRequest.response != 0) {
+
+						let member = JSON.parse(httpRequest.response);
+						let html = "회원님의 정보와 일치하는 아이디 입니다.<br/><b>아이디 : "
+								+ member.id + "</b> <br/>(가입날짜 : "
+								+ member.regDate + ")";
+
+						document.getElementById("findId").innerHTML = html;
+
+					} else {
+						document.getElementById("findId").innerText = "일치하는 유저 없음";
+					}
+				} else {
+					alert('request에 뭔가 문제가 있어요.');
+				}
+			}
+		};
+
+		//POST로 요청
+		httpRequest.open('POST', "findId", true);
+		httpRequest.setRequestHeader(header, token);
+		httpRequest.setRequestHeader('Content-type',
+				'application/x-www-form-urlencoded');
+		httpRequest.send(param);
+	}
+</script>
+<div style="text-align: center">
+	<b>아이디 찾기</b>
+</div>
+<hr>
+<!-- <form action="/AliceDiary/findId" method="post"
+	modelAttribute="formData"> -->
+<div>
+	이름 : <input type="text" name="name" id="name" /><br />
+</div>
+<div>
+	전화번호 : <input type="text" name="mobile" id="mobile" /><br />
+</div>
+<div>
+	이메일 : <input type="email" name="email" id="email" /><br />
+</div>
+<div>
+	<input type="button" value="아이디 찾기" onclick="makeRequest()" />
+	<input type="button" value="로그인" onclick="location.href='./'" />
+	<br />
+</div>
+<!-- <input type="hidden" th:name="${_csrf.parameterName}"
+	th:value="${_csrf.token}"> -->
+
+<!-- </form> -->
+<hr>
+
+<div id="findId"></div>
+</html>
