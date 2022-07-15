@@ -58,14 +58,11 @@ public class Post {
 //	@OneToMany(mappedBy="post")
 //	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
 	
+
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {
 		this.member = member;
 		member.getPosts().add(this);
-	}
-	public void setCommunity(Community community) {
-		this.community = community;
-		community.getPosts().add(this);
 	}
 	
 	public Post(String title, LocalDateTime postDate, LocalDateTime updateDate, 
@@ -79,7 +76,6 @@ public class Post {
 		this.postType = postType;
 		this.member = member;
 		this.community = community;
-
 	}
 	
 	// 게시물 객체 생성 메서드

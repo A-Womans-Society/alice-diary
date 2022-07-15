@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="header" style="height: 8%;">
+	<nav class="navbar navbar-expand-lg navbar-light"
+		style="background: #a979c8; height: 100%;">
+		<a class="navbar-brand text-white" href="#">Alice Diary</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarNav" aria-controls="navbarNav"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse  justify-content-between"
+			id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item"><a class="nav-link text-white"
+					href="/AliceDiary/alice">앨리스</a></li>
+				<li class="nav-item"><a class="nav-link text-white"
+					href="/AliceDiary/friends">친구 목록</a></li>
+				<li class="nav-item"><a class="nav-link text-white"
+					href="/AliceDiary/alice">쪽지함</a></li>
+
+				<li class="nav-item"><a class="nav-link text-white"
+					href="/AliceDiary/community/list">커뮤니티</a></li>
+				<li class="nav-item"><a class="nav-link text-white" href="#">공지사항</a></li>
+			</ul>
+			<div>여기에 로그인 / 내 프로필 들어갈 예정</div>
+		</div>
+	</nav>
+</div>
+</html>

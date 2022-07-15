@@ -43,5 +43,4 @@ public class FriendsGroup {
 		this.member = member;
 		member.getGroups().add(this);
 	}
-	
 }
