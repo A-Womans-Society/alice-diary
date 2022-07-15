@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/login/login.js}"></script>
+
+<link id="contextPathHolder"
+	th:data-contextPath="${#httpServletRequest.getContextPath()}" />
+	
+	
+<form action="/AliceDiary/register">
+	<div>
+		<fieldset>
+			<legend>이용약관</legend>
+			<p>
+				<textarea id="text1" readonly>
+				이용약관
+			</textarea>
+				<br /> <label for="agreement1">동의</label> <input id="agreement1"
+					type="checkbox" name="chk" />
+			</p>
+		</fieldset>
+	</div>
+	<div>
+		<fieldset>
+			<legend>개인정보 취급방침</legend>
+			<p>
+				<textarea id="text2" readonly>
+				개인정보 방침 및 안내
+			</textarea>
+				<br /> <label for="agreement2">동의</label> <input id="agreement2"
+					type="checkbox" name="chk" />
+			</p>
+		</fieldset>
+	</div>
+	<div>
+		<input type="checkbox" id="selectAll" />모두 동의
+	</div>
+
+	<div style="text-align: center">
+		<button type="button" th:onclick="return next()">다음</button>
+		<button type="button" th:onclick="regCancle()">가입 취소</button>
+	</div>
+
+</form>
+

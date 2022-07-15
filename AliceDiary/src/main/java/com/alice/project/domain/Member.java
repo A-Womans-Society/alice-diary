@@ -16,6 +16,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.alice.project.web.UserDto;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,7 +43,7 @@ public class Member {
 	@Column(unique=true) // 유니크 제약
 	private String id; // 회원 아이디
 	
-	private String pwd; // 회원 비밀번호
+	private String password; // 회원 비밀번호
 	private String name; // 회원 이름
 	private LocalDate birth; // 회원 생일
 	
@@ -82,13 +86,33 @@ public class Member {
 	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
 	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트	
 	
+	@PrePersist
+	public void reg_date() {
+		this.regDate = LocalDate.now();
+	}
+	
 	// 필수값만 가진 생성자
 	@Builder
-	public Member(String id, String pwd, String name, LocalDate birth, 
+	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
+			LocalDate regDate, Status status) {
+		super();
+		this.id = id;
+		this.password = password;
+		this.name = name;
+		this.birth = birth;
+		this.gender = gender;
+		this.email = email;
+		this.mobile = mobile;
+		this.regDate = regDate;
+		this.status = status;
+	}
+  
+	@Builder
+  public Member(String id, String pwd, String name, LocalDate birth, 
 			Gender gender, String email, String mobile, String mbti, String wishlist,
 			String profileImg, Status status) {
 		this.id = id;
-		this.pwd = pwd;
+		this.password = password;
 		this.name = name;
 		this.birth = birth;
 		this.gender = gender;
@@ -114,6 +138,26 @@ public class Member {
 		this.status = Status.USER_OUT;
 	}
 	
+	// 필수값만 가진 회원객체 생성 메서드 (정적 팩토리 메서드)
+		public static Member createMember(UserDto memberDto, PasswordEncoder passwordEncoder) {
+			Member member = new Member();
+			member.setId(memberDto.getId());
+			String password = passwordEncoder.encode(memberDto.getPassword());
+			member.setPassword(password);
+			member.setName(memberDto.getName());
+			member.setBirth(memberDto.getBirth());
+			member.setGender(memberDto.getGender());
+			member.setEmail(memberDto.getEmail());
+			member.setMobile(memberDto.getMobile());
+			member.setMbti(memberDto.getMbti());
+			member.setWishlist(memberDto.getWishList());
+			member.setRegDate(member.getRegDate());
+			member.setProfileImg(memberDto.getSaveName());
+			member.setStatus(Status.USER_IN);
+			return member;
+
+		}
+		
 	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {
 		member.status = Status.USER_OUT;
@@ -128,6 +172,4 @@ public class Member {
 		return member;
 	}
 
-
 }
-
