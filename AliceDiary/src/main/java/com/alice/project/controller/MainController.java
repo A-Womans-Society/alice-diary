@@ -12,6 +12,6 @@ public class MainController {
 	//main 페이지로
 	@GetMapping(value = "/")
 	public String main() {
-		return "main";
+		return "index";
 	}
 }

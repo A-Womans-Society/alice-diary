@@ -1,13 +1,21 @@
 package com.alice.project.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alice.project.domain.Member;
-import com.alice.project.repository.ProfileRepository;
+import com.alice.project.repository.MemberRepository;
+import com.alice.project.service.MemberService;
 import com.alice.project.service.ProfileService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileController {
-
+	
+	private final MemberService memberService;
+	private final MemberRepository memberRepository;
 	private final ProfileService profileService;
 
 	
@@ -35,5 +45,50 @@ public class ProfileController {
 		Member member = profileService.findById(id);
 		model.addAttribute("member", member);
 		return "profile/updateProfile";
+	}
+	
+	@PutMapping(value="/member/{id}")
+	public Optional<Member> updateProfile(@PathVariable @RequestParam String id, @RequestBody Member member) {
+		
+		Optional<Member> updateMember = profileService.findMemById(id);
+		
+		updateMember.ifPresent(selectMember-> {
+			selectMember.setName(member.getName());
+			selectMember.setMobile(member.getMobile());
+			selectMember.setBirth(member.getBirth());
+			selectMember.setEmail(member.getEmail());
+			selectMember.setMbti(member.getMbti());
+			selectMember.setWishlist(member.getWishlist());
+			
+			memberRepository.save(selectMember);
+		});
+		
+		
+		
+//		if (!memberDto.getProfileImg().getOriginalFilename().equals("")) {
+//			String originName = memberDto.getProfileImg().getOriginalFilename();
+//			String saveName = memberDto.getId() + "." + originName.split("\\.")[1];
+//			String savePath = session.getServletContext().getRealPath("c:\\Temp\\upload");
+//
+//			try {
+//				memberDto.getProfileImg().transferTo(new File(savePath, saveName));
+//				memberDto.setSaveName(saveName);
+//
+//				Member member = Member.updateMember(memberDto);
+//				memberService.saveMember(member);
+//				log.info("수정 완료! member == " + member);
+//
+//			} catch (IllegalStateException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			Member member = Member.updateMember(memberDto);
+//			memberService.saveMember(member);
+//		}
+//		
+		
+		return updateMember;
 	}
 }

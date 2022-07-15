@@ -5,27 +5,43 @@
 </head>
 <hr>
 
-<form th:action="@{/member/}+${member.id}" method="post">
-	<img th:src="@{/upload/}+@{${member.profileImg}}" style="width: 200px; height: 190px;"/><button>사진 변경</button>
-	<br/>아이디 <input class="my-box" type="text" th:value="@{${member.id}}" disabled>
-	<br /> 이름
-	<input class="my-box" type="text" th:placeholder="@{${member.name}}">
-	<br /> 전화번호
-	<input class="my-box" type="text" th:placeholder="@{${member.mobile}}">
-	<br /> 생년월일
-	<input class="my-box" type="text" th:placeholder="@{${member.birth}}">
-	<br /> 이메일
-	<input class="my-box" type="email" th:placeholder="@{${member.email}}">
-	<br /> MBTI
-	<input class="my-box" type="text" th:placeholder="@{${member.mbti}}">
-	<br /> 나의 위시리스트
-	<textarea class="my-box" th:placeholder="@{${member.wishlist}}"></textarea>
-	<br />
-	<br />
+<form th:action="@{/member/}+${member.id}" method="put" th:object="${memberDto}" enctype="multipart/form-data">
+	<img th:src="@{/upload/}+@{${member.profileImg}}"
+		style="width: 200px; height: 190px;" />
+	<input type="file" th:field="${member.profileImg}" id="file" onchange="PreviewImage();"/>
+	<div>
+		아이디 <input class="my-box" type="text" th:value="@{${member.id}}"
+			disabled>
+	</div>
+	<div>
+		이름 <input class="my-box" type="text"
+			th:placeholder="@{${member.name}}" th:field="${member.name}">
+	</div>
+	<div>
+		전화번호 <input class="my-box" type="text"
+			th:placeholder="@{${member.mobile}}" th:field="${member.mobile}" >
+	</div>
+	<div>
+		생년월일 <input class="my-box" type="date"
+			th:placeholder="@{${member.birth}}" th:field="${member.birth}">
+	</div>
+	<div>
+		이메일 <input class="my-box" type="email"
+			th:placeholder="@{${member.email}}" th:field="${member.email}">
+	</div>
+	<div>
+		MBTI <input class="my-box" type="text"
+			th:placeholder="@{${member.mbti}}" th:field="${member.mbti}">
+	</div>
+	<div>
+		나의 위시리스트
+		<textarea class="my-box" th:placeholder="@{${member.wishlist}}" th:field="${member.wishlist}"></textarea>
+	</div>
+
 	<input type="submit" value="정보 수정">
 </form>
 <style type="text/css">
-.my-box { 
+.my-box {
 	border: 1px solid;
 	border-radius: 5px;
 	padding: 10px"
