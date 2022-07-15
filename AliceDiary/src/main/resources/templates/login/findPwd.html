@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+
+<script>
+	function makeRequest() {
+		let token = $("meta[name='_csrf']").attr("content");
+		let header = $("meta[name='_csrf_header']").attr("content");
+		let httpRequest = new XMLHttpRequest();
+
+		let param = 'id=' + document.getElementById("id").value
+				+ '&name=' + document.getElementById("name").value
+				+ '&mobile=' + document.getElementById("mobile").value;
+
+		console.log(param);
+		httpRequest.onreadystatechange = function() {
+			if (httpRequest.readyState === XMLHttpRequest.DONE) {
+				if (httpRequest.status === 200) {
+					if (httpRequest.response != 0) {
+						let member = JSON.parse(httpRequest.response);
+						console.log(member);
+						location.href="./updatePwd/"+member.num;
+					} else {
+						alert("일치하는 유저 없음");
+					}
+				} else {
+					alert('request에 뭔가 문제가 있어요.');
+				}
+			}
+		};
+
+		//POST로 요청
+		httpRequest.open('POST', "findPwd", true);
+		httpRequest.setRequestHeader(header, token);
+		httpRequest.setRequestHeader('Content-type',
+				'application/x-www-form-urlencoded');
+		httpRequest.send(param);
+	}
+</script>
+
+
+<div style="text-align: center">
+	<b>비밀번호 재설정</b>
+</div>
+<hr>
+<div>
+	아이디 : <input type="text" name="id" id="id" /><br />
+</div>
+<div>
+	이름 : <input type="text" name="name" id="name" /><br />
+</div>
+<div>
+	전화번호 : <input type="text" name="mobile" id="mobile" /><br />
+</div>
+<div>
+	<input type="button" value="비밀번호 재설정" onclick="makeRequest()" /><br />
+</div>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+<hr>
+
+<form th:action="@{/member/}+${member.id}" method="post">
+	<img th:src="@{/upload/}+@{${member.profileImg}}" style="width: 200px; height: 190px;"/><button>사진 변경</button>
+	<br/>아이디 <input class="my-box" type="text" th:value="@{${member.id}}" disabled>
+	<br /> 이름
+	<input class="my-box" type="text" th:placeholder="@{${member.name}}">
+	<br /> 전화번호
+	<input class="my-box" type="text" th:placeholder="@{${member.mobile}}">
+	<br /> 생년월일
+	<input class="my-box" type="text" th:placeholder="@{${member.birth}}">
+	<br /> 이메일
+	<input class="my-box" type="email" th:placeholder="@{${member.email}}">
+	<br /> MBTI
+	<input class="my-box" type="text" th:placeholder="@{${member.mbti}}">
+	<br /> 나의 위시리스트
+	<textarea class="my-box" th:placeholder="@{${member.wishlist}}"></textarea>
+	<br />
+	<br />
+	<input type="submit" value="정보 수정">
+</form>
+<style type="text/css">
+.my-box { 
+	border: 1px solid;
+	border-radius: 5px;
+	padding: 10px"
+}
+</style>
+
+</html>
