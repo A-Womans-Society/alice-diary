@@ -59,7 +59,6 @@ public class AttachedFile {
 
 	@Builder
 	public AttachedFile(String originName, String saveName, String filePath, Post post) {
-		super();
 		this.originName = originName;
 		this.saveName = saveName;
 		this.filePath = filePath;

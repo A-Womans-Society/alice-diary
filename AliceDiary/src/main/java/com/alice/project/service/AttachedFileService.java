@@ -29,6 +29,8 @@ public class AttachedFileService {
 
 	@Autowired
 	private AttachedFileRepository attachedFileRepository;
+	
+	
 
 	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session) {
 		System.out.println("list size : " + files.size());
@@ -111,6 +113,8 @@ public class AttachedFileService {
 		}
 		return attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
 	}
+	
+
 	
 	
 }

@@ -9,6 +9,6 @@ import com.alice.project.domain.Member;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 	
 	 Member findBynum(Long num);
-		
 
+	Member findById(String memberId);
 }

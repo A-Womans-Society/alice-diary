@@ -22,7 +22,7 @@ public class WriteController {
 	private WriteService writeService;
 
 	@Autowired
-	private AttachedFileService fileUploadService;
+	private AttachedFileService attachedFileService;
 
 	@GetMapping("/community/post")
 	public String writeform(Model model) {
@@ -38,7 +38,7 @@ public class WriteController {
 		if (!writeFormDto.getOriginName().isEmpty()) {
 			Post post = Post.createPost(writeFormDto);
 
-			fileUploadService.postFileUpload(writeFormDto.getOriginName(), writeService.write(post), session);
+			attachedFileService.postFileUpload(writeFormDto.getOriginName(), writeService.write(post), session);
 		} else {
 			Post post = Post.createPost(writeFormDto);
 
@@ -48,5 +48,20 @@ public class WriteController {
 		System.out.println("service 이동");
 		return "redirect:list";
 	}
+
+	/*
+	 * @PostMapping("/community/post") public String writeSubmit(WriteFormDto
+	 * writeFormDto, HttpSession session) { System.out.println("controller 실행");
+	 * Post post = Post.createPost(writeFormDto);
+	 * 
+	 * if (writeFormDto.getOriginName() != null) {
+	 * 
+	 * attachedFileService.postFileUpload(writeFormDto.getOriginName(),
+	 * writeService.write(post), session); } else {
+	 * attachedFileService.postFileUpload(writeFormDto.getOriginName(),
+	 * writeService.write(post), session); }
+	 * 
+	 * System.out.println("service 이동"); return "redirect:list"; }
+	 */
 
 }
