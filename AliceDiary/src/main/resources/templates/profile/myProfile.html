@@ -2,34 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-</head>
-<hr>
+<link rel="stylesheet" th:href="@{/css/profile/myProfile.css}">
 
+</head>
 <form th:action="@{/member/}+${member.id}" method="post">
-	<img th:src="@{/upload/}+@{${member.profileImg}}" style="width: 200px; height: 190px;"/>
-	<br/>아이디 <div class="my-box" th:text="${member.id}"></div>
-	<br /> 이름
-	<div class="my-box" th:text="${member.name}"></div>
-	<br /> 전화번호
-	<div class="my-box" th:text="${member.mobile}"></div>
-	<br /> 생년월일
-	<div class="my-box" th:text="${member.birth}"></div>
-	<br /> 이메일
-	<div class="my-box" th:text="${member.email}"></div>
-	<br /> MBTI
-	<div class="my-box" th:text="${member.mbti}"></div>
-	<br /> 나의 위시리스트
-	<div class="my-box" th:text="${member.wishlist}"></div>
-	<br />
-	<br />
+	<img th:src="@{/upload/}+@{${member.profileImg}}"
+		style="width: 200px; height: 190px;" />
+	<div>
+		아이디
+		<div class="my-box" th:text="${member.id}"></div>
+	</div>
+	<div>
+		이름
+		<div class="my-box" th:text="${member.name}"></div>
+	</div>
+	<div>
+		전화번호
+		<div class="my-box" th:text="${member.mobile}"></div>
+	</div>
+	<div>
+		생년월일
+		<div class="my-box" th:text="${member.birth}"></div>
+	</div>
+	<div>
+		이메일
+		<div class="my-box" th:text="${member.email}"></div>
+	</div>
+	<div>
+		MBTI
+		<div class="my-box" th:text="${member.mbti}"></div>
+	</div>
+	<div>
+		나의 위시리스트
+		<div class="my-box" th:text="${member.wishlist}"></div>
+	</div>
 	<input type="submit" value="정보 수정">
 </form>
-<style type="text/css">
-.my-box { 
-	border: 1px solid;
-	border-radius: 5px;
-	padding: 10px"
-}
-</style>
 
 </html>

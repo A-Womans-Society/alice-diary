@@ -3,6 +3,8 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/login/updatePwd.js}"></script>
+
 
 <div style="text-align: center">
 	<b>비밀번호 재설정</b>
@@ -11,35 +13,17 @@
 <form th:action="@{/login/updatePwd/}+${num}" method="post"
 	th:object="${memberDto}">
 	<div>
-		새로운 비밀번호 입력 : <input type="password" th:field="*{password}" /><br />
+		새로운 비밀번호 입력 : <input type="password" th:field="*{password}" />
 	</div>
 	<div>
 		새로운 비밀번호 확인 : <input type="password" th:field="*{confirmPassword}"
 			th:onkeyup="checkPwd()" /> &nbsp;&nbsp;<span id="confirmMsg"></span>
 	</div>
-	<br />
+	
 	<div>※ 영문, 숫자, 특수문자를 조합하여 8자 이상으로 입력</div>
 	<div>
-		<input type="submit" value="변경 완료" /><br />
+		<input type="submit" value="변경 완료" />
 	</div>
 </form>
-
-
-<script type="text/javascript">
-	function checkPwd() {
-		var password = document.getElementById('password');
-		var confirmPassword = document.getElementById('confirmPassword');
-		var confirmMsg = document.getElementById('confirmMsg');
-		var correctColor = "#00ff00";
-		var wrongColor = "#ff0000";
-
-		if (password.value == confirmPassword.value) {
-			confirmMsg.innerHTML = "";
-		} else {
-			confirmMsg.style.color = wrongColor;
-			confirmMsg.innerHTML = "비밀번호 불일치";
-		}
-	}
-</script>
 
 </html>

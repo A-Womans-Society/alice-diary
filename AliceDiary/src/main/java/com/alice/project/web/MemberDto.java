@@ -114,18 +114,7 @@ public class MemberDto {
 
 	}
 
-	//프로필 수정을 위한 생성자
-	public MemberDto(Member member, String id, String name, LocalDate birth, String email, String mobile,
-			String mbti, String wishList) {
-		super();
-		this.id = id;
-		this.name = member.getName();
-		this.birth = member.getBirth();
-		this.email = member.getEmail();
-		this.mobile = member.getMobile();
-		this.mbti = member.getMbti();
-		this.wishList = member.getWishlist();
-	}
+
 	
 	
 	

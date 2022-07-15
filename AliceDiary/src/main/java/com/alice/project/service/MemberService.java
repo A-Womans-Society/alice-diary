@@ -22,11 +22,14 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	PasswordEncoder passwordEncoder;
 
 	public Member saveMember(Member member) {
-//		validateDuplicateMember(member);
-
 		return memberRepository.save(member); // insert
 	}
 
+	public Member findById(String id) {
+		return memberRepository.findById(id);
+	}
+	
+	
 	// id 중복테스트
 	public int checkIdDuplicate(String id) {
 		boolean check = memberRepository.existsById(id);
