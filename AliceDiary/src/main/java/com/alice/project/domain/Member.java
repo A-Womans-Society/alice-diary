@@ -120,6 +120,13 @@ public class Member {
 		log.info("엔티티 changeMemberOut메서드에서 status바꾸기 : " + member.status);
 		return member;
 	}
+	
+	// 회원 복구하기 메서드
+	public static Member changeMemberIn(Member member) {
+		member.status = Status.USER_IN;
+		log.info("엔티티 changeMemberIn메서드에서 status바꾸기 : " + member.status);
+		return member;
+	}
 
 
 }

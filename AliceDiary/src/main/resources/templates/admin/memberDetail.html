@@ -5,62 +5,33 @@
 	<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 </head>
 <body>
-    <!--/* 검색 영역 */-->
-    <div class="input-group" id="adv-search">
-        <select id="searchType" class="form-control" style="width: 100px;">
-            <option value="">전체</option>
-            <option value="num">회원번호</option>
-            <option value="id">아이디</option>
-            <option value="name">이름</option>
-            <option value="mobile">전화번호</option>
-            <option value="reportCnt">신고 누적횟수</option>
-            <option value="status">회원상태</option>
-        </select>
-        <input type="text" id="searchKeyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;" />
-        <button type="button" class="btn btn-primary">
-            <span aria-hidden="true" class="glyphicon glyphicon-search"></span>
-        </button>
-    </div>
+    
+    <h1 th:text="${member.id} + '님의 회원정보'" align="center"></h1>
     
 <!--/* 회원상세보기 영역 */-->
 <div class="container">
 	<div>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>No.</th>
-					<th>회원번호</th>
-					<th>아이디</th>
-					<th>이름</th>
-					<th>전화번호</th>
-					<th>이메일</th>
-					<th>신고 누적횟수</th>
-					<th>회원상태</th>
-					<th>내보내기</th>
-				</tr>
-			</thead>
 			<!--/* 회원 정보 Rendering 영역 */-->
-			<tbody align="center">
-				<tr>
-				<td th:text="${member.num}"></td>
-				<td th:text="${member.profileImg}"></td>
-				<td th:text="${member.id}"></td>
-				<td th:text="${member.pwd}"></td>
-				<td th:text="${member.name}"></td>
-				<td th:text="${member.gender}"></td>				
-				<td th:text="${member.birth}"></td>
-				<td th:text="${member.mobile}"></td>
-				<td th:text="${member.email}"></td>
-				<td th:text="${member.mbti}"></td>
-				<td th:text="${member.wishlist}"></td>
-				<td th:text="${member.reportCnt}"></td>
-				<td th:text="${member.regDate}"></td>			
-				<td th:text="${member.status}"></td>			
-				<td><button th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button></td>
-				</tr>
-			</tbody>
-			
-		</table>
+			<th:block th:each="member : ${member}">
+				<p th:text="|회원번호 : ${member.num}|"></p>
+				<p th:text="|프로필사진 : ${member.profileImg}|"></p> 
+				<p><img id="profileImg" th:src="${member.profileImg}" alt="프로필사진"/></p> 
+				<p th:text="|아이디 : ${member.id}|"></p>
+				<p th:text="|비밀번호 : ${member.pwd}|"></p>
+				<p th:text="|이름 : ${member.name}|"></p>
+				<p th:text="|성별 : ${member.gender}|"></p>			
+				<p th:text="|생년월일 : ${member.birth}|"></p>
+				<p th:text="|전화번호 : ${member.mobile}|"></p>
+				<p th:text="|이메일 : ${member.email}|"></p>
+				<p th:text="|MBTI : ${member.mbti}|"></p>
+				<p th:text="|위시리스트 : ${member.wishlist}|"></p>
+				<p th:text="|신고 누적횟수 : ${member.reportCnt}|"></p>
+				<p th:text="|가입일자 : ${member.regDate}|"></p>			
+				<p th:text="|회원상태 : ${member.status}|"></p>		
+				<p><button th:if="${member.getStatus().toString().equals('USER_IN')}" th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
+					<button th:unless="${member.getStatus().toString().equals('USER_IN')}" th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button></p>
+			</th:block>
+
 	</div>
 </div> <!-- /container -->
 
@@ -70,7 +41,48 @@ function deleteMember(num) {
 	if (!confirm('정말 이 회원을 내보내기하시겠습니까?')) {
 		return false;
 	}
-	<!--여기 구현해야됨 ajax-->
+	console.log(num);
+	$.ajax({
+		type : 'delete',
+		url : "./" + num
+	}).done(function(result) {
+		console.log(result);
+		if (result == 0) {
+			alert("회원 내보내기에 실패했습니다! 다시 시도해주세요😥");
+		} else if (result == 1) {
+			alert("해당 회원이 내보내기 처리되었습니다!");
+			location.reload();
+			return false;
+		} else {
+			console.log("에러에러에러");
+		}
+	}).fail(function(error) {
+		console.log(error);
+	});
+}
+
+function returnMember(num) {
+	if (!confirm('정말 이 회원상태를 복구하시겠습니까?')) {
+		return false;
+	}
+	console.log(num);
+	$.ajax({
+		type: 'patch',
+		url: './member/'+num
+	}).done(function(result) {
+		console.log(result);
+		if (result == 0) {
+			alert("회원 복구처리에 실패했습니다! 다시 시도해주세요😥");
+		} else if (result == 1) {
+			alert("회원이 활동상태로 변경되었습니다!");
+			location.reload();
+			return false;
+		} else {
+			console.log("에러에러에러");
+		}
+	}).fail(function(error) {
+		console.log(error);
+	});
 }
 /*]]>*/
 </script>

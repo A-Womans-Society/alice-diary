@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Member;
 import com.alice.project.service.MemberService;
@@ -26,7 +28,6 @@ public class AdminController {
 	/* 회원 목록 */
 	@GetMapping(value = "/member")
 	public String showMemberList(Model model) {
-		log.info("showMemberList 컨트롤러 실행");
 		List<Member> members = memberService.findMembers();
 		model.addAttribute("members", members);
 		return "/admin/memberList";
@@ -35,20 +36,27 @@ public class AdminController {
 	/* 회원 정보 상세보기 */
 	@GetMapping(value = "/member/{num}")
 	public String showMemberOne(@PathVariable("num") Long num, Model model) {
-		log.info("회원 상세보기 컨트롤러 실행!");
 		Member member = memberService.findOne(num);
-//		model.addAttribute("message", "정상적으로 처리되었습니다.");
 		model.addAttribute("member", member);
 	  return "/admin/memberDetail";
 	}	
 	
 	/* 회원 내보내기 */
-	@PostMapping(value = "/member/{num}")
-	public String changeMemberOut(@PathVariable("num") Long num, Model model) {
-		log.info("회원 내보내기 컨트롤러 실행!");
-		memberService.deleteOne(num);
-		model.addAttribute("message", "정상적으로 처리되었습니다.");
-	  return "redirect:/admin/member";
+	@DeleteMapping(value = "/member/{num}")
+	@ResponseBody
+	public int changeMemberOut(@PathVariable("num") Long num, Model model) {
+		int result = memberService.deleteOne(num);
+		log.info("**********result : " + result);
+		return result;
+	}
+	
+	/* 회원 복구하기 */
+	@PatchMapping(value = "/member/{num}")
+	@ResponseBody
+	public int changeMemberIn(@PathVariable("num") Long num, Model model) {
+		int result = memberService.returnOne(num);
+		log.info("**********result : " + result);
+		return result;
 	}
 	
 	

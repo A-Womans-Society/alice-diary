@@ -3,6 +3,7 @@ package com.alice.project.web;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.Message;
 import com.alice.project.service.MessageService;
@@ -12,13 +13,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 @Getter @Setter
 @NoArgsConstructor
 @ToString
-@Slf4j
-public class MessageDto { 
+public class MessageDto implements Comparable<MessageDto>{ 
 	
 	@Autowired private MessageService ms;
 
@@ -28,6 +27,7 @@ public class MessageDto {
 	private String content; // 가장 최근 메시지
 	private String messageFromId; // 보내는 사람 아이디
 	private String messageToId; // 받는 사람 아이디
+	private MultipartFile originName; // 파일 이름
 
 	@Builder
 	public MessageDto(Long messageFromNum, Long messageToNum, 
@@ -60,5 +60,9 @@ public class MessageDto {
 		this.messageToId = ms.findIdByNum(this.getMessageToNum());
 	}
 
+	@Override
+	public int compareTo(MessageDto o) {
+		return this.getSendDate().compareTo(o.getSendDate());
+	}
 
 }

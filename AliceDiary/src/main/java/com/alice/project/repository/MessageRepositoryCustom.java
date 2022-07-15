@@ -31,4 +31,7 @@ public interface MessageRepositoryCustom {
 	/* 쪽지함 하나 보여주기 */
 	List<Message> findMsgs(Long mfn, Long mtn);
 	
+	/* 정상적인 쪽지함 하나 보여주기 */
+	public List<Message> findLiveMsgs(Long mfn, Long mtn);
+	
 }

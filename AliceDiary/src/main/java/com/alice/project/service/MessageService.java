@@ -87,6 +87,11 @@ public class MessageService {
 		return member.getId();
 	}
 	
+	public Long findNumById(String id) {
+		Member member = memberRepository.findById(id);
+		return member.getNum();
+	}	
+	
 	public Message findRecentMsgs(Long mfn, Long mtn) {
 		Message msg = messageRepository.findRecentMsgByNum(mfn, mtn);
 		log.info("MS의 message : " + msg.toString());
@@ -109,6 +114,25 @@ public class MessageService {
 		return msgs;
 		
 	}
+	
+	// 사용자측에서 삭제하지 않은 메시지만 가져오기
+	public List<Message> findLiveMsgs(Long mfn, Long mtn) {
+		List<Message> msgF = messageRepository.findLiveMsgs(mfn, mtn);
+		List<Message> msgT = messageRepository.findLiveMsgs(mtn, mfn);
+		List<Message> msgs = new ArrayList<>();
+		msgs.addAll(msgF);
+		msgs.addAll(msgT);
+		Collections.sort(msgs);
+//		Collections.reverse(msgs);
+		
+		for (Message msg : msgs) {
+			log.info("*****************내용 각각 : " + msg.getContent());
+		}
+		
+		return msgs;
+		
+	}
+	
 	
 	/* 개별 쪽지함 삭제 */
 	public void deleteOne(Long messageFromNum, Long messageToNum) {

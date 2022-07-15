@@ -60,16 +60,15 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 
 	@Override
 	public int compare(Message o1, Message o2) {
-		// TODO Auto-generated method stub
 		return o2.getSendDate().compareTo(o1.getSendDate());
 	}
 
 	@Override
 	public int compareTo(Message m) {
 		if (this.sendDate.isBefore(m.sendDate)) {
-			return 1;
-		} else if (this.sendDate.isAfter(m.sendDate)) {
 			return -1;
+		} else if (this.sendDate.isAfter(m.sendDate)) {
+			return 1;
 		} else {
 			return 0;
 		}

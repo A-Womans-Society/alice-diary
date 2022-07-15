@@ -2,10 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta  name="viewport"
+<meta name="viewport"
 	content="width=device-width, height=device-height,
 	                      minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
-<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
  <link rel="stylesheet" type="text/css" th:href="@{/css/msgDetail.css}" />
 
 <!-- bootstrap 4 -->
@@ -14,9 +13,14 @@
 	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
 	crossorigin="anonymous">
 
-<script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}"
-	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-	crossorigin="anonymous"></script>
+<!-- <script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" -->
+<!-- 	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" -->
+<!-- 	crossorigin="anonymous"></script> -->
+
+<script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
 <script
 	th:src="@{https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js}"
 	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -40,15 +44,16 @@
 <!-- 					<p><img id="profile" th:src="${m.profile}" alt="프로필사진" th:if="${m.profile != null}" /></p> -->
 					<p th:text="${m.messageFromId}"></p>
 					<p th:text="${m.content}"></p>
-					<p align="right" th:text="${m.sendDate}"></p>				
+					<p align="right" th:text="${#temporals.format(m.sendDate, 'yyyy-MM-dd HH:mm')}"></p>				
 				</div>
 			</div>
 		</th:block>
 	</div>
 
 <div>
-	<form th:align="center" th:action="'../' + ${userNum} + '/' + ${toNum}" th:object="${mdto}" method="post">
-		<textarea th:name="content" th:align="center" cols="90%" rows="5" placeholder="최대 2000자"></textarea>
+	<form th:align="center" th:action="'../' + ${userNum} + '/' + ${toNum}" th:object="${mdto}" method="post" enctype="multipart/form-data">
+		<textarea th:name="content" th:align="center" cols="90%" rows="5" placeholder="최대 2000자" required></textarea>
+		<input type="file" th:name="originName">
 		<button id="sendMsgBtn" type="submit">전송</button>
 	</form>
 </div>
@@ -96,13 +101,14 @@
 		console.log(tnum);
 		$.ajax({
 			type : 'delete',
-			url : "./" + fnum + "/" + tnum
+			url : "../" + fnum + "/" + tnum
 		}).done(function(result) {
 			console.log(result);
 			if (result == 0) {
 				alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
 			} else if (result == 1) {
 				alert("쪽지함이 성공적으로 삭제되었습니다!");
+				location.reload();
 				return false;
 			} else {
 				console.log("에러에러에러");
@@ -112,29 +118,14 @@
 		});
 	}
 
-	function Message(fnum, tnum) {
-		if (!confirm('정말 이 쪽지함을 삭제하시겠습니까? 돌이킬 수 없습니다!')) {
-			return false;
-		}
-		console.log(fnum);
-		console.log(tnum);
-		$.ajax({
-			type : 'delete',
-			url : "./" + fnum + "/" + tnum
-		}).done(function(result) {
-			console.log(result);
-			if (result == 0) {
-				alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
-			} else if (result == 1) {
-				alert("쪽지함이 성공적으로 삭제되었습니다!");
-				return false;
-			} else {
-				console.log("에러에러에러");
-			}
-		}).fail(function(error) {
-			console.log(error);
-		});
-	}
+// var sum = 0;
+// $(document).ready(function() {
+// 	setInterval("msgReload()", 10000);
+// })
+
+// function msgReload() {
+// 	location.reload();
+// }
 /*]]>*/
 </script>
 

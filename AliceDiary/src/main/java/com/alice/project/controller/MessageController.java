@@ -1,5 +1,6 @@
 package com.alice.project.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class MessageController {
 	
 	// 메세지 목록
 	@GetMapping(value = "/messagebox/{memberNum}")
-	public String messageList(@PathVariable("memberNum") Long num, Model model) {
+	public String messageList(@PathVariable("memberNum") Long num, Model model,
+			@ModelAttribute MessageDto mdto) {
 		//log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
 		// String messageFromNum = (String) session.getAttribute("num");
 		if (messageService.findLiveReceiverNumsBySenderNum(num).isEmpty()) {
@@ -64,6 +66,7 @@ public class MessageController {
 
 		model.addAttribute("fromId", fromId);
 		model.addAttribute("mldtos", mldtos);
+		model.addAttribute("mdto", mdto);
 
 		return "message/msgList";
 	}
@@ -82,7 +85,7 @@ public class MessageController {
 	public String showMessages(@PathVariable("memberNum") Long num, 
 			@PathVariable("messageToNum") Long toNum, Model model, 
 			HttpSession session) {
-		List<Message> msgs = messageService.findMsgs(num, toNum);
+		List<Message> msgs = messageService.findLiveMsgs(num, toNum);
 		List<MessageDto> mdtos = new ArrayList<>();
 		for (Message msg : msgs) {
 			MessageDto mdto = new MessageDto(msg, messageService);
@@ -95,14 +98,15 @@ public class MessageController {
 		String fromId = messageService.findIdByNum(num);
 //		String userNum = session.getAttribute("userNum").toString();
 		// 세션에서 사용자번호 받아서 넣기
-		model.addAttribute("userNum", 3); // ***테스트용으로 하드코딩한 것
+//		model.addAttribute("userNum", 3); // ***테스트용으로 하드코딩한 것
+		model.addAttribute("userNum", num);
 		model.addAttribute("toNum", toNum);
 		model.addAttribute("toId", toId);
 		model.addAttribute("fromId", fromId);
 		return "message/msgDetail";
 	}
 	
-	// 쪽지보내기
+	// 쪽지함 내에서 쪽지보내기
 	@PostMapping("/messagebox/{memberNum}/{messageToNum}")
 	public String sendMessages(@PathVariable("memberNum") Long num, 
 			@PathVariable("messageToNum") Long toNum, Model model, 
@@ -115,74 +119,24 @@ public class MessageController {
 		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + toNum));
 		return "message/alert";
 	}
+	
+	// 쪽지함 목록에서 바로 쪽지보내기
+	@PostMapping("/messagebox/{memberNum}")
+	public String sendMessage(@PathVariable("memberNum") Long num, Model model, 
+			HttpSession session, @ModelAttribute MessageDto mdto) {
+		Long toNum = messageService.findNumById(mdto.getMessageToId());
+		mdto.setMessageToNum(toNum);
+		mdto.setMessageFromNum(num);
+		mdto.setMessageFromId(messageService.findIdByNum(num));
+		mdto.setSendDate(LocalDateTime.now());
+		log.info("mdto" + mdto.toString());
+		
+		Message result = messageService.sendMsg(mdto);
+		log.info("result.toString() : " + result.toString());
+		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + num));
+		return "message/alert";
+	}
 
-//	// 메세지 목록
-//	@RequestMapping(value = "/message_ajax_list.do")
-//	public String message_ajax_list(HttpServletRequest request, HttpSession session) {
-//		// System.out.println("현대 사용자 nick : " + session.getAttribute("nick"));
-//
-//		String nick = (String) session.getAttribute("nick");
-//
-//		MessageTO to = new MessageTO();
-//		to.setNick(nick);
-//
-//		// 메세지 리스트
-//		ArrayList<MessageTO> list = messageDao.messageList(to);
-//
-//		request.setAttribute("list", list);
-//
-//		return "message/message_ajax_list";
-//	}
-//
-//	@RequestMapping(value = "/message_content_list.do")
-//	public String message_content_list(HttpServletRequest request, HttpSession session) {
-//
-//		int room = Integer.parseInt(request.getParameter("room"));
-//
-//		MessageTO to = new MessageTO();
-//		to.setRoom(room);
-//		to.setNick((String) session.getAttribute("nick"));
-//
-//		// 메세지 내용을 가져온다.
-//		ArrayList<MessageTO> clist = messageDao.roomContentList(to);
-//
-//		request.setAttribute("clist", clist);
-//
-//		return "message/message_content_list";
-//	}
-//
-//	// 메세지 리스트에서 메세지 보내기
-//	@ResponseBody
-//	@RequestMapping(value = "/message_send_inlist.do")
-//	public int message_send_inlist(@RequestParam int room, @RequestParam String other_nick,
-//			@RequestParam String content, HttpSession session) {
-//
-//		MessageTO to = new MessageTO();
-//		to.setRoom(room);
-//		to.setSend_nick((String) session.getAttribute("nick"));
-//		to.setRecv_nick(other_nick);
-//		to.setContent(content);
-//
-//		int flag = messageDao.messageSendInlist(to);
-//
-//		return flag;
-//	}	
-	
-	
-	
-	// 채팅방 입장
-//	@GetMapping(value = "/chat")
-//	public String chat(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
-//
-//		return "/message/chat";
-//	}
-	
-//	@RequestMapping("/mychatt")
-//	public ModelAndView chatt() {
-//		ModelAndView mv = new ModelAndView();
-//		mv.setViewName("/message/chat");
-//		return mv;
-//	}
 	
 	
 }

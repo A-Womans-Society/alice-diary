@@ -74,7 +74,16 @@ public class MessageRepositoryImpl implements MessageRepositoryCustom {
 				.getResultList();
         return resultList;
 	}
-	
+
+	public List<Message> findLiveMsgs(Long mfn, Long mtn) {
+		List<Message> resultList = entityManager.createQuery(
+				"SELECT m FROM Message as m "
+				+ "WHERE messageFromNum=?1 and messageToNum=?2 and senderStatus=1 ORDER BY sendDate DESC", Message.class)
+				.setParameter(1, mfn)
+                .setParameter(2, mtn)
+				.getResultList();
+        return resultList;
+	}	
 
 	@Override
 	public List<Message> findByMessageFromNumAndMessageToNum(Long messageFromNum, Long messageToNum) {
