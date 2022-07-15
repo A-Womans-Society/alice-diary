@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport"
+	content="width=device-width, height=device-height,
+	                      minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+ <link rel="stylesheet" type="text/css" th:href="@{/css/msgDetail.css}" />
+
+<!-- bootstrap 4 -->
+<link rel="stylesheet"
+	th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css}"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+
+<!-- <script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" -->
+<!-- 	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" -->
+<!-- 	crossorigin="anonymous"></script> -->
+
+<script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+<script
+	th:src="@{https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js}"
+	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	crossorigin="anonymous"></script>
+<script
+	th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js}"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
+	
+
+</head>
+<body>
+
+
+	<h1 th:text="${toId} + '님과의 쪽지함'" align="center"></h1>
+
+	<div class="container-fluid">
+		<th:block th:each="m : ${mdtos}">
+			<div th:attr="class=${m.messageFromNum != userNum ? 'row d-flex justify-content-start' : 'row d-flex justify-content-end'}">
+				<div th:attr="class=${m.messageFromNum == userNum ? 'col-6 bg-info' : 'col-6'}">
+<!-- 					<p><img id="profile" th:src="${m.profile}" alt="프로필사진" th:if="${m.profile != null}" /></p> -->
+					<p th:text="${m.messageFromId}"></p>
+					<p th:text="${m.content}"></p>
+					<p align="right" th:text="${#temporals.format(m.sendDate, 'yyyy-MM-dd HH:mm')}"></p>				
+				</div>
+			</div>
+		</th:block>
+	</div>
+
+<div>
+	<form th:align="center" th:action="'../' + ${userNum} + '/' + ${toNum}" th:object="${mdto}" method="post" enctype="multipart/form-data">
+		<textarea th:name="content" th:align="center" cols="90%" rows="5" placeholder="최대 2000자" required></textarea>
+		<input type="file" th:name="originName">
+		<button id="sendMsgBtn" type="submit">전송</button>
+	</form>
+</div>
+
+		<!-- 		<div class="row d-flex" th:each="m : ${msgs}">
+			<div class="col-7" th:if="${m.messageFromNum != userNum}">
+				<p th:text="${m.messageFromNum}"></p>
+				<p th:text="${m.content}"></p>
+				<p align="right" th:text="'보낸 시간 : ' + ${m.sendDate}"></p>
+			</div>
+
+			<div class="col-7" th:if="${m.messageFromNum == userNum}">
+				<p th:text="${m.messageFromNum}"></p>
+				<p th:text="${m.content}"></p>
+				<p align="right" th:text="'보낸 시간 : ' + ${m.sendDate}"></p>
+			</div>
+		</div> -->
+	<!--
+	<h1 th:text="${toId} + '님과의 쪽지함'" align="center"></h1>
+
+	/* 메시지 목록 Rendering 영역 */
+	<div th:each="m : ${msgs}" class="container-fluid">
+		<div class="left row" th:if="${m.messageFromNum != userNum}">
+			<p th:text="${m.messageFromNum}"></p>
+			<p th:text="${m.content}"></p>
+			<p align="right" th:text="'보낸 시간 : ' + ${m.sendDate}"></p>
+		</div>
+
+		<div class="right" th:if="${m.messageFromNum == userNum}">
+			<p th:text="${m.messageFromNum}"></p>
+			<p th:text="${m.content}"></p>
+			<p align="right" th:text="'보낸 시간 : ' + ${m.sendDate}"></p>
+		</div>
+	</div>
+ -->
+	<button th:onclick="deleteMessage([[${userNum}]], [[${toNum}]])" type="button">쪽지함 나가기</button>
+
+<script th:inline="javascript">		   
+/*<![CDATA[*/
+	function deleteMessage(fnum, tnum) {
+		if (!confirm('정말 이 쪽지함을 나가시겠습니까? 돌이킬 수 없습니다!')) {
+			return false;
+		}
+		console.log(fnum);
+		console.log(tnum);
+		$.ajax({
+			type : 'delete',
+			url : "../" + fnum + "/" + tnum
+		}).done(function(result) {
+			console.log(result);
+			if (result == 0) {
+				alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
+			} else if (result == 1) {
+				alert("쪽지함이 성공적으로 삭제되었습니다!");
+				location.reload();
+				return false;
+			} else {
+				console.log("에러에러에러");
+			}
+		}).fail(function(error) {
+			console.log(error);
+		});
+	}
+
+// var sum = 0;
+// $(document).ready(function() {
+// 	setInterval("msgReload()", 10000);
+// })
+
+// function msgReload() {
+// 	location.reload();
+// }
+/*]]>*/
+</script>
+
+</body>
+</html>
