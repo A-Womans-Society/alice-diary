@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="friednsGroup")
+@Table(name="friendsGroup")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
@@ -43,5 +43,4 @@ public class FriendsGroup {
 		this.member = member;
 		member.getGroups().add(this);
 	}
-	
 }

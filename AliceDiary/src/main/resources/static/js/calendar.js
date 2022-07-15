@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		initialView : 'dayGridMonth',
 
 		// set row height
-		height: '100%',
-		aspectRatio: 2.5,
+		height: "100%",
+//		aspectRatio: 2.5,
 		
 		// limit events per day
 		dayMaxEvents : 2,
