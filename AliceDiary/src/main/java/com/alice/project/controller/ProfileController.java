@@ -48,22 +48,22 @@ public class ProfileController {
 	}
 	
 	@PutMapping(value="/member/{id}")
-	public Optional<Member> updateProfile(@PathVariable @RequestParam String id, @RequestBody Member member) {
+	public Member updateProfile(@PathVariable @RequestParam String id, @RequestBody Member member) {
 		
-		Optional<Member> updateMember = profileService.findMemById(id);
+		Member updateMember = profileService.findMemById(id);
 		
-		updateMember.ifPresent(selectMember-> {
-			selectMember.setName(member.getName());
-			selectMember.setMobile(member.getMobile());
-			selectMember.setBirth(member.getBirth());
-			selectMember.setEmail(member.getEmail());
-			selectMember.setMbti(member.getMbti());
-			selectMember.setWishlist(member.getWishlist());
-			
-			memberRepository.save(selectMember);
-		});
-		
-		
+//		updateMember.ifPresent(selectMember-> {
+//			selectMember.setName(member.getName());
+//			selectMember.setMobile(member.getMobile());
+//			selectMember.setBirth(member.getBirth());
+//			selectMember.setEmail(member.getEmail());
+//			selectMember.setMbti(member.getMbti());
+//			selectMember.setWishlist(member.getWishlist());
+//			
+//			memberRepository.save(selectMember);
+//		});
+//		
+//		
 		
 //		if (!memberDto.getProfileImg().getOriginalFilename().equals("")) {
 //			String originName = memberDto.getProfileImg().getOriginalFilename();

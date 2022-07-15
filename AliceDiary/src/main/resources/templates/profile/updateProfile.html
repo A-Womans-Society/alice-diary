@@ -1,51 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-</head>
-<hr>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/profileLayout}">
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/profile/myProfile.css}" />
+</th:block>
 
-<form th:action="@{/member/}+${member.id}" method="put" th:object="${memberDto}" enctype="multipart/form-data">
-	<img th:src="@{/upload/}+@{${member.profileImg}}"
-		style="width: 200px; height: 190px;" />
-	<input type="file" th:field="${member.profileImg}" id="file" onchange="PreviewImage();"/>
-	<div>
-		아이디 <input class="my-box" type="text" th:value="@{${member.id}}"
-			disabled>
-	</div>
-	<div>
-		이름 <input class="my-box" type="text"
-			th:placeholder="@{${member.name}}" th:field="${member.name}">
-	</div>
-	<div>
-		전화번호 <input class="my-box" type="text"
-			th:placeholder="@{${member.mobile}}" th:field="${member.mobile}" >
-	</div>
-	<div>
-		생년월일 <input class="my-box" type="date"
-			th:placeholder="@{${member.birth}}" th:field="${member.birth}">
-	</div>
-	<div>
-		이메일 <input class="my-box" type="email"
-			th:placeholder="@{${member.email}}" th:field="${member.email}">
-	</div>
-	<div>
-		MBTI <input class="my-box" type="text"
-			th:placeholder="@{${member.mbti}}" th:field="${member.mbti}">
-	</div>
-	<div>
-		나의 위시리스트
-		<textarea class="my-box" th:placeholder="@{${member.wishlist}}" th:field="${member.wishlist}"></textarea>
-	</div>
+<div layout:fragment="content">
+	<form th:action="@{/member/}+${member.id}" method="put"
+		th:object="${memberDto}" enctype="multipart/form-data">
+		<img th:src="@{/upload/}+@{${member.profileImg}}"
+			style="width: 200px; height: 190px;" /> <input type="file"
+			th:field="${member.profileImg}" id="file" onchange="PreviewImage();" />
+		<div>
+			아이디 <input class="my-box" type="text" th:value="@{${member.id}}"
+				disabled>
+		</div>
+		<div>
+			이름 <input class="my-box" type="text"
+				th:placeholder="@{${member.name}}" th:field="${member.name}">
+		</div>
+		<div>
+			전화번호 <input class="my-box" type="text"
+				th:placeholder="@{${member.mobile}}" th:field="${member.mobile}">
+		</div>
+		<div>
+			생년월일 <input class="my-box" type="date"
+				th:placeholder="@{${member.birth}}" th:field="${member.birth}">
+		</div>
+		<div>
+			이메일 <input class="my-box" type="email"
+				th:placeholder="@{${member.email}}" th:field="${member.email}">
+		</div>
+		<div>
+			MBTI <input class="my-box" type="text"
+				th:placeholder="@{${member.mbti}}" th:field="${member.mbti}">
+		</div>
+		<div>
+			나의 위시리스트
+			<textarea class="my-box" th:placeholder="@{${member.wishlist}}"
+				th:field="${member.wishlist}"></textarea>
+		</div>
 
-	<input type="submit" value="정보 수정">
-</form>
-<style type="text/css">
-.my-box {
-	border: 1px solid;
-	border-radius: 5px;
-	padding: 10px"
-}
-</style>
+		<input type="submit" value="정보 수정">
+	</form>
+</div>
 
 </html>

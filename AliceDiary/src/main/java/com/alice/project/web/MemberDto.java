@@ -7,7 +7,7 @@ import com.alice.project.domain.Member;
 
 public class MemberDto {
 	private String id; // 회원 아이디
-	private String pwd; // 회원 비밀번호
+	private String password; // 회원 비밀번호
 	private String name; // 회원 이름
 	private LocalDate birth; // 회원 생일
 	private Gender gender; // 회원 성별 [MALE, FEMALE, UNKNOWN]
@@ -20,7 +20,7 @@ public class MemberDto {
 	public Member toEntity() { // 필요한 엔티티는 이런식으로 추가
 		Member member = Member.builder()
 				.id(id)
-				.pwd(pwd)
+				.password(password)
 				.name(name)
 				.birth(birth)
 				.gender(gender)

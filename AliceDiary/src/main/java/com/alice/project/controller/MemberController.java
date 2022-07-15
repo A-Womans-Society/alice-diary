@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
-	
+
 	private final PasswordEncoder passwordEncoder;
 
 	// 약관동의GetMapping
@@ -149,8 +149,7 @@ public class MemberController {
 		Member member = memberService.findByNum(num);
 		log.info("비밀번호 재설정 전 Member : " + member);
 		UserDto mdto = new UserDto(member, memberDto.getPassword());
-		member = Member.createMember(mdto, passwordEncoder);
-		member.setNum(num);
+		member = Member.createMember(num, mdto, passwordEncoder);
 		member = memberService.updateMember(member);
 		log.info("비밀번호 재설정 후 Member : " + member);
 

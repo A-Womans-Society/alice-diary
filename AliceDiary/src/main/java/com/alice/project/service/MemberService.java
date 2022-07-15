@@ -35,6 +35,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	PasswordEncoder passwordEncoder;
 	private final EntityManager em;
 
+	@Transactional
 	public Member saveMember(Member member) {
 		return memberRepository.save(member); // insert
 	}

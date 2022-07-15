@@ -11,7 +11,7 @@ public interface ProfileRepository extends JpaRepository<Member, Long>{
 	
 	Member findByNum(Long num);
 	
-	Optional<Member> findById(String id);
+	Member findById(String id);
 	
 	
 

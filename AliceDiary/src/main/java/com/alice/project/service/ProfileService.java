@@ -23,8 +23,8 @@ public class ProfileService {
 		return member;
 	}
 	
-	public Optional<Member> findMemById(String id) {
-		Optional<Member> updateMember = profileRepository.findById(id);
+	public Member findMemById(String id) {
+		Member updateMember = profileRepository.findById(id);
 		return updateMember;
 	}
 	
