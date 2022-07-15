@@ -3,6 +3,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+	<script type="text/javascript" th:src="@{/js/admin/memberList.js}"></script>
+	
 </head>
 <body>
     <!--/* 검색 영역 */-->
@@ -16,10 +18,8 @@
             <option value="reportCnt">신고 누적횟수</option>
             <option value="status">회원상태</option>
         </select>
-        <input type="text" id="searchKeyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;" />
-        <button type="button" class="btn btn-primary">
-            <span aria-hidden="true" class="glyphicon glyphicon-search"></span>
-        </button>
+        <input type="text" id="searchKeyword" class="form-control" placeholder="카테고리 선택 후 검색해주세요." style="width: 300px;" />
+        <button type="button" class="btn btn-primary">검색</button>
     </div>
     
 <!--/* 게시글 영역 */-->
@@ -64,58 +64,6 @@
 		</table>
 	</div>
 </div> <!-- /container -->
-
-<script th:inline="javascript">   
-/*<![CDATA[*/
-function deleteMember(num) {
-	if (!confirm('정말 이 회원을 내보내기하시겠습니까?')) {
-		return false;
-	}
-	console.log(num);
-	$.ajax({
-		type: 'delete',
-		url: './member/'+num
-	}).done(function(result) {
-		console.log(result);
-		if (result == 0) {
-			alert("회원 탈퇴처리에 실패했습니다! 다시 시도해주세요😥");
-		} else if (result == 1) {
-			alert("회원이 탈퇴상태로 변경되었습니다!");
-			location.reload();
-			return false;
-		} else {
-			console.log("에러에러에러");
-		}
-	}).fail(function(error) {
-		console.log(error);
-	});
-}
-
-function returnMember(num) {
-	if (!confirm('정말 이 회원상태를 복구하시겠습니까?')) {
-		return false;
-	}
-	console.log(num);
-	$.ajax({
-		type: 'patch',
-		url: './member/'+num
-	}).done(function(result) {
-		console.log(result);
-		if (result == 0) {
-			alert("회원 복구처리에 실패했습니다! 다시 시도해주세요😥");
-		} else if (result == 1) {
-			alert("회원이 활동상태로 변경되었습니다!");
-			location.reload();
-			return false;
-		} else {
-			console.log("에러에러에러");
-		}
-	}).fail(function(error) {
-		console.log(error);
-	});
-}
-/*]]>*/
-</script>
 
 </body>
 </html>
