@@ -6,7 +6,7 @@
 <hr>
 
 <form th:action="@{/member/}+${member.id}" method="post">
-	<img src="/${member.profileImg}" />
+	<img th:src="@{/upload/}+@{${member.profileImg}}" style="width: 200px; height: 190px;"/>
 	<br/>아이디 <div class="my-box" th:text="${member.id}"></div>
 	<br /> 이름
 	<div class="my-box" th:text="${member.name}"></div>

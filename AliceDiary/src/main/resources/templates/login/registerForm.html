@@ -10,7 +10,7 @@
 	<div>
 		프로필 사진 등록<br /> 
 		<img id="profileImage" style="width: 200px; height: 190px;"> 
-		<input type="file" th:field="*{profileImg}" id="file" onchange="PreviewImage();" /><br />
+		<input type="file" th:field="*{profileImg}" id="file" accept=".jpg, .png" onchange="PreviewImage();" /><br />
 	</div>
 	<div>
 		<label th:for="id">아이디</label> 

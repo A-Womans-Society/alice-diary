@@ -6,7 +6,7 @@
 <hr>
 
 <form th:action="@{/member/}+${member.id}" method="post">
-	<img src="/${member.profileImg}" /><button>사진 변경</button>
+	<img th:src="@{/upload/}+@{${member.profileImg}}" style="width: 200px; height: 190px;"/><button>사진 변경</button>
 	<br/>아이디 <input class="my-box" type="text" th:value="@{${member.id}}" disabled>
 	<br /> 이름
 	<input class="my-box" type="text" th:placeholder="@{${member.name}}">

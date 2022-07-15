@@ -11,8 +11,8 @@ public class WebConfig implements WebMvcConfigurer{
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/member/**")
-				.addResourceLocations("file:///C:/Temp/upload/");
+		registry.addResourceHandler("/upload/**") // 리소스와 연결될 URL path를 지정
+				.addResourceLocations("file:///C:/Temp/upload/"); // 실제 리소스가 존재하는 외부 경로를 지정
 	}
 
 }

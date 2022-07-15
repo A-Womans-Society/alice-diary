@@ -18,15 +18,5 @@ public class ProfileService {
 		return member;
 	}
 	
-	public int updateProfile(String id, MemberDto mdto) {
-		Member member = memberRepository.findById(id); 
-		if(member != null) {
-			return 0;
-		}else {
-			member.set
-			member.setName(mdto.getName());
-			
-		}
-	}
 
 }
