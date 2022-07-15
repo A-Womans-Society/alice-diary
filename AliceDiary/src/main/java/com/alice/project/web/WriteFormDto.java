@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WriteFormDto {
-	private Long num;
+	private Long num; //postNum
 	private String title;
 
 	private String content;

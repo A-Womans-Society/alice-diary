@@ -45,19 +45,15 @@
 			</tr>
 			<tr>
 				<td>작성자 
-					<div align="right" th:if="${postView.updateDate == null}"
-						th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
-
-					<div align="right" th:if="${postView.updateDate != null}"
-						th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
-					<div align="right" style="color: grey; font-size: 15px;"
+					<div align="right" th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
+					<div align="right" th:if="${postView.updateDate != null}" style="color: grey; font-size: 15px;"
 					th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></div>
 				</td>
 			<tr>
 				<td><div th:text="${postView.content}"
 						style="padding: 10px; height: auto; min-height: 100px; overflow: auto;"></div></td>
 			</tr>
-			<tr th:each="file : ${files}">
+			<tr th:each="file : ${files}" th:if="${file.originName != null}">
 				<td>첨부파일: <a
 					th:href="|/AliceDiary/community/download/${file.num}|"
 					th:text="${file.originName}"></a>
@@ -70,11 +66,11 @@
 			<input type="button" value="신고">
 		</div>
 		<div align="right">
-			<a th:href="@{/AliceDiary/community/put(num=${postView.num})}"><input
-				type="button" value="수정"></a> 
+			<a th:href="@{/AliceDiary/community/put(num=${postView.num})}">
+			<input type="button" value="수정"></a> 
 			<a th:href="@{/AliceDiary/community/delete(num=${postView.num})}">
+			<button type="button" >삭제</button></a> 
 			
-			<input type="button" value="삭제"></a> 
 			<a th:href="@{/AliceDiary/community/list}"><input type="button" value="목록"></a>
 		</div>
 	</div>

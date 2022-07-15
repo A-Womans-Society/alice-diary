@@ -49,4 +49,19 @@ public class WriteController {
 		return "redirect:list";
 	}
 
+	/*
+	 * @PostMapping("/community/post") public String writeSubmit(WriteFormDto
+	 * writeFormDto, HttpSession session) { System.out.println("controller 실행");
+	 * Post post = Post.createPost(writeFormDto);
+	 * 
+	 * if (writeFormDto.getOriginName() != null) {
+	 * 
+	 * attachedFileService.postFileUpload(writeFormDto.getOriginName(),
+	 * writeService.write(post), session); } else {
+	 * attachedFileService.postFileUpload(writeFormDto.getOriginName(),
+	 * writeService.write(post), session); }
+	 * 
+	 * System.out.println("service 이동"); return "redirect:list"; }
+	 */
+
 }

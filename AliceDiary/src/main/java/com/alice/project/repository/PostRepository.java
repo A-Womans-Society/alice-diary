@@ -43,4 +43,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	Integer editDate(Long num, LocalDateTime updateDate);
 	
 	
+	
 }

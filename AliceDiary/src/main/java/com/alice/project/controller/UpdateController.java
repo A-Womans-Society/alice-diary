@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Post;
@@ -37,6 +36,7 @@ public class UpdateController {
 
 	@Autowired
 	private WriteService writeService;
+	
 
 	@GetMapping("/community/put")
 	public String getUpdate(Long num, Model model, Pageable pageable) {
@@ -55,13 +55,11 @@ public class UpdateController {
 
 	@PostMapping("/community/put")
 	public String updatePorc(WriteFormDto updateDto, HttpSession session) {
-		System.out.println("수정 컨트롤러 post작동/ num:" + updateDto.getNum());
-		updateService.updatePost(updateDto.getNum(), updateDto);
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-		Post updatedPost = writeService.findOne(updateDto.getNum());
-//		Post post = Post.updatePost(updateDto);
 
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaa" + updateDto.getOriginName());
+		updateService.updatePost(updateDto.getNum(), updateDto);
+		
+		Post updatedPost = writeService.findOne(updateDto.getNum());
+
 		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session);
 
 		return "redirect:list";
@@ -81,13 +79,5 @@ public class UpdateController {
 	 * 
 	 * return "redirect:list"; }
 	 */
-	@RequestMapping("community/put/deleteFile")
-	@ResponseBody
-	public String deleteFile(String fileNum) {
-		System.out.println("num:" + fileNum);
-
-		attachedFileService.deleteFile(Long.parseLong(fileNum));
-
-		return "redirect:list";
-	}
+	
 }

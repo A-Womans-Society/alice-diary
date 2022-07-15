@@ -16,18 +16,7 @@ public class UpdateService {
 
 	public void updatePost(Long num, WriteFormDto updateDto) {
 		System.out.println("수정 서비스 작동, num: " + num);
-//		Post posttmp = postRepository.findByNum(num);
 
-//		System.out.println("updateFormDto.getTitle()" + updateDto.getTitle());
-
-//		posttmp.setTitle(updateDto.getTitle());
-//		posttmp.setContent(updateDto.getContent());
-//		posttmp.setUpdateDate(LocalDateTime.now());
-
-//		System.out.println("posttmp.getContent()" + posttmp.getContent());
-//		System.out.println("posttmp.getUpdateDate()" + posttmp.getUpdateDate());
-
-//		postRepository.save(posttmp);
 		postRepository.editContent(num, updateDto.getContent());
 		postRepository.editTitle(num, updateDto.getTitle());
 		postRepository.editDate(num, LocalDateTime.now());
