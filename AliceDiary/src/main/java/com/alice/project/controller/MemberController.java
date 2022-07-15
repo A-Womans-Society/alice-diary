@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Member;
 import com.alice.project.service.MemberService;
-import com.alice.project.web.MemberDto;
+import com.alice.project.web.UserDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,13 +42,13 @@ public class MemberController {
 	@GetMapping(value = "/register")
 	public String memberForm(Model model) {
 		log.info("GET 나옴");
-		model.addAttribute("memberDto", new MemberDto());
+		model.addAttribute("memberDto", new UserDto());
 		return "login/registerForm";
 	}
 
 	// 회원가입 PostMapping 가입 성공 후 로그인 페이지로 이동
 	@PostMapping(value = "/register")
-	public String memberForm(@Valid MemberDto memberDto, BindingResult bindingResult, HttpSession session) {
+	public String memberForm(@Valid UserDto memberDto, BindingResult bindingResult, HttpSession session) {
 		log.info("POST 나옴");
 
 		if (bindingResult.hasErrors()) {
@@ -137,18 +137,18 @@ public class MemberController {
 	public String updatePwd(@PathVariable Long num, Model model) {
 		log.info("비밀번호 재설정 GET 진입");
 		Member member = memberService.findByNum(num);
-		MemberDto mdto = new MemberDto(member);
+		UserDto mdto = new UserDto(member);
 		model.addAttribute("memberDto", mdto);
 		return "login/updatePwd";
 	}
 
 	// 비밀번호 재설정 Post
 	@PostMapping(value = "/login/updatePwd/{num}")
-	public String updatePwd(@PathVariable Long num, MemberDto memberDto) {
+	public String updatePwd(@PathVariable Long num, UserDto memberDto) {
 		log.info("비밀번호 재설정 POST 진입");
 		Member member = memberService.findByNum(num);
 		log.info("비밀번호 재설정 전 Member : " + member);
-		MemberDto mdto = new MemberDto(member, memberDto.getPassword());
+		UserDto mdto = new UserDto(member, memberDto.getPassword());
 		member = Member.createMember(mdto, passwordEncoder);
 		member.setNum(num);
 		member = memberService.updateMember(member);

@@ -23,7 +23,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
-public class MemberDto {
+public class UserDto {
 
 	@NotBlank(message = "아이디는 필수 입력 값입니다.")
 	private String id;
@@ -61,7 +61,7 @@ public class MemberDto {
 	private MultipartFile profileImg;
 	
 
-	public MemberDto(@NotBlank(message = "아이디는 필수 입력 값입니다.") String id,
+	public UserDto(@NotBlank(message = "아이디는 필수 입력 값입니다.") String id,
 			@NotEmpty(message = "비밀번호는 필수 입력 값입니다.") @Size(min = 8, message = "비밀번호는 8자 이상으로 입력해주세요.") String password,
 			String confirmPassword, @NotBlank(message = "이름은 필수 입력 값입니다.") String name,
 			@NotNull(message = "생년월일은 필수 입력 값입니다.") LocalDate birth, Gender gender,
@@ -84,7 +84,7 @@ public class MemberDto {
 		this.profileImg = profileImg;
 	}
 	
-	public MemberDto(Member member) {
+	public UserDto(Member member) {
 		this.id = member.getId();
 		this.password = member.getPassword();
 		this.name = member.getName();
@@ -98,7 +98,7 @@ public class MemberDto {
 	}
 	
 	//비밀번호 재설정을 위한 생성자
-	public MemberDto(Member member, String newPwd) {
+	public UserDto(Member member, String newPwd) {
 		
 		this.id = member.getId();
 		this.password = newPwd;

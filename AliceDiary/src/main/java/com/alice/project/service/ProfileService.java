@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.alice.project.domain.Member;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.ProfileRepository;
-import com.alice.project.web.MemberDto;
+import com.alice.project.web.UserDto;
 
 import lombok.RequiredArgsConstructor;
 

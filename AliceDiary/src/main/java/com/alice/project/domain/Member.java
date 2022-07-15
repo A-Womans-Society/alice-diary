@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alice.project.web.MemberDto;
+import com.alice.project.web.UserDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -105,7 +105,7 @@ public class Member {
 	}
 	
 	// 필수값만 가진 회원객체 생성 메서드 (정적 팩토리 메서드)
-		public static Member createMember(MemberDto memberDto, PasswordEncoder passwordEncoder) {
+		public static Member createMember(UserDto memberDto, PasswordEncoder passwordEncoder) {
 			Member member = new Member();
 			member.setId(memberDto.getId());
 			String password = passwordEncoder.encode(memberDto.getPassword());
