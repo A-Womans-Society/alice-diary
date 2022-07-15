@@ -24,7 +24,6 @@ import com.alice.project.web.CalendarFormDto;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/AliceDiary")
 @RequiredArgsConstructor
 public class AliceController {
 	private final CalendarService calendarService;

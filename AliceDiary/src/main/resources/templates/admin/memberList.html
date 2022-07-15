@@ -1,69 +1,76 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-	<script type="text/javascript" th:src="@{/js/admin/memberList.js}"></script>
-	
-</head>
-<body>
-    <!--/* 검색 영역 */-->
-    <div class="input-group" id="adv-search">
-        <select id="searchType" class="form-control" style="width: 100px;">
-            <option value="">전체</option>
-            <option value="num">회원번호</option>
-            <option value="id">아이디</option>
-            <option value="name">이름</option>
-            <option value="mobile">전화번호</option>
-            <option value="reportCnt">신고 누적횟수</option>
-            <option value="status">회원상태</option>
-        </select>
-        <input type="text" id="searchKeyword" class="form-control" placeholder="카테고리 선택 후 검색해주세요." style="width: 300px;" />
-        <button type="button" class="btn btn-primary">검색</button>
-    </div>
-    
-<!--/* 게시글 영역 */-->
-<div class="container">
-	<div>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>No.</th>
-					<th>회원번호</th>
-					<th>아이디</th>
-					<th>이름</th>
-					<th>전화번호</th>
-					<th>이메일</th>
-					<th>신고 누적횟수</th>
-					<th>회원상태</th>
-					<th>내보내기</th>
-				</tr>
-			</thead>
-			<!--/* 게시글 리스트 Rendering 영역 */-->
-			<tbody align="center">
-				<tr th:each="member, i: ${members}">
-				<td th:text="${i.count}"></td>
-				<td th:text="${member.num}"></td>
-				<td>
-					<a th:href="@{'/admin/member/'+${member.num}}">
-						<span th:text="${member.id}"></span>
-					</a>
-				</td>
-				<td th:text="${member.name}"></td>
-				<td th:text="${member.mobile}"></td>
-				<td th:text="${member.email}"></td>
-				<td th:text="${member.reportCnt}"></td>
-				<td th:text="${member.status}"></td>			
-				<td>
-					<button th:if="${member.getStatus().toString().equals('USER_IN')}" th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
-					<button th:unless="${member.getStatus().toString().equals('USER_IN')}" th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button>
-				</td>
-				</tr>
-			</tbody>
-			
-		</table>
-	</div>
-</div> <!-- /container -->
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/adminLayout}">
 
-</body>
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="script">
+
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+	<script th:src="@{/js/admin/memberList.js}"></script>
+
+</th:block>
+
+<div layout:fragment="content">
+	<!--/* 검색 영역 */-->
+	<div class="input-group" id="adv-search">
+		<select id="searchType" class="form-control" style="width: 100px;">
+			<option value="">전체</option>
+			<option value="num">회원번호</option>
+			<option value="id">아이디</option>
+			<option value="name">이름</option>
+			<option value="mobile">전화번호</option>
+			<option value="reportCnt">신고 누적횟수</option>
+			<option value="status">회원상태</option>
+		</select> <input type="text" id="searchKeyword" class="form-control"
+			placeholder="카테고리 선택 후 검색해주세요." style="width: 300px;" />
+		<button type="button" class="btn btn-primary">검색</button>
+	</div>
+
+	<!--/* 게시글 영역 */-->
+	<div class="container">
+		<div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>회원번호</th>
+						<th>아이디</th>
+						<th>이름</th>
+						<th>전화번호</th>
+						<th>이메일</th>
+						<th>신고 누적횟수</th>
+						<th>회원상태</th>
+						<th>내보내기</th>
+					</tr>
+				</thead>
+				<!--/* 게시글 리스트 Rendering 영역 */-->
+				<tbody align="center">
+					<tr th:each="member, i: ${members}">
+						<td th:text="${i.count}"></td>
+						<td th:text="${member.num}"></td>
+						<td><a th:href="@{'/admin/member/'+${member.num}}"> <span
+								th:text="${member.id}"></span>
+						</a></td>
+						<td th:text="${member.name}"></td>
+						<td th:text="${member.mobile}"></td>
+						<td th:text="${member.email}"></td>
+						<td th:text="${member.reportCnt}"></td>
+						<td th:text="${member.status}"></td>
+						<td>
+							<button
+								th:if="${member.getStatus().toString().equals('USER_IN')}"
+								th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
+							<button
+								th:unless="${member.getStatus().toString().equals('USER_IN')}"
+								th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button>
+						</td>
+					</tr>
+				</tbody>
+
+			</table>
+		</div>
+	</div>
+</div>
 </html>

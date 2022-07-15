@@ -3,12 +3,14 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
+
 <title>Alice Diary</title>
 
+
 <!-- ajax token -->
-<!-- <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" /> -->
-<!-- <meta id="_csrf_header" name="_csrf_header" -->
-<!-- 	th:content="${_csrf.headerName}" /> -->
+<!-- <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+<meta id="_csrf_header" name="_csrf_header"
+	th:content="${_csrf.headerName}" /> -->
 
 <!-- bootstrap 4 -->
 <link rel="stylesheet"
@@ -30,16 +32,21 @@
 
 <!-- navbar css -->
 <link rel="stylesheet" th:href="@{/css/layout/navbar.css}">
+<link rel="stylesheet" th:href="@{/css/layout/sidebar.css}">
 
 <th:block layout:fragment="script"></th:block>
 <th:block layout:fragment="css"></th:block>
 </head>
 <body>
-
 	<!-- import header -->
 	<div th:replace="fragments/header::header"></div>
-	<!-- import content -->
-	<div layout:fragment="content" style="height: 90%;"></div>
-	<!--  style="height: 95vh;" -->
+	<div style="height: 92%;" class="container-fluid">
+		<div class="row">
+			<!-- import sidebar -->
+			<div th:replace="fragments/msgSidebar::msgSidebar" class="col-3"></div>
+			<!-- import content -->
+			<div layout:fragment="content" class="col-9"></div>
+		</div>
+	</div>
 </body>
 </html>
