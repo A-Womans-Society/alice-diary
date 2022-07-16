@@ -21,6 +21,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.alice.project.web.WriteFormDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -63,11 +64,12 @@ public class Post {
 	private Community community; // 소속 커뮤니티 객체
 
 	/* replies가 null일 수 있음 */
-	@OneToMany(mappedBy = "post")
-	private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
+//	@OneToMany(mappedBy = "post")
+//	private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
 
 	/* files가 null일 수 있음 */
 	@OneToMany(mappedBy = "post")
+	@JsonIgnore
 	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
 
 	// 연관관계 메서드 (양방향관계)

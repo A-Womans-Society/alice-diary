@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,12 +27,11 @@ public class AttachedFile {
 	@Id @GeneratedValue
 	@Column(name="file_num")
 	private Long num; // 파일 번호
+	@JsonIgnore
 	private String originName; // 원본파일명 
 	private String saveName; // 저장파일명
 	private String filePath; // 파일경로
-	
-//	private String postNum; // 소속 게시물번호
-//	private String messageNum; // 소속 쪽지번호
+
 	
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="post_num")

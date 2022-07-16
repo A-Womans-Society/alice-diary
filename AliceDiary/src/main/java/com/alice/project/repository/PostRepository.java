@@ -18,7 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	Page<Post> findAll(Pageable pageable); // 전체 조회 및 페이징처리
 
-//	Page<Post> findByTitleContaining(String keyword, Pageable pageable);
 
 	@Modifying
 	@Transactional

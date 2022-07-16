@@ -24,10 +24,4 @@ public class ListService {
 
 	
 
-	/*
-	 * public Page<Post> searchList(String keyword, Pageable pageable) {
-	 * 
-	 * return postRepository.findByTitleContaining(keyword, pageable); }
-	 */
-
 }

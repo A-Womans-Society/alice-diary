@@ -24,7 +24,10 @@ import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Post;
 import com.alice.project.repository.AttachedFileRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class AttachedFileService {
 
 	@Autowired
@@ -33,42 +36,39 @@ public class AttachedFileService {
 	
 
 	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session) {
-		System.out.println("list size : " + files.size());
+		log.info("list size : " + files.size());
 		if (files.size() != 0) {
-			System.out.println("service run");
+			log.info("service run");
 			for (MultipartFile multipartFile : files) {
 
 				String savePath = "C:\\Temp\\upload\\";
 				String ofile = multipartFile.getOriginalFilename();
-				String sfile = PostSaveFile(multipartFile, savePath, session);
+				String sfile = postSaveFile(multipartFile, savePath, session);
 
-				System.out.println("service run222222222");
+				log.info("service run222222222");
 
-//				AttachedFile file = new AttachedFile(ofile, sfile, savePath);
 				AttachedFile file = new AttachedFile(ofile, sfile, savePath, post);
 
 				attachedFileRepository.save(file);
-				System.out.println("service run444444444");
+				log.info("service run444444444");
 
 			}
 
 		} else {
-			System.out.println("no upload file");
+			log.info("upload file FAIL!!");
 		}
 	}
 
-	public String PostSaveFile(MultipartFile file, String savePath, HttpSession session) {
+	public String postSaveFile(MultipartFile file, String savePath, HttpSession session) {
 
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-		// String sfile = 사용자 아이디+ "_" + currentTime + "_" + ofile;
-
 		String sfile = currentTime + "_" + ofile;
 
-		System.out.println("ofile:" + ofile);
-		System.out.println("sfile:" + sfile);
-		System.out.println("savePath:" + savePath);
+		log.info("ofile:" + ofile);
+		log.info("sfile:" + sfile);
+		log.info("savePath:" + savePath);
 
 		try {
 			file.transferTo(new File(savePath + sfile));
@@ -81,7 +81,6 @@ public class AttachedFileService {
 	
 	public ResponseEntity<UrlResource> postFileDownload(Long num) throws MalformedURLException, UnsupportedEncodingException{
 		
-		//엔티티에서 필드 값과 동일한 pk 정보를 가지고 와서 검증하는 단계
 		Optional<AttachedFile> findFile = attachedFileRepository.findById(num);
 		AttachedFile attachedFile = findFile.orElse (null);
 		if (findFile == null) return null;
@@ -89,7 +88,7 @@ public class AttachedFileService {
 		String sFileName = attachedFile.getSaveName();
 		String oFileName = attachedFile.getOriginName();
 		
-		//한글 인코딩
+		
 		String encodeoFileName;
 
 			encodeoFileName = URLEncoder.encode(oFileName,"UTF-8").replace("+", "%20");
@@ -104,14 +103,30 @@ public class AttachedFileService {
 	}
 	
 	public List<AttachedFile> fileView(Post post,Pageable pageable) {
-		System.out.println("service run file");
+		log.info("service run fileVIEW");
 		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
-		System.out.println("asf.size:" + afs.size());
+		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
-			System.out.println("AFS의 fileView!!! af : " + oriName);
+			log.info("AFS의 fileView!!! af : " + oriName);
 		}
 		return attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+	}
+	
+	public List<AttachedFile> newFileView(Long postNum) {
+		log.info("service run newfileVIEW");
+		
+		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(postNum);
+		
+		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
+		
+		for (AttachedFile af : afs) {
+			String oriName = af.getOriginName();
+			String saveName = af.getSaveName();
+			log.info("AFS의 oriName!!! af : " + oriName);
+			log.info("AFS의 saveName!!! af : " + saveName);
+		}
+		return afs;
 	}
 	
 

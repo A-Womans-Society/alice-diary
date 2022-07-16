@@ -60,8 +60,8 @@ public class Member {
 	 * @OneToMany(mappedBy="member", cascade = CascadeType.ALL) private List<Post>
 	 * posts = new ArrayList<>(); // 사용자가 쓴 게시물
 	 */
-	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
-	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글 
+//	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
+//	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글 
 	
 	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
 	private List<Calendar> calendars = new ArrayList<>(); // 사용자가 생성한 일정

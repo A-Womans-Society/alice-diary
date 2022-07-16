@@ -41,8 +41,6 @@ public class Community {
 	@OneToMany(mappedBy="community")
 	private List<Post> posts = new ArrayList<>(); // 해당 커뮤니티 소속 게시물리스트
 	
-	/* (넣자구 하면 주길꺼져...?ㅎㅅㅎ) */
-	// private String thumbnail; // 커뮤니티 섬네일 이미지
 	
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {

@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Post;
 import com.alice.project.service.AttachedFileService;
+import com.alice.project.service.ReplyService;
 import com.alice.project.service.ViewService;
+import com.alice.project.web.ReplyDto;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/AliceDiary")
+@Slf4j
 public class ViewController {
 
 	@Autowired
@@ -29,12 +36,16 @@ public class ViewController {
 	@Autowired
 	private AttachedFileService attachedFileService;
 	
+	@Autowired
+	private ReplyService replyService;
+	
 	
 	 @GetMapping("community/get") 
-	 public String postView(Model model, Long num,Pageable pageable) {
-		 
-		 System.out.println("num :"+num);
-		 
+	 public String postView(Model model, Long num,Pageable pageable, HttpSession session) {
+		
+		 log.info("num :"+num);
+	
+		 model.addAttribute("memId", 1); // 세션대신 아이디를 하드코딩!!
 		 Post viewPost = viewService.postView(num);
 		 
 		 viewService.viewCntUp(num);
@@ -43,7 +54,12 @@ public class ViewController {
 	  
 	 List<AttachedFile> files = attachedFileService.fileView(viewPost,pageable);
 	  model.addAttribute("files",files); 
-	  
+	  	
+	 	List<ReplyDto> replyList = replyService.replyList(num);
+		for (ReplyDto rdto : replyList) {
+			log.info("리스트 각각 : " + rdto.toString());
+		}
+		model.addAttribute("replyList", replyList);
 	 
 	  return "community/postView";  
 	  }

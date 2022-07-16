@@ -25,7 +25,8 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 
-<script th:src="@{/js/reply.js}"></script>
+<script th:src="@{/js/community/postView.js}"></script>
+
 </head>
 <body>
 	<div id="sidemenu"
@@ -44,10 +45,12 @@
 				<th th:text="${postView.title}"></th>
 			</tr>
 			<tr>
-				<td>작성자 
-					<div align="right" th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
-					<div align="right" th:if="${postView.updateDate != null}" style="color: grey; font-size: 15px;"
-					th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></div>
+				<td>작성자
+					<div align="right"
+						th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
+					<div align="right" th:if="${postView.updateDate != null}"
+						style="color: grey; font-size: 15px;"
+						th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></div>
 				</td>
 			<tr>
 				<td><div th:text="${postView.content}"
@@ -66,44 +69,40 @@
 			<input type="button" value="신고">
 		</div>
 		<div align="right">
-			<a th:href="@{/AliceDiary/community/put(num=${postView.num})}">
-			<input type="button" value="수정"></a> 
-			<a th:href="@{/AliceDiary/community/delete(num=${postView.num})}">
-			<button type="button" >삭제</button></a> 
-			
-			<a th:href="@{/AliceDiary/community/list}"><input type="button" value="목록"></a>
+			<a th:href="@{/AliceDiary/community/put(num=${postView.num})}"> <input
+				type="button" value="수정"></a>
+			<button type="button" id="delete_confirm"
+				th:onclick="deleteConfirm([[${postView.num}]])">삭제</button>
+
+
+			<a th:href="@{/AliceDiary/community/list}"><input type="button"
+				value="목록"></a>
 		</div>
 	</div>
 
-	<!-- <div class="card" style="float: left;">
-		<form>
-			<input type="hidden" id="postid" value="${postView.num}">
-			<div class="card-body">
-				<textarea id="reply-content" class="form-cotrol" rows="1"></textarea>
-			</div>
-			<div class="card-folder">
-				<button type="button" id="btn-reply-save" class="brn btn-primary">등록</button>
-			</div> -->
 
-	<div class="comment-box">
-		<input type="text" placeholder="댓글을 입력해주세요.." id="replyContent"> <input
-			type="hidden" th:value="${postView.num}">
-		<div>
-			<button type="button" th:onclick="|replySubmit(${postView.num})|">등록</button>
-		</div>
-	</div>
+	<div id="replyList">
+		<table id="replyTable">
+			<tr th:each="reply : ${replyList}">
 
-	<!-- 	<div class="comment-box">
+				<td th:text="${reply.memberId}" />
+				<td
+					th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
+				<td th:text="${reply.content}"></td>
+				<td><button type="button">답글쓰기</button></td>
+			</tr>
+		</table>
 
-		<form id="reply" th:action="@{/AliceDiary/community/get/reply}"
-			th:object="${replyDto}" method="post">
-			<input type="text" th:field="*{content}" placeholder="댓글을 입력해주세요..">
-			<input type="hidden" th:field="*{postNum}" th:value="${postView.num}">
+		<div class="commentBox">
+			<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
 			<div>
-				<button type="submit">등록</button>
+				<button type="button" th:onclick="|replySubmit(${postView.num})|">등록</button>
 			</div>
-		</form>
-	</div> -->
+
+		</div>
+
+	</div>
+
 
 </body>
 </html>
