@@ -14,8 +14,11 @@ import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.WriteService;
 import com.alice.project.web.WriteFormDto;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
 @RequestMapping("/AliceDiary")
+@Slf4j
 public class WriteController {
 
 	@Autowired
@@ -26,42 +29,22 @@ public class WriteController {
 
 	@GetMapping("/community/post")
 	public String writeform(Model model) {
-		System.out.println("get");
+		log.info("get");
 		model.addAttribute("writeFormDto", new WriteFormDto());
 		return "community/writeForm";
 	}
 
 	@PostMapping("/community/post")
 	public String writeSubmit(WriteFormDto writeFormDto, HttpSession session) {
-		System.out.println("controller 실행");
+		log.info("controller 실행");
 
-		if (!writeFormDto.getOriginName().isEmpty()) {
-			Post post = Post.createPost(writeFormDto);
+		Post post = Post.createPost(writeFormDto);
+		writeService.write(post);
 
-			attachedFileService.postFileUpload(writeFormDto.getOriginName(), writeService.write(post), session);
-		} else {
-			Post post = Post.createPost(writeFormDto);
+		attachedFileService.postFileUpload(writeFormDto.getOriginName(), writeService.write(post), session);
 
-			writeService.write(post);
-		}
-
-		System.out.println("service 이동");
 		return "redirect:list";
 	}
 
-	/*
-	 * @PostMapping("/community/post") public String writeSubmit(WriteFormDto
-	 * writeFormDto, HttpSession session) { System.out.println("controller 실행");
-	 * Post post = Post.createPost(writeFormDto);
-	 * 
-	 * if (writeFormDto.getOriginName() != null) {
-	 * 
-	 * attachedFileService.postFileUpload(writeFormDto.getOriginName(),
-	 * writeService.write(post), session); } else {
-	 * attachedFileService.postFileUpload(writeFormDto.getOriginName(),
-	 * writeService.write(post), session); }
-	 * 
-	 * System.out.println("service 이동"); return "redirect:list"; }
-	 */
-
+	
 }

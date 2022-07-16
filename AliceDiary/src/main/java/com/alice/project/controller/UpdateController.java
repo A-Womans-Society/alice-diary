@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Post;
@@ -20,8 +21,11 @@ import com.alice.project.service.ViewService;
 import com.alice.project.service.WriteService;
 import com.alice.project.web.WriteFormDto;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
 @RequestMapping("/AliceDiary")
+@Slf4j
 public class UpdateController {
 
 	@Autowired
@@ -40,11 +44,10 @@ public class UpdateController {
 
 	@GetMapping("/community/put")
 	public String getUpdate(Long num, Model model, Pageable pageable) {
-		System.out.println("수정컨트롤러 get");
+		log.info("수정컨트롤러 get");
 
 		Post getUpdate = viewService.postView(num);
 
-//		model.addAttribute("getUpdate", getUpdate);
 		WriteFormDto updateDto = new WriteFormDto(num, getUpdate.getTitle(), getUpdate.getContent());
 		List<AttachedFile> files = attachedFileService.fileView(getUpdate, pageable);
 
@@ -53,31 +56,18 @@ public class UpdateController {
 		return "community/updateForm";
 	}
 
+
 	@PostMapping("/community/put")
 	public String updatePorc(WriteFormDto updateDto, HttpSession session) {
 
-		updateService.updatePost(updateDto.getNum(), updateDto);
+		updateService.updatePost(updateDto.getPostNum(), updateDto);
 		
-		Post updatedPost = writeService.findOne(updateDto.getNum());
+		Post updatedPost = writeService.findOne(updateDto.getPostNum());
 
 		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session);
 
 		return "redirect:list";
 	}
 
-	/*
-	 * @PostMapping("community/put") public String updatePorc(Long num,
-	 * UpdateFormDto updateFormDto, HttpSession session) {
-	 * System.out.println("수정 컨트롤러 post작동/ num:" + num);
-	 * updateService.updatePost(num, updateFormDto);
-	 * 
-	 * Post post = Post.updatePost(updateFormDto);
-	 * 
-	 * System.out.println(updateFormDto.getOriginName());
-	 * attachedFileService.postFileUpload(updateFormDto.getOriginName(),
-	 * writeService.write(post), session);
-	 * 
-	 * return "redirect:list"; }
-	 */
 	
 }

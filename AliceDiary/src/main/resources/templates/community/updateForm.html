@@ -25,6 +25,8 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 
+<script th:src="@{/js/community/updateForm.js}"></script>
+
 </head>
 <body>
 	<div id="sidemenu"
@@ -38,8 +40,7 @@
 	</div>
 	<div style="float: left;">
 		<h2>글 수정하기</h2>
-		<!-- 		<form th:action="@{/AliceDiary/community/put(num=${getUpdate.num})}"
-			th:object="${updateDto}" method="post"> -->
+
 		<form th:action="@{/AliceDiary/community/put}"
 			th:object="${updateDto}" method="post" enctype="multipart/form-data">
 			<table border="1">
@@ -49,68 +50,32 @@
 				</tr>
 				<tr>
 					<td>내용</td>
-					<td><textarea name="content" cols="auto" rows="auto"
+					<td><textarea name="content" cols="50" rows="25"
 							th:field="*{content}"></textarea></td>
 				</tr>
 			</table>
-		
 
 
-		<div id="fileBox">
-			<p th:each="file : ${files}">
-				첨부파일: <a th:href="|/AliceDiary/community/download/${file.num}|"
-					th:text="${file.originName}"></a> 
-					<button type="button" id="delete_file" th:onclick="deleteFile([[${file.num}]])">파일삭제</button>
-			</p>
+
+			<div id="fileBox">
+				<p th:each="file : ${files}" th:if="${file.originName != null}">
+					첨부파일: <a id="filewow" th:href="|/AliceDiary/community/download/${file.num}|"
+						th:text="${file.originName}"></a>
+				<button type="button" id="delete_file"
+						th:onclick="deleteFile([[${file.num}]],[[${updateDto.postNum}]])">파일삭제</button>				
+				</p>
+				
+			</div>
+
+			<div>
+				파일첨부<input type="file" th:field="*{originName}" multiple />
+			</div>
+			<div>
+				<input type="submit" value="수정"> <input type="button"
+					onClick="history.go(-1)" value="취소">
+					<input type="hidden" th:field="*{postNum}">
+			</div>
+		</form>
 		</div>
-
-		<div>
-			파일첨부<input type="file" th:field="*{originName}" multiple/>
-		</div>
-		<div>
-			<input type="submit" value="수정"> <input type="button"
-				onClick="history.go(-1)" value="취소">
-		</div>
-		<input type="hidden" th:field="*{num}">
-</form>
-
-		<!--	<script
-			src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  -->
-		<script type="text/javascript">
-			//		$("#delete").on("click", function() {
-			//			var frm = $("#frm")[0];
-			//		frm.action = "deleteFile";
-			//	frm.submit();
-			//			});
-
-			function deleteFile(num) {
-				console.log(num);
-				let token = $("meta[name='_csrf']").attr("content");
-				let header = $("meta[name='_csrf_header']").attr("content");
-				let httpRequest = new XMLHttpRequest();
-
-				httpRequest.onreadystatechange = function() {
-					if (httpRequest.readyState === XMLHttpRequest.DONE) {
-						if (httpRequest.status === 200) {
-							alert('파일이 삭제되었습니다!');
-							location.reload();
-// 							window.location = "put";
-						} else {
-							alert('request에 뭔가 문제가 있어요.');
-						}
-					}
-				};
-
-				//POST로 요청
-				httpRequest.open('POST', "./put/filedelete", true);
-				httpRequest.setRequestHeader(header, token);
-				httpRequest.setRequestHeader('Content-type',
-						'application/x-www-form-urlencoded');
-				httpRequest.send("num=" + num); // 요게 문제였습니다!!
-			}
-		</script>
-	</div>
-
-
 </body>
 </html>

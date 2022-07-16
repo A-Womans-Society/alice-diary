@@ -14,7 +14,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WriteFormDto {
-	private Long num; //postNum
+	
+	private Long postNum; //postNum
+	
 	private String title;
 
 	private String content;
@@ -26,9 +28,9 @@ public class WriteFormDto {
 	private List<MultipartFile> originName;
 
 	@Builder
-	public WriteFormDto(Long num, String title, String content) {
+	public WriteFormDto(Long postNum, String title, String content) {
 		super();
-		this.num = num;
+		this.postNum = postNum;
 		this.title = title;
 		this.content = content;
 	}
