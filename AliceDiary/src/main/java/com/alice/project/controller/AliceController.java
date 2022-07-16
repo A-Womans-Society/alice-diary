@@ -70,7 +70,7 @@ public class AliceController {
 		dto.setEndDate(endDate.plusDays(1));
 		dto.setAlarmDate(alarmDate);
 		calendarService.addEvent(dto);
-		return "redirect:/AliceDiary/alice";
+		return "redirect:/alice";
 	}
 
 	@PostMapping("/showDetail")

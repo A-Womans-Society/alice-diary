@@ -64,29 +64,29 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물
+//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글
-
+//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글
+//
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Calendar> calendars = new ArrayList<>(); // 사용자가 생성한 일정
-
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
-
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
+//
+//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
+//
+//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
 
 //	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
 //	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
-
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
-
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
+//
+//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
+//
+//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
 
 	@PrePersist
 	public void reg_date() {
@@ -170,6 +170,7 @@ public class Member {
 		return member;
 	}
 
+	@Builder
 	public Member(Status status) {
 		this.status = Status.USER_OUT;
 	}
@@ -190,6 +191,9 @@ public class Member {
 				memberDto.getSaveName(), Status.USER_IN);
 		return member;
 	}
+	
+
+	
 
 	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {

@@ -75,9 +75,9 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 
 	// 비밀번호 재설정
 	public Member updateMember(Member member) {
-
 		return memberRepository.save(member);
 	}
+	
 
 
 	@Override
@@ -94,6 +94,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		return User.builder().username(member.getId()).password(member.getPassword()).roles(member.getStatus().toString())
 				.build();
 	}
+	
 
 ////////////////////////////////////////문쥬우
 	/* 회원 전체 조회 */

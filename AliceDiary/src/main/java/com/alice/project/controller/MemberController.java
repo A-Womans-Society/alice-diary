@@ -11,12 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alice.project.domain.Member;
+import com.alice.project.repository.ProfileRepository;
 import com.alice.project.service.MemberService;
 import com.alice.project.web.UserDto;
 
@@ -88,17 +90,11 @@ public class MemberController {
 		return check;
 	}
 
-	// 로그인 GetMapping
-	@GetMapping(value = "/login")
-	public String userLogin() {
-		return "/login/userLoginForm";
-	}
-
 	// 로그인에러 GetMapping
 	@GetMapping(value = "/login/error")
 	public String loginError(Model model) {
 		model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
-		return "/login/userLoginForm";
+		return "redirect:/";
 	}
 
 	// Id찾기 Get
@@ -119,41 +115,51 @@ public class MemberController {
 
 	// 비밀번호 찾기 Get
 	@GetMapping(value = "/login/findPwd")
-	public String findPwd() {
+	public String findPwd(Model model) {
+		log.info("비밀번호 찾기 GET 진입");
+		model.addAttribute("userDto", new UserDto());
 		return "login/findPwd";
 	}
 
 	// 비밀번호 찾기 Post
 	@PostMapping(value = "/login/findPwd")
-	@ResponseBody
-	public Member findPwd(String id, String name, String mobile) {
+	public String findPwd(UserDto userDto, RedirectAttributes re, Model model) {
 		log.info("비밀번호 찾기 POST 진입");
-		Member member = memberService.findPwd(id, name, mobile);
-		return (member == null) ? null : member;
+		Member member = memberService.findPwd(userDto.getId(), userDto.getName(), userDto.getMobile());
+		if (member != null) {
+			re.addFlashAttribute("member", member);
+			return "redirect:/login/updatePwd";
+		} else {
+			model.addAttribute("msg", "존재하지 않는 유저입니다.");
+			return "/login/findPwd";
+					
+		}
 	}
 
 	// 비밀번호 재설정 Get
-	@GetMapping(value = "/login/updatePwd/{num}")
-	public String updatePwd(@PathVariable Long num, Model model) {
+	@GetMapping(value = "/login/updatePwd")
+	public String updatePwd(@ModelAttribute(value="member") Member m, Model model) {
 		log.info("비밀번호 재설정 GET 진입");
-		Member member = memberService.findByNum(num);
-		UserDto mdto = new UserDto(member);
+		log.info("Member m === " + m);
+		UserDto mdto = new UserDto(m);
+		Long num = m.getNum();
 		model.addAttribute("memberDto", mdto);
+		model.addAttribute("num", num);
 		return "login/updatePwd";
 	}
 
 	// 비밀번호 재설정 Post
-	@PostMapping(value = "/login/updatePwd/{num}")
-	public String updatePwd(@PathVariable Long num, UserDto memberDto) {
+	@PostMapping(value = "/login/savePwd")
+	public String updatePwd(UserDto memberDto, @RequestParam("num") Long num) {
 		log.info("비밀번호 재설정 POST 진입");
 		Member member = memberService.findByNum(num);
 		log.info("비밀번호 재설정 전 Member : " + member);
-		UserDto mdto = new UserDto(member, memberDto.getPassword());
-		member = Member.createMember(num, mdto, passwordEncoder);
+		UserDto userDto = new UserDto(member, memberDto.getPassword());
+		member = Member.createMember(num, userDto, passwordEncoder);
 		member = memberService.updateMember(member);
 		log.info("비밀번호 재설정 후 Member : " + member);
 
-		return "/login/userLoginForm";
+		return "redirect:/login";
 	}
 
 	/*

@@ -25,20 +25,19 @@
 	<script th:src="@{/lib/fullcalendar-5.11.0/main.min.js}"></script>
 
 	<script th:inline="javascript">
-	/*<![CDATA[*/
-	var eventsList = /*[[${list}]]*/;
-	/*]]>*/
-
+		/*<![CDATA[*/
+		var eventsList = /*[[${list}]]*/;
+		/*]]>*/
 	</script>
 
-	<script th:src="@{/js/calendar.js}"></script>
+	<script th:src="@{/js/calendar/calendar.js}"></script>
 </th:block>
 
 
 
 <div layout:fragment="content">
-	<div class="container-fluid">
-		<div class="row justify-content-end">
+	<div class="container-fluid h-100">
+		<div class="row justify-content-end h-100">
 			<div class="col-9" id='calendar-container' style="padding: 0;">
 				<div id='calendar'></div>
 			</div>
@@ -86,8 +85,7 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<form th:action="@{/AliceDiary/addEvent}" th:object="${CalForm}"
-					method="post">
+				<form th:action="@{/addEvent}" th:object="${CalForm}" method="post">
 					<div class="modal-body">
 						<div class="container-fulid">
 							<div class="row">
