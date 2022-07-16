@@ -9,12 +9,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+
+import java.util.List;
 
 import com.alice.project.domain.Post;
 
 @Repository
 @Transactional(readOnly = true)
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredicateExecutor<Post>, PostRepositoryCustom {
 
 	Page<Post> findAll(Pageable pageable); // 전체 조회 및 페이징처리
 
@@ -40,7 +43,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	@Transactional
 	@Query("update Post p set p.updateDate = :updateDate where p.num = :num")
 	Integer editDate(Long num, LocalDateTime updateDate);
-	
-	
+  
+  public List<Post> findByMemberNum(Long memberNum);
+
 	
 }

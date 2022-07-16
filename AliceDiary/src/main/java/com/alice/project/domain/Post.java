@@ -11,10 +11,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
@@ -22,7 +24,6 @@ import javax.persistence.Table;
 
 import com.alice.project.web.WriteFormDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -151,4 +152,19 @@ public class Post {
 	 * 
 	 * return post; }
 	 */
+	
+	public Post(String title, LocalDateTime postDate, LocalDateTime updateDate, 
+			String content, Long viewCnt, PostType postType, Member member, 
+			Community community) {
+		this.title = title;
+		this.postDate = postDate;
+		this.updateDate = updateDate;
+		this.content = content;
+		this.viewCnt = viewCnt;
+		this.postType = postType;
+		this.member = member;
+		this.community = community;
+	}
+
+
 }

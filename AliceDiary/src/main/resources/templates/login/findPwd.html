@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/login/findPwd.js}"></script>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+	var message = /*[[${msg}]]*/;
+	if (message){
+		alert(message);	
+	}
+/*]]>*/
+</script>
+
+<div style="text-align: center">
+	<b>비밀번호 찾기</b>
+</div>
+<hr>
+<form th:action="@{/login/findPwd}" th:object="${userDto}" method="post">
+	<div>
+		아이디 : <input type="text" th:field="*{id}" />
+	</div>
+	<div>
+		이름 : <input type="text" th:field="*{name}" />
+	</div>
+	<div>
+		전화번호 : <input type="text" th:field="*{mobile}" />
+	</div>
+	<div>
+		<input type="submit" value="비밀번호 재설정" />
+	</div>
+</form>
+</html>

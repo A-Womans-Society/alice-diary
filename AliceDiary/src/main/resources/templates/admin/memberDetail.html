@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/adminLayout}">
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/admin/memberDetail.js}"></script>
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+</th:block>
+
+<div layout:fragment="content">
+
+	<h1 th:text="${member.id} + '님의 회원정보'" align="center"></h1>
+
+	<!--/* 회원상세보기 영역 */-->
+	<div class="container">
+		<div>
+			<!--/* 회원 정보 Rendering 영역 */-->
+			<th:block th:each="member : ${member}">
+				<p th:text="|회원번호 : ${member.num}|"></p>
+				<p th:text="|프로필사진 : ${member.profileImg}|"></p>
+				<p>
+					<img id="profileImg" th:src="${member.profileImg}" alt="프로필사진" />
+				</p>
+				<p th:text="|아이디 : ${member.id}|"></p>
+				<p th:text="|비밀번호 : ${member.pwd}|"></p>
+				<p th:text="|이름 : ${member.name}|"></p>
+				<p th:text="|성별 : ${member.gender}|"></p>
+				<p th:text="|생년월일 : ${member.birth}|"></p>
+				<p th:text="|전화번호 : ${member.mobile}|"></p>
+				<p th:text="|이메일 : ${member.email}|"></p>
+				<p th:text="|MBTI : ${member.mbti}|"></p>
+				<p th:text="|위시리스트 : ${member.wishlist}|"></p>
+				<p th:text="|신고 누적횟수 : ${member.reportCnt}|"></p>
+				<p th:text="|가입일자 : ${member.regDate}|"></p>
+				<p th:text="|회원상태 : ${member.status}|"></p>
+				<p>
+					<button th:if="${member.getStatus().toString().equals('USER_IN')}"
+						th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
+					<button
+						th:unless="${member.getStatus().toString().equals('USER_IN')}"
+						th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button>
+				</p>
+			</th:block>
+
+		</div>
+	</div>
+s</div>
+</html>

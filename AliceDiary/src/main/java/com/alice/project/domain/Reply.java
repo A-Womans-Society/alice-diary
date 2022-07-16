@@ -17,6 +17,7 @@ import com.alice.project.web.ReplyDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -28,6 +29,7 @@ import lombok.ToString;
 @ToString
 public class Reply {
 
+
 	@Id
 	@GeneratedValue
 	@Column(name = "reply_num")
@@ -35,18 +37,19 @@ public class Reply {
 	private Long parentRepNum; // 부모댓글 번호
 //	private Long memberNum; // 댓글 작성자
 //	private Long postNum;
+//	private String repWriter; // 댓글 작성자
+
 	private String content; // 댓글 내용
 	private LocalDateTime repDate; // 댓글작성일자
 	private Long heart = 0L; // 공감 수 (default=0)
 	private Boolean edit; // 수정여부 (False, True) SQL문 : CHAR(1) Check(edit IN('0', '1')
 
-	@ManyToOne(fetch = FetchType.LAZY)
 
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_num")
 	private Post post; // 댓글 소속 게시물 객체
 
 	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-
 	@JoinColumn(name = "member_num")
 	private Member member; // 댓글 작성 회원 객체
 
@@ -84,3 +87,23 @@ public class Reply {
 	}
 
 }
+	
+	// 연관관계 메서드 (양방향관계)
+	public void setPost(Post post) {
+		this.post = post;
+		post.getReplies().add(this);
+	}
+	public void setMember(Member member) {
+		this.member = member;
+		member.getReplies().add(this);
+	}
+	
+	// 댓글 객체 생성 메서드
+	public static Reply createReply(Post post, Member member) {
+		Reply reply = new Reply();
+		reply.setPost(post);
+		reply.setMember(member);
+		return reply;
+	}
+}
+
