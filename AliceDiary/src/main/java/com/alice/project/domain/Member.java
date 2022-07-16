@@ -26,6 +26,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
@@ -108,6 +109,7 @@ public class Member {
 		this.regDate = regDate;
 		this.status = status;
 	}
+
 
 	@Builder
 	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
@@ -209,3 +211,4 @@ public class Member {
 		return member;
 	}
 }
+

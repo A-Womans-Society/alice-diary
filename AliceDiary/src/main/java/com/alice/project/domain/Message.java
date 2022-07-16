@@ -23,6 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+
 public class Message implements Comparator<Message>, Comparable<Message>{
 	
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MESSAGE_SEQ_GENERATOR")
@@ -100,3 +101,4 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 //	}
 
 }
+

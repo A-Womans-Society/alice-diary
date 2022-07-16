@@ -1,12 +1,25 @@
 package com.alice.project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+
 import org.springframework.stereotype.Repository;
 
 import com.alice.project.domain.Member;
 
 @Repository
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
+	
+
+	@Query(value="select member_num from Member where id = :id", nativeQuery=true)
+	Long findMemberNumById(String id);
+
+	Member findById(String memberId);
+
 public interface MemberRepository extends JpaRepository<Member, Long>, 
 	QuerydslPredicateExecutor<Member>, MemberRepositoryCustom {
 	
@@ -24,4 +37,5 @@ public interface MemberRepository extends JpaRepository<Member, Long>,
 	
 	// 회원번호로 찾기
 	Member findByNum(Long num);
+
 }

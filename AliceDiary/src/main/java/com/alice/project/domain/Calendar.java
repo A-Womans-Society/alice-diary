@@ -1,5 +1,7 @@
 package com.alice.project.domain;
 
+
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -47,6 +49,7 @@ public class Calendar {
 	@JoinColumn(name = "mem_num")
 	private Member member; // 일정 생성 회원 객체
 
+
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {
 		this.member = member;
@@ -59,6 +62,7 @@ public class Calendar {
 		calendar.setMember(member);
 		return calendar;
 	}
+
 
 	@Builder
 	public Calendar(Long num, String memberList, LocalDate startDate, LocalDate endDate, String content, String memo,
@@ -99,3 +103,4 @@ public class Calendar {
 		return calendar;
 	}
 }
+

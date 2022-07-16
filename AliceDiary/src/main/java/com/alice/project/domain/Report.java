@@ -48,4 +48,6 @@ public class Report {
 		report.setMember(member);
 		return report;
 	}
+
 }
+

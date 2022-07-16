@@ -1,16 +1,50 @@
 package com.alice.project.repository;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+
+import java.util.List;
 
 import com.alice.project.domain.Post;
 
-public interface PostRepository extends JpaRepository<Post, Long>, 
-	QuerydslPredicateExecutor<Post>, PostRepositoryCustom {
+@Repository
+@Transactional(readOnly = true)
+public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredicateExecutor<Post>, PostRepositoryCustom {
 
-	public List<Post> findByMemberNum(Long memberNum);	
-	
+	Page<Post> findAll(Pageable pageable); // 전체 조회 및 페이징처리
+
+
+	@Modifying
+	@Transactional
+	@Query("update Post p set p.viewCnt = p.viewCnt + 1 where p.num = :num")
+	Integer viewCntUp(Long num);
+
+    Post findByNum(Long num);
+
+	@Modifying
+	@Transactional
+	@Query("update Post p set p.title = :title where p.num = :num")
+	Integer editTitle(Long num, String title);
+
+	@Modifying
+	@Transactional
+	@Query("update Post p set p.content = :content where p.num = :num")
+	Integer editContent(Long num, String content);
+
+	@Modifying
+	@Transactional
+	@Query("update Post p set p.updateDate = :updateDate where p.num = :num")
+	Integer editDate(Long num, LocalDateTime updateDate);
+  
+  public List<Post> findByMemberNum(Long memberNum);
+
 	
 }
