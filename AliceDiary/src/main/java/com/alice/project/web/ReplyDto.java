@@ -31,7 +31,7 @@ public class ReplyDto {
 
 	public ReplyDto(String content, String memberId, Long postNum) {
 		this.content = content;
-		this.memberId = "TESTER";
+		this.memberId = memberId;
 		this.postNum = postNum;
 	}
 
@@ -40,7 +40,7 @@ public class ReplyDto {
 		this.content = content;
 		this.repDate = repDate;
 		this.edit = edit;
-		this.memberId = "TESTER";
+		this.memberId = memberId;
 		this.postNum = postNum;
 	}
 

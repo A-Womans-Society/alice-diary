@@ -25,6 +25,7 @@ import javax.persistence.Table;
 import com.alice.project.web.WriteFormDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,6 +37,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode(of = "num")
 public class Post {
 
 	@Id
@@ -54,11 +56,10 @@ public class Post {
 	@Enumerated(EnumType.STRING)
 	private PostType postType; // 게시물 종류 [NOTICE, OPEN, CUSTOM]
 
-	/*
-	 * @ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	 * 
-	 * @JoinColumn(name = "member_num") private Member member; // 작성회원 객체
-	 */
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "member_num")
+	private Member member; // 작성회원 객체
+
 	/* community가 null일 수 있음 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "community_num")
@@ -152,19 +153,17 @@ public class Post {
 	 * 
 	 * return post; }
 	 */
-	
-	public Post(String title, LocalDateTime postDate, LocalDateTime updateDate, 
-			String content, Long viewCnt, PostType postType, Member member, 
-			Community community) {
+
+	public Post(String title, LocalDateTime postDate, LocalDateTime updateDate, String content, Long viewCnt,
+			PostType postType, Member member, Community community) {
 		this.title = title;
 		this.postDate = postDate;
 		this.updateDate = updateDate;
 		this.content = content;
 		this.viewCnt = viewCnt;
 		this.postType = postType;
-		this.member = member;
+//		this.member = member;
 		this.community = community;
 	}
-
 
 }

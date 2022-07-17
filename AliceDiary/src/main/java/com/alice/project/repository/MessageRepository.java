@@ -2,8 +2,6 @@ package com.alice.project.repository;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +12,8 @@ public interface MessageRepository extends JpaRepository<Message, Long>, Message
 	
 	/* 모든 메시지 반환 */ 
 	List<Message> findAll();
+
+	List<Message> findMsgByLiveMessageToNum(Long num);
 	
 //	/* 보낸 회원 번호로 메시지 찾기 */
 //	List<Message> findByMessageFromNum(Long messageFromNum);

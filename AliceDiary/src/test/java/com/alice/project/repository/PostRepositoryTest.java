@@ -21,15 +21,15 @@ class PostRepositoryTest {
 	@Autowired PostRepository postRepository;
 	
 	// 더미데이터 넣기 
-	public void createPostList() {
-		for (int i = 1; i <= 9; i++) {
-			Member member = Member.createMember("id"+i, "pwd"+i*2, "이름"+i, LocalDate.now(), Gender.FEMALE, "aaa@fff"+i+".com", "010-5654-564"+i, "enfp", "화장품", "mdjf.jpg", Status.USER_IN);
-			Community community = Community.createCommunity(member);
-			Post post = Post.createPost("제목1", LocalDateTime.now(), LocalDateTime.now(), 
-					"내용1", 0L, PostType.OPEN, member, community);
-			Post savedPost = postRepository.save(post);
-		}
-	}
+//	public void createPostList() {
+//		for (int i = 1; i <= 9; i++) {
+//			Member member = Member.createMember("id"+i, "pwd"+i*2, "이름"+i, LocalDate.now(), Gender.FEMALE, "aaa@fff"+i+".com", "010-5654-564"+i, "enfp", "화장품", "mdjf.jpg", Status.USER_IN);
+//			Community community = Community.createCommunity(member);
+//			Post post = Post.createPost("제목1", LocalDateTime.now(), LocalDateTime.now(), 
+//					"내용1", 0L, PostType.OPEN, member, community);
+//			Post savedPost = postRepository.save(post);
+//		}
+//	}
 	
 //	@Test
 //	@DisplayName("회원 등록 테스트")

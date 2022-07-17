@@ -58,7 +58,13 @@ public class MessageService {
 		List<Long> receiverNumsList = new ArrayList<>();
 		List<Message> messageList = messageRepository.findByLiveMessageFromNum(num);
 		log.info("MS진입");
-		if (messageList.isEmpty()) { log.info("messageList가 널입니다!!"); return null; }
+		for (Message msg : messageList) {
+			log.info("MS의 msg.getMessageToNum() : " + msg.getMessageToNum());
+
+		}
+		List<Long> nullList = new ArrayList<>();
+		nullList.add(0L);
+		if (messageList.isEmpty()) { log.info("messageList가 널입니다!!"); return nullList; }
 		for (Message msg : messageList) {
 			if (!receiverNumsList.contains(msg.getMessageToNum())) {
 				receiverNumsList.add(msg.getMessageToNum());		
@@ -70,6 +76,29 @@ public class MessageService {
 		}
 		return receiverNumsList;
 	}	
+
+	public List<Long> findLiveReceiverNumsByReceiverNum(Long num) {
+		List<Long> receiverNumsList = new ArrayList<>();
+		List<Message> messageList = messageRepository.findMsgByLiveMessageToNum(num);
+		log.info("MS진입");
+		for (Message msg : messageList) {
+			log.info("MS의 msg.getMessageToNum() : " + msg.getMessageToNum());
+
+		}
+		List<Long> nullList = new ArrayList<>();
+		nullList.add(0L);
+		if (messageList.isEmpty()) { log.info("messageList가 널입니다!!"); return nullList; }
+		for (Message msg : messageList) {
+			if (!receiverNumsList.contains(msg.getMessageToNum())) {
+				receiverNumsList.add(msg.getMessageToNum());		
+				log.info("MS의 msg.getMessageToNum() : " + msg.getMessageToNum());
+			}
+		}
+		for (Long n : receiverNumsList) {
+			log.info("MS의 받은 사람 번호 리스트 : " + n);
+		}
+		return receiverNumsList;
+	}		
 	
 	public List<String> findReceiverIdsBySenderNum(Long num) {
 		List<String> ids = new ArrayList<>();
@@ -89,10 +118,13 @@ public class MessageService {
 	
 	public Long findNumById(String id) {
 		Member member = memberRepository.findById(id);
-		return member.getNum();
+		return member.getNum() != null ? member.getNum() : null;
 	}	
 	
 	public Message findRecentMsgs(Long mfn, Long mtn) {
+		if (messageRepository.findRecentMsgByNum(mfn, mtn) == null) {
+			return null;
+		}
 		Message msg = messageRepository.findRecentMsgByNum(mfn, mtn);
 		log.info("MS의 message : " + msg.toString());
 		return msg;

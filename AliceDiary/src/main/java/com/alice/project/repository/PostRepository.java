@@ -44,7 +44,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredi
 	@Query("update Post p set p.updateDate = :updateDate where p.num = :num")
 	Integer editDate(Long num, LocalDateTime updateDate);
   
-  public List<Post> findByMemberNum(Long memberNum);
+//  public List<Post> findByMemberNum(Long memberNum);
 
 	
 }

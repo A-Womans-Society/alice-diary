@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,12 +33,20 @@ public class MessageController {
 	private final MemberService memberService;
 	
 	// 메세지 목록
-	@GetMapping(value = "/messagebox/{memberNum}")
-	public String messageList(@PathVariable("memberNum") Long num, Model model,
+	@GetMapping(value = "/messagebox/{id}")
+	public String messageList(@PathVariable("id") String id, Model model,
 			@ModelAttribute MessageDto mdto) {
 		//log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
 		// String messageFromNum = (String) session.getAttribute("num");
-		if (messageService.findLiveReceiverNumsBySenderNum(num).isEmpty()) {
+		Long num = messageService.findNumById(id);
+		log.info("id : " + id);
+		log.info("num : " + num);
+		
+		String fromId = messageService.findIdByNum(num);
+		if (messageService.findLiveReceiverNumsBySenderNum(num).contains(0L) &&
+				messageService.findLiveReceiverNumsByReceiverNum(num).contains(0L)) {
+			model.addAttribute("mdto", mdto);
+			model.addAttribute("fromId", fromId);
 			return "message/msgListNull";
 		}
 		// dto리스트 준비
@@ -62,17 +69,16 @@ public class MessageController {
 			mldtos.add(mldto);
 		}
 		
-		String fromId = messageService.findIdByNum(num);
-
 		model.addAttribute("fromId", fromId);
 		model.addAttribute("mldtos", mldtos);
 		model.addAttribute("mdto", mdto);
+		model.addAttribute("fromNum", num);
 
 		return "message/msgList";
 	}
 	
 	// 쪽지함 삭제
-	@DeleteMapping("/messagebox/{memberNum}/{messageToNum}")
+	@GetMapping("/messagebox/delete/{memberNum}/{messageToNum}")
 	@ResponseBody
 	public String deleteMessage(@PathVariable("memberNum") Long num, 
 			@PathVariable("messageToNum") Long toNum, Model model) {
@@ -121,9 +127,28 @@ public class MessageController {
 	}
 	
 	// 쪽지함 목록에서 바로 쪽지보내기
-	@PostMapping("/messagebox/{memberNum}")
-	public String sendMessage(@PathVariable("memberNum") Long num, Model model, 
+//	@PostMapping("/messagebox/{memberNum}")
+//	public String sendMessage(@PathVariable("memberNum") Long num, Model model, 
+//			HttpSession session, @ModelAttribute MessageDto mdto) {
+//		log.info("들어오나?????????????????????????");
+//		Long toNum = messageService.findNumById(mdto.getMessageToId());
+//		mdto.setMessageToNum(toNum);
+//		mdto.setMessageFromNum(num);
+//		mdto.setMessageFromId(messageService.findIdByNum(num));
+//		mdto.setSendDate(LocalDateTime.now());
+//		log.info("mdto" + mdto.toString());
+//		
+//		Message result = messageService.sendMsg(mdto);
+//		log.info("result.toString() : " + result.toString());
+//		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + num));
+//		return "message/alert";
+//	}
+
+	@PostMapping("/messagebox/{id}")
+	public String sendMessage(@PathVariable("id") String id, Model model, 
 			HttpSession session, @ModelAttribute MessageDto mdto) {
+		log.info("들어오나?????????????????????????");
+		Long num = messageService.findNumById(id);
 		Long toNum = messageService.findNumById(mdto.getMessageToId());
 		mdto.setMessageToNum(toNum);
 		mdto.setMessageFromNum(num);
@@ -133,10 +158,8 @@ public class MessageController {
 		
 		Message result = messageService.sendMsg(mdto);
 		log.info("result.toString() : " + result.toString());
-		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + num));
+		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + id));
 		return "message/alert";
-	}
-
-	
+	}	
 	
 }

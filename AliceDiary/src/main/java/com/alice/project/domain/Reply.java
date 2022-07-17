@@ -12,12 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-import com.alice.project.service.ReplyService;
-import com.alice.project.web.ReplyDto;
-
 import lombok.AccessLevel;
 import lombok.Builder;
-
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -27,6 +24,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@EqualsAndHashCode(of = "num")
 public class Reply {
 
 
@@ -86,12 +84,12 @@ public class Reply {
 		// TODO Auto-generated constructor stub
 	}
 
-}
+
 	
 	// 연관관계 메서드 (양방향관계)
 	public void setPost(Post post) {
 		this.post = post;
-		post.getReplies().add(this);
+//		post.getReplies().add(this);
 	}
 	public void setMember(Member member) {
 		this.member = member;

@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -23,7 +22,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
-
 public class Message implements Comparator<Message>, Comparable<Message>{
 	
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MESSAGE_SEQ_GENERATOR")
@@ -79,7 +77,7 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 
 	
 //	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-//	@JoinColumn(name="memberNum")
+//	@JoinColumn(name="messageFromNum")
 //	private Member member; // 쪽지 보내는회원 객체
 	
 //	@OneToOne(mappedBy="message")
@@ -90,10 +88,8 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 //		this.member = member;
 //		member.getMessages().add(this);
 //	}
-	
-	
-	
-	// 쪽지 객체 생성 메서드
+//
+//	// 쪽지 객체 생성 메서드
 //	public static Message createMessage(Member member) {
 //		Message message = new Message();
 //		message.setMember(member);
@@ -101,4 +97,3 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 //	}
 
 }
-

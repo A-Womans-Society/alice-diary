@@ -1,10 +1,12 @@
-function replySubmit(postNum) {
-	let memberId = "TESTER";
+function replySubmit(postNum, memberId) {
+	console.log(postNum);
+	console.log(memberId);
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
 	let httpRequest = new XMLHttpRequest();
 	let param = "memberId="+memberId+"&postNum="+postNum+"&content="+document.getElementById("replyContent").value;	
 
+	
     httpRequest.onreadystatechange = function(){
 	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	    	if (httpRequest.status === 200) {

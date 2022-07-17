@@ -26,52 +26,47 @@ import com.alice.project.web.ReplyDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/AliceDiary")
 @Slf4j
 public class ViewController {
 
 	@Autowired
 	private ViewService viewService;
-	
+
 	@Autowired
 	private AttachedFileService attachedFileService;
-	
+
 	@Autowired
 	private ReplyService replyService;
-	
-	
-	 @GetMapping("community/get") 
-	 public String postView(Model model, Long num,Pageable pageable, HttpSession session) {
-		
-		 log.info("num :"+num);
-	
-		 model.addAttribute("memId", 1); // 세션대신 아이디를 하드코딩!!
-		 Post viewPost = viewService.postView(num);
-		 
-		 viewService.viewCntUp(num);
-		 
-	  model.addAttribute("postView",viewPost); 
-	  
-	 List<AttachedFile> files = attachedFileService.fileView(viewPost,pageable);
-	  model.addAttribute("files",files); 
-	  	
-	 	List<ReplyDto> replyList = replyService.replyList(num);
+
+	@GetMapping("community/get")
+	public String postView(Model model, Long num, Pageable pageable, HttpSession session) {
+
+		log.info("num :" + num);
+
+		model.addAttribute("memId", 1); // 세션대신 아이디를 하드코딩!!
+		Post viewPost = viewService.postView(num);
+
+		viewService.viewCntUp(num);
+
+		model.addAttribute("postView", viewPost);
+
+		List<AttachedFile> files = attachedFileService.fileView(viewPost, pageable);
+		model.addAttribute("files", files);
+
+		List<ReplyDto> replyList = replyService.replyList(num);
 		for (ReplyDto rdto : replyList) {
 			log.info("리스트 각각 : " + rdto.toString());
 		}
 		model.addAttribute("replyList", replyList);
-	 
-	  return "community/postView";  
-	  }
-	 
-	 @GetMapping("community/download/{num}")
-	 public ResponseEntity<UrlResource> fileDownload(@PathVariable("num") Long num) throws MalformedURLException, UnsupportedEncodingException {
-	     
-		 
-	     return attachedFileService.postFileDownload(num);
-	 }
-	 
-	 
-	     
-	
+
+		return "community/postView";
+	}
+
+	@GetMapping("community/download/{num}")
+	public ResponseEntity<UrlResource> fileDownload(@PathVariable("num") Long num)
+			throws MalformedURLException, UnsupportedEncodingException {
+
+		return attachedFileService.postFileDownload(num);
+	}
+
 }

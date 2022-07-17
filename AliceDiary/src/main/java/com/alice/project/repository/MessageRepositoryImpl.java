@@ -32,7 +32,7 @@ public class MessageRepositoryImpl implements MessageRepositoryCustom {
 				.setParameter(1, messageFromNum)
                 .setParameter(2, messageToNum)
 				.getResultList();
-        return resultList.get(0);
+        return resultList.get(0) != null ? resultList.get(0) : null;
 	}
 
 	@Override
@@ -64,6 +64,14 @@ public class MessageRepositoryImpl implements MessageRepositoryCustom {
         return resultList;
 	}
 	
+	public List<Message> findMsgByLiveMessageToNum(Long messageToNum) {
+		List<Message> resultList = entityManager.createQuery(
+				"SELECT m FROM Message as m WHERE messageToNum=?1 and receiverStatus=1", Message.class)
+				.setParameter(1, messageToNum)
+				.getResultList();
+        return resultList;
+	}
+	
 	// 쪽지함 하나 보여주기
 	public List<Message> findMsgs(Long mfn, Long mtn) {
 		List<Message> resultList = entityManager.createQuery(
@@ -78,13 +86,14 @@ public class MessageRepositoryImpl implements MessageRepositoryCustom {
 	public List<Message> findLiveMsgs(Long mfn, Long mtn) {
 		List<Message> resultList = entityManager.createQuery(
 				"SELECT m FROM Message as m "
-				+ "WHERE messageFromNum=?1 and messageToNum=?2 and senderStatus=1 ORDER BY sendDate DESC", Message.class)
+				+ "WHERE messageFromNum=?1 and messageToNum=?2 and senderStatus=1 and receiverStatus=1 ORDER BY sendDate DESC", Message.class)
 				.setParameter(1, mfn)
                 .setParameter(2, mtn)
 				.getResultList();
         return resultList;
 	}	
 
+	
 	@Override
 	public List<Message> findByMessageFromNumAndMessageToNum(Long messageFromNum, Long messageToNum) {
 		List<Message> resultList = entityManager.createQuery(

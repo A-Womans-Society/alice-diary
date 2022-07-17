@@ -17,7 +17,6 @@ import com.alice.project.web.WriteFormDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/AliceDiary")
 @Slf4j
 public class WriteController {
 

@@ -50,33 +50,35 @@ public class MemberController {
 
 	// 회원가입 PostMapping 가입 성공 후 로그인 페이지로 이동
 	@PostMapping(value = "/register")
-	public String memberForm(@Valid UserDto memberDto, BindingResult bindingResult, HttpSession session) {
+	public String memberForm(@ModelAttribute("memberDto") @Valid UserDto memberDto, BindingResult bindingResult, HttpSession session) {
 		log.info("POST 나옴");
-
+		log.info("!!!!!!!!!!!!!!!!!!!!!!!!1memberDto의 name " + memberDto.getName());
 		if (bindingResult.hasErrors()) {
+			log.info("에러 발생!");
 			return "login/registerForm";
 		}
-		if (!memberDto.getProfileImg().getOriginalFilename().equals("")) {
-			String originName = memberDto.getProfileImg().getOriginalFilename();
-			String saveName = memberDto.getId() + "." + originName.split("\\.")[1];
-			String savePath = session.getServletContext().getRealPath("c:\\Temp\\upload");
-
-			try {
-				memberDto.getProfileImg().transferTo(new File(savePath, saveName));
-				memberDto.setSaveName(saveName);
-
-				Member member = Member.createMember(memberDto, passwordEncoder);
-				memberService.saveMember(member);
-
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
+		//if (!memberDto.getProfileImg().getOriginalFilename().equals("")) { // 프로필 사진이 있으면
+//			String originName = memberDto.getProfileImg().getOriginalFilename();
+//			String saveName = memberDto.getId() + "." + originName.split("\\.")[1];
+//			String savePath = session.getServletContext().getRealPath("c:\\Temp\\upload");
+//
+//			try {
+//				memberDto.getProfileImg().transferTo(new File(savePath, saveName));
+//				memberDto.setSaveName(saveName);
+//
+//				Member member = Member.createMember(memberDto, passwordEncoder);
+//				memberService.saveMember(member);
+//
+//			} catch (IllegalStateException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+		//} else { // 프로필 사진이 없으면
 			Member member = Member.createMember(memberDto, passwordEncoder);
+			log.info("member의 Name== "+ member.getName());
 			memberService.saveMember(member);
-		}
+//		}
 
 		return "redirect:/";
 	}

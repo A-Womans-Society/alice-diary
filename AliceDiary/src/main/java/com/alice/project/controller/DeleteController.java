@@ -16,7 +16,6 @@ import com.alice.project.service.DeleteService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/AliceDiary")
 @Slf4j
 public class DeleteController {
 	

@@ -70,7 +70,7 @@
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
-					<form name="msgForm" id="msgForm" th:object="${mdto}" method="post">
+					<form name="msgForm" id="msgForm" th:object="${mdto}" th:method="post">
 						<div class="modal-body">
 							<div class="form-group">
 								<label for="recipient-name" class="col-form-label">받는 사람</label>
@@ -87,6 +87,7 @@
 							<button type="button" class="btn btn-secondary"
 								data-dismiss="modal">취소</button>
 							<button type="submit" class="btn btn-primary">쪽지 보내기</button>
+							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 						</div>
 					</form>
 				</div>

@@ -53,11 +53,10 @@
 							<div class="row">
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="id"><span class="text-danger">*&nbsp;</span>ID</label> <input
-											type="text" th:field="*{id}" th:oninput="checkId();"
-											class="form-control"><span class="id_ok">사용
-											가능한 아이디입니다.</span> <span class="id_already">누군가 이 아이디를 사용하고
-											있어요.</span>
+										<label class="form-label" th:for="id"><span class="text-danger">*&nbsp;</span>ID</label> 
+										<input type="text" th:field="*{id}" th:oninput="checkId();" class="form-control">
+										<span class="id_ok">사용 가능한 아이디입니다.</span> 
+										<span class="id_already">누군가 이 아이디를 사용하고 있어요.</span>
 										<p th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></p>
 									</div>
 								</div>
@@ -105,7 +104,7 @@
 
 									<p><span class="text-danger">*&nbsp;</span>Gender:</p>
 
-									<div class="form-check form-check-inline">
+								<!-- 	<div class="form-check form-check-inline">
 										<input class="form-check-input" type="radio"
 											th:field="*{gender}" id="femaleGender" value="option1"
 											checked /> <label class="form-check-label"
@@ -122,15 +121,15 @@
 										<input class="form-check-input" type="radio"
 											th:field="*{gender}" id="otherGender" value="option3" /> <label
 											class="form-check-label" for="otherGender">Other</label>
-									</div>
-									<!-- 					<div>
+									</div> -->
+									<div>
 										<label th:for="gender">성별</label> <select th:field="*{gender}">
 											<option th:value="none">===선택===</option>
 											<option th:value="'MALE'" th:text="MALE"></option>
 											<option th:value="'FEMALE'" th:text="FEMALE"></option>
 											<option th:value="'UNKNOWN'" th:text="UNKNOWN"></option>
 										</select>
-									</div> -->
+									</div> 
 								</div>
 							</div>
 

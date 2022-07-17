@@ -23,18 +23,19 @@ import com.alice.project.web.UserDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
+//@ToString
 @Slf4j
+@EqualsAndHashCode(of = "num")
 public class Member {
 
 	@Id
@@ -65,29 +66,29 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물
+	@OneToMany(mappedBy = "member")
+	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물
 
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글
+	@OneToMany(mappedBy = "member")
+	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글
 //
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "member")
 	private List<Calendar> calendars = new ArrayList<>(); // 사용자가 생성한 일정
 //
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
+	@OneToMany(mappedBy = "member")
+	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
 //
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
+	@OneToMany(mappedBy = "member")
+	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
 
-//	@OneToMany(mappedBy="member", cascade = CascadeType.ALL)
+//	@OneToMany(mappedBy="member")
 //	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
-//
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
-//
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
+
+	@OneToMany(mappedBy = "member")
+	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
+
+	@OneToMany(mappedBy = "member")
+	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
 
 	@PrePersist
 	public void reg_date() {
@@ -109,7 +110,6 @@ public class Member {
 		this.regDate = regDate;
 		this.status = status;
 	}
-
 
 	@Builder
 	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
@@ -211,4 +211,3 @@ public class Member {
 		return member;
 	}
 }
-
