@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,17 +20,29 @@ import javax.persistence.Table;
 
 import com.alice.project.service.FriendsGroupService;
 
+import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.alice.project.web.UserDto;
+
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
+//@ToString
+@Slf4j
+@EqualsAndHashCode(of = "num")
 public class Member {
 
 	@Id
@@ -41,7 +54,7 @@ public class Member {
 	@Column(unique = true) // 유니크 제약
 	private String id; // 회원 아이디
 
-	private String pwd; // 회원 비밀번호
+	private String password; // 회원 비밀번호
 	private String name; // 회원 이름
 	private LocalDate birth; // 회원 생일
 
@@ -60,7 +73,8 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "member")
 	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물
 
 	@OneToMany(mappedBy = "member")
@@ -75,22 +89,27 @@ public class Member {
 	@OneToMany(mappedBy = "member")
 	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
 
-	@OneToMany(mappedBy = "member")
-	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
+//	@OneToMany(mappedBy="member")
+//	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
 
 	@OneToMany(mappedBy = "member")
 	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
 
-//	@OneToMany(mappedBy = "member")
-//	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
+	@OneToMany(mappedBy = "member")
+	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
+
+	@PrePersist
+	public void reg_date() {
+		this.regDate = LocalDate.now();
+	}
 
 	// 필수값만 가진 생성자
 	@Builder
-	public Member(String id, String pwd, String name, LocalDate birth, Gender gender, String email, String mobile,
+	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
 			LocalDate regDate, Status status) {
 		super();
 		this.id = id;
-		this.pwd = pwd;
+		this.password = password;
 		this.name = name;
 		this.birth = birth;
 		this.gender = gender;
@@ -99,31 +118,127 @@ public class Member {
 		this.regDate = regDate;
 		this.status = status;
 	}
-
-	// 필수값만 가진 회원객체 생성 메서드 (정적 팩토리 메서드)
-	public static Member createMember(String id, String pwd, String name, LocalDate birth, Gender gender, String email,
-			String mobile, LocalDate regDate, Status status) {
-		Member member = new Member(id, pwd, name, birth, gender, email, mobile, regDate, status);
-		return member;
-	}
-
+  
 	public static Member createMember() {
 		Member member = new Member("noFriend");
 		
 		return member;
 	}
-	
+  
 	public Member(Long groupNum, FriendsGroupService fgs) {
 		this.groups.add(fgs.getGroupByNum(groupNum));
-	}
+	}  
 
 	@Builder
 	public Member(String name) {
 		super();
 		this.name = name;
 	}
-	
+  
+  @Builder
 	public Member(List<FriendsGroup> groups) {
+		super();
 		this.groups = groups;
+	}
+}
+
+@Builder
+	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
+			String mbti, String wishlist, String profileImg, Status status) {
+		this.id = id;
+		this.password = password;
+		this.name = name;
+		this.birth = birth;
+		this.gender = gender;
+		this.email = email;
+		this.mobile = mobile;
+		this.mbti = mbti;
+		this.wishlist = wishlist;
+		this.regDate = LocalDate.now();
+		this.profileImg = profileImg;
+		this.status = Status.USER_IN;
+	}
+
+	@Builder
+	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
+			String mbti, String wishlist, LocalDate regDate, String profileImg, Status status) {
+		super();
+		this.id = id;
+		this.password = password;
+		this.name = name;
+		this.birth = birth;
+		this.gender = gender;
+		this.email = email;
+		this.mobile = mobile;
+		this.mbti = mbti;
+		this.wishlist = wishlist;
+		this.regDate = regDate;
+		this.profileImg = profileImg;
+		this.status = status;
+	}
+
+	@Builder
+	public Member(Long num, String id, String password, String name, LocalDate birth, Gender gender, String email,
+			String mobile, String mbti, String wishlist, LocalDate regDate, String profileImg, Status status) {
+		super();
+		this.num = num;
+		this.id = id;
+		this.password = password;
+		this.name = name;
+		this.birth = birth;
+		this.gender = gender;
+		this.email = email;
+		this.mobile = mobile;
+		this.mbti = mbti;
+		this.wishlist = wishlist;
+		this.regDate = regDate;
+		this.profileImg = profileImg;
+		this.status = status;
+	}
+
+	// 회원객체 생성 메서드 (정적 팩토리 메서드)
+	public static Member createMember(String id, String pwd, String name, LocalDate birth, Gender gender, String email,
+			String mobile, String mbti, String wishlist, String profileImg, Status status) {
+		Member member = new Member(id, pwd, name, birth, gender, email, mobile, mbti, wishlist, profileImg, status);
+		return member;
+	}
+
+	@Builder
+	public Member(Status status) {
+		this.status = Status.USER_OUT;
+	}
+
+	// 필수값만 가진 회원객체 생성 메서드 (정적 팩토리 메서드)
+	public static Member createMember(UserDto memberDto, PasswordEncoder passwordEncoder) {
+		Member member = new Member(memberDto.getId(), passwordEncoder.encode(memberDto.getPassword()),
+				memberDto.getName(), memberDto.getBirth(), memberDto.getGender(), memberDto.getEmail(),
+				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishList(), LocalDate.now(),
+				memberDto.getSaveName(), Status.USER_IN);
+		return member;
+	}
+
+	public static Member createMember(Long num, UserDto memberDto, PasswordEncoder passwordEncoder) {
+		Member member = new Member(num, memberDto.getId(), passwordEncoder.encode(memberDto.getPassword()),
+				memberDto.getName(), memberDto.getBirth(), memberDto.getGender(), memberDto.getEmail(),
+				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishList(), LocalDate.now(),
+				memberDto.getSaveName(), Status.USER_IN);
+		return member;
+	}
+	
+
+	
+
+	// 회원 내보내기 메서드
+	public static Member changeMemberOut(Member member) {
+		member.status = Status.USER_OUT;
+		log.info("엔티티 changeMemberOut메서드에서 status바꾸기 : " + member.status);
+		return member;
+	}
+
+	// 회원 복구하기 메서드
+	public static Member changeMemberIn(Member member) {
+		member.status = Status.USER_IN;
+		log.info("엔티티 changeMemberIn메서드에서 status바꾸기 : " + member.status);
+		return member;
 	}
 }
