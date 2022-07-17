@@ -38,7 +38,7 @@ public class Friend {
 //	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 //	@JoinColumn(name="member_num")	
 //	private Member member; // 친구 등록하는 회원 객체
-	
+//	
 	
 	// 연관관계 메서드 (양방향관계)
 //	public void setGroup(FriendsGroup group) {
@@ -51,10 +51,10 @@ public class Friend {
 //	}
 	
 	@Builder
-	public Friend(Long adderNum, Long addeeNum) {
+	public Friend(Long adderNum, Long addeeNum, Long groupNum) {
 		this.adderNum = adderNum;
 		this.addeeNum = addeeNum;
-		this.groupNum = 1L;
+		this.groupNum = groupNum;
 	}
 	// 친구 객체 생성 메서드
 //	public static Friend createFriend(FriendsGroup group, Member member) {

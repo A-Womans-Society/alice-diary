@@ -1,7 +1,6 @@
 package com.alice.project.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +18,7 @@ public class MemberService implements UserDetailsService{ //MemberService가 Use
 	private final MemberRepository memberRepository;
 	
 	public Member saveMember(Member member) {
-//		validateDuplicateMember(member);
+//	validateDuplicateMember(member);
 		return memberRepository.save(member); //insert
 	}
 

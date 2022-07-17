@@ -7,5 +7,5 @@ import com.alice.project.domain.FriendsGroup;
 @Repository
 public interface FriendsGroupRepository extends JpaRepository<FriendsGroup, Long>  {
 
-	
+	FriendsGroup findByNum(Long num);
 }
