@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/communityLayout}">
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/community/postView.js}"></script>
+</th:block>
+
+<div layout:fragment="content">
+	<h3>게시글 상세보기</h3>
+	<table border="1" width="300">
+		<tr>
+			<th th:text="${postView.title}"></th>
+		</tr>
+		<tr>
+			<td>작성자
+				<div align="right"
+					th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
+				<div align="right" th:if="${postView.updateDate != null}"
+					style="color: grey; font-size: 15px;"
+					th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></div>
+			</td>
+		<tr>
+			<td><div th:text="${postView.content}"
+					style="padding: 10px; height: auto; min-height: 100px; overflow: auto;"></div></td>
+		</tr>
+		<tr th:each="file : ${files}" th:if="${file.originName != null}">
+			<td>첨부파일: <a th:href="|/community/download/${file.num}|"
+				th:text="${file.originName}"></a>
+
+			</td>
+		</tr>
+
+	</table>
+	<div th:href="@{/community/list}">
+		<input type="button" value="신고">
+	</div>
+	<div>
+		<a th:href="@{/community/put(num=${postView.num})}"> <input
+			type="button" value="수정"></a>
+		<button type="button" id="delete_confirm"
+			th:onclick="deleteConfirm([[${postView.num}]])">삭제</button>
+
+
+		<a th:href="@{/community/list}"><input type="button" value="목록"></a>
+	</div>
+
+
+	<div id="replyList">
+		<table id="replyTable">
+			<tr th:each="reply : ${replyList}">
+
+				<td th:text="${reply.memberId}" />
+				<td
+					th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
+				<td th:text="${reply.content}"></td>
+				<td><button type="button">답글쓰기</button></td>
+			</tr>
+		</table>
+
+		<div class="commentBox">
+			<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
+			<div>
+				<button type="button"
+					th:onclick="replySubmit([[${postView.num}]], [[${#authentication.name}]])">등록</button>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+</html>

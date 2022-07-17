@@ -1,0 +1,14 @@
+@charset "UTF-8";
+.id_ok {
+	color: #6A82FB;
+	display: none;
+}
+
+.id_already {
+	color: #F67360;
+	display: none;
+}
+
+body{
+	background: #f0d9ff;
+}
