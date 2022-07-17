@@ -13,9 +13,7 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 	List<Friend> findByAdderNum(Long adderNum);
 
 	Friend findByNum(Long addeeNum);
-	
-	// 이름 & 아이디 검색
-	// Page<Friend> findAll(Pageable pageable); // 전체 조회 및 페이징 처리
+
 
 	
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
-import com.alice.project.repository.FriendRepository;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.FriendsGroupService;
 import com.alice.project.service.MemberService;
@@ -34,7 +33,6 @@ public class FriendsController {
 	// 친구 추가(회원 id검색)
 	@PostMapping("/friends/add")
 	public String addFriend(String searchId) {
-		// adderNum을 4로 하드코딩해놓은 것
 		friendService.addFriendship(5L, searchId);
 		return "redirect:/friends";
 	}

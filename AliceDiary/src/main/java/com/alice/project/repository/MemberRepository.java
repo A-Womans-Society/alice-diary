@@ -17,7 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	boolean existsById(String id); // id중복 체크를 위한 메서드
 
 	Member findByNum(Long addeeNum); // 회원번호로 회원 객체 하나 가져오기
-
+	
 	@Query("SELECT m FROM Member AS m WHERE num IN (SELECT addeeNum FROM Friend WHERE adderNum = :adderNum) AND (name LIKE '%'||:friends||'%' OR id LIKE '%'||:friends||'%')")
 	List<Member> findByIdOrName(Long adderNum, String friends);
 

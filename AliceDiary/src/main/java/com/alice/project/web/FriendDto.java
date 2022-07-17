@@ -3,7 +3,7 @@ package com.alice.project.web;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-// 친구 검색 했을 때 보이는 Dto
+
 @Getter @Setter
 @NoArgsConstructor
 public class FriendDto {
