@@ -42,8 +42,7 @@ public class Reply {
 	private Long heart = 0L; // 공감 수 (default=0)
 	private Boolean edit; // 수정여부 (False, True) SQL문 : CHAR(1) Check(edit IN('0', '1')
 
-
-	@ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_num")
 	private Post post; // 댓글 소속 게시물 객체
 
@@ -83,14 +82,13 @@ public class Reply {
 	public Reply(String content2, LocalDateTime now, Boolean false1, Long postNum, Long findMemberNumById) {
 		// TODO Auto-generated constructor stub
 	}
-
-
 	
 	// 연관관계 메서드 (양방향관계)
 	public void setPost(Post post) {
 		this.post = post;
 //		post.getReplies().add(this);
 	}
+  
 	public void setMember(Member member) {
 		this.member = member;
 		member.getReplies().add(this);
@@ -104,4 +102,3 @@ public class Reply {
 		return reply;
 	}
 }
-

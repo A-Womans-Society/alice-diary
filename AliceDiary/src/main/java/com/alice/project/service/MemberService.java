@@ -1,5 +1,6 @@
 package com.alice.project.service;
 
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -95,8 +96,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 				.build();
 	}
 	
-
-////////////////////////////////////////문쥬우
 	/* 회원 전체 조회 */
 	// 값을 가져오는 메서드에서는 기본 읽기전용옵션 적용됨
 	public List<Member> findMembers() {
@@ -138,4 +137,3 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("returnOne 실행하고 나서 resultMember.getStatus():" + resultMember.getStatus());
 		return 1; // 탈퇴회원 처리가 됐으면 1 반환
 	}
-}

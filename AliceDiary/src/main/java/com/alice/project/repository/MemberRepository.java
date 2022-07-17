@@ -1,9 +1,9 @@
 package com.alice.project.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.data.jpa.repository.Query;
-
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import org.springframework.stereotype.Repository;
@@ -31,5 +31,9 @@ public interface MemberRepository
 
 	// 회원번호로 찾기
 	Member findByNum(Long num);
-
-}
+  
+  Member findByNum(Long addeeNum); // 회원번호로 회원 객체 하나 가져오기
+	
+	@Query("SELECT m FROM Member AS m WHERE num IN (SELECT addeeNum FROM Friend WHERE adderNum = :adderNum) AND (name LIKE '%'||:friends||'%' OR id LIKE '%'||:friends||'%')")
+	List<Member> findByIdOrName(Long adderNum, String friends);
+  }

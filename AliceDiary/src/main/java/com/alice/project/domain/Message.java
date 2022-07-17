@@ -95,5 +95,4 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 //		message.setMember(member);
 //		return message;
 //	}
-
 }

@@ -12,5 +12,4 @@ public class AliceDiaryApplication {
 		System.setProperty("server.servlet.context-path", "/AliceDiary");
 		SpringApplication.run(AliceDiaryApplication.class, args);
 	}
-
 }

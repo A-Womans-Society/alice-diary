@@ -51,6 +51,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!-- javassist 의존 추가 엔티티매니저 bean 생성 때문?-->
+<dependency>
+    <groupId>org.javassist</groupId>
+    <artifactId>javassist</artifactId>
+    <version>3.23.1-GA</version>
+</dependency>
 
 		<!-- Spring boot Security -->
 		<dependency>
@@ -92,12 +98,12 @@
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
-
+		
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <scope>provided</scope>
 		</dependency>
 
 		<dependency>
