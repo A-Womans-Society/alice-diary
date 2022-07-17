@@ -140,7 +140,7 @@ public class MemberController {
 
 	// 비밀번호 재설정 Get
 	@GetMapping(value = "/login/updatePwd")
-	public String updatePwd(@ModelAttribute(value="member") Member m, Model model) {
+	public String updatePwd(@ModelAttribute(value="memberDto") Member m, Model model) {
 		log.info("비밀번호 재설정 GET 진입");
 		log.info("Member m === " + m);
 		UserDto mdto = new UserDto(m);
@@ -161,7 +161,7 @@ public class MemberController {
 		member = memberService.updateMember(member);
 		log.info("비밀번호 재설정 후 Member : " + member);
 
-		return "redirect:/login";
+		return "redirect:/";
 	}
 
 	/*

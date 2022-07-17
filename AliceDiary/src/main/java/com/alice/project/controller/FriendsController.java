@@ -87,7 +87,6 @@ public class FriendsController {
 					sf.getGender(), sf.getEmail(), groupName);
 			searchFriendList.add(dto);
 		}
-//		model.addAttribute("friendList", searchFriendList);
 
 		return searchFriendList;
 	}
