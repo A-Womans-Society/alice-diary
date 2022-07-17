@@ -23,19 +23,16 @@ public class FriendService {
 	private final FriendsGroupService fgs;
 
 	// 친구추가 서비스(추가하는 멤버회원 번호, 추가되는 멤버회원의 아이디)
-	public void addFriendship(Long adderNum, String searchId) {
+	public void addFriendship(Member member, String searchId) {
 		Long addeeNum = memberRepository.findById(searchId).getNum();
 		Long groupNum = 1L; // 일단 기본그룹에 추가
-		Friend friend = new Friend(adderNum, addeeNum, groupNum);
-		new Member(groupNum, fgs);
-		// DB 저장
+		Friend friend = new Friend(member, addeeNum, groupNum);
 		friendRepository.save(friend);
 	}
 	
 	// friendService에서 멤버에 있는 num으로 프렌드 객체를 만들기
-	public Friend groupNum(Long addeeNum) {
-		Friend friend = friendRepository.findByNum(addeeNum);
-		return friend;
+	public Friend groupNum(Long adderNum, Long addeeNum) {
+		return friendRepository.findGroupByAddeeAdderNum(adderNum, addeeNum);
 		
 	}
 

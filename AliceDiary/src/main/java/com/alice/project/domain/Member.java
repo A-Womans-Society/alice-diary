@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -73,7 +72,6 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 
-
 	@OneToMany(mappedBy = "member")
 	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물
 
@@ -118,31 +116,30 @@ public class Member {
 		this.regDate = regDate;
 		this.status = status;
 	}
-  
+
 	public static Member createMember() {
 		Member member = new Member("noFriend");
-		
+
 		return member;
 	}
-  
+
 	public Member(Long groupNum, FriendsGroupService fgs) {
 		this.groups.add(fgs.getGroupByNum(groupNum));
-	}  
+	}
 
 	@Builder
 	public Member(String name) {
 		super();
 		this.name = name;
 	}
-  
-  @Builder
+
+	@Builder
 	public Member(List<FriendsGroup> groups) {
 		super();
 		this.groups = groups;
 	}
-}
 
-@Builder
+	@Builder
 	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
 			String mbti, String wishlist, String profileImg, Status status) {
 		this.id = id;
@@ -224,9 +221,6 @@ public class Member {
 				memberDto.getSaveName(), Status.USER_IN);
 		return member;
 	}
-	
-
-	
 
 	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {

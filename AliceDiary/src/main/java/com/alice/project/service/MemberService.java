@@ -1,5 +1,8 @@
 package com.alice.project.service;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,23 +10,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
-import com.alice.project.exception.PasswordWrongException;
+import com.alice.project.domain.Status;
 import com.alice.project.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import com.alice.project.domain.Status;
-
 import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 @Transactional(readOnly = true) // 기본적으로 못바꾸게 해놓고
@@ -44,8 +38,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findById(String id) {
 		return memberRepository.findById(id);
 	}
-	
-	
+
 	// id 중복테스트
 	public int checkIdDuplicate(String id) {
 		boolean check = memberRepository.existsById(id);
@@ -70,16 +63,13 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	}
 
 	public Member findByNum(Long num) {
-		Member member = memberRepository.findByNum(num);
-		return member;
+		return memberRepository.findByNum(num);
 	}
 
 	// 비밀번호 재설정
 	public Member updateMember(Member member) {
 		return memberRepository.save(member);
 	}
-	
-
 
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException { // 로그인 할 유저의 id를 파라미터로 전달받음
@@ -92,24 +82,24 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		 * UserDetail을 구현하고 있는 User 객체 반환 User객체를 생성하기 위해 생성자로 회원의 아이디, 비밀번호, status를
 		 * 파라미터로 넘겨 줌
 		 */
-		return User.builder().username(member.getId()).password(member.getPassword()).roles(member.getStatus().toString())
-				.build();
+		return User.builder().username(member.getId()).password(member.getPassword())
+				.roles(member.getStatus().toString()).build();
 	}
-	
+
 	/* 회원 전체 조회 */
 	// 값을 가져오는 메서드에서는 기본 읽기전용옵션 적용됨
 	public List<Member> findMembers() {
 		return memberRepository.findAll();
 	}
-	
+
 	/* 개별 회원 조회 */
 	// 값을 가져오는 메서드에서는 기본 읽기전용옵션 적용됨
 	public Member findOne(Long memberNum) {
 		Member member = memberRepository.findByNum(memberNum);
-		
+
 		return member == null ? null : member;
 	}
-	
+
 	/* 개별 회원 삭제 */
 	public int deleteOne(Long memberNum) {
 		log.info("여기까지는 오나??????????????");
@@ -123,7 +113,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("deleteOne 실행하고 나서 resultMember.getStatus():" + resultMember.getStatus());
 		return 1; // 탈퇴회원 처리가 됐으면 1 반환
 	}
-	
+
 	/* 개별 회원 복구 */
 	public int returnOne(Long memberNum) {
 		log.info("여기까지는 오나??????????????");
@@ -137,3 +127,8 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("returnOne 실행하고 나서 resultMember.getStatus():" + resultMember.getStatus());
 		return 1; // 탈퇴회원 처리가 됐으면 1 반환
 	}
+	
+	public Member findByName(String name){
+		return memberRepository.findByName(name);
+	}
+}

@@ -6,6 +6,8 @@ document.addEventListener('keydown', function(event) {
 }, true);
 
 function openModal() {
+	document.getElementById("searchId").value = "";
+	document.getElementById("memberInfo").innerHTML = "";
 	$("#addFriend").modal();
 };
 
@@ -46,11 +48,13 @@ function loadFriends() {
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
 	let httpRequest = new XMLHttpRequest();
+	
 	let friends = document.getElementById("searchFriend").value;
-	let adderNum = 5;
+	
 	httpRequest.onreadystatechange = function() {
 		if (httpRequest.readyState === XMLHttpRequest.DONE) {
 			if (httpRequest.status === 200) {
+				console.log(httpRequest.response);
 				console.log(httpRequest.response.length);
 				if (httpRequest.response ) {
 					
@@ -73,6 +77,5 @@ function loadFriends() {
 	httpRequest.setRequestHeader(header, token);
 	httpRequest.setRequestHeader('Content-type',
 			'application/x-www-form-urlencoded');
-	httpRequest.send("friends=" + friends +"&adderNum="+adderNum);
-	
+	httpRequest.send("friends=" + friends);
 };
