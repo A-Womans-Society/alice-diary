@@ -17,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.alice.project.service.FriendsGroupService;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -105,4 +107,23 @@ public class Member {
 		return member;
 	}
 
+	public static Member createMember() {
+		Member member = new Member("noFriend");
+		
+		return member;
+	}
+	
+	public Member(Long groupNum, FriendsGroupService fgs) {
+		this.groups.add(fgs.getGroupByNum(groupNum));
+	}
+
+	@Builder
+	public Member(String name) {
+		super();
+		this.name = name;
+	}
+	
+	public Member(List<FriendsGroup> groups) {
+		this.groups = groups;
+	}
 }

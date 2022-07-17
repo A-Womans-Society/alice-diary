@@ -12,10 +12,16 @@ import lombok.RequiredArgsConstructor;
 public class FriendsGroupService {
 
 	private final FriendsGroupRepository friendsGroupRepository;
-	
+	// FriendsGruoup
 	public String getGroupName(Long groupNum) {
 		FriendsGroup group = friendsGroupRepository.getById(groupNum);
 		return group.getGroupName();
 		
 	}
+	
+	public FriendsGroup getGroupByNum(Long groupNum) {
+		FriendsGroup group = friendsGroupRepository.findByNum(groupNum);
+		return group;
+	}
+	
 }
