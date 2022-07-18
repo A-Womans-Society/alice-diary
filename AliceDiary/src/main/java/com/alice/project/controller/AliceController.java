@@ -36,6 +36,7 @@ public class AliceController {
 
 	@GetMapping("/alice")
 	public String calendar(Model model, @AuthenticationPrincipal UserDetails user) {
+		log.info("user : "+user.getUsername());
 		Member member = memberService.findById(user.getUsername());
 		List<Calendar> events = calendarService.eventsList(member.getNum());
 		JSONObject obj = new JSONObject();
