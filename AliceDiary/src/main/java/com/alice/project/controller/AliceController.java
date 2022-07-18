@@ -2,6 +2,7 @@ package com.alice.project.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Calendar;
+import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.service.CalendarService;
+import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
 import com.alice.project.web.CalendarFormDto;
+import com.alice.project.web.FriendshipDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 public class AliceController {
 	private final CalendarService calendarService;
 	private final MemberService memberService;
+	private final FriendService friendService;
 
 	@GetMapping("/alice")
 	public String calendar(Model model, @AuthenticationPrincipal UserDetails user) {
-		log.info("user : "+user.getUsername());
+		log.info("user : " + user.getUsername());
 		Member member = memberService.findById(user.getUsername());
+		// events list
 		List<Calendar> events = calendarService.eventsList(member.getNum());
 		JSONObject obj = new JSONObject();
 		JSONArray jArray = new JSONArray();
@@ -60,13 +66,26 @@ public class AliceController {
 			jArray.add(jObj);
 		}
 		obj.put("items", jArray);
+		// alarm list
 		LocalDate today = LocalDate.now();
-		log.info("today :" + today);
-		log.info("num :" + member.getNum());
 		List<Calendar> alarmList = calendarService.alarm(member.getNum(), today);
+		// friends list
+		List<Friend> friendsList = friendService.friendship(member.getNum());
+		List<FriendshipDto> friendsDtoList = new ArrayList<FriendshipDto>();
+		for (Friend f : friendsList) {
+			FriendshipDto tmp = new FriendshipDto();
+			Member m = memberService.findByNum(f.getAddeeNum());
+			tmp.setNum(m.getNum());
+			tmp.setName(m.getName());
+			friendsDtoList.add(tmp);
+		}
 		model.addAttribute("alarmList", alarmList);
 		model.addAttribute("list", obj.toString());
-		model.addAttribute("CalForm", new CalendarFormDto());
+		model.addAttribute("friendsList", friendsDtoList);
+		CalendarFormDto dto = new CalendarFormDto();
+		dto.setPublicity(true);
+		dto.setColor("crimson");
+		model.addAttribute("CalForm", dto);
 		model.addAttribute("today", today);
 		return "alice/calendar";
 	}
@@ -94,7 +113,7 @@ public class AliceController {
 		jObj.put("title", event.getContent());
 		jObj.put("id", event.getNum());
 		jObj.put("start", event.getStartDate());
-		jObj.put("end", event.getEndDate());
+		jObj.put("end", event.getEndDate().minusDays(1L));
 		jObj.put("backgroundColor", event.getColor());
 		jObj.put("memberList", event.getMemberList());
 		jObj.put("location", event.getLocation());

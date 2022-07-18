@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/aliceLayout}"
-	xmlns:sec="http://thymeleaf.org/extras/spring-security">
+	layout:decorate="~{layouts/aliceLayout}">
 
 
 <th:block layout:fragment="css">
@@ -57,7 +56,8 @@
 									<p>
 										<strong><span th:text="${alarm.content}"></span></strong> <small>
 											<span th:if="${!#strings.isEmpty(alarm.memberList)}"
-											th:text="|with ${alarm.memberList}|"> </span>
+											th:text="|with ${alarm.memberList}|"> </span> <span
+											th:text="|(${alarm.startDate})|"> </span>
 										</small>
 									</p>
 								</li>
@@ -108,10 +108,14 @@
 									<p>
 										<strong>멤버</strong> <select class="selectpicker"
 											data-live-search="true" th:field="*{memberList}" multiple>
-											<option value="ALVA">Aluva</option>
-											<option value="PNCU">Pulinchudu</option>
-											<option value="CPPY">CompanyPady</option>
-											<option value="ATTK">Ambattukavu</option>
+											<th:block th:if="${#lists.size(friendsList) == 0}">
+												<option value="">친구를 추가해보세요!</option>
+											</th:block>
+
+											<th:block th:unless="${#lists.size(friendsList) == 0}">
+												<option th:each="f : ${friendsList}" th:value="${f.name}"
+													th:text="${f.name}"></option>
+											</th:block>
 										</select>
 									</p>
 
@@ -124,26 +128,31 @@
 										<strong>색상</strong>
 									<div class="btn-group" data-toggle="buttons">
 
-										<label class="btn btn-success active" for="option2"> <input
-											type="radio" th:field="*{color}" id="option2"
-											autocomplete="off" chacked value="red"> <span
+										<label class="btn btn-danger active" for="crimson"> <input
+											type="radio" th:field="*{color}" id="crimson"
+											autocomplete="off" value="crimson" checked> <span
 											class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-primary" for="option1"> <input
-											type="radio" th:field="*{color}" id="option1"
+										</label> <label class="btn btn-warning" for="orange"> <input
+											type="radio" th:field="*{color}" id="orange"
 											autocomplete="off" value="orange"> <span
 											class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-info"> <input type="radio"
-											th:field="*{color}" id="option2" autocomplete="off"
-											value="yellow"> <span class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-default"> <input type="radio"
-											th:field="*{color}" id="option2" autocomplete="off"
-											value="green"> <span class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-warning"> <input type="radio"
-											th:field="*{color}" id="option2" autocomplete="off"
-											value="puple"> <span class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-danger"> <input type="radio"
-											th:field="*{color}" id="option2" autocomplete="off"
-											value="black"> <span class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn btn-success" for="mediumaquamarine">
+											<input type="radio" th:field="*{color}" id="mediumaquamarine"
+											autocomplete="off" value="mediumaquamarine"> <span
+											class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn btn-info" for="cornflowerblue"> <input
+											type="radio" th:field="*{color}" id="cornflowerblue"
+											autocomplete="off" value="cornflowerblue"> <span
+											class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn" for="hotpink" style="background: hotpink;">
+											<input type="radio" th:field="*{color}" id="hotpink"
+											autocomplete="off" value="hotpink"> <span
+											class="glyphicon glyphicon-ok"></span>
+										</label> <label class="btn " for="mediumpurple"
+											style="background: mediumpurple;"> <input
+											type="radio" th:field="*{color}" id="mediumpurple"
+											autocomplete="off" value="mediumpurple"> <span
+											class="glyphicon glyphicon-ok"></span>
 										</label>
 
 									</div>
