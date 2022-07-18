@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/aliceLayout}">
+
+<div layout:fragment="content">
+	<div class="container-fluid h-100">
+		<div class="row">
+			<div class="col-12">
+				<div>
+					<form th:action="@{/alice/search}" th:object="${dto}" method="POST">
+						<label>기간</label><input th:field="*{startDateStr}" type="date">~<input
+							th:field="*{endDateStr}" type="date"> <label>내용</label><input
+							th:field="*{content}"> <input type="submit" th:value="검색">
+					</form>
+				</div>
+				<div>
+					<table border="1">
+						<tr>
+							<th>기간</th>
+							<th>내용</th>
+							<th>멤버</th>
+						</tr>
+						<th:block th:if="${#lists.isEmpty(resultEvents)}">
+							<tr>
+								<td colspan="4">없음
+							</tr>
+						</th:block>
+						<th:block th:unless="${#lists.isEmpty(resultEvents)}"
+							th:each="event:${resultEvents}">
+							<tr>
+								<td th:text="${event.startDate}"></td>
+								<td th:text="${event.content}"></td>
+								<td th:text="${event.memberList}"></td>
+							</tr>
+						</th:block>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</html>

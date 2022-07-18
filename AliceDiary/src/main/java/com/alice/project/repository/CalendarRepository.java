@@ -17,4 +17,32 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 
 	@Query("SELECT c " + "FROM Calendar AS c " + "WHERE mem_num = :num")
 	List<Calendar> findByMemNum(Long num);
+
+	@Transactional
+	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND content LIKE '%'||:content||'%' ORDER BY start_date", nativeQuery = true)
+	List<Calendar> findByContent(Long num, String content);
+
+	@Transactional
+	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND start_date >= :start ORDER BY start_date", nativeQuery = true)
+	List<Calendar> findByStart(Long num, String start);
+
+	@Transactional
+	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND end_date <= :end ORDER BY start_date", nativeQuery = true)
+	List<Calendar> findByEnd(Long num, LocalDate end);
+
+	@Transactional
+	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND start_date >= :start AND end_date <= :end ORDER BY start_date", nativeQuery = true)
+	List<Calendar> findByStartEnd(Long num, String start, LocalDate end);
+
+	@Transactional
+	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND end_date <= :end AND content LIKE '%'||:content||'%' ORDER BY start_date", nativeQuery = true)
+	List<Calendar> findByContentEnd(Long num, String content, LocalDate end);
+
+	@Transactional
+	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND start_date >= :start AND content LIKE '%'||:content||'%' ORDER BY start_date", nativeQuery = true)
+	List<Calendar> findByContentStart(Long num, String content, String start);
+	
+	@Transactional
+	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND start_date >= :start AND end_date <= :end AND content LIKE '%'||:content||'%' ORDER BY start_date", nativeQuery = true)
+	List<Calendar> findByAll(Long num, String content, String start, LocalDate end);
 }
