@@ -13,6 +13,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +26,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "num")
+@AllArgsConstructor
 public class Reply {
 
 
@@ -33,16 +35,12 @@ public class Reply {
 	@Column(name = "reply_num")
 	private Long num; // 댓글 번호
 	private Long parentRepNum; // 부모댓글 번호
-//	private Long memberNum; // 댓글 작성자
-//	private Long postNum;
-//	private String repWriter; // 댓글 작성자
-
 	private String content; // 댓글 내용
 	private LocalDateTime repDate; // 댓글작성일자
 	private Long heart = 0L; // 공감 수 (default=0)
 	private Boolean edit; // 수정여부 (False, True) SQL문 : CHAR(1) Check(edit IN('0', '1')
-
-  @ManyToOne(fetch = FetchType.LAZY)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_num")
 	private Post post; // 댓글 소속 게시물 객체
 
@@ -55,18 +53,7 @@ public class Reply {
 		this.repDate = LocalDateTime.now();
 	}
 
-	/*
-	 * public Reply(ReplyDto rdto, ReplyService rs) { this.content =
-	 * rdto.getContent(); this.repDate = rdto.getRepDate(); this.edit =
-	 * rdto.getEdit(); this.memberNum = rs.getMemNumById(rdto.getMemberId());
-	 * this.postNum = rdto.getPostNum(); }
-	 * 
-	 * @Builder public Reply(Long parentRepNum, Long memberNum, Long postNum, String
-	 * content, LocalDateTime repDate, Boolean edit) { this.parentRepNum =
-	 * parentRepNum; this.memberNum = memberNum; this.postNum = postNum;
-	 * this.content = content; this.repDate = repDate; this.edit = edit; }
-	 */
-
+	//댓글쓰기
 	@Builder
 	public Reply(String content, LocalDateTime repDate, Boolean edit, Post post, Member member) {
 		super();
@@ -78,10 +65,19 @@ public class Reply {
 		this.member = member;
 	}
 	
+	//대댓글쓰기
 	@Builder
-	public Reply(String content2, LocalDateTime now, Boolean false1, Long postNum, Long findMemberNumById) {
-		// TODO Auto-generated constructor stub
+	public Reply(String content, LocalDateTime repDate, Boolean edit, Long parentRepNum, Post post, Member member) {
+		super();
+
+		this.content = content;
+		this.repDate = repDate;
+		this.edit = edit;
+		this.parentRepNum = parentRepNum;
+		this.post = post;
+		this.member = member;
 	}
+	
 	
 	// 연관관계 메서드 (양방향관계)
 	public void setPost(Post post) {
@@ -94,11 +90,9 @@ public class Reply {
 		member.getReplies().add(this);
 	}
 	
-	// 댓글 객체 생성 메서드
-	public static Reply createReply(Post post, Member member) {
-		Reply reply = new Reply();
-		reply.setPost(post);
-		reply.setMember(member);
-		return reply;
-	}
+	/*
+	 * // 댓글 객체 생성 메서드 public static Reply createReply(Post post, Member member) {
+	 * Reply reply = new Reply(); reply.setPost(post); reply.setMember(member);
+	 * return reply; }
+	 */
 }

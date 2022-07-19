@@ -35,7 +35,7 @@ public class AttachedFileService {
 	
 	
 
-	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session) {
+	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session, String id) {
 		log.info("list size : " + files.size());
 		if (files.size() != 0) {
 			log.info("service run");
@@ -43,7 +43,7 @@ public class AttachedFileService {
 
 				String savePath = "C:\\Temp\\upload\\";
 				String ofile = multipartFile.getOriginalFilename();
-				String sfile = postSaveFile(multipartFile, savePath, session);
+				String sfile = postSaveFile(multipartFile, savePath, session, id);
 
 				log.info("service run222222222");
 
@@ -59,12 +59,12 @@ public class AttachedFileService {
 		}
 	}
 
-	public String postSaveFile(MultipartFile file, String savePath, HttpSession session) {
+	public String postSaveFile(MultipartFile file, String savePath, HttpSession session, String id) {
 
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-		String sfile = currentTime + "_" + ofile;
+		String sfile = id+"_" +currentTime + "_" + ofile;
 
 		log.info("ofile:" + ofile);
 		log.info("sfile:" + sfile);

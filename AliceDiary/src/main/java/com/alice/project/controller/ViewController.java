@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Post;
@@ -52,7 +51,7 @@ public class ViewController {
 
 		List<AttachedFile> files = attachedFileService.fileView(viewPost, pageable);
 		model.addAttribute("files", files);
-
+		
 		List<ReplyDto> replyList = replyService.replyList(num);
 		for (ReplyDto rdto : replyList) {
 			log.info("리스트 각각 : " + rdto.toString());
@@ -60,7 +59,8 @@ public class ViewController {
 		model.addAttribute("replyList", replyList);
 
 		return "community/postView";
-	}
+		}
+		
 
 	@GetMapping("community/download/{num}")
 	public ResponseEntity<UrlResource> fileDownload(@PathVariable("num") Long num)

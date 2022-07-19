@@ -8,10 +8,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.alice.project.domain.Post;
 import com.alice.project.service.ListService;
+import com.alice.project.web.PostSearchDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,14 +22,24 @@ public class ListController {
 
 	@Autowired
 	private ListService listService;
+	
 
+	
 	@GetMapping("/community/list")
-	public String list(Model model,
-			@PageableDefault(page=0, size=5, sort="num", direction=Sort.Direction.DESC)Pageable pageable, Long num) {
+	public String list(Model model ,@ModelAttribute("postSearchDto")PostSearchDto postSearchDto,
+			@PageableDefault(page=0, size=5, sort="postDate", direction=Sort.Direction.DESC)Pageable pageable) {
 		
-		Page<Post> list = listService.list(pageable);
+		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 		
-		log.info("service run");
+		String keyword =postSearchDto.getKeyword();
+			
+		Page<Post> list = null;
+		
+		if(keyword == null) {
+			list = listService.list(pageable);
+		} else {
+			list = listService.searchList(postSearchDto, pageable);
+		}
 		
 		int nowPage = list.getPageable().getPageNumber() + 1;
 		int startPage = Math.max(nowPage - 2, 1);
@@ -46,4 +57,5 @@ public class ListController {
 		
 		return "community/list";
 	}
+	
 }

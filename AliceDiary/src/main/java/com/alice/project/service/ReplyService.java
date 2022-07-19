@@ -49,10 +49,11 @@ public class ReplyService {
 	
     public List<ReplyDto> replyList(Long num){
     	List<ReplyDto> rdtos = new ArrayList<>();
-    	List<Reply> replyList = replyRepository.findByPostNum(num);
+    	List<Reply> replyList = replyRepository.findGroupByPostNum(num);
     	for (Reply r : replyList) {
     		log.info("r" + r.toString());
     	}
+    	
     	for (Reply r : replyList) {
     		ReplyDto rdto = new ReplyDto();
     		rdto.setNum(r.getNum());
@@ -62,8 +63,23 @@ public class ReplyService {
     		rdto.setEdit(r.getEdit());
     		rdto.setMemberId(r.getMember().getId());
     		rdto.setPostNum(r.getPost().getNum());
+    		rdto.setHeart(r.getHeart());
     		rdtos.add(rdto);
     	}
     	return rdtos;
+    }
+    
+    public Reply replyReplyWrite(String memberId, Long postNum, Long parentRepNum, String content){
+    	log.info("parentRepNum : " + parentRepNum);
+
+    	Reply writedReplyReply = new Reply(
+    			content,
+    			LocalDateTime.now(),
+    			Boolean.FALSE,
+    			parentRepNum,
+    			postRepository.findByNum(postNum),
+    			memberRepository.findById(memberId));
+
+        return replyRepository.save(writedReplyReply);
     }
 }

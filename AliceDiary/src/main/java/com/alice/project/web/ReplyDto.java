@@ -22,6 +22,8 @@ public class ReplyDto {
 	private LocalDateTime repDate;
 
 	private Boolean edit;
+	
+	private Long heart;
 
 	private String memberId;
 
@@ -35,13 +37,14 @@ public class ReplyDto {
 		this.postNum = postNum;
 	}
 
-	public ReplyDto(String content, LocalDateTime repDate, Boolean edit, String memberId, Long postNum) {
+	public ReplyDto(String content, LocalDateTime repDate, Boolean edit, String memberId, Long heart, Long postNum) {
 		super();
 		this.content = content;
 		this.repDate = repDate;
 		this.edit = edit;
 		this.memberId = memberId;
 		this.postNum = postNum;
+		this.heart = heart;
 	}
 
 

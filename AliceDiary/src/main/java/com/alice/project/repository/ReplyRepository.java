@@ -5,13 +5,21 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Reply;
 
-public interface ReplyRepository extends JpaRepository<Reply, Long>{
+@Repository
+public interface ReplyRepository extends JpaRepository<Reply, Long>, ReplyRepositoryCustom {
 	
-	List<Reply> findByPostNum(Long num);
+//	List<Reply> findByPostNum(Long num);
+	
+//	@Query(value="SELECT " 
+//			+ "r.reply_num, r.parent_rep_num, r.content, r.rep_date, r.member_num, r.heart, r.edit "
+//			+ "FROM reply r WHERE r.post_num= :postNum "
+//			+ "GROUP BY r.reply_num, r.parent_rep_num, r.content, r.rep_date, r.member_num, r.heart, r.edit", nativeQuery=true)
+//	List<Reply> findGroupByPostNum(Long postNum);
 	
 	@Modifying
 	@Transactional

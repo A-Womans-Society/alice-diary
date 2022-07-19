@@ -6,12 +6,12 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Post;
@@ -57,13 +57,13 @@ public class UpdateController {
 
 
 	@PostMapping("/community/put")
-	public String updatePorc(WriteFormDto updateDto, HttpSession session) {
+	public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
 		updateService.updatePost(updateDto.getPostNum(), updateDto);
 		
 		Post updatedPost = writeService.findOne(updateDto.getPostNum());
 
-		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session);
+		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
 
 		return "redirect:list";
 	}
