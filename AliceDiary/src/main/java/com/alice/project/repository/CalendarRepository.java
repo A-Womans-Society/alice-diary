@@ -15,7 +15,7 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 	@Query(value = "SELECT * FROM Calendar c INNER JOIN Member m ON m.member_num = :num AND c.mem_num = m.member_num WHERE :today BETWEEN c.alarm AND c.start_date ORDER BY c.start_date", nativeQuery = true)
 	List<Calendar> getAlarmEvents(Long num, LocalDate today);
 
-	@Query("SELECT c " + "FROM Calendar AS c " + "WHERE mem_num = :num")
+	@Query("SELECT c " + "FROM Calendar AS c WHERE mem_num = :num ORDER BY start_date")
 	List<Calendar> findByMemNum(Long num);
 
 	@Transactional
