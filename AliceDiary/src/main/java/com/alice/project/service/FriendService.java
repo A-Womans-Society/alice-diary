@@ -33,7 +33,6 @@ public class FriendService {
 	// friendService에서 멤버에 있는 num으로 프렌드 객체를 만들기
 	public Friend groupNum(Long adderNum, Long addeeNum) {
 		return friendRepository.findGroupByAddeeAdderNum(adderNum, addeeNum);
-		
 	}
 
 	// adderNum이 추가한 친구목록

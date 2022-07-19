@@ -25,7 +25,7 @@ function loadMembers() {
 					let result = JSON.parse(httpRequest.response);
 					console.log(result);
 
-					let html = "<img src=\"img/image5.png\"><p>" + result.id
+					let html = "<img src=\"img/image.png\"><p>" + result.id
 							+ " / " + result.mbti + "</p>";
 					document.getElementById("memberInfo").innerHTML = html;
 				} else {
@@ -60,9 +60,9 @@ function loadFriends() {
 					
 					let result = JSON.parse(httpRequest.response);
 					console.log(result);
-					let resultHtml = "";
+					let resultHtml = " ";
 					for (let idx in result) {
-						resultHtml += "<tr><td>"+idx+"</td><td>"+result[idx].id+"</td><td>"+result[idx].name+"</td><td>"+result[idx].mobile+"</td><td>"+result[idx].birth+"</td><td>"+result[idx].gender+"</td><td>"+result[idx].email+"</td><td>"+result[idx].groupName+"</td></tr>";
+						resultHtml += "<tr><td>"+idx+"</td><td>"+result[idx].id+"</td><td><a href='/AliceDiary/friends/friendInfo/"+result[idx].id+"'>"+result[idx].name+"</a></td><td>"+result[idx].mobile+"</td><td>"+result[idx].birth+"</td><td>"+result[idx].gender+"</td><td>"+result[idx].email+"</td><td>"+result[idx].groupName+"</td></tr>";
 					}
 					document.getElementById("friendsBody").innerHTML=resultHtml;					
 				}
