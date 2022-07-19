@@ -39,238 +39,266 @@
 <div layout:fragment="content">
 	<div class="container-fluid h-100">
 		<div class="row justify-content-end h-100">
-			<div class="col-9" id='calendar-container' style="padding: 0;">
+			<div class="col-9 p-3" id='calendar-container'>
 				<div id='calendar'></div>
 			</div>
 			<div class="col-3 h-100">
-				<div class="row h-50">
-					<div class="col-12 h-100" style="overflow: overlay;">
-						<div id="alarmTitle">
-							<strong>앨리스가 알려드려요</strong> <span
-								class="badge badge-primary badge-pill"
-								th:text="${#lists.size(alarmList)}"></span>
+				<div class="row" style="height: 60%;">
+					<div class="col-12 h-100 pt-3 pl-3 pr-3">
+						<div class="h-100 p-3"
+							style="border: 2px solid #dccae9; border-radius: 50px;">
+							<div id="alarmTitle" class="pt-3 text-center" style="height: 18%">
+								<strong style="font-size: larger;">앨리스가 알려드려요</strong> <span
+									class="badge badge-primary badge-pill"
+									th:text="${#lists.size(alarmList)}"></span>
+							</div>
+							<div style="overflow: overlay; height: 80%;">
+								<th:block th:if="${!alarmList.isEmpty}">
+									<ul>
+										<li th:each="alarm: ${alarmList}">
+											<p>
+												<strong><span th:text="${alarm.content}"></span></strong> <small>
+													<span th:if="${!#strings.isEmpty(alarm.memberList)}"
+													th:text="|with ${alarm.memberList}|"> </span> <span
+													th:text="|(${alarm.startDate})|"> </span>
+												</small>
+											</p>
+										</li>
+									</ul>
+								</th:block>
+							</div>
 						</div>
-						<th:block th:if="${!alarmList.isEmpty}">
-							<ul>
-								<li th:each="alarm: ${alarmList}">
-									<p>
-										<strong><span th:text="${alarm.content}"></span></strong> <small>
-											<span th:if="${!#strings.isEmpty(alarm.memberList)}"
-											th:text="|with ${alarm.memberList}|"> </span> <span
-											th:text="|(${alarm.startDate})|"> </span>
-										</small>
-									</p>
-								</li>
-							</ul>
-						</th:block>
 					</div>
-
 				</div>
-				<div class="row h-50">
-					<form th:action="@{/alice/search}" th:object="${dto}" method="POST">
-						<label>기간</label><input th:field="*{startDateStr}" type="date">~<input
-							th:field="*{endDateStr}" type="date"> <label>내용</label><input
-							th:field="*{content}"> <input type="submit" th:value="검색">
+				<div class="row" style="height: 40%;">
+					<div class="h-100 p-3 col-12">
+						<div class="h-100 p-3"
+							style="border: 2px solid #dccae9; border-radius: 50px;">
+							<div id="alarmTitle" class="text-center pb-2">
+								<strong style="font-size: larger;">일정 검색</strong>
+							</div>
+							<form th:action="@{/alice/search}" th:object="${dto}"
+								method="POST">
+								<p class="m-0">기간 :</p>
+								<div class="w-100">
+									<input th:field="*{startDateStr}" type="date"
+										style="width: 45%;">&nbsp;~&nbsp;<input
+										th:field="*{endDateStr}" type="date" style="width: 45%;">
+								</div>
+								<p class="pt-3">
+									<label>내용 :&nbsp;</label><input th:field="*{content}">
+								</p>
+								<div class="text-center">
+									<input type="submit" class="btn" th:value="검색">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="resultDiv">
+			<p th:if="${msg}!=null" th:text="${msg}"></p>
+		</div>
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" role="dialog" id="addEvent">
+			<div class="modal-dialog modal-dialog-centered modal-lg"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title">일정 추가</h1>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form th:action="@{/addEvent}" th:object="${CalForm}" method="post">
+						<div class="modal-body">
+							<div class="container-fulid">
+								<div class="row">
+									<div class="col-12">
+										<p>
+											<strong>일자</strong>&nbsp;<input id="startDate" type="date"
+												th:field="*{startDateStr}" readOnly>&nbsp;~&nbsp;<input
+												id="endDate" type="date" th:field="*{endDateStr}">
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-6">
+										<p>
+											<strong>내용</strong>&nbsp;<input type="text" id="eventContent"
+												th:field="*{content}">
+										</p>
+										<p>
+											<strong>멤버</strong>&nbsp;<select class="selectpicker"
+												data-live-search="true" th:field="*{memberList}" multiple>
+												<th:block th:if="${#lists.size(friendsList) == 0}">
+													<option value="">친구를 추가해보세요!</option>
+												</th:block>
+
+												<th:block th:unless="${#lists.size(friendsList) == 0}">
+													<option th:each="f : ${friendsList}" th:value="${f.num}"
+														th:text="${f.name}"></option>
+												</th:block>
+											</select>
+										</p>
+
+										<p>
+											<strong>장소</strong>&nbsp;<input type="text" id="location"
+												th:field="*{location}">
+										</p>
+										<div class="d-flex">
+											<strong>색상</strong>&nbsp;
+											<div class="btn-group" data-toggle="buttons">
+
+												<label class="btn btn-danger active" for="crimson">
+													<input type="radio" th:field="*{color}" id="crimson"
+													autocomplete="off" value="crimson" checked> <span
+													class="glyphicon glyphicon-ok"></span>
+												</label> <label class="btn btn-warning" for="orange"> <input
+													type="radio" th:field="*{color}" id="orange"
+													autocomplete="off" value="orange"> <span
+													class="glyphicon glyphicon-ok"></span>
+												</label> <label class="btn btn-success" for="mediumaquamarine">
+													<input type="radio" th:field="*{color}"
+													id="mediumaquamarine" autocomplete="off"
+													value="mediumaquamarine"> <span
+													class="glyphicon glyphicon-ok"></span>
+												</label> <label class="btn btn-info" for="cornflowerblue"> <input
+													type="radio" th:field="*{color}" id="cornflowerblue"
+													autocomplete="off" value="cornflowerblue"> <span
+													class="glyphicon glyphicon-ok"></span>
+												</label> <label class="btn" for="hotpink"
+													style="background: hotpink;"> <input type="radio"
+													th:field="*{color}" id="hotpink" autocomplete="off"
+													value="hotpink"> <span
+													class="glyphicon glyphicon-ok"></span>
+												</label> <label class="btn " for="mediumpurple"
+													style="background: mediumpurple;"> <input
+													type="radio" th:field="*{color}" id="mediumpurple"
+													autocomplete="off" value="mediumpurple"> <span
+													class="glyphicon glyphicon-ok"></span>
+												</label>
+
+											</div>
+										</div>
+
+									</div>
+									<div class="col-6">
+										<p class="m-0">
+											<strong>공개여부</strong>
+										</p>
+										<p class="pl-3">
+											<input type="radio" value="true" id="public"
+												th:field="*{publicity}" name="publicity"> <label
+												for="public">공개</label> <input type="radio" name="publicity"
+												value="false" id="private" th:field="*{publicity}"
+												checked="checked"> <label for="private">비공개</label>
+										</p>
+										<p>
+											<strong>알림</strong>&nbsp;<select th:field="*{alarm}">
+												<option value="1">1일 전</option>
+												<option value="3">3일 전</option>
+												<option value="7">1주 전</option>
+												<option value="14">2주 전</option>
+												<option value="21">3주 전</option>
+												<option value="30">한 달 전</option>
+											</select>
+										</p>
+										<p class="d-flex">
+											<strong>메모</strong>&nbsp;
+											<textarea id="memo" th:field="*{memo}"></textarea>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<input type="submit" class="btn btn-dark" value="일정 등록"
+								onclick="return checkNull();">
+						</div>
 					</form>
 				</div>
 			</div>
 		</div>
-	</div>
 
-
-	<div id="resultDiv">
-		<p th:if="${msg}!=null" th:text="${msg}"></p>
-	</div>
-	<!-- Modal -->
-	<div class="modal" tabindex="-1" role="dialog" id="addEvent">
-		<div class="modal-dialog modal-dialog-centered modal-lg"
-			role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title">일정 추가</h1>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<form th:action="@{/addEvent}" th:object="${CalForm}" method="post">
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" role="dialog" id="showEvent">
+			<div class="modal-dialog modal-dialog-centered modal-lg"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title">일정 상세 보기</h1>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
 					<div class="modal-body">
 						<div class="container-fulid">
 							<div class="row">
 								<div class="col-12">
 									<p>
-										<strong>일자</strong><input id="startDate" type="date"
-											th:field="*{startDateStr}" readOnly> ~ <input
-											id="endDate" type="date" th:field="*{endDateStr}">
+										<strong>일자&nbsp;</strong><input id="detailStartDate"
+											type="date" readOnly>&nbsp;~&nbsp;<input
+											id="detailEndDate" type="date" readOnly>
 									</p>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-6">
 									<p>
-										<strong>내용</strong>&nbsp;<input type="text" id="c"
-											th:field="*{content}">
+										<strong>내용</strong>&nbsp;<input type="text" id="detailContent"
+											readOnly>
 									</p>
 									<p>
-										<strong>멤버</strong> <select class="selectpicker"
-											data-live-search="true" th:field="*{memberList}" multiple>
-											<th:block th:if="${#lists.size(friendsList) == 0}">
-												<option value="">친구를 추가해보세요!</option>
-											</th:block>
-
-											<th:block th:unless="${#lists.size(friendsList) == 0}">
-												<option th:each="f : ${friendsList}" th:value="${f.num}"
-													th:text="${f.name}"></option>
-											</th:block>
-										</select>
+										<strong>멤버</strong>&nbsp;<input type="text"
+											id="detailMemberList" readOnly>
 									</p>
 
+
 									<p>
-										<strong>장소</strong><input type="text" id="location"
-											th:field="*{location}">
+										<strong>장소</strong>&nbsp;<input type="text"
+											id="detailLocation" readonly>
 									</p>
 									<p>
-										<strong>색상</strong>
-									<div class="btn-group" data-toggle="buttons">
+										<strong>색상</strong>&nbsp;
 
-										<label class="btn btn-danger active" for="crimson"> <input
-											type="radio" th:field="*{color}" id="crimson"
-											autocomplete="off" value="crimson" checked> <span
-											class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-warning" for="orange"> <input
-											type="radio" th:field="*{color}" id="orange"
-											autocomplete="off" value="orange"> <span
-											class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-success" for="mediumaquamarine">
-											<input type="radio" th:field="*{color}" id="mediumaquamarine"
-											autocomplete="off" value="mediumaquamarine"> <span
-											class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn btn-info" for="cornflowerblue"> <input
-											type="radio" th:field="*{color}" id="cornflowerblue"
-											autocomplete="off" value="cornflowerblue"> <span
-											class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn" for="hotpink" style="background: hotpink;">
-											<input type="radio" th:field="*{color}" id="hotpink"
-											autocomplete="off" value="hotpink"> <span
-											class="glyphicon glyphicon-ok"></span>
-										</label> <label class="btn " for="mediumpurple"
-											style="background: mediumpurple;"> <input
-											type="radio" th:field="*{color}" id="mediumpurple"
-											autocomplete="off" value="mediumpurple"> <span
-											class="glyphicon glyphicon-ok"></span>
-										</label>
-
-									</div>
+										<button id="colorbtn"></button>
 									</p>
 
 								</div>
 								<div class="col-6">
-									<p>
-										<strong>공개여부</strong> <input type="radio" value="true"
-											id="public" th:field="*{publicity}" name="publicity">
-										<label for="public">공개</label> <input type="radio"
-											name="publicity" value="false" id="private"
-											th:field="*{publicity}" checked="checked"> <label
-											for="private">비공개</label>
+									<p class="m-0">
+										<strong>공개여부</strong>
+									</p>
+									<p class="pl-3">
+										<input type="radio" id="detailPublic" onclick="return(false);"><label>공개</label>
+										<input type="radio" id="detailPrivate"
+											onclick="return(false);"><label>비공개</label>
 									</p>
 									<p>
-										<strong>알림</strong> <select th:field="*{alarm}">
-											<option value="1">1일 전</option>
-											<option value="3">3일 전</option>
-											<option value="7">1주 전</option>
-											<option value="14">2주 전</option>
-											<option value="21">3주 전</option>
-											<option value="30">한 달 전</option>
-										</select>
+										<strong>알림</strong>&nbsp;<input type="text" id="detailAlarm"
+											readonly>
 									</p>
-									<p>
-										<strong>메모</strong>
-										<textarea id="memo" th:field="*{memo}"></textarea>
+									<p class="d-flex">
+										<strong>메모</strong>&nbsp;
+										<textarea id="detailMemo" readOnly></textarea>
 									</p>
 								</div>
 							</div>
 						</div>
+						<input type="hidden" id="eventId">
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btn btn-dark" value="일정 등록"
-							onclick="return checkNull();">
+						<input type="button" class="btn btn-danger" value="일정 삭제"
+							onclick="deleteEvent()">
 					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal -->
-	<div class="modal" tabindex="-1" role="dialog" id="showEvent">
-		<div class="modal-dialog modal-dialog-centered modal-lg"
-			role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title">일정 상세 보기</h1>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="container-fulid">
-						<div class="row">
-							<div class="col-12">
-								<p>
-									<strong>일자</strong><input id="detailStartDate" type="date"
-										readOnly> ~ <input id="detailEndDate" type="date"
-										readOnly>
-								</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-6">
-								<p>
-									<strong>내용</strong>&nbsp;<input type="text" id="detailContent"
-										readOnly>
-								</p>
-								<p>
-									<strong>멤버</strong> <input type="text" id="detailMemberList"
-										readOnly>
-								</p>
-
-
-								<p>
-									<strong>장소</strong><input type="text" id="detailLocation"
-										readonly>
-								</p>
-								<p>
-									<strong>색상</strong>
-
-									<button id="colorbtn"></button>
-								</p>
-
-							</div>
-							<div class="col-6">
-								<p>
-									<strong>공개여부</strong> <input type="radio" id="detailPublic"
-										onclick="return(false);"><label>공개</label> <input
-										type="radio" id="detailPrivate" onclick="return(false);"><label>비공개</label>
-								</p>
-								<p>
-									<strong>알림</strong> <input type="text" id="detailAlarm"
-										readonly>
-								</p>
-								<p>
-									<strong>메모</strong>
-									<textarea id="detailMemo" readOnly></textarea>
-								</p>
-							</div>
-						</div>
-					</div>
-					<input type="hidden" id="eventId">
-				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-danger" value="일정 삭제"
-						onclick="deleteEvent()">
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </html>
