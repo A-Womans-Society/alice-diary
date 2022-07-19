@@ -54,22 +54,15 @@ public class UserDto {
 
 	private String mbti;
 
-	private String wishList;
+	private String wishlist;
 	
 	private String saveName;
 	
 	private MultipartFile profileImg;
 	
 
-	public UserDto(@NotBlank(message = "아이디는 필수 입력 값입니다.") String id,
-			@NotEmpty(message = "비밀번호는 필수 입력 값입니다.") @Size(min = 8, message = "비밀번호는 8자 이상으로 입력해주세요.") String password,
-			String confirmPassword, @NotBlank(message = "이름은 필수 입력 값입니다.") String name,
-			@NotNull(message = "생년월일은 필수 입력 값입니다.") LocalDate birth, Gender gender,
-			@NotEmpty(message = "이메일은 필수 입력 값입니다.") @Email(message = "이메일 형식으로 입력해주세요.") String email,
-			@NotBlank(message = "전화번호는 필수 입력 값입니다.") @Pattern(regexp = "(01[016789])(\\d{3,4})(\\d{4})", message = "올바른 휴대폰 번호를 입력해주세요.") String mobile,
-			String mbti, String wishList, String saveName, 
-			MultipartFile profileImg) {
-		super();
+	public UserDto( String id, String password, String confirmPassword, String name, LocalDate birth, Gender gender,
+			String email, String mobile, String mbti, String wishlist, String saveName, MultipartFile profileImg) {
 		this.id = id;
 		this.password = password;
 		this.confirmPassword = confirmPassword;
@@ -79,7 +72,7 @@ public class UserDto {
 		this.email = email;
 		this.mobile = mobile;
 		this.mbti = mbti;
-		this.wishList = wishList;
+		this.wishlist = wishlist;
 		this.saveName = saveName;
 		this.profileImg = profileImg;
 	}
@@ -93,7 +86,7 @@ public class UserDto {
 		this.email = member.getEmail();
 		this.mobile = member.getMobile();
 		this.mbti = member.getMbti();
-		this.wishList = member.getWishlist();
+		this.wishlist = member.getWishlist();
 		this.saveName = member.getProfileImg();
 	}
 	
@@ -108,16 +101,10 @@ public class UserDto {
 		this.email = member.getEmail();
 		this.mobile = member.getMobile();
 		this.mbti = member.getMbti();
-		this.wishList = member.getWishlist();
+		this.wishlist = member.getWishlist();
 		this.saveName = member.getProfileImg();
 		
 
 	}
-
-
-	
-	
-	
-	
 	
 }
