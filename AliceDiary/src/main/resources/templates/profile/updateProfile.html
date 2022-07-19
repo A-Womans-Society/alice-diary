@@ -2,48 +2,118 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layouts/profileLayout}">
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/profile/updateProfile.js}"></script>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	var id = /*[[${member.id}]]*/;
+	/*]]>*/
+	</script>
+</th:block>
 <th:block layout:fragment="css">
 	<link rel="stylesheet" th:href="@{/css/profile/myProfile.css}" />
 </th:block>
 
 <div layout:fragment="content">
-	<form th:action="@{/member/}+${member.id}" method="put"
-		th:object="${memberDto}" enctype="multipart/form-data">
-		<img th:src="@{/upload/}+@{${member.profileImg}}"
-			style="width: 200px; height: 190px;" /> <input type="file"
-			th:field="${member.profileImg}" id="file" onchange="PreviewImage();" />
-		<div>
-			아이디 <input class="my-box" type="text" th:value="@{${member.id}}"
-				disabled>
+	<form th:action="@{/member/update/}+${member.id}" method="post"
+		th:object="${member}" enctype="multipart/form-data">
+		<div class=" overflow-hidden">
+			<div
+				class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
+				<div class="col-7 pt-2">
+					<div class="tab-content">
+						<div class="tab-pane fade active show" id="account-general">
+
+							<div class="row w-100">
+								<th:block th:switch="${member.profileImg}">
+									<div th:case="default"
+										class="col-5 d-flex justify-content-center align-items-center"
+										style="flex-direction: column;">
+										<img id="profileImage" th:src="@{/upload/default.jpg}"
+											class="w-75" /> <label
+											class="btn btn-outline-primary btn-sm"> Upload new
+											photo <input type="file" class="account-settings-fileinput"
+											th:field="*{profileImg}" id="file" onchange="PreviewImage();">
+										</label>
+									</div>
+									<div th:case="${member.profileImg}"
+										class="col-5 d-flex justify-content-center align-items-center"
+										style="flex-direction: column;">
+										<img id="profileImage"
+											th:src="@{/upload/}+@{${member.profileImg}}" class="w-75" />
+										<label class="btn btn-outline-primary btn-sm"> Upload
+											new photo <input type="file"
+											class="account-settings-fileinput" th:field="*{profileImg}"
+											id="file" onchange="PreviewImage();">
+										</label>
+									</div>
+
+								</th:block>
+								<div class="col-7 pr-0">
+									<div class="form-group ">
+										<label class="form-label">ID</label> <input type="text"
+											class="form-control mb-1" th:value="${member.id}" disabled>
+									</div>
+									<div class="form-group">
+
+										<label class="form-label">이름</label> <input type="text"
+											class="form-control" th:placeholder="@{${member.name}}"
+											th:field="${member.name}" required> <small
+											th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+									</div>
+									<div class="form-group">
+
+										<label class="form-label">E-mail</label> <input type="email"
+											class="form-control mb-1" th:placeholder="@{${member.email}}"
+											th:field="${member.email}" required><small
+											th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr class="border-light m-0">
+
+					<div class="form-group">
+						<label class="form-label">생년월일</label> <input type="date"
+							class="form-control mb-1" th:field="${member.birth}"
+							th:value="${member.birth}" required>
+
+					</div>
+					<div class="form-group">
+						<label class="form-label">전화번호</label> <input type="text"
+							class="form-control mb-1" th:placeholder="@{${member.mobile}}"
+							th:field="${member.mobile}" required> <small
+							th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></small>
+
+					</div>
+					<div class="form-group">
+						<label class="form-label">MBTI</label> <input type="text"
+							class="form-control mb-1" th:placeholder="@{${member.mbti}}"
+							th:field="${member.mbti}">
+
+					</div>
+					<div class="form-group">
+						<label class="form-label">My Wish List</label> <input type="text"
+							class="form-control mb-1" th:field="${member.wishlist}"
+							th:placeholder="@{${member.wishlist}}">
+
+					</div>
+
+				</div>
+			</div>
+
 		</div>
-		<div>
-			이름 <input class="my-box" type="text"
-				th:placeholder="@{${member.name}}" th:field="${member.name}">
-		</div>
-		<div>
-			전화번호 <input class="my-box" type="text"
-				th:placeholder="@{${member.mobile}}" th:field="${member.mobile}">
-		</div>
-		<div>
-			생년월일 <input class="my-box" type="date"
-				th:placeholder="@{${member.birth}}" th:field="${member.birth}">
-		</div>
-		<div>
-			이메일 <input class="my-box" type="email"
-				th:placeholder="@{${member.email}}" th:field="${member.email}">
-		</div>
-		<div>
-			MBTI <input class="my-box" type="text"
-				th:placeholder="@{${member.mbti}}" th:field="${member.mbti}">
-		</div>
-		<div>
-			나의 위시리스트
-			<textarea class="my-box" th:placeholder="@{${member.wishlist}}"
-				th:field="${member.wishlist}"></textarea>
+		<div class="text-center">
+			<input class="btn btn-primary" type="submit" value="수정하기"> <input
+				class="btn btn-secondary" type="button" th:onclick="updateCancle()"
+				value="취소"> <input type="hidden" th:name="num"
+				th:value="${member.num}">
 		</div>
 
-		<input type="submit" value="정보 수정">
 	</form>
+
 </div>
 
 </html>

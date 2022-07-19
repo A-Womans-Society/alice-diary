@@ -10,8 +10,7 @@
 	<b>비밀번호 재설정</b>
 </div>
 <hr>
-<form th:action="@{/login/savePwd}" method="post"
-	th:object="${memberDto}">
+<form th:action="@{/login/savePwd}" method="post" th:object="${userDto}">
 	<div>
 		새로운 비밀번호 입력 : <input type="password" th:field="*{password}" />
 	</div>
