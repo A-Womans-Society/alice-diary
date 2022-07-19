@@ -234,6 +234,14 @@ public class Member {
 		return member;
 	}
 	
+	public static Member createMember(String id, UserDto memberDto, PasswordEncoder passwordEncoder) {
+		Member member = new Member(id, passwordEncoder.encode(memberDto.getPassword()),
+				memberDto.getName(), memberDto.getBirth(), memberDto.getGender(), memberDto.getEmail(),
+				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishlist(), LocalDate.now(),
+				memberDto.getSaveName(), Status.USER_IN);
+		return member;
+	}
+	
 	
 
 	// 회원 내보내기 메서드
