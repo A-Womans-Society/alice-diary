@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security">
+
 <head>
 <meta charset="UTF-8">
 <title>Alice Diary</title>
@@ -31,15 +33,17 @@
 <!-- navbar css -->
 <link rel="stylesheet" th:href="@{/css/layout/navbar.css}">
 
+
+
 <th:block layout:fragment="script"></th:block>
 <th:block layout:fragment="css"></th:block>
 </head>
 <body>
 
-	<!-- import header -->
-	<div th:replace="fragments/header::header"></div>
-	<!-- import content -->
-	<div layout:fragment="content" style="height: 90%;"></div>
-	<!--  style="height: 95vh;" -->
+		<!-- import header -->
+		<div th:replace="fragments/header::header"></div>
+		<!-- import content -->
+		<div layout:fragment="content" style="height: 92%;"></div>
+		<!--  style="height: 95vh;" -->
 </body>
 </html>

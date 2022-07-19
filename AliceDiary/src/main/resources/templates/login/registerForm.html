@@ -73,7 +73,7 @@
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
 										<label class="form-label" th:for="password"><span class="text-danger">*&nbsp;</span>비밀번호</label> <input
-											type="password" th:field="*{password}" class="form-control " />
+											type="password" th:field="*{password}" class="form-control" placeholder="8자 이상의 영문, 숫자, 특수문자 조합" />
 										<p th:if="${#fields.hasErrors('password')}"
 											th:errors="*{password}"></p>
 									</div>

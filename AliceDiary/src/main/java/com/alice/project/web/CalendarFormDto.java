@@ -2,6 +2,9 @@ package com.alice.project.web;
 
 import java.time.LocalDate;
 
+import com.alice.project.domain.Calendar;
+
+import groovy.transform.builder.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +24,24 @@ public class CalendarFormDto {
 	private Boolean publicity; // 일정 공개여부
 	private String alarm; // 일정 알람
 	private LocalDate alarmDate; // 일정 알람
+
+	@Builder
+	public CalendarFormDto() {
+		super();
+	}
+
+	@Builder
+	public CalendarFormDto(Calendar cal, String memberList) {
+		super();
+		this.num = cal.getNum();
+		this.memberList = memberList;
+		this.startDate = cal.getStartDate();
+		this.endDate = cal.getEndDate();
+		this.content = cal.getContent();
+		this.memo = cal.getMemo();
+		this.location = cal.getLocation();
+		this.color = cal.getColor();
+		this.publicity = cal.getPublicity();
+	}
+
 }

@@ -45,9 +45,9 @@ public class SecurityConfig {
 //        http.csrf().disable();
 
 		http.authorizeRequests()
-				.mvcMatchers("/css/**", "/js/**", "/img/**").permitAll()
+//				.mvcMatchers("/css/**", "/js/**", "/img/**").permitAll()
 				.mvcMatchers("/", "/login/**").permitAll()
-				.mvcMatchers("/alice/**", "/message/**", "/profile/**").permitAll()
+				.mvcMatchers("/alice/**", "/message/**", "/profile/**", "/community/**", "/friends/**").authenticated()
 				.mvcMatchers("/admin/**").hasRole("ADMIN");
 		
 //        http.exceptionHandling()
