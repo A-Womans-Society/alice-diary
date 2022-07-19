@@ -1,6 +1,7 @@
 package com.alice.project.controller;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,9 @@ import com.alice.project.service.CalendarService;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
 import com.alice.project.web.CalendarFormDto;
+import com.alice.project.web.EventAlarmDto;
 import com.alice.project.web.FriendshipDto;
+import com.alice.project.web.SearchEventFormDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +71,7 @@ public class AliceController {
 		obj.put("items", jArray);
 		// alarm list
 		LocalDate today = LocalDate.now();
-		List<Calendar> alarmList = calendarService.alarm(member.getNum(), today);
+		List<EventAlarmDto> alarmList = calendarService.alarm(member.getNum(), today);
 		// friends list
 		List<Friend> friendsList = friendService.friendship(member.getNum());
 		List<FriendshipDto> friendsDtoList = new ArrayList<FriendshipDto>();
@@ -79,6 +82,7 @@ public class AliceController {
 			tmp.setName(m.getName());
 			friendsDtoList.add(tmp);
 		}
+		model.addAttribute("dto", new SearchEventFormDto());
 		model.addAttribute("alarmList", alarmList);
 		model.addAttribute("list", obj.toString());
 		model.addAttribute("friendsList", friendsDtoList);
@@ -110,16 +114,25 @@ public class AliceController {
 		Calendar event = calendarService.eventDetail(Long.parseLong(id));
 		JSONObject jObj = new JSONObject();
 
+		if (event.getMemberList() != null) {
+			String fNames = "";
+			for (String n : event.getMemberList().split(",")) {
+				fNames += memberService.findByNum(Long.parseLong(n)).getName() + " ";
+			}
+			jObj.put("memberList", fNames);
+		} else {
+			jObj.put("memberList", null);
+		}
+
 		jObj.put("title", event.getContent());
 		jObj.put("id", event.getNum());
 		jObj.put("start", event.getStartDate());
 		jObj.put("end", event.getEndDate().minusDays(1L));
 		jObj.put("backgroundColor", event.getColor());
-		jObj.put("memberList", event.getMemberList());
 		jObj.put("location", event.getLocation());
 		jObj.put("memo", event.getMemo());
 		jObj.put("publicity", event.getPublicity());
-		jObj.put("alarm", event.getAlarm());
+		jObj.put("alarm", Period.between(event.getAlarm(), event.getStartDate()).getDays() + "일 전");
 
 		return jObj;
 	}

@@ -66,7 +66,13 @@
 					</div>
 
 				</div>
-				<div class="row bg-danger h-50">asdfasdf</div>
+				<div class="row h-50">
+					<form th:action="@{/alice/search}" th:object="${dto}" method="POST">
+						<label>기간</label><input th:field="*{startDateStr}" type="date">~<input
+							th:field="*{endDateStr}" type="date"> <label>내용</label><input
+							th:field="*{content}"> <input type="submit" th:value="검색">
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -102,7 +108,7 @@
 							<div class="row">
 								<div class="col-6">
 									<p>
-										<strong>내용</strong>&nbsp;<input type="text" id="content"
+										<strong>내용</strong>&nbsp;<input type="text" id="c"
 											th:field="*{content}">
 									</p>
 									<p>
@@ -113,12 +119,11 @@
 											</th:block>
 
 											<th:block th:unless="${#lists.size(friendsList) == 0}">
-												<option th:each="f : ${friendsList}" th:value="${f.name}"
+												<option th:each="f : ${friendsList}" th:value="${f.num}"
 													th:text="${f.name}"></option>
 											</th:block>
 										</select>
 									</p>
-
 
 									<p>
 										<strong>장소</strong><input type="text" id="location"

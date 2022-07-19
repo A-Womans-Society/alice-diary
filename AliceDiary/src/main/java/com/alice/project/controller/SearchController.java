@@ -31,9 +31,11 @@ public class SearchController {
 	private final MemberService memberService;
 
 	@GetMapping("/search")
-	public String searchEvent(Model model) {
+	public String searchEvent(Model model, @AuthenticationPrincipal UserDetails user) {
+		Member member = memberService.findById(user.getUsername());
+
 		model.addAttribute("dto", new SearchEventFormDto());
-		model.addAttribute("resultEvents", null);
+		model.addAttribute("resultEvents", calendarService.eventsList(member.getNum()));
 		return "alice/searchEvent";
 	}
 
