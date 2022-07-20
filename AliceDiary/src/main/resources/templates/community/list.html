@@ -28,7 +28,7 @@
 					<td>조회수</td>
 				</tr>
 			</thead>
-			<th:block th:if="${endPage == 0}">
+			<th:block th:if="${endPage} == 0">
 				<tbody>
 					<tr>
 						<td colspan="5">게시글이 없습니다</td>
@@ -37,8 +37,9 @@
 			</th:block>
 			<th:block th:unless="${endPage == 0}">
 				<tbody>
-					<tr th:each="post, postStat: ${list}">
-						<td th:text="${postStat.count}"></td>
+					<tr th:each="post, status: ${list}">
+						<!-- <td th:text="${poststat.index}"></td> -->
+						<td th:text="${size - status.index-(nowPage-1)*list.size}" />
 						<td><a th:text="${post.title}"
 							th:href="@{/community/get(num=${post.num})}"></a></td>
 						<td th:text="${post.member.id}"></td>
@@ -60,6 +61,8 @@
 		</div>
 
 		<a th:href="@{/community/post}"><input type="button" value="글쓰기"></a>
+		<a th:if="${postSearchDto.keyword != null}"	th:href="@{/community/list}"><input type="button" value="목록"></a>
+		
 	</div>
 </div>
 </html>

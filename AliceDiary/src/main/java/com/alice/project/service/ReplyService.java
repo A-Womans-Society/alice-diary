@@ -45,23 +45,6 @@ public class ReplyService {
 
 	public List<ReplyDto> replyList(Long num) {
 		List<ReplyDto> result = new ArrayList<>();
-//    	List<Reply> replyList = replyRepository.findByPostNum(num);
-//    	for (Reply r : replyList) {
-//    		log.info("r" + r.toString());
-//    	}
-//    	
-//    	for (Reply r : replyList) {
-//    		ReplyDto rdto = new ReplyDto();
-//    		rdto.setNum(r.getNum());
-//    		rdto.setParentRepNum(r.getParentRepNum());
-//    		rdto.setContent(r.getContent());
-//    		rdto.setRepDate(r.getRepDate());
-//    		rdto.setEdit(r.getEdit());
-//    		rdto.setMemberId(r.getMember().getId());
-//    		rdto.setPostNum(r.getPost().getNum());
-//    		rdto.setHeart(r.getHeart());
-//    		rdtos.add(rdto);
-//    	}
 
 		List<Reply> pList = replyRepository.findParentReplysByNum(num);
 		for (Reply p : pList) {

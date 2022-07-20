@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +15,9 @@ import com.alice.project.domain.Post;
 @Repository
 @Transactional(readOnly = true)
 public interface PostRepository
-		extends JpaRepository<Post, Long>, QuerydslPredicateExecutor<Post> {
-
+		extends JpaRepository<Post, Long>{
+	
+	@Query(value = "select * from Post order by post_num desc", nativeQuery=true)
 	Page<Post> findAll(Pageable pageable); // 전체 조회 및 페이징처리
 
 	@Modifying
@@ -41,13 +41,17 @@ public interface PostRepository
 	@Transactional
 	@Query("update Post p set p.updateDate = :updateDate where p.num = :num")
 	Integer editDate(Long num, LocalDateTime updateDate);
-
-	Page<Post> findByTitleContaining(String title, Pageable pageable);
-
-	Page<Post> findByContentContaining(String content, Pageable pageable);
-
 	
-	@Query(value = "select p from Post as p where p.memberNum in (select m.memberNum from Member as m where m.id like '%'||:writer||'%')", nativeQuery=true)
-	Page<Post> searchWriter(String writer, Pageable pageable);
+	@Query(value = "select * from Post where title like '%'||:title||'%' order by post_num desc", nativeQuery = true)
+	Page<Post> searchTitle(String title, Pageable pageable);
 
+	@Query(value = "select * from Post where content like '%'||:content||'%' order by post_num desc", nativeQuery = true)
+	Page<Post> searchContent(String content, Pageable pageable);
+	
+	@Query(value = "select * from Post where member_num = :memberNum order by post_num desc", nativeQuery=true)
+	Page<Post> searchWriter(Long memberNum, Pageable pageable);
+	
+//	@Query("select count(*) from Post")
+//	Integer countTotalPosts(Long num);
+	
 }
