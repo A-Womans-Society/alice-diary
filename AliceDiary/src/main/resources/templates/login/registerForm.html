@@ -27,6 +27,7 @@
 
 <script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
 <script th:src="@{/js/login/register.js}"></script>
+
 <link rel="stylesheet" th:href="@{/css/login/register.css}">
 
 <link id="contextPathHolder"
@@ -92,12 +93,6 @@
 											type="password" th:field="*{confirmPassword}"
 											th:onkeyup="checkPwd()" class="form-control " required
 											th:minlength="8" /> &nbsp;&nbsp;<span id="confirmMsg"></span>
-										<input type="hidden" name="hiddenNum" value="">
-										<div th:if="${hiddenNum == 0}"></div>
-										<div th:unless="${member.profileImg.equals('default')}">
-											<img th:src="@{/upload/}+@{${member.profileImg}}"
-												style="width: 200px; height: 190px;" />
-										</div>
 									</div>
 								</div>
 							</div>
@@ -158,21 +153,14 @@
 								</div>
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="wishList">My Wish
-											List</label> <input type="text" th:field="*{wishList}"
+										<label class="form-label" th:for="wishlist">My Wish
+											List</label> <input type="text" th:field="*{wishlist}"
 											placeholder="(선택)" class="form-control "> <small
-											th:if="${#fields.hasErrors('wishList')}"
-											th:errors="*{wishList}"></small>
+											th:if="${#fields.hasErrors('wishlist')}"
+											th:errors="*{wishlist}"></small>
 									</div>
 								</div>
 							</div>
-
-							<!-- 							<div>
-								프로필 사진 등록 <img id="profileImage"
-									style="width: 200px; height: 190px;"> <input type="file"
-									th:field="*{profileImg}" id="file" onchange="PreviewImage();" />
-							</div> -->
-
 							<div class="mt-4 pt-2 text-center">
 								<input class="btn btn-primary" type="submit" value="가입"
 									th:onclick="return regSuccess()">

@@ -49,12 +49,16 @@ public class MemberController {
 
 	// 회원가입 PostMapping 가입 성공 후 로그인 페이지로 이동
 	@PostMapping(value = "/register")
-	public String memberForm(@ModelAttribute("memberDto") @Valid UserDto memberDto, BindingResult bindingResult) {
+	public String memberForm(@ModelAttribute("memberDto") @Valid UserDto memberDto, BindingResult bindingResult, Model model) {
 		log.info("POST 나옴");
 		if (bindingResult.hasErrors()) {
 			log.info("에러 발생!");
 			return "login/registerForm";
 		}
+//		if(!memberDto.getPassword().equals(memberDto.getConfirmPassword())) {
+//			model.addAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+//			return "login/registerForm";
+//		}
 		if (memberDto.getProfileImg() == null) { 
 			memberDto.setSaveName("default");
 			Member member = Member.createMember(memberDto, passwordEncoder);
@@ -78,11 +82,11 @@ public class MemberController {
 	}
 
 	// 로그인에러 GetMapping
-	@GetMapping(value = "/login/error")
-	public String loginError(Model model) {
-		model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
-		return "redirect:/";
-	}
+//	@GetMapping(value = "/login/error")
+//	public String loginError(Model model) {
+//		model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
+//		return "redirect:/";
+//	}
 
 	// Id찾기 Get
 	@GetMapping(value = "/login/findId")

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -18,8 +19,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.alice.project.service.MemberService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -27,7 +30,9 @@ public class SecurityConfig {
 	
 	@Autowired
 	MemberService memberService;
-
+	
+	private final AuthenticationFailureHandler customFailureHandler;
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.formLogin()
@@ -37,7 +42,7 @@ public class SecurityConfig {
 				.defaultSuccessUrl("/alice")
 				.usernameParameter("userid")
 				.passwordParameter("password")
-				.failureUrl("/login/error")
+				.failureHandler(customFailureHandler)
 				.and()
 				.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -47,7 +52,7 @@ public class SecurityConfig {
 		http.authorizeRequests()
 				.mvcMatchers("/css/**", "/js/**", "/img/**").permitAll()
 				.mvcMatchers("/", "/login/**").permitAll()
-				.mvcMatchers("/alice/**", "/message/**", "/profile/**").permitAll()
+				.mvcMatchers("/alice/**", "/message/**", "/profile/**").hasRole("USER_IN")
 				.mvcMatchers("/admin/**").hasRole("ADMIN");
 		
 //        http.exceptionHandling()
