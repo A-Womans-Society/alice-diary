@@ -37,6 +37,10 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findById(String id) {
 		return memberRepository.findById(id);
 	}
+	
+//	public Member editPwd(String id, String password) {
+//		return memberRepository.findById(id);
+//	}
 
 	// id 중복테스트
 	public int checkIdDuplicate(String id) {

@@ -60,6 +60,10 @@ public class UserDto {
 	
 	private MultipartFile profileImg;
 	
+	private String newPwd;
+	
+	private String confirmNewPwd;
+	
 
 	public UserDto( String id, String password, String confirmPassword, String name, LocalDate birth, Gender gender,
 			String email, String mobile, String mbti, String wishlist, String saveName, MultipartFile profileImg) {
