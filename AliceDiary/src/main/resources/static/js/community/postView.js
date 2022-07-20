@@ -20,13 +20,16 @@ function replySubmit(postNum, memberId) {
 				repDate.innerText = result.repDate;
 				let content = document.createElement('td');
 				content.innerText = result.repContent;
-				let btn = document.createElement('td');
-				btn.innerHTML = "<button type='button' onclick='showReplyBox(replyReplyBox"+result.replyNum+")'>답글</button>";
+				let btn1 = document.createElement('td');
+				btn1.innerHTML = "<button type='button' onclick='replyDelete("+reply.num+")'>삭제</button>;						
+				let btn2 = document.createElement('td');
+				btn2.innerHTML = "<button type='button' onclick='showReplyBox(replyReplyBox"+result.replyNum+")'>답글</button>";
 				
 				newReply.appendChild(memberId);
 				newReply.appendChild(repDate);
 				newReply.appendChild(content);
-				newReply.appendChild(btn);
+				newReply.appendChild(btn1);
+				newReply.appendChild(btn2);
 				
 				let replyBox = document.createElement('tr');
 				replyBox.setAttribute('id', "replyReplyBox"+result.replyNum);
@@ -103,7 +106,6 @@ function showReplyBox(parentReplyBox){
 }
 		
 function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyContent, parentRepContentTable) {
-//	$('#replyList').load();
 	console.log(postNum);
 	console.log(parentRepNum);
 	console.log(memberId);
@@ -157,3 +159,38 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
     httpRequest.send(param);
 
 }
+
+function openModal(postNum, writer, userId){
+	//document.getElementById("searchId").value = "";
+	//document.getElementById("memberInfo").innerHTML = "";
+	//$("#addFriend").modal();
+	$('#postReportModal').modal('show');	
+	
+}
+
+function replyDelete(num) {
+	console.log(num);
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
+
+	httpRequest.onreadystatechange = function() {
+		if (httpRequest.readyState === XMLHttpRequest.DONE) {
+			if (httpRequest.status === 200) {
+				alert('댓글이 삭제되었습니다!');
+				
+
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
+
+	//POST로 요청
+	httpRequest.open('POST', "./deletereply", true);
+	httpRequest.setRequestHeader(header, token);
+	httpRequest.setRequestHeader('Content-type',
+			'application/x-www-form-urlencoded');
+	httpRequest.send("num=" + num); // 요게 문제였습니다!!
+}
+

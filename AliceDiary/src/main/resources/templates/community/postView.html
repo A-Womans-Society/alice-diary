@@ -6,8 +6,8 @@
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/postView.js}"></script>
-	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
-
+	<!-- 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+ -->
 </th:block>
 
 <div layout:fragment="content">
@@ -30,17 +30,20 @@
 					style="padding: 10px; height: auto; min-height: 100px; overflow: auto;"></div></td>
 		</tr>
 		<tr th:each="file : ${files}" th:if="${file.originName != null}">
-			<td>첨부파일: <a th:href="|/community/download/${file.num}|"
+			<td>첨부파일: <a th:href="|./download/${file.num}|"
 				th:text="${file.originName}"></a>
 
 			</td>
 		</tr>
 
 	</table>
-	<div th:href="@{/community/list}">
-		<input type="button" value="신고"> <a
-			th:href="@{/community/list}"><input type="button" value="목록"></a>
+	<div>
+		<input type="button"
+			th:onclick="openModal([[${postView.num}]],[[${postView.member.id}]],[[${#authentication.name}]])"
+			th:value="신고"> <a th:href="@{/community/list}"><input
+			th:href="@{/community/list}" type="button" value="목록"></a>
 	</div>
+
 	<div th:if="${#authentication.name} == ${postView.member.id}">
 		<a th:href="@{/community/put(num=${postView.num})}"> <input
 			type="button" value="수정"></a>
@@ -59,12 +62,16 @@
 					<td
 						th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
 					<td th:text="${reply.content}" />
+					<td><button type="button" th:onclick="replyDelete([[${reply.num}]])">삭제</button>
+					</td>
 					<td th:if="${reply.parentRepNum} == null">
 						<button type="button"
-							th:onclick="|showReplyBox(replyReplyBox${reply.num} )|">답글</button>
-						<!-- 						<input type="hidden" th:value="${reply.num}">
- -->
+							th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
 					</td>
+					<!-- 	<td> 
+						<img th:src="@{/img/heart.jpg}" width="20" height="20" th:onclick="heart([[${reply.num}]])"/>
+						<strong th:text="${reply.heart}" style="color:red;"></strong>
+					</td> -->
 				</tr>
 
 				<tr th:if="${reply.parentRepNum} == null"
@@ -86,5 +93,47 @@
 	</div>
 
 
+
+	<!-- Modal -->
+	<div class="modal" tabindex="-1" role="dialog" id="postReportModal">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="align-items: baseline;">
+					<h1 class="modal-title">신고하기</h1>
+					<span>신고는 취소할 수 없습니다. 정말 신고하시겠습니까?</span>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<form th:action="@{/community/reportpost}" object="${reportDto}"
+					method="post">
+					<div class="modal-body">
+						<div
+							th:each="reason : ${T(com.alice.project.domain.ReportReason).values()}"
+							class="form-check form-check-inline">
+							<input class="form-check-input" type="radio"
+								field="*{reportReason}" name="reportReason"
+								th:value="${reason.name()}"> <label
+								th:for="${#ids.next('reportReason')}"
+								th:text="${reason.description}" class="form-check-label"></label>
+						</div>
+						<div>
+							<input type="text" field="*{content}" name="content"
+								placeholder="신고 내용을 신중히 작성해주세요" size="90">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<input type="hidden" field="*{targetNum}" name="targetNum"
+							th:value="${postView.member.num}"> <input type="hidden"
+							field="*{postNum}" name="postNum" th:value="${postView.num}">
+						<input type="submit" class="btnbtn-dark" value="신고">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 </html>

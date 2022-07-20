@@ -20,6 +20,7 @@ public class ReplyController {
 	@Autowired
 	private ReplyService replyService;
 
+	// 댓글쓰기
 	@PostMapping("/community/reply")
 	@ResponseBody
 	public JSONObject replyWrite(String memberId, Long postNum, String content) {
@@ -33,12 +34,12 @@ public class ReplyController {
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
 		jObj.put("repContent", newReply.getContent());
 		jObj.put("postNum", newReply.getPost().getNum());
-		
 
 		return jObj;
 
 	}
 
+	//대댓쓰기
 	@PostMapping("/community/replyreply")
 	@ResponseBody
 	public JSONObject replyReplyWrite(String memberId, Long postNum, Long parentRepNum, String content) {

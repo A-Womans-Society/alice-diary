@@ -108,7 +108,7 @@ public class PostController {
 	}
 
 	// 게시글 상세보기
-	@GetMapping("community/get")
+	@GetMapping("/community/get")
 	public String postView(Model model, Long num, Pageable pageable, HttpSession session) {
 
 		log.info("num :" + num);
@@ -189,7 +189,7 @@ public class PostController {
 
 		return "redirect:list";
 	}
-
+	
 	
 
 }
