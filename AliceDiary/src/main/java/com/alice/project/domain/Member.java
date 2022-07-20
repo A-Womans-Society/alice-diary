@@ -3,9 +3,7 @@ package com.alice.project.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,17 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
-import com.alice.project.service.FriendsGroupService;
-
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.alice.project.service.FriendsGroupService;
 import com.alice.project.web.UserDto;
 
 import lombok.AccessLevel;
@@ -32,7 +26,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
@@ -83,6 +76,9 @@ public class Member {
 
 	@OneToMany(mappedBy = "member")
 	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
+	
+	@OneToMany(mappedBy = "member")
+	private List<Suggestion> suggestions = new ArrayList<>(); // 사용자가 한 건의리스트
 
 	@OneToMany(mappedBy = "member")
 	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
@@ -132,6 +128,7 @@ public class Member {
 		super();
 		this.name = name;
 	}
+
 
 	@Builder
 	public Member(List<FriendsGroup> groups) {
@@ -204,6 +201,7 @@ public class Member {
 	}
 	
 	
+	
 
 	// 회원객체 생성 메서드 (정적 팩토리 메서드)
 	public static Member createMember(String id, String pwd, String name, LocalDate birth, Gender gender, String email,
@@ -242,6 +240,11 @@ public class Member {
 		return member;
 	}
 	
+	
+	public static Member changeMemberOutId(Member member) {
+		member.id = "(알수없음)";
+		return member;
+	}
 	
 
 	// 회원 내보내기 메서드

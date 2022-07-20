@@ -88,8 +88,8 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 //		this.member = member;
 //		member.getMessages().add(this);
 //	}
-//
-//	// 쪽지 객체 생성 메서드
+
+	// 쪽지 객체 생성 메서드
 //	public static Message createMessage(Member member) {
 //		Message message = new Message();
 //		message.setMember(member);
