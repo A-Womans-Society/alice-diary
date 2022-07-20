@@ -13,8 +13,7 @@
 		placeholder="친구 검색(아이디/이름)">
 	<button type="button" class="btn btn-primary mb-2"
 		th:onclick="loadFriends()">검색</button>
-	<button id="openModal" onclick="openModal()">친구 추가</button>
-	<input type="submit" class="btnbtn-dark" value="그룹 등록">
+
 	<table border="1" id="friendsTable">
 		<thead>
 			<tr>
@@ -33,7 +32,7 @@
 				<td th:text="${status.count}"></td>
 				<td th:text="${friend.id}"></td>
 				<td><a th:text="${friend.name}"
-				 th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"></a></td>
+					th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"></a></td>
 				<td th:text="${friend.mobile}"></td>
 				<td th:text="${friend.birth}"></td>
 				<td th:text="${friend.gender}"></td>
@@ -42,7 +41,7 @@
 			</tr>
 		</tbody>
 	</table>
-	
+
 
 	<!-- Modal -->
 	<div class="modal" tabindex="-1" role="dialog" id="addFriend">
@@ -67,7 +66,7 @@
 						<div id="memberInfo"></div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btnbtn-dark" value="친구 추가">			
+						<input type="submit" class="btnbtn-dark" value="친구 추가">
 					</div>
 				</form>
 			</div>

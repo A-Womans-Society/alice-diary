@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/friendsLayout}">
+	layout:decorate="~{layouts/friendInfoLayout}">
 
 <th:block layout:fragment="css">
 	<link rel="stylesheet" th:href="@{/css/profile/myProfile.css}" />
@@ -9,7 +9,7 @@
 
 <div layout:fragment="content">
 	<form th:action="@{/member/}+${member.id}" method="post">
-	
+
 		<img th:src="@{/upload/}+@{${member.profileImg}}"
 			style="width: 200px; height: 190px;" />
 		<div>
@@ -40,8 +40,6 @@
 			나의 위시리스트
 			<div class="my-box" th:text="${member.wishlist}"></div>
 		</div>
-		<input type="submit" value="쪽지 보내기 보류">
-		<input type="submit" value="친구 삭제">
 	</form>
 </div>
 

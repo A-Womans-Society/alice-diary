@@ -6,7 +6,7 @@ document.addEventListener('keydown', function(event) {
 }, true);
 
 function openModal() {
-	document.getElementById("searchId").value = "";
+	document.getElementById("searchId").innerText = "";
 	document.getElementById("memberInfo").innerHTML = "";
 	$("#addFriend").modal();
 };
@@ -21,9 +21,7 @@ function loadMembers() {
 		if (httpRequest.readyState === XMLHttpRequest.DONE) {
 			if (httpRequest.status === 200) {
 				if (httpRequest.response) {
-					console.log(httpRequest.response);
 					let result = JSON.parse(httpRequest.response);
-					console.log(result);
 
 					let html = "<img src=\"img/image.png\"><p>" + result.id
 							+ " / " + result.mbti + "</p>";
@@ -36,6 +34,7 @@ function loadMembers() {
 			}
 		}
 	}
+	
 	// POST로 요청
 	httpRequest.open('POST', "friends/searchMember", true);
 	httpRequest.setRequestHeader(header, token);
@@ -43,6 +42,8 @@ function loadMembers() {
 			'application/x-www-form-urlencoded');
 	httpRequest.send("id=" + id);
 };
+
+// 대소문자 구분 없이 검색하는 방법
 
 function loadFriends() {
 	let token = $("meta[name='_csrf']").attr("content");

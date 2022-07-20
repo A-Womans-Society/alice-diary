@@ -38,7 +38,6 @@ public class FriendsController {
 	// 친구 추가(회원 id검색)
 	@PostMapping("/friends/add")
 	public String addFriend(String searchId, @AuthenticationPrincipal UserDetails user) {
-//		Member m = memberService.findByName(user.getUsername() + ",");
 		Member m = memberService.findById(user.getUsername());
 		log.info("member : " + m.getId());
 		log.info("member : " + searchId);
@@ -65,8 +64,7 @@ public class FriendsController {
 		for (Friend f : friendList) {
 			Member m = memberService.findByNum(f.getAddeeNum());
 			String groupName = friendsGroupService.getGroupName(f.getGroupNum());
-			FriendshipDto dto = new FriendshipDto(m.getNum(),
-					m.getId(), m.getName(), m.getMobile(), m.getBirth(),
+			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(), m.getMobile(), m.getBirth(),
 					m.getGender(), m.getEmail(), groupName);
 
 			friendship.add(dto);
@@ -87,8 +85,7 @@ public class FriendsController {
 			Friend fg = friendService.groupNum(adderNum, f.getNum());
 			String groupName = friendsGroupService.getGroupName(fg.getGroupNum());
 			log.info("그룹이름:" + groupName);
-			FriendshipDto dto = new FriendshipDto(sf.getNum(),
-					sf.getId(), sf.getName(), sf.getMobile(), sf.getBirth(),
+			FriendshipDto dto = new FriendshipDto(sf.getNum(), sf.getId(), sf.getName(), sf.getMobile(), sf.getBirth(),
 					sf.getGender(), sf.getEmail(), groupName);
 			searchFriendList.add(dto);
 		}
@@ -97,14 +94,11 @@ public class FriendsController {
 
 	// 친구 프로필 상세보기
 	@GetMapping("/friends/friendInfo/{id}")
-	public String friendInfo(Model model,@PathVariable("id")String id) {
+	public String friendInfo(Model model, @PathVariable("id") String id) {
 		Member member = profileService.findById(id);
 		log.info("member=" + member);
 		model.addAttribute("member", member);
-		return "/friends/friendInfo";
-}
-	
-	// 친구 중복 추가 방지
-	
-	
+		return "friends/friendInfo";
+	}
+
 }
