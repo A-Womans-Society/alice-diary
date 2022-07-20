@@ -2,8 +2,6 @@ package com.alice.project.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
 
 import com.alice.project.domain.Friend;
@@ -26,10 +24,12 @@ public class FriendService {
 		Member f = memberRepository.findById(searchId);
 		//Friend exist = friendRepository.findGroupByAddeeAdderNum(member.getNum(), f.getNum());
 		List<Friend> check = friendRepository.checkAlreadyFriend(member.getNum(), f.getNum());
-		Long groupNum = 1L; // 일단 기본그룹에 추가
+		Long groupNum = 1L; //일단 기본그룹에 추가
 		if (check.size() <= 0) {
 			Friend friend = new Friend(member, f.getNum(), groupNum);
 			friendRepository.save(friend);
+		}
+		else {	
 		}
 	}
 

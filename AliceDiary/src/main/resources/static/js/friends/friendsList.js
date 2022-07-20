@@ -11,6 +11,12 @@ function openModal() {
 	$("#addFriend").modal();
 };
 
+function addOk(){
+	if(!confirm('친구를 추가하시겠습니까?')){
+	return false;
+	}
+}
+
 function loadMembers() {
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
@@ -55,8 +61,6 @@ function loadFriends() {
 	httpRequest.onreadystatechange = function() {
 		if (httpRequest.readyState === XMLHttpRequest.DONE) {
 			if (httpRequest.status === 200) {
-				console.log(httpRequest.response);
-				console.log(httpRequest.response.length);
 				if (httpRequest.response ) {
 					
 					let result = JSON.parse(httpRequest.response);

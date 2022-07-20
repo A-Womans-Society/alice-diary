@@ -48,7 +48,9 @@ public class FriendsController {
 	// 친구 검색해서 추가
 	@PostMapping("/friends/searchMember")
 	@ResponseBody
-	public Member searchMember(String id) {
+	public Member searchMember(String id, @AuthenticationPrincipal UserDetails user) {
+		Member m = memberService.findById(user.getUsername());
+		log.info("11111111 : " + m.getId());
 		return friendService.searchMember(id);
 	}
 
@@ -64,7 +66,8 @@ public class FriendsController {
 		for (Friend f : friendList) {
 			Member m = memberService.findByNum(f.getAddeeNum());
 			String groupName = friendsGroupService.getGroupName(f.getGroupNum());
-			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(), m.getMobile(), m.getBirth(),
+			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(),
+					m.getMobile(), m.getBirth(),
 					m.getGender(), m.getEmail(), groupName);
 
 			friendship.add(dto);
@@ -85,7 +88,8 @@ public class FriendsController {
 			Friend fg = friendService.groupNum(adderNum, f.getNum());
 			String groupName = friendsGroupService.getGroupName(fg.getGroupNum());
 			log.info("그룹이름:" + groupName);
-			FriendshipDto dto = new FriendshipDto(sf.getNum(), sf.getId(), sf.getName(), sf.getMobile(), sf.getBirth(),
+			FriendshipDto dto = new FriendshipDto(sf.getNum(), sf.getId(),
+					sf.getName(), sf.getMobile(), sf.getBirth(),
 					sf.getGender(), sf.getEmail(), groupName);
 			searchFriendList.add(dto);
 		}
@@ -100,5 +104,4 @@ public class FriendsController {
 		model.addAttribute("member", member);
 		return "friends/friendInfo";
 	}
-
 }
