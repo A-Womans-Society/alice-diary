@@ -1,7 +1,5 @@
 package com.alice.project.controller;
 
-
-
 import java.time.format.DateTimeFormatter;
 
 import org.json.simple.JSONObject;
@@ -29,11 +27,13 @@ public class ReplyController {
 		Reply newReply = replyService.replyWrite(memberId, postNum, content);
 
 		JSONObject jObj = new JSONObject();
-	
+
 		jObj.put("replyNum", newReply.getNum());
 		jObj.put("id", newReply.getMember().getId());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
 		jObj.put("repContent", newReply.getContent());
+		jObj.put("postNum", newReply.getPost().getNum());
+		
 
 		return jObj;
 
@@ -46,7 +46,7 @@ public class ReplyController {
 		Reply newReplyReply = replyService.replyReplyWrite(memberId, postNum, parentRepNum, content);
 
 		JSONObject jObj = new JSONObject();
-	
+
 		jObj.put("id", newReplyReply.getMember().getId());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
 		jObj.put("repContent", newReplyReply.getContent());

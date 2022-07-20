@@ -6,6 +6,8 @@
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/postView.js}"></script>
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+
 </th:block>
 
 <div layout:fragment="content">
@@ -48,8 +50,9 @@
 
 	<div id="replyList">
 		<table id="replyTable">
-			<th:block th:each="reply : ${replyList}">
-				<tr th:id="${reply.parentRepNum == null ? 'parentRepNumContent' : '' }">
+			<th:block th:each="reply, replyStatus: ${replyList}">
+				<tr
+					th:id="${reply.parentRepNum} == null ? |parentRepContentTable${reply.num}| : '' ">
 					<td th:if="${reply.parentRepNum} != null"><img
 						th:src="@{/img/replyreply.png}" width="20" height="20" />
 					<td th:text="${reply.memberId}" />
@@ -57,8 +60,10 @@
 						th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
 					<td th:text="${reply.content}" />
 					<td th:if="${reply.parentRepNum} == null">
-						<button type="button" th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button> <input
-						type="hidden" th:value="${reply.num}">
+						<button type="button"
+							th:onclick="|showReplyBox(replyReplyBox${reply.num} )|">답글</button>
+						<!-- 						<input type="hidden" th:value="${reply.num}">
+ -->
 					</td>
 				</tr>
 
@@ -67,7 +72,8 @@
 					<td><input type="text" placeholder="댓글을 입력해주세요"
 						th:id="|replyReplyContent${reply.num}|"></td>
 					<td><button type="button"
-							th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]])">등록</button></td>
+							th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], 
+							replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button></td>
 				</tr>
 			</th:block>
 		</table>
