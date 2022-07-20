@@ -6,6 +6,8 @@
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/postView.js}"></script>
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+
 </th:block>
 
 <div layout:fragment="content">
@@ -15,7 +17,8 @@
 			<th th:text="${postView.title}"></th>
 		</tr>
 		<tr>
-			<td>작성자
+			<td>
+				<div align="left" th:text="${postView.member.id}"></div>
 				<div align="right"
 					th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
 				<div align="right" th:if="${postView.updateDate != null}"
@@ -35,41 +38,53 @@
 
 	</table>
 	<div th:href="@{/community/list}">
-		<input type="button" value="신고">
+		<input type="button" value="신고"> <a
+			th:href="@{/community/list}"><input type="button" value="목록"></a>
 	</div>
-	<div>
+	<div th:if="${#authentication.name} == ${postView.member.id}">
 		<a th:href="@{/community/put(num=${postView.num})}"> <input
 			type="button" value="수정"></a>
 		<button type="button" id="delete_confirm"
 			th:onclick="deleteConfirm([[${postView.num}]])">삭제</button>
-
-
-		<a th:href="@{/community/list}"><input type="button" value="목록"></a>
 	</div>
-
 
 	<div id="replyList">
 		<table id="replyTable">
-			<tr th:each="reply : ${replyList}">
+			<th:block th:each="reply, replyStatus: ${replyList}">
+				<tr
+					th:id="${reply.parentRepNum} == null ? |parentRepContentTable${reply.num}| : '' ">
+					<td th:if="${reply.parentRepNum} != null"><img
+						th:src="@{/img/replyreply.png}" width="20" height="20" />
+					<td th:text="${reply.memberId}" />
+					<td
+						th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
+					<td th:text="${reply.content}" />
+					<td th:if="${reply.parentRepNum} == null">
+						<button type="button"
+							th:onclick="|showReplyBox(replyReplyBox${reply.num} )|">답글</button>
+						<!-- 						<input type="hidden" th:value="${reply.num}">
+ -->
+					</td>
+				</tr>
 
-				<td th:text="${reply.memberId}" />
-				<td
-					th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
-				<td th:text="${reply.content}"></td>
-				<td><button type="button">답글쓰기</button></td>
-			</tr>
+				<tr th:if="${reply.parentRepNum} == null"
+					th:id="|replyReplyBox${reply.num}|" style="display: none;">
+					<td><input type="text" placeholder="댓글을 입력해주세요"
+						th:id="|replyReplyContent${reply.num}|"></td>
+					<td><button type="button"
+							th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], 
+							replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button></td>
+				</tr>
+			</th:block>
 		</table>
 
-		<div class="commentBox">
-			<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
-			<div>
-				<button type="button"
-					th:onclick="replySubmit([[${postView.num}]], [[${#authentication.name}]])">등록</button>
-			</div>
-
-		</div>
-
 	</div>
+	<div class="commentBox">
+		<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
+		<button type="button"
+			th:onclick="replySubmit([[${postView.num}]],[[${#authentication.name}]])">등록</button>
+	</div>
+
 
 </div>
 </html>
