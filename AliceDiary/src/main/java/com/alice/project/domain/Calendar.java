@@ -14,9 +14,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.alice.project.web.CalendarFormDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import groovy.transform.builder.Builder;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -26,6 +28,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@EqualsAndHashCode(of = "num")
 public class Calendar {
 
 	@Id
@@ -45,6 +48,7 @@ public class Calendar {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mem_num")
+	@JsonBackReference
 	private Member member; // 일정 생성 회원 객체
 
 	// 연관관계 메서드 (양방향관계)

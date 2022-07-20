@@ -3,9 +3,7 @@ package com.alice.project.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,25 +12,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
-import com.alice.project.service.FriendsGroupService;
-
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.alice.project.service.FriendsGroupService;
 import com.alice.project.web.UserDto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
@@ -73,27 +67,34 @@ public class Member {
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<Post> posts = new ArrayList<>(); // 사용자가 쓴 게시물
 
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<Reply> replies = new ArrayList<>(); // 사용자가 쓴 댓글
 
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<Calendar> calendars = new ArrayList<>(); // 사용자가 생성한 일정
 
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
 
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
 
 //	@OneToMany(mappedBy="member")
 //	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
 
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
 
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
 
 	@PrePersist
