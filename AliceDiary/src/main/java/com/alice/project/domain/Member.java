@@ -96,6 +96,9 @@ public class Member {
 	@JsonManagedReference
 	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
 
+// friends 주석
+//	@OneToMany(mappedBy = "member")
+//	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
 	@OneToMany(mappedBy = "member")
 	@JsonManagedReference
 	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
