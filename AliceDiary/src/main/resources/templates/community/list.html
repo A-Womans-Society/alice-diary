@@ -5,44 +5,89 @@
 	layout:decorate="~{layouts/communityLayout}">
 
 <div layout:fragment="content">
+	<div class="container-fluid h-100">
+		<div class="row h-100">
+			<div class="col-12 h-100">
+				<h2 class="text-center m-0 pt-5" style="height: 15%;">공개게시판</h2>
+				<div class="d-flex justify-content-center" style="height: 13%;">
+					<div class="d-flex align-items-center"
+						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+						<div class="w-100 text-center">
+							<form th:action="@{/community/list}" method="post">
+								<input type="text" name="keyword" placeholder="검색어를 입력해주세요">
+								<button type="submit">검색</button>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="d-flex justify-content-center" style="height: 72%;">
+					<div class="pt-3 pb-3"
+						style="width: 80%; overflow: auto; height: 95%;">
+						<table class="w-100 table table-striped table-hover">
+							<thead>
+								<tr class="text-center">
+									<th>No</th>
+									<th>제목</th>
+									<th>작성자</th>
+									<th>작성일</th>
+									<th>조회수</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="post : ${list}" class="text-center">
+									<td th:text="${post.num}"></td>
+									<td><a th:text="${post.title}"
+										th:href="@{/community/get(num=${post.num})}"></a></td>
+									<td th:text="${#authentication.name}"></td>
+									<td
+										th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
+									<td th:text="${post.viewCnt}"></td>
+								</tr>
+							</tbody>
+						</table>
+						<th:block
+							th:each="page : ${#numbers.sequence(startPage, endPage)}">
+							<a th:if="${page != nowPage}"
+								th:href="@{/community/list(page = ${page-1})}" th:text="${page}"></a>
+							<strong th:if="${page == nowPage}" th:text="${page}"
+								style="color: red"></strong>
+						</th:block>
 
-	<h2>공개게시판</h2>
-	<form th:action="@{/community/list}" method="post">
-		<input type="text" name="keyword" placeholder="검색어를 입력해주세요">
-		<button type="submit">검색</button>
-	</form>
 
-	<table border="1">
-		<thead>
-			<tr>
-				<td>번호</td>
-				<td>제목</td>
-				<td>작성자</td>
-				<td>작성일</td>
-				<td>조회수</td>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="post : ${list}">
-				<td th:text="${post.num}"></td>
-				<td><a th:text="${post.title}"
-					th:href="@{/community/get(num=${post.num})}"></a></td>
-				<td th:text="${#authentication.name}"></td>
-				<td
-					th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
-				<td th:text="${post.viewCnt}"></td>
-			</tr>
-		</tbody>
+						<a th:href="@{/community/post}"><input type="button"
+							value="글쓰기"></a>
 
-	</table>
-	<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-		<a th:if="${page != nowPage}"
-			th:href="@{/community/list(page = ${page-1})}" th:text="${page}"></a>
-		<strong th:if="${page == nowPage}" th:text="${page}"
-			style="color: red"></strong>
-	</th:block>
+						<!-- pagination -->
+						<!-- 						<nav aria-label="Page navigation" class="paging">
+							<ul class="pagination" th:if="${posts.page.totalPages > 1}">
+								<li class="page-item"
+									th:classappend="${!posts.paging.isPrevEnabled()? 'disabled' : ''}">
+									<a class="page-link"
+									th:href="@{'/?pageNumber=' + ${posts.paging.pageNumber - 1}}"
+									tabindex="-1">Previous</a>
+								</li>
+								<th:block th:each="item : ${posts.paging.getItems()}">
+									<li class="page-item"
+										th:classappend="${item.index == posts.paging.pageNumber? 'active' : ''}"
+										th:if="${item.pageItemType.name() == 'PAGE'}"><a
+										class="page-link" th:href="@{'/?pageNumber=' + ${item.index}}"
+										th:text="${item.index}"></a></li>
+									<li class="page-item disabled"
+										th:if="${item.pageItemType.name() == 'DOTS'}"><a
+										class="page-link" href="#">...</a></li>
+								</th:block>
+								<li class="page-item"
+									th:classappend="${!posts.paging.isNextEnabled()? 'disabled' : ''}">
+									<a class="page-link"
+									th:href="@{'/?pageNumber=' + ${posts.paging.pageNumber + 1}}">Next</a>
+								</li>
+							</ul>
+						</nav> -->
+					</div>
+				</div>
+			</div>
 
-
-	<a th:href="@{/community/post}"><input type="button" value="글쓰기"></a>
+		</div>
+	</div>
 </div>
 </html>

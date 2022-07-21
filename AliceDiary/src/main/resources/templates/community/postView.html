@@ -9,67 +9,72 @@
 </th:block>
 
 <div layout:fragment="content">
-	<h3>게시글 상세보기</h3>
-	<table border="1" width="300">
-		<tr>
-			<th th:text="${postView.title}"></th>
-		</tr>
-		<tr>
-			<td>작성자
-				<div align="right"
-					th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></div>
-				<div align="right" th:if="${postView.updateDate != null}"
-					style="color: grey; font-size: 15px;"
-					th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></div>
-			</td>
-		<tr>
-			<td><div th:text="${postView.content}"
-					style="padding: 10px; height: auto; min-height: 100px; overflow: auto;"></div></td>
-		</tr>
-		<tr th:each="file : ${files}" th:if="${file.originName != null}">
-			<td>첨부파일: <a th:href="|/community/download/${file.num}|"
-				th:text="${file.originName}"></a>
+	<h3 class="text-center m-0 pt-5" style="height: 15%;">게시글 상세보기</h3>
+	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
+		<div class='row ml-5 mr-5' style="height: 80%;">
+			<div class="col-6 h-100 border">
 
-			</td>
-		</tr>
+				<div class="h-25 d-flex justify-content-center"
+					style="flex-direction: column;">
+					<h3 th:text="${postView.title}"></h3>
+					<div class="d-flex justify-content-between">
+						작성자 넣는 자리 <span
+							th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span>
+						<span th:if="${postView.updateDate != null}"
+							style="color: grey; font-size: 15px;"
+							th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></span>
+					</div>
+				</div>
+				<div
+					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
+					style="flex-direction: column; height: 60%;">
+					<div th:text="${postView.content}"></div>
+					<div>
+						<div th:each="file : ${files}" th:if="${file.originName != null}">
+							<td>첨부파일: <a th:href="|/community/download/${file.num}|"
+								th:text="${file.originName}"></a>
+						</div>
+					</div>
+				</div>
 
-	</table>
-	<div th:href="@{/community/list}">
-		<input type="button" value="신고">
-	</div>
-	<div>
-		<a th:href="@{/community/put(num=${postView.num})}"> <input
-			type="button" value="수정"></a>
-		<button type="button" id="delete_confirm"
-			th:onclick="deleteConfirm([[${postView.num}]])">삭제</button>
-
-
-		<a th:href="@{/community/list}"><input type="button" value="목록"></a>
-	</div>
-
-
-	<div id="replyList">
-		<table id="replyTable">
-			<tr th:each="reply : ${replyList}">
-
-				<td th:text="${reply.memberId}" />
-				<td
-					th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
-				<td th:text="${reply.content}"></td>
-				<td><button type="button">답글쓰기</button></td>
-			</tr>
-		</table>
-
-		<div class="commentBox">
-			<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
-			<div>
-				<button type="button"
-					th:onclick="replySubmit([[${postView.num}]], [[${#authentication.name}]])">등록</button>
+				<div class="text-right">
+					<input type="button" value="신고" th:href="@{/community/list}"
+						class="btn"> <input type="button" value="수정"
+						class="btn">
+					<button type="button" id="delete_confirm"
+						th:onclick="deleteConfirm([[${postView.num}]])"
+						class="btn">삭제</button>
+					<input type="button" value="목록" class="btn btn-secondary">
+				</div>
 			</div>
+			<div class='col-6 h-100 border'>
 
+
+				<div id="replyList">
+					<table id="replyTable">
+						<tr th:each="reply : ${replyList}">
+
+							<td th:text="${reply.memberId}" />
+							<td
+								th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
+							<td th:text="${reply.content}"></td>
+							<td><button type="button">답글쓰기</button></td>
+						</tr>
+					</table>
+
+					<div class="commentBox">
+						<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
+						<div>
+							<button type="button"
+								th:onclick="replySubmit([[${postView.num}]], [[${#authentication.name}]])">등록</button>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
 		</div>
-
 	</div>
-
 </div>
 </html>
