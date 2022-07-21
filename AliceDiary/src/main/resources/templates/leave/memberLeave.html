@@ -22,7 +22,7 @@
 
 	<form th:action="@{./leave}" method="post" th:object="${suggestionDto}">
 		<div>
-			<b><span th:text="${member.id}"></span></b>님! 지금까지 저희 사이트를 이용해 주셔서
+			<b><span th:text="${member.name}"></span></b>님! 지금까지 저희 사이트를 이용해 주셔서
 			감사합니다.
 		</div>
 		<div>부족한 점이 있었다면 너그러운 양해 바라며, 개선해야 할 점이 있다면 남겨주세요!</div>

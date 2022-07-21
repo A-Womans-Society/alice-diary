@@ -57,10 +57,10 @@
 										<label class="form-label" th:for="id"> <span
 											class="text-danger">*&nbsp;</span>ID
 										</label> <input type="text" th:field="*{id}" th:oninput="checkId();"
-											class="form-control" placeholder="ID" required autofocus>
-										<span class="id_ok">사용 가능한 아이디입니다.</span> <span
-											class="id_already">누군가 이 아이디를 사용하고 있어요.</span> <small
-											th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></small>
+											class="form-control" required autofocus> <span
+											class="id_ok">사용 가능한 아이디입니다.</span> <span class="id_already">누군가
+											이 아이디를 사용하고 있어요.</span> <small th:if="${#fields.hasErrors('id')}"
+											th:errors="*{id}"></small>
 									</div>
 								</div>
 
@@ -69,8 +69,8 @@
 										<label class="form-label" th:for="name"> <span
 											class="text-danger">*&nbsp;</span>이름
 										</label> <input type="text" th:field="*{name}" class="form-control"
-											placeholder="NAME" required /> <small
-											th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+											required /> <small th:if="${#fields.hasErrors('name')}"
+											th:errors="*{name}"></small>
 									</div>
 								</div>
 							</div>
@@ -111,7 +111,8 @@
 										<span class="text-danger">*&nbsp;</span>Gender:
 									</p>
 									<div>
-										<label th:for="gender">성별</label> <select th:field="*{gender}"	required>
+										<label th:for="gender">성별</label> <select th:field="*{gender}"
+											required>
 											<option th:value="none">===선택===</option>
 											<option th:value="'MALE'" th:text="MALE"></option>
 											<option th:value="'FEMALE'" th:text="FEMALE"></option>
