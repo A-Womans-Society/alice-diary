@@ -236,7 +236,7 @@ function postReport(userId, postNum, reportReason, content) {
 	let header = $("meta[name='_csrf_header']").attr("content");
 	let httpRequest = new XMLHttpRequest();
 	let param = "userId="+userId+"&postNum="+postNum+
-	"&reportReason="+document.getElementById("${#ids.next('reportReason')}").value
+	"&reportReason="+document.querySelector('input[name="reportReasons"]:checked').value
 	+"&content="+document.getElementById("reportContent").value;
 	console.log(param);
 	

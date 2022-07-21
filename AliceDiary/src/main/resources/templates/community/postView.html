@@ -120,14 +120,11 @@
 
 				<form th:action="@{/community/reportpost}" method="post">
 					<div class="modal-body">
-						<div
-							th:each="reason : ${T(com.alice.project.domain.ReportReason).values()}"
-							class="form-check form-check-inline">
-							<input class="form-check-input" type="radio"
-								field="*{reportReason}" name="reportReasons"
-								th:value="${reason.name()}"> <label
-								th:for="${#ids.next('reportReason')}"
-								th:text="${reason.description}" class="form-check-label"></label>
+						<div>
+							<input type="radio" name="reportReasons" id="BAD" value="BAD"/>비속어/욕설/불쾌한 표현
+							<input type="radio" name="reportReasons" id="LEAK" value="LEAK"/>개인정보유출
+							<input type="radio" name="reportReasons" id="SPAM" value="SPAM"/>스팸홍보/도배글
+							<input type="radio" name="reportReasons" id="ETC" value="ETC"/>기타							
 						</div>
 						<div>
 							<input type="text" id="reportContent"
@@ -136,7 +133,6 @@
 					</div>
 					<div class="modal-footer">
 						<input type="hidden" name="targetNum" th:value="${postView.num}">
-						<!-- <input type="submit" class="btnbtn-dark" value="신고"> -->
 						<button type="button" th:onclick="postReport([[${#authentication.name}]],[[${postView.num}]])">신고</button>
 					</div>
 				</form>
