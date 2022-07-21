@@ -37,6 +37,7 @@ public class ViewController {
 
 	@Autowired
 	private ReplyService replyService;
+	
 
 	@GetMapping("community/get")
 	public String postView(Model model, Long num, Pageable pageable, HttpSession session) {
