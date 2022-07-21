@@ -27,33 +27,34 @@ public class LeaveController {
 	private final MemberService memberService;
 	private final SuggestionService suggestionService;
 
-	
 	@GetMapping(value = "/member/{id}/leave")
-	public String memberLeave(@PathVariable String id, Model model) {
+	public String memberLeave(@PathVariable String id, Model model, String msg) {
 		log.info("GET 진입");
 		Member member = memberService.findById(id);
 		model.addAttribute("member", member);
 		model.addAttribute("suggestionDto", new SuggestionDto());
+		model.addAttribute("msg", msg);
 		return "/leave/memberLeave";
 	}
-	
+
 	@PostMapping(value = "/member/{id}/leave")
-	public String memberLeave(@PathVariable String id, SuggestionDto suggestionDto, RedirectAttributes re, Model model, HttpSession session) {
+	public String memberLeave(@PathVariable String id, SuggestionDto suggestionDto, RedirectAttributes re, Model model,
+			HttpSession session) {
 		log.info("POST 진입");
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Member member = memberService.findById(id);
-		Suggestion suggestion = Suggestion.createSuggestion(suggestionDto, member);
-		suggestionService.saveSuggest(suggestion); //건의 사항 insert
-		if(!encoder.matches(suggestionDto.getPassword(), member.getPassword())) {
+		if (!encoder.matches(suggestionDto.getPassword(), member.getPassword())) {
 			log.info("현재 비밀번호 에러");
-			model.addAttribute("msg", "현재 비밀번호가 일치하지 않습니다.");
+			re.addAttribute("msg", "현재 비밀번호가 일치하지 않습니다.");
 			return "redirect:/member/" + id + "/leave";
-		}else {
-			member = Member.changeMemberOut(member); //sataus USER_OUT으로 바꾸기
-			memberService.saveMember(member); //update
-			Member.changeMemberOutId(member); //아이디 (알수없음)으로 수정, DB에는 반영X
-			log.info("member status == "+member.getStatus());
-			log.info("member id == "+member.getId());
+		} else {
+			Suggestion suggestion = Suggestion.createSuggestion(suggestionDto, member);
+			suggestionService.saveSuggest(suggestion); // 건의 사항 insert
+			member = Member.changeMemberOut(member); // sataus USER_OUT으로 바꾸기
+			memberService.saveMember(member); // update
+			Member.changeMemberOutId(member); // 아이디 (알수없음)으로 수정, DB에는 반영X
+			log.info("member status == " + member.getStatus());
+			log.info("member id == " + member.getId());
 		}
 		return "redirect:/logout";
 	}

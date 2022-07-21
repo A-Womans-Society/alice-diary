@@ -17,18 +17,20 @@ function leaveCancle() {
 				return;
 	}else {
 		alert("회원 탈퇴가 취소되었습니다.");
+		var id = document.getElementById("memID").value;
+		console.log(id);
 		var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
-		location.href = contextPath + "/AliceDiary/member/"+id;
+			location = contextPath + "/member/" + id;
 	}
 }
 
 function leaveCheck() {
 	if (document.getElementById("password").value.length == 0){
-			alert("비밀번호를 입력해주세요.");
-			return false;
+		alert("비밀번호를 입력해주세요.");
+		return false;
 	}
 	if(!confirm("회원 탈퇴 후 재가입이 불가능합니다. 탈퇴하시겠습니까?")) {
-		return;
+		return false;
 	}else {
 		alert("회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");
 		var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
