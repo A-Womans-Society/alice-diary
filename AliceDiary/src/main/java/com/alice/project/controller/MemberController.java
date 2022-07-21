@@ -1,8 +1,5 @@
 package com.alice.project.controller;
 
-import java.io.File;
-import java.io.IOException;
-
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alice.project.domain.Member;
-import com.alice.project.repository.ProfileRepository;
 import com.alice.project.service.MemberService;
 import com.alice.project.web.UserDto;
 
@@ -55,20 +51,14 @@ public class MemberController {
 			log.info("에러 발생!");
 			return "login/registerForm";
 		}
-//		if(!memberDto.getPassword().equals(memberDto.getConfirmPassword())) {
-//			model.addAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-//			return "login/registerForm";
-//		}
 		if (memberDto.getProfileImg() == null) { 
 			memberDto.setSaveName("default");
 			Member member = Member.createMember(memberDto, passwordEncoder);
 			memberService.saveMember(member);
-
-		}else {
+		} else {
 			Member member = Member.createMember(memberDto, passwordEncoder);
 			memberService.saveMember(member);
 		}
-
 		return "redirect:/";
 	}
 
@@ -80,13 +70,6 @@ public class MemberController {
 		int check = memberService.checkIdDuplicate(id);
 		return check;
 	}
-
-	// 로그인에러 GetMapping
-//	@GetMapping(value = "/login/error")
-//	public String loginError(Model model) {
-//		model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
-//		return "redirect:/";
-//	}
 
 	// Id찾기 Get
 	@GetMapping(value = "/login/findId")
@@ -100,6 +83,10 @@ public class MemberController {
 	@ResponseBody
 	public Member findId(String name, String mobile, String email) {
 		log.info("findId POST진입");
+		log.info("findId POST진입" + name);
+		log.info("findId POST진입" + mobile);
+		log.info("findId POST진입" + email);
+
 		Member member = memberService.findId(name, mobile, email);
 		return (member == null) ? null : member;
 	}
@@ -123,7 +110,7 @@ public class MemberController {
 		} else {
 			model.addAttribute("msg", "존재하지 않는 유저입니다.");
 			return "/login/findPwd";
-					
+
 		}
 	}
 

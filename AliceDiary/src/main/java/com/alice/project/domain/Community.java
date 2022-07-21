@@ -14,7 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -24,6 +28,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //JPA 사용을위해 기본 생성자 생성은 필수 =  protected Community() { }
 @Getter
 @ToString
+@EqualsAndHashCode(of = "num")
 public class Community {
 	
 	@Id @GeneratedValue
@@ -36,9 +41,11 @@ public class Community {
 
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="member_num")
+	@JsonBackReference
 	private Member member; // 커뮤니티 생성 회원 객체
 	
 	@OneToMany(mappedBy="community")
+	@JsonManagedReference
 	private List<Post> posts = new ArrayList<>(); // 해당 커뮤니티 소속 게시물리스트
 	/* (넣자구 하면 주길꺼져...?ㅎㅅㅎ) */
 	// private String thumbnail; // 커뮤니티 섬네일 이미지
