@@ -52,8 +52,8 @@ public class SecurityConfig {
 		http.authorizeRequests()
 				.mvcMatchers("/css/**", "/js/**", "/img/**").permitAll()
 				.mvcMatchers("/", "/login/**").permitAll()
-				.mvcMatchers("/alice/**", "/message/**", "/profile/**").hasRole("USER_IN")
-				.mvcMatchers("/admin/**").hasRole("ADMIN");
+				.mvcMatchers("/alice/**", "/messagebox/**", "/member/**", "/friends/**", "/community/**").hasAuthority("ROLE_USER_IN")
+				.mvcMatchers("/admin/**").hasAuthority("ROLE_ADMIN");
 		
 //        http.exceptionHandling()
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
