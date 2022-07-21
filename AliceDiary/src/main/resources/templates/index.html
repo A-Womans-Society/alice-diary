@@ -68,16 +68,18 @@
 						</div>
 
 						<div class="text-center text-lg-start mt-4 pt-2">
+
+						<div th:if="${#strings.equals(error, 'true')}">
+						   <p id="valid" style="color: red; font-size:12px;"><a th:text="${exception}"></a></p>
+						</div>
 							<input type="submit" class="btn btn-primary btn-lg"
 								style="padding-left: 2.5rem; padding-right: 2.5rem;"
 								value="Login">
 							<p class="small fw-bold mt-2 pt-1 mb-0">
 								아직 회원이 아닌신가요? <a th:href="@{/agree}" class="link-danger">회원가입</a>
 							</p>
-							<p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
-
-						</div>
-
+						</div>           
+						
 					</form>
 				</div>
 			</div>

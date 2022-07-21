@@ -81,6 +81,9 @@ public class Member {
 	@OneToMany(mappedBy = "member")
 	@JsonManagedReference
 	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
+	
+	@OneToMany(mappedBy = "member")
+	private List<Suggestion> suggestions = new ArrayList<>(); // 사용자가 한 건의리스트
 
 	@OneToMany(mappedBy = "member")
 	@JsonManagedReference
@@ -133,6 +136,7 @@ public class Member {
 		super();
 		this.name = name;
 	}
+
 
 	@Builder
 	public Member(List<FriendsGroup> groups) {
@@ -193,6 +197,19 @@ public class Member {
 		this.profileImg = profileImg;
 		this.status = status;
 	}
+	
+	public Member (String id, String name, LocalDate birth, String email, String mobile, String mbti, String wishlist) {
+		this.id = id;
+		this.name = name;
+		this.birth = birth;
+		this.email = email;
+		this.mobile = mobile;
+		this.mbti = mbti;
+		this.wishlist = wishlist;
+	}
+	
+	
+	
 
 	// 회원객체 생성 메서드 (정적 팩토리 메서드)
 	public static Member createMember(String id, String pwd, String name, LocalDate birth, Gender gender, String email,
@@ -210,7 +227,7 @@ public class Member {
 	public static Member createMember(UserDto memberDto, PasswordEncoder passwordEncoder) {
 		Member member = new Member(memberDto.getId(), passwordEncoder.encode(memberDto.getPassword()),
 				memberDto.getName(), memberDto.getBirth(), memberDto.getGender(), memberDto.getEmail(),
-				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishList(), LocalDate.now(),
+				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishlist(), LocalDate.now(),
 				memberDto.getSaveName(), Status.USER_IN);
 		return member;
 	}
@@ -218,10 +235,25 @@ public class Member {
 	public static Member createMember(Long num, UserDto memberDto, PasswordEncoder passwordEncoder) {
 		Member member = new Member(num, memberDto.getId(), passwordEncoder.encode(memberDto.getPassword()),
 				memberDto.getName(), memberDto.getBirth(), memberDto.getGender(), memberDto.getEmail(),
-				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishList(), LocalDate.now(),
+				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishlist(), LocalDate.now(),
 				memberDto.getSaveName(), Status.USER_IN);
 		return member;
 	}
+	
+	public static Member createMember(String id, UserDto memberDto, PasswordEncoder passwordEncoder) {
+		Member member = new Member(id, passwordEncoder.encode(memberDto.getPassword()),
+				memberDto.getName(), memberDto.getBirth(), memberDto.getGender(), memberDto.getEmail(),
+				memberDto.getMobile(), memberDto.getMbti(), memberDto.getWishlist(), LocalDate.now(),
+				memberDto.getSaveName(), Status.USER_IN);
+		return member;
+	}
+	
+	
+	public static Member changeMemberOutId(Member member) {
+		member.id = "(알수없음)";
+		return member;
+	}
+	
 
 	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {
@@ -236,4 +268,5 @@ public class Member {
 		log.info("엔티티 changeMemberIn메서드에서 status바꾸기 : " + member.status);
 		return member;
 	}
+
 }
