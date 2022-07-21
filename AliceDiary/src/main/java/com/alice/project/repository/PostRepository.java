@@ -50,8 +50,6 @@ public interface PostRepository
 	
 	@Query(value = "select * from Post where member_num = :memberNum order by post_num desc", nativeQuery=true)
 	Page<Post> searchWriter(Long memberNum, Pageable pageable);
-	
-//	@Query("select count(*) from Post")
-//	Integer countTotalPosts(Long num);
+
 	
 }

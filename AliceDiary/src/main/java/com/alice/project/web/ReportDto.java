@@ -19,11 +19,11 @@ public class ReportDto {
 	private String content;
 	private LocalDateTime reportDate;
 	private ReportType  reportType;
-	private Long targetNum; //신고당한 회원 - 번호만 넣어주기
+	private Long targetNum; //신고대상 게시글 혹은 댓글 번호
 	private Member member; //신고한 회원 - 객체로 넣어주기
 	private ReportReason reportReason;
 	
-	private Long postNum;
+
 
 
 	

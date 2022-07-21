@@ -39,7 +39,8 @@
 	</table>
 	<div>
 		<input type="button"
-			th:onclick="openModal([[${postView.num}]],[[${postView.member.id}]],[[${#authentication.name}]])"
+			th:if="${#authentication.name} != ${postView.member.id}"
+			th:onclick="openModal([[${postView.num}]],[[${#authentication.name}]])"
 			th:value="신고"> <a th:href="@{/community/list}"><input
 			th:href="@{/community/list}" type="button" value="목록"></a>
 	</div>
@@ -53,22 +54,31 @@
 
 	<div id="replyList">
 		<table id="replyTable">
-			<th:block th:each="reply, replyStatus: ${replyList}">
+			<th:block th:each="reply : ${replyList}">
 				<tr
-					th:id="${reply.parentRepNum} == null ? |parentRepContentTable${reply.num}| : '' ">
-					<td th:if="${reply.parentRepNum} != null"><img
-						th:src="@{/img/replyreply.png}" width="20" height="20" />
-					<td th:text="${reply.memberId}" />
-					<td
-						th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
-					<td th:text="${reply.content}" />
-					<td><button type="button" th:onclick="replyDelete([[${reply.num}]])">삭제</button>
-					</td>
-					<td th:if="${reply.parentRepNum} == null">
-						<button type="button"
-							th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
-					</td>
-					<!-- 	<td> 
+					th:id="${reply.parentRepNum} == null ? |parentRepContentTable${reply.num}| : |childRepContentTable${reply.num}| ">
+					<th:block th:if="${reply.status.name() == 'DEAD'}">
+						<td colspan="4">삭제된 댓글입니다.</td>
+					</th:block>
+					<th:block th:unless="${reply.status.name() == 'DEAD'}">
+						<td th:if="${reply.parentRepNum} != null"><img
+							th:src="@{/img/replyreply.png}" width="20" height="20" />
+						<td th:text="${reply.memberId}" />
+						<td
+							th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
+						<td th:text="${reply.content}" />
+						<td><button type="button"
+								th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">삭제</button>
+
+
+
+						</td>
+						<td th:if="${reply.parentRepNum} == null">
+							<button type="button"
+								th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
+						</td>
+					</th:block>
+					<!-- <td> 
 						<img th:src="@{/img/heart.jpg}" width="20" height="20" th:onclick="heart([[${reply.num}]])"/>
 						<strong th:text="${reply.heart}" style="color:red;"></strong>
 					</td> -->
@@ -108,28 +118,26 @@
 					</button>
 				</div>
 
-				<form th:action="@{/community/reportpost}" object="${reportDto}"
-					method="post">
+				<form th:action="@{/community/reportpost}" method="post">
 					<div class="modal-body">
 						<div
 							th:each="reason : ${T(com.alice.project.domain.ReportReason).values()}"
 							class="form-check form-check-inline">
 							<input class="form-check-input" type="radio"
-								field="*{reportReason}" name="reportReason"
+								field="*{reportReason}" name="reportReasons"
 								th:value="${reason.name()}"> <label
 								th:for="${#ids.next('reportReason')}"
 								th:text="${reason.description}" class="form-check-label"></label>
 						</div>
 						<div>
-							<input type="text" field="*{content}" name="content"
+							<input type="text" id="reportContent"
 								placeholder="신고 내용을 신중히 작성해주세요" size="90">
 						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="hidden" field="*{targetNum}" name="targetNum"
-							th:value="${postView.member.num}"> <input type="hidden"
-							field="*{postNum}" name="postNum" th:value="${postView.num}">
-						<input type="submit" class="btnbtn-dark" value="신고">
+						<input type="hidden" name="targetNum" th:value="${postView.num}">
+						<!-- <input type="submit" class="btnbtn-dark" value="신고"> -->
+						<button type="button" th:onclick="postReport([[${#authentication.name}]],[[${postView.num}]])">신고</button>
 					</div>
 				</form>
 			</div>

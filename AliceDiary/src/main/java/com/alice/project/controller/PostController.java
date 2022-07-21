@@ -73,7 +73,7 @@ public class PostController {
 	// 게시글 리스트 가져오기
 	@GetMapping("/community/list")
 	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
-			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 3, direction = Sort.Direction.DESC) Pageable pageable) {
 
 		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 

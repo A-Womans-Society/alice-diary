@@ -37,10 +37,11 @@ public class Report {
 	@Column(name = "report_num")
 	private Long num; // 신고 번호
 	
-	private Long target; // 신고대상 회원번호
+	private Long targetNum; // 신고대상물 번호
 	
 	@Enumerated(EnumType.STRING)
 	private ReportReason reportReason; // 신고사유 [BAD, LEAK, SPAM, ETC]
+	
 	private String content; // 신고내용
 	private LocalDateTime reportDate; // 신고일자
 	
@@ -63,18 +64,17 @@ public class Report {
 	}
 
 	// 신고 객체 생성 메서드
-	public static Report createPostReport(ReportDto reportDto, Member member) {
-		Report report = new Report(reportDto.getTargetNum(), reportDto.getReportReason(), reportDto.getContent(),
-				LocalDateTime.now(), ReportType.POST, member);
+	public static Report createPostReport(Long postNum, String reportReason, String content, Member member) {
+		Report report = new Report(postNum,  ReportReason.valueOf(reportReason), content, LocalDateTime.now(), ReportType.POST, member);
 
 		return report;
 	}
 
 	@Builder
-	public Report(Long target, ReportReason reportReason, String content, LocalDateTime reportDate,
+	public Report(Long targetNum, ReportReason reportReason, String content, LocalDateTime reportDate,
 			ReportType reportType, Member member) {
 		super();
-		this.target = target;
+		this.targetNum = targetNum;
 		this.reportReason = reportReason;
 		this.content = content;
 		this.reportDate = reportDate;

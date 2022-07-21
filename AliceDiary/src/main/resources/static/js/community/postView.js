@@ -21,7 +21,7 @@ function replySubmit(postNum, memberId) {
 				let content = document.createElement('td');
 				content.innerText = result.repContent;
 				let btn1 = document.createElement('td');
-				btn1.innerHTML = "<button type='button' onclick='replyDelete("+reply.num+")'>삭제</button>;						
+				btn1.innerHTML = "<button type='button' onclick='deleteParent("+result.replyNum+")'>삭제</button>";						
 				let btn2 = document.createElement('td');
 				btn2.innerHTML = "<button type='button' onclick='showReplyBox(replyReplyBox"+result.replyNum+")'>답글</button>";
 				
@@ -126,6 +126,7 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
 				let tagArea = parentRepContentTable;
 				console.log(tagArea);
 				let newReply = document.createElement('tr');
+				newReply.setAttribute('id', 'childRepContentTable'+result.replyNum);
 				let img = document.createElement('td');
 				img.innerHTML = "<img src='../img/replyreply.png' width='20' height='20'>";
 				let memberId = document.createElement('td');
@@ -134,12 +135,15 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
 				repDate.innerText = result.repDate;
 				let content = document.createElement('td');
 				content.innerText = result.repContent;
+				let btn1 = document.createElement('td');
+				btn1.innerHTML = "<button type='button' onclick='deleteChild("+result.replyNum+", "+result.parentRepNum+")'>삭제</button>";
 				
 				console.log(newReply);
 				newReply.appendChild(img);				
 				newReply.appendChild(memberId);
 				newReply.appendChild(repDate);
 				newReply.appendChild(content);
+				newReply.appendChild(btn1);
 				tagArea.after(newReply);
 				
 				replyReplyBox.style.display = "none";
@@ -160,16 +164,14 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
 
 }
 
-function openModal(postNum, writer, userId){
-	//document.getElementById("searchId").value = "";
-	//document.getElementById("memberInfo").innerHTML = "";
-	//$("#addFriend").modal();
+function openModal(postNum, userId){
+
 	$('#postReportModal').modal('show');	
 	
 }
 
-function replyDelete(num) {
-	console.log(num);
+function deleteChild(childNum) {
+	console.log(childNum);
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
 	let httpRequest = new XMLHttpRequest();
@@ -177,8 +179,11 @@ function replyDelete(num) {
 	httpRequest.onreadystatechange = function() {
 		if (httpRequest.readyState === XMLHttpRequest.DONE) {
 			if (httpRequest.status === 200) {
+			console.log("childRepContentTable"+childNum);
+				let removeTr = document.getElementById("childRepContentTable"+childNum);
+				console.log(removeTr);
+				removeTr.parentNode.removeChild(removeTr);
 				alert('댓글이 삭제되었습니다!');
-				
 
 			} else {
 				alert('request에 뭔가 문제가 있어요.');
@@ -191,6 +196,70 @@ function replyDelete(num) {
 	httpRequest.setRequestHeader(header, token);
 	httpRequest.setRequestHeader('Content-type',
 			'application/x-www-form-urlencoded');
-	httpRequest.send("num=" + num); // 요게 문제였습니다!!
+	httpRequest.send("num=" + childNum); // 요게 문제였습니다!!
+}
+
+function deleteParent(pNum) {
+	console.log(pNum);
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
+
+	httpRequest.onreadystatechange = function() {
+		if (httpRequest.readyState === XMLHttpRequest.DONE) {
+			if (httpRequest.status === 200) {
+				let removeTr = document.getElementById("parentRepContentTable"+pNum);
+				removeTr.innerHTML = "<td colspan='4'>삭제된 댓글입니다.</td>";
+//				console.log(removeTr);
+//				removeTr.parentNode.removeChild(removeTr);
+				alert('댓글이 삭제되었습니다!');
+
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
+
+	//POST로 요청
+	httpRequest.open('POST', "./deletereply", true);
+	httpRequest.setRequestHeader(header, token);
+	httpRequest.setRequestHeader('Content-type',
+			'application/x-www-form-urlencoded');
+	httpRequest.send("num=" + pNum); // 요게 문제였습니다!!
+}
+
+function postReport(userId, postNum, reportReason, content) {
+	console.log(postNum);
+	console.log(userId);
+	
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
+	let param = "userId="+userId+"&postNum="+postNum+
+	"&reportReason="+document.getElementById("${#ids.next('reportReason')}").value
+	+"&content="+document.getElementById("reportContent").value;
+	console.log(param);
+	
+    httpRequest.onreadystatechange = function(){
+	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+	    	if (httpRequest.status === 200) {
+	       		let result = JSON.parse(httpRequest.response);
+				console.log(result);
+				document.getElementById("reportContent").value = "";
+		     	alert('신고되었습니다.');
+		     
+				$("#postReportModal").modal('hide');
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
+
+    //POST로 요청
+    httpRequest.open('POST', "reportpost", true);
+    httpRequest.setRequestHeader(header,token);
+    httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    httpRequest.send(param);
+
 }
 

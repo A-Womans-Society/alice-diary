@@ -2,6 +2,8 @@ package com.alice.project.web;
 
 import java.time.LocalDateTime;
 
+import com.alice.project.domain.ReplyStatus;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +24,7 @@ public class ReplyDto {
 	private LocalDateTime repDate;
 
 	private Boolean edit;
-	
+
 	private Long heart;
 
 	private String memberId;
@@ -30,6 +32,8 @@ public class ReplyDto {
 	private Long memberNum;
 
 	private Long postNum;
+
+	private ReplyStatus status;
 
 	public ReplyDto(String content, String memberId, Long postNum) {
 		this.content = content;
@@ -46,7 +50,5 @@ public class ReplyDto {
 		this.postNum = postNum;
 		this.heart = heart;
 	}
-
-
 
 }

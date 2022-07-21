@@ -39,7 +39,7 @@ public class ReplyController {
 
 	}
 
-	//대댓쓰기
+	// 대댓쓰기
 	@PostMapping("/community/replyreply")
 	@ResponseBody
 	public JSONObject replyReplyWrite(String memberId, Long postNum, Long parentRepNum, String content) {
@@ -48,11 +48,23 @@ public class ReplyController {
 
 		JSONObject jObj = new JSONObject();
 
+		jObj.put("replyNum", newReplyReply.getNum());
+		jObj.put("parentRepNu", newReplyReply.getParentRepNum());
 		jObj.put("id", newReplyReply.getMember().getId());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
 		jObj.put("repContent", newReplyReply.getContent());
 
 		return jObj;
 
+	}
+
+	// 댓글 삭제하기
+	@PostMapping("/community/deletereply")
+	public String replyDelete(Long num) {
+		log.info("컨트롤러 실행 ");
+
+		replyService.replyDelete(num);
+
+		return "redirect:list";
 	}
 }
