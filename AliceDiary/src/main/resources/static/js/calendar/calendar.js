@@ -111,7 +111,7 @@ function deleteEvent() {
 
 
 function checkNull(){
-	if (document.getElementById("content").value.length == 0){
+	if (document.getElementById("eventContent").value == ""){
 		alert("내용을 입력해주세요.");
 		return false;
 	} 

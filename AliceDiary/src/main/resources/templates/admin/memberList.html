@@ -50,7 +50,7 @@
 					<tr th:each="member, i: ${members}">
 						<td th:text="${i.count}"></td>
 						<td th:text="${member.num}"></td>
-						<td><a th:href="@{'/admin/member/'+${member.num}}"> <span
+						<td><a th:href="@{'/admin/member/'+${member.id}}"> <span
 								th:text="${member.id}"></span>
 						</a></td>
 						<td th:text="${member.name}"></td>

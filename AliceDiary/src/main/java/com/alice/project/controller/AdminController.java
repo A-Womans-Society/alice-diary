@@ -34,9 +34,9 @@ public class AdminController {
 	}
 	
 	/* 회원 정보 상세보기 */
-	@GetMapping(value = "/member/{num}")
-	public String showMemberOne(@PathVariable("num") Long num, Model model) {
-		Member member = memberService.findOne(num);
+	@GetMapping(value = "/member/{id}")
+	public String showMemberOne(@PathVariable("id") String id, Model model) {
+		Member member = memberService.findById(id);
 		model.addAttribute("member", member);
 	  return "/admin/memberDetail";
 	}	

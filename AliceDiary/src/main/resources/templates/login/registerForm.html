@@ -27,6 +27,7 @@
 
 <script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
 <script th:src="@{/js/login/register.js}"></script>
+
 <link rel="stylesheet" th:href="@{/css/login/register.css}">
 
 <link id="contextPathHolder"
@@ -48,148 +49,120 @@
 								<span class="text-danger">*</span>는 필수 표시입니다.
 							</p>
 						</div>
-						<form action="/AliceDiary/register" method="post"
+						<form action="/AliceDiary/register" method="post" name="regForm"
 							th:object="${memberDto}" enctype="multipart/form-data">
 							<div class="row">
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="id"><span class="text-danger">*&nbsp;</span>ID</label> 
-										<input type="text" th:field="*{id}" th:oninput="checkId();" class="form-control">
-										<span class="id_ok">사용 가능한 아이디입니다.</span> 
-										<span class="id_already">누군가 이 아이디를 사용하고 있어요.</span>
-										<p th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></p>
+										<label class="form-label" th:for="id"> <span
+											class="text-danger">*&nbsp;</span>ID
+										</label> <input type="text" th:field="*{id}" th:oninput="checkId();"
+											class="form-control" required autofocus> <span
+											class="id_ok">사용 가능한 아이디입니다.</span> <span class="id_already">누군가
+											이 아이디를 사용하고 있어요.</span> <small th:if="${#fields.hasErrors('id')}"
+											th:errors="*{id}"></small>
 									</div>
 								</div>
 
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="name"><span class="text-danger">*&nbsp;</span>이름</label> <input
-											type="text" th:field="*{name}" class="form-control" />
-										<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+										<label class="form-label" th:for="name"> <span
+											class="text-danger">*&nbsp;</span>이름
+										</label> <input type="text" th:field="*{name}" class="form-control"
+											required /> <small th:if="${#fields.hasErrors('name')}"
+											th:errors="*{name}"></small>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="password"><span class="text-danger">*&nbsp;</span>비밀번호</label> <input
-											type="password" th:field="*{password}" class="form-control " />
-										<p th:if="${#fields.hasErrors('password')}"
-											th:errors="*{password}"></p>
+										<label class="form-label" th:for="password"><span
+											class="text-danger">*&nbsp;</span>비밀번호</label> <input type="password"
+											th:field="*{password}" class="form-control " required
+											th:minlength="8" /> <small id="passwordHelp"> ※ 영문,
+											숫자, 특수문자를 조합하여 8자 이상으로 입력 </small> <small
+											th:if="${#fields.hasErrors('password')}"
+											th:errors="*{password}"></small>
+
 									</div>
 								</div>
-
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="confirmPassword"><span class="text-danger">*&nbsp;</span>비밀번호
-											확인</label> <input type="password" th:field="*{confirmPassword}"
-											th:onkeyup="checkPwd()" class="form-control " />
-										&nbsp;&nbsp;<span id="confirmMsg"></span>
-										<p th:if="${#fields.hasErrors('confirmPassword')}"
-											th:errors="*{confirmPassword}"></p>
+										<label class="form-label" th:for="confirmPassword"><span
+											class="text-danger">*&nbsp;</span>비밀번호 확인</label> <input
+											type="password" th:field="*{confirmPassword}"
+											th:onkeyup="checkPwd()" class="form-control " required
+											th:minlength="8" /> &nbsp;&nbsp;<span id="confirmMsg"></span>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-6 mb-4 d-flex align-items-center">
-
 									<div class="form-outline datepicker w-100">
-										<label th:for="birth" class="form-label"><span class="text-danger">*&nbsp;</span>생년월일</label> <input
-											type="date" class="form-control " th:field="*{birth}" />
-										<p th:if="${#fields.hasErrors('birth')}" th:errors="*{birth}"></p>
+										<label th:for="birth" class="form-label"><span
+											class="text-danger">*&nbsp;</span>생년월일</label> <input type="date"
+											class="form-control " th:field="*{birth}" required /> <small
+											th:if="${#fields.hasErrors('birth')}" th:errors="*{birth}"></small>
 									</div>
-
 								</div>
 								<div class="col-md-6 mb-4">
-
-									<p><span class="text-danger">*&nbsp;</span>Gender:</p>
-
-								<!-- 	<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio"
-											th:field="*{gender}" id="femaleGender" value="option1"
-											checked /> <label class="form-check-label"
-											for="femaleGender">Female</label>
-									</div>
-
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio"
-											th:field="*{gender}" id="maleGender" value="option2" /> <label
-											class="form-check-label" for="maleGender">Male</label>
-									</div>
-
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" type="radio"
-											th:field="*{gender}" id="otherGender" value="option3" /> <label
-											class="form-check-label" for="otherGender">Other</label>
-									</div> -->
+									<p>
+										<span class="text-danger">*&nbsp;</span>Gender:
+									</p>
 									<div>
-										<label th:for="gender">성별</label> <select th:field="*{gender}">
+										<label th:for="gender">성별</label> <select th:field="*{gender}"
+											required>
 											<option th:value="none">===선택===</option>
 											<option th:value="'MALE'" th:text="MALE"></option>
 											<option th:value="'FEMALE'" th:text="FEMALE"></option>
 											<option th:value="'UNKNOWN'" th:text="UNKNOWN"></option>
-										</select>
-									</div> 
-								</div>
-							</div>
-
-
-							<div class="row">
-								<div class="col-md-6 mb-4">
-									<div class="form-outline">
-										<label class="form-label" th:for="email"><span class="text-danger">*&nbsp;</span>Email</label> <input
-											type="email" th:field="*{email}" class="form-control ">
-										<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
-									</div>
-								</div>
-
-								<div class="col-md-6 mb-4">
-									<div class="form-outline">
-										<label class="form-label" th:for="name"><span class="text-danger">*&nbsp;</span>Email 인증 번호</label> <input
-											type="text" th:field="*{name}" class="form-control " />
-										<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+										</select> <small th:if="${#fields.hasErrors('gender')}"
+											th:errors="*{gender}"></small>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="mobile"><span class="text-danger">*&nbsp;</span>전화번호</label> <input
-											type="text" th:field="*{mobile}" th:oninput="checkId();"
-											class="form-control " placeholder="(-제외)">
-										<p th:if="${#fields.hasErrors('mobile')}"
-											th:errors="*{mobile}"></p>
+										<label class="form-label" th:for="email"><span
+											class="text-danger">*&nbsp;</span>Email</label> <input type="email"
+											th:field="*{email}" class="form-control " required> <small
+											th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+									</div>
+								</div>
+								<div class="col-md-6 mb-4">
+									<div class="form-outline">
+										<label class="form-label" th:for="mobile"><span
+											class="text-danger">*&nbsp;</span>전화번호</label> <input type="text"
+											th:field="*{mobile}" th:oninput="checkId();"
+											class="form-control " placeholder="(-제외)" required> <small
+											th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></small>
 
 									</div>
 								</div>
 
 
+							</div>
+							<div class="row">
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
 										<label class="form-label" th:for="mbti">MBTI</label> <input
-											type="text" th:field="*{mbti}" class="form-control " />
-										<p th:if="${#fields.hasErrors('mbti')}" th:errors="*{mbti}"></p>
+											type="text" th:field="*{mbti}" class="form-control "
+											placeholder="(선택)" /> <small
+											th:if="${#fields.hasErrors('mbti')}" th:errors="*{mbti}"></small>
 									</div>
 								</div>
-							</div>
-							<div class="row">
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
-										<label class="form-label" th:for="wishList">Wish List</label>
-										<input type="text" th:field="*{wishList}" placeholder="(선택)"
-											class="form-control ">
-										<p th:if="${#fields.hasErrors('wishList')}"
-											th:errors="*{wishList}"></p>
+										<label class="form-label" th:for="wishlist">My Wish
+											List</label> <input type="text" th:field="*{wishlist}"
+											placeholder="(선택)" class="form-control "> <small
+											th:if="${#fields.hasErrors('wishlist')}"
+											th:errors="*{wishlist}"></small>
 									</div>
 								</div>
 							</div>
-
-<!-- 							<div>
-								프로필 사진 등록 <img id="profileImage"
-									style="width: 200px; height: 190px;"> <input type="file"
-									th:field="*{profileImg}" id="file" onchange="PreviewImage();" />
-							</div> -->
-
 							<div class="mt-4 pt-2 text-center">
 								<input class="btn btn-primary" type="submit" value="가입"
 									th:onclick="return regSuccess()">
