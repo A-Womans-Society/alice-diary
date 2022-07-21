@@ -3,7 +3,9 @@
 	xmlns:sec="http://thymeleaf.org/extras/spring-security"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layouts/friendsLayout}">
-
+<link id="contextPathHolder"
+	th:data-contextPath="${#httpServletRequest.getContextPath()}" />
+	
 <th:block layout:fragment="script">
 	<script th:src="@{/js/friends/friendsList.js}"></script>
 </th:block>
@@ -67,8 +69,9 @@
 					</div>
 					<div class="modal-footer">
 						<input type="submit" class="btnbtn-dark" value="친구 추가"
-						onclick="addOk()">
+						th:onclick="return addOk()">
 					</div>
+					<input type="hidden" id="checkSearch" value="false">
 				</form>
 			</div>
 		</div>

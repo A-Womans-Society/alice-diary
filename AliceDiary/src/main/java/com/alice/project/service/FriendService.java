@@ -20,7 +20,7 @@ public class FriendService {
 	private final FriendsGroupService fgs;
 
 	// 친구추가 서비스(추가하는 멤버회원 번호, 추가되는 멤버회원의 아이디)
-	public void addFriendship(Member member, String searchId) {
+	public boolean addFriendship(Member member, String searchId) {
 		Member f = memberRepository.findById(searchId);
 		//Friend exist = friendRepository.findGroupByAddeeAdderNum(member.getNum(), f.getNum());
 		List<Friend> check = friendRepository.checkAlreadyFriend(member.getNum(), f.getNum());
@@ -28,9 +28,11 @@ public class FriendService {
 		if (check.size() <= 0) {
 			Friend friend = new Friend(member, f.getNum(), groupNum);
 			friendRepository.save(friend);
+			return true;
 		}
 		else {	
 		}
+		return false;
 	}
 
 	// friendService에서 멤버에 있는 num으로 프렌드 객체를 만들기

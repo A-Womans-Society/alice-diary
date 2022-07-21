@@ -12,11 +12,17 @@ function openModal() {
 };
 
 function addOk(){
-	if(!confirm('친구를 추가하시겠습니까?')){
-	return false;
+	let check = document.getElementById("checkSearch").value;
+	if (check == 'false'){
+		alert("친구 검색을 먼저 진행하세요.");
+		return false;
+	}else if(!confirm('친구를 추가하시겠습니까?')){
+		return false;
+	} else {
+		return true;
 	}
 }
-
+	
 function loadMembers() {
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
@@ -32,8 +38,10 @@ function loadMembers() {
 					let html = "<img src=\"img/image.png\"><p>" + result.id
 							+ " / " + result.mbti + "</p>";
 					document.getElementById("memberInfo").innerHTML = html;
+					document.getElementById("checkSearch").value = true;
 				} else {
 					document.getElementById("memberInfo").innerText = "일치하는 회원이 없습니다.";
+					document.getElementById("checkSearch").value = false;					
 				}
 			} else {
 				alert('request에 뭔가 문제가 있어요.');
@@ -67,7 +75,7 @@ function loadFriends() {
 					console.log(result);
 					let resultHtml = " ";
 					for (let idx in result) {
-						resultHtml += "<tr><td>"+idx+"</td><td>"+result[idx].id+"</td><td><a href='/AliceDiary/friends/friendInfo/"+result[idx].id+"'>"+result[idx].name+"</a></td><td>"+result[idx].mobile+"</td><td>"+result[idx].birth+"</td><td>"+result[idx].gender+"</td><td>"+result[idx].email+"</td><td>"+result[idx].groupName+"</td></tr>";
+						resultHtml += "<tr><td>"+(Number(idx)+1)+"</td><td>"+result[idx].id+"</td><td><a href='/AliceDiary/friends/friendInfo/"+result[idx].id+"'>"+result[idx].name+"</a></td><td>"+result[idx].mobile+"</td><td>"+result[idx].birth+"</td><td>"+result[idx].gender+"</td><td>"+result[idx].email+"</td><td>"+result[idx].groupName+"</td></tr>";
 					}
 					document.getElementById("friendsBody").innerHTML=resultHtml;					
 				}
