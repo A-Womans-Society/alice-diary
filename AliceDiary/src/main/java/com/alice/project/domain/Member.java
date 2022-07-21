@@ -83,6 +83,7 @@ public class Member {
 	private List<Report> reports = new ArrayList<>(); // 사용자가 한 신고리스트
 	
 	@OneToMany(mappedBy = "member")
+	@JsonManagedReference
 	private List<Suggestion> suggestions = new ArrayList<>(); // 사용자가 한 건의리스트
 
 	@OneToMany(mappedBy = "member")

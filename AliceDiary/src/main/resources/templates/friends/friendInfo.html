@@ -9,38 +9,73 @@
 
 <div layout:fragment="content">
 	<form th:action="@{/member/}+${member.id}" method="post">
+		<div class=" overflow-hidden">
+			<div class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
+				<div class="col-7 pt-2">
+					<div class="tab-content">
+						<div class="tab-pane fade active show" id="account-general">
 
-		<img th:src="@{/upload/}+@{${member.profileImg}}"
-			style="width: 200px; height: 190px;" />
-		<div>
-			아이디
-			<div class="my-box" th:text="${member.id}"></div>
-		</div>
-		<div>
-			이름
-			<div class="my-box" th:text="${member.name}"></div>
-		</div>
-		<div>
-			전화번호
-			<div class="my-box" th:text="${member.mobile}"></div>
-		</div>
-		<div>
-			생년월일
-			<div class="my-box" th:text="${member.birth}"></div>
-		</div>
-		<div>
-			이메일
-			<div class="my-box" th:text="${member.email}"></div>
-		</div>
-		<div>
-			MBTI
-			<div class="my-box" th:text="${member.mbti}"></div>
-		</div>
-		<div>
-			나의 위시리스트
-			<div class="my-box" th:text="${member.wishlist}"></div>
+							<div class="row w-100">
+								<div th:if="${member.profileImg.equals('default')}"
+									class="col-5 d-flex justify-content-center align-items-center">
+									<img class="w-75" th:src="@{/upload/Alice.png}" />
+								</div>
+
+								<div th:unless="${member.profileImg.equals('default')}"
+									class="col-5 d-flex justify-content-center align-items-center">
+									<img class="w-75" th:src="@{/upload/}+@{${member.profileImg}}" />
+								</div>
+								<div class="col-7 pr-0">
+									<div class="form-group ">
+										<label class="form-label">ID</label> <input type="text"
+											class="form-control mb-1" th:value="${member.id}" readonly>
+									</div>
+									<div class="form-group">
+
+										<label class="form-label">이름</label> <input type="text"
+											class="form-control" th:value="${member.name}" readonly>
+									</div>
+									<div class="form-group">
+
+										<label class="form-label">E-mail</label> <input type="text"
+											class="form-control mb-1" th:value="${member.email}"
+											readonly="readonly">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr class="border-light m-0">
+
+					<div class="form-group">
+						<label class="form-label">생년월일</label> <input type="date"
+							class="form-control mb-1" th:value="${member.birth}"
+							readonly="readonly">
+
+					</div>
+					<div class="form-group">
+						<label class="form-label">전화번호</label> <input type="text"
+							class="form-control mb-1" th:value="${member.mobile}"
+							readonly="readonly">
+
+					</div>
+					<div class="form-group">
+						<label class="form-label">MBTI</label> <input type="text"
+							class="form-control mb-1" th:value="${member.mbti}"
+							readonly="readonly">
+
+					</div>
+					<div class="form-group">
+						<label class="form-label">My Wish List</label> <input type="text"
+							class="form-control mb-1" th:value="${member.wishlist}"
+							readonly="readonly">
+
+					</div>
+
+				</div>
+			</div>
+
 		</div>
 	</form>
 </div>
-
 </html>

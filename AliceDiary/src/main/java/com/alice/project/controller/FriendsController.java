@@ -49,7 +49,6 @@ public class FriendsController {
 	@PostMapping("/friends/searchMember")
 	@ResponseBody
 	public Member searchMember(String id, @AuthenticationPrincipal UserDetails user) {
-		// Member m = memberService.findById(user.getUsername());
 		return friendService.searchMember(id);
 	}
 
