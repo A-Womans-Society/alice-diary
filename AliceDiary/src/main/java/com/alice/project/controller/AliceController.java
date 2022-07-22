@@ -91,6 +91,7 @@ public class AliceController {
 		dto.setColor("crimson");
 		model.addAttribute("CalForm", dto);
 		model.addAttribute("today", today);
+		model.addAttribute("member", member);
 		return "alice/calendar";
 	}
 
