@@ -1,6 +1,6 @@
 package com.alice.project.config;
 
-import java.util.Arrays;
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.alice.project.service.MemberService;
 
@@ -25,13 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@Slf4j
 public class SecurityConfig {
 	
-	@Autowired
-	MemberService memberService;
 	
 	private final AuthenticationFailureHandler customFailureHandler;
+	private final DataSource dataSource; // jpa이라 자동으로 등록되어 있음
+
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,11 +41,11 @@ public class SecurityConfig {
 				.usernameParameter("userid")
 				.passwordParameter("password")
 				.failureHandler(customFailureHandler)
-				.and()
-				.logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/");
-//        http.csrf().disable();
+				
+			.and()
+			.logout().deleteCookies("JSESSIONID")
+					 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					 .logoutSuccessUrl("/");
 
 		http.authorizeRequests()
 				.mvcMatchers("/css/**", "/js/**", "/img/**").permitAll()
@@ -55,16 +53,25 @@ public class SecurityConfig {
 				.mvcMatchers("/alice/**", "/messagebox/**", "/member/**", "/friends/**", "/community/**").hasAuthority("ROLE_USER_IN")
 				.mvcMatchers("/admin/**").hasAuthority("ROLE_ADMIN");
 		
+		
 //        http.exceptionHandling()
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 //        ;
+		
 
+		
 		return http.build();
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 
+
+	@Bean
+    public PersistentTokenRepository tokenRepository() {
+        // JDBC 기반의 tokenRepository 구현체
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource); // dataSource 주입
+        return jdbcTokenRepository;
+    }
+	
+	
 }

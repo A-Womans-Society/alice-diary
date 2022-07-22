@@ -34,7 +34,7 @@
 											class="w-75" /> <label
 											class="btn btn-outline-primary btn-sm"> Upload new
 											photo <input type="file" class="account-settings-fileinput"
-											th:field="*{profileImg}" id="file" onchange="PreviewImage();">
+											field="*{profileImg}" name="profileImg" id="file" onchange="PreviewImage();">
 										</label>
 									</div>
 									<div th:case="${member.profileImg}"
