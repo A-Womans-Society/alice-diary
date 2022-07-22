@@ -15,9 +15,9 @@ import lombok.ToString;
 @ToString
 public class ReplyDto {
 
-	private Long num;
+	private Long num; //댓글번호
 
-	private Long ParentRepNum;
+	private Long parentRepNum;
 
 	private String content;
 

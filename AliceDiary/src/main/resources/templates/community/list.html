@@ -38,7 +38,6 @@
 			<th:block th:unless="${endPage == 0}">
 				<tbody>
 					<tr th:each="post, status: ${list}">
-						<!-- <td th:text="${poststat.index}"></td> -->
 						<td th:text="${size - status.index-(nowPage-1)*list.size}" />
 						<td><a th:text="${post.title}"
 							th:href="@{/community/get(num=${post.num})}"></a></td>
@@ -53,7 +52,9 @@
 
 		<div th:if="${endPage != 0}">
 			<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-				<a th:if="${page != nowPage}"
+				<a th:if="${page != nowPage} and ${type} != null and ${keyword} != null"
+					th:href="@{/community/list(page=${page-1},type=${type},keyword=${keyword})}" th:text="${page}"></a>
+				<a th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
 					th:href="@{/community/list(page=${page-1})}" th:text="${page}"></a>
 				<strong th:if="${page == nowPage}" th:text="${page}"
 					style="color: red"></strong>

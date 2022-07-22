@@ -36,15 +36,15 @@ public class Report {
 	@SequenceGenerator(name = "REPORT_SEQ_GENERATOR", sequenceName = "SEQ_REPORT_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "report_num")
 	private Long num; // 신고 번호
-	
+
 	private Long targetNum; // 신고대상물 번호
-	
+
 	@Enumerated(EnumType.STRING)
 	private ReportReason reportReason; // 신고사유 [BAD, LEAK, SPAM, ETC]
-	
+
 	private String content; // 신고내용
 	private LocalDateTime reportDate; // 신고일자
-	
+
 	@Enumerated(EnumType.STRING)
 	private ReportType reportType; // 신고종류 [POST, REPLY]
 
@@ -63,9 +63,10 @@ public class Report {
 		this.reportDate = LocalDateTime.now();
 	}
 
-	// 신고 객체 생성 메서드
+	// 게시글 신고 객체 생성 메서드
 	public static Report createPostReport(Long postNum, String reportReason, String content, Member member) {
-		Report report = new Report(postNum,  ReportReason.valueOf(reportReason), content, LocalDateTime.now(), ReportType.POST, member);
+		Report report = new Report(postNum, ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
+				ReportType.POST, member);
 
 		return report;
 	}
@@ -81,4 +82,14 @@ public class Report {
 		this.reportType = reportType;
 		this.member = member;
 	}
+
+	// 게시글 신고 객체 생성 메서드
+	public static Report createReplyReport(Long replyNum, String reportReason, String content, Member member) {
+		Report report = new Report(replyNum, ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
+				ReportType.REPLY, member);
+
+		return report;
+	}
+
+	
 }

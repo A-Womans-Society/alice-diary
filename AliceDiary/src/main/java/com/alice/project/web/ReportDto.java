@@ -23,6 +23,8 @@ public class ReportDto {
 	private Member member; //신고한 회원 - 객체로 넣어주기
 	private ReportReason reportReason;
 	
+	private Long replyNum;
+	
 
 
 
