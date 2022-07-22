@@ -21,7 +21,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.alice.project.web.WriteFormDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -56,11 +58,13 @@ public class Post {
 
 	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "member_num")
+	@JsonBackReference
 	private Member member; // 작성회원 객체
 
 	/* community가 null일 수 있음 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "community_num")
+	@JsonBackReference
 	private Community community; // 소속 커뮤니티 객체
 
 	/* replies가 null일 수 있음 */
@@ -69,7 +73,7 @@ public class Post {
 
 	/* files가 null일 수 있음 */
 	@OneToMany(mappedBy = "post")
-	@JsonIgnore
+	@JsonManagedReference
 	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
 
 	// 연관관계 메서드 (양방향관계)

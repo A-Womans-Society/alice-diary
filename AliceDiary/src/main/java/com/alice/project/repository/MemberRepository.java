@@ -28,6 +28,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	// 회원번호로 찾기
 	Member findByNum(Long num);
+	
+	boolean existsByEmail(String email);
+
+	Member findByEmail(String email);
+
 
 	@Query("SELECT m FROM Member AS m WHERE num IN (SELECT addeeNum FROM Friend WHERE adder_num = :adderNum) AND (name LIKE '%'||:friends||'%' OR id LIKE '%'||:friends||'%')")
 	List<Member> findByIdOrName(Long adderNum, String friends);

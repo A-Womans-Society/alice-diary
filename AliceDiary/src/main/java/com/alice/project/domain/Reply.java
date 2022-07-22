@@ -59,6 +59,7 @@ public class Reply {
 	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_num")
+	@JsonBackReference
 	private Post post; // 댓글 소속 게시물 객체
 
    @ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)

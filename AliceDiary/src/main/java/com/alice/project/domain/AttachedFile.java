@@ -9,7 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -36,10 +39,12 @@ public class AttachedFile {
 	
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="post_num")
+	@JsonBackReference
 	private Post post; // 소속 게시물 객체
 	
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="message_num")
+	@JsonBackReference
 	private Post message; // 소속 게시물 객체
 	
 	// 연관관계 메서드 (양방향관계)

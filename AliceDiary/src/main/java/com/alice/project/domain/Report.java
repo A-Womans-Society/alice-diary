@@ -50,6 +50,7 @@ public class Report {
 
 	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "mem_num")
+
 	private Member member; // 신고회원 객체
 
 	// 연관관계 메서드 (양방향관계)
