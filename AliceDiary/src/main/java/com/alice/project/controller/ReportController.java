@@ -26,23 +26,17 @@ public class ReportController {
 	@Autowired
 	private ReportService reportService;
 
-	/*
-	 * @ModelAttribute("reportReasons") public ReportReason[] reportReasons() {
-	 * return ReportReason.values(); }
-	 */
-	
 	// 게시글신고하기
 	@PostMapping("community/reportpost")
 	@ResponseBody
 	public boolean reportPost(String userId, Long postNum, String reportReason, String content) {
-		
 		log.info("!!!!!!!!!!!!!!!!!!!!userId  :" + userId);
 		log.info("!!!!!!!!!!!!!!!!!!!!postNum  :" + postNum);
 		log.info("!!!!!!!!!!!!!!!!!!!!repostReason  :" + reportReason);
 		log.info("!!!!!!!!!!!!!!!!!!!!content  :" + content);
-		
+
 		Member member = memberService.findById(userId);
-		reportService.postReport(Report.createPostReport(postNum,reportReason, content, member));
+		reportService.postReport(Report.createPostReport(postNum, reportReason, content, member));
 
 		return true;
 	}
@@ -51,12 +45,12 @@ public class ReportController {
 	@PostMapping("community/reportreply")
 	@ResponseBody
 	public boolean reportReply(@ModelAttribute ReportDto reportDto, String userId, String reportReason, String content) {
-		
+	
 		log.info("!!!!!!!!!!!!!!!!!!!!userId  :" + userId);
 		log.info("!!!!!!!!!!!!!!!!!!!!replyNum  :" + reportDto.getReplyNum());
 		log.info("!!!!!!!!!!!!!!!!!!!!repostReason  :" + reportReason);
 		log.info("!!!!!!!!!!!!!!!!!!!!content  :" + content);
-		
+
 		Member member = memberService.findById(userId);
 		reportService.replyReport(Report.createReplyReport(reportDto.getReplyNum(), reportReason, content, member));
 

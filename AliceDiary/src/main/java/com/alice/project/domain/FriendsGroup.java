@@ -9,7 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -19,16 +22,18 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@EqualsAndHashCode(of = "num")
 public class FriendsGroup {
 	
 	@Id @GeneratedValue
 	@Column(name="group_num")
 	private Long num; // 그룹 번호
 	private String groupName = "기본그룹"; // 그룹이름 (default="기본그룹")
-	private Long groupCreatorNum; // 그룹생성 회원번호
+	// private Long groupCreatorNum; // 그룹생성 회원번호
 
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="member_num")
+	@JsonBackReference
 	private Member member; // 그룹 생성 회원 객체
 	
 //	@OneToMany(mappedBy="group")

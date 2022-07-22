@@ -116,3 +116,4 @@ public class Post {
 		this.member = member;
 	}
 }
+

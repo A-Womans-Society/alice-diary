@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true) // 기본적으로 못바꾸게 해놓고
-//@Transactional //로직을 처리하다가 에러 발생 시 변경된 데이터를 로직 수행 이전 상태로 콜백
 @RequiredArgsConstructor // final 필드 생성자 생성해줌
 @Slf4j
 public class MemberService implements UserDetailsService { // MemberService가 UserDetailService를 구현
@@ -38,6 +37,10 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findById(String id) {
 		return memberRepository.findById(id);
 	}
+	
+//	public Member editPwd(String id, String password) {
+//		return memberRepository.findById(id);
+//	}
 
 	// id 중복테스트
 	public int checkIdDuplicate(String id) {
@@ -67,6 +70,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	}
 
 	// 비밀번호 재설정
+	@Transactional
 	public Member updateMember(Member member) {
 		return memberRepository.save(member);
 	}

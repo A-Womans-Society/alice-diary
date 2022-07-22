@@ -61,14 +61,14 @@ public class Reply {
 	@JoinColumn(name = "post_num")
 	private Post post; // 댓글 소속 게시물 객체
 
-	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name = "member_num")
-	private Member member; // 댓글 작성 회원 객체
+   @ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+   @JoinColumn(name = "member_num")
+   private Member member; // 댓글 작성 회원 객체
 
-	@PrePersist
-	public void rep_Date() {
-		this.repDate = LocalDateTime.now();
-	}
+   @PrePersist
+   public void rep_Date() {
+      this.repDate = LocalDateTime.now();
+   }
 
 	//부모댓글쓰기
 	@Builder

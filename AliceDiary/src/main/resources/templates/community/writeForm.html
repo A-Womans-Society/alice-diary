@@ -4,31 +4,37 @@
 	layout:decorate="~{layouts/communityLayout}">
 
 <div layout:fragment="content">
+	<h2 class="text-center m-0 pt-5" style="height: 15%;">글쓰기</h2>
+	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
+		<div class='row mt-3 ml-5 mr-5' style="height: 90%;">
+			<div class="col-12">
+				<form th:action="@{/community/post}" method="post"
+					th:object="${writeFormDto}" enctype="multipart/form-data"
+					class="h-100">
+					<table class="table w-100">
+						<tr>
+							<th>제목</th>
+							<td><input type="text" class="form-control"
+								th:field="*{title}"></td>
+						</tr>
+						<tr>
+							<th>내용</th>
+							<td><textarea th:field="*{content}" class="form-control"
+									rows="10"></textarea></td>
+						</tr>
+						<tr>
+							<th>파일첨부</th>
+							<td><input type="file" th:field="*{originName}" multiple>
+						</tr>
+					</table>
+					<div class="text-center">
+						<input type="submit" class="btn btn-secondary" value="작성"> <input
+							type="button" value="취소" th:href="@{/community/list}" class="btn">
 
-
-	<h2>글쓰기</h2>
-	<form th:action="@{/community/post}" method="post"
-		th:object="${writeFormDto}" enctype="multipart/form-data">
-		<table border="1">
-			<tr>
-				<td>제목</td>
-				<td><input type="text" th:field="*{title}"></td>
-			</tr>
-			<tr>
-				<td>내용</td>
-				<td><textarea th:field="*{content}" cols="80" rows="25"></textarea></td>
-			</tr>
-			<tr>
-				<td>파일첨부</td>
-				<td><input type="file" th:field="*{originName}" multiple>
-			</tr>
-		</table>
-		<input type="submit" value="작성"> <a
-			th:href="@{/community/list}"><input type="button"
-			value="취소"></a>
-	
-
-	</form>
-
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 </html>

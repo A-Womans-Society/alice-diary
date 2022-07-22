@@ -19,19 +19,20 @@ public class ReplyDto {
 
 	private Long parentRepNum;
 
-	private String content;
 
-	private LocalDateTime repDate;
+   private String content;
 
-	private Boolean edit;
+   private LocalDateTime repDate;
+
+   private Boolean edit;
 
 	private Long heart;
 
-	private String memberId;
+   private String memberId;
 
-	private Long memberNum;
+   private Long memberNum;
 
-	private Long postNum;
+   private Long postNum;
 
 	private ReplyStatus status;
 

@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 .id_ok {
 	color: #6A82FB;
 	display: none;
@@ -9,6 +10,6 @@
 	display: none;
 }
 
-body{
-	background: #f0d9ff;
+body {
+	background: #e4ddec;
 }

@@ -25,9 +25,4 @@ public class ReportDto {
 	
 	private Long replyNum;
 	
-
-
-
-	
-
 }

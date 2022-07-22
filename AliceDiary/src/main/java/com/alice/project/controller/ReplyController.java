@@ -17,54 +17,54 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReplyController {
 
-	@Autowired
-	private ReplyService replyService;
+   @Autowired
+   private ReplyService replyService;
 
-	// 댓글쓰기
-	@PostMapping("/community/reply")
-	@ResponseBody
-	public JSONObject replyWrite(String memberId, Long postNum, String content) {
-		log.info(memberId, postNum, content);
-		Reply newReply = replyService.replyWrite(memberId, postNum, content);
+   // 댓글쓰기
+   @PostMapping("/community/reply")
+   @ResponseBody
+   public JSONObject replyWrite(String memberId, Long postNum, String content) {
+      log.info(memberId, postNum, content);
+      Reply newReply = replyService.replyWrite(memberId, postNum, content);
 
-		JSONObject jObj = new JSONObject();
+      JSONObject jObj = new JSONObject();
 
-		jObj.put("replyNum", newReply.getNum());
-		jObj.put("id", newReply.getMember().getId());
-		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
-		jObj.put("repContent", newReply.getContent());
-		jObj.put("postNum", newReply.getPost().getNum());
+      jObj.put("replyNum", newReply.getNum());
+      jObj.put("id", newReply.getMember().getId());
+      jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
+      jObj.put("repContent", newReply.getContent());
+      jObj.put("postNum", newReply.getPost().getNum());
 
-		return jObj;
+      return jObj;
 
-	}
+   }
 
-	// 대댓쓰기
-	@PostMapping("/community/replyreply")
-	@ResponseBody
-	public JSONObject replyReplyWrite(String memberId, Long postNum, Long parentRepNum, String content) {
-		log.info(memberId, postNum, parentRepNum, content);
-		Reply newReplyReply = replyService.replyReplyWrite(memberId, postNum, parentRepNum, content);
+   // 대댓쓰기
+   @PostMapping("/community/replyreply")
+   @ResponseBody
+   public JSONObject replyReplyWrite(String memberId, Long postNum, Long parentRepNum, String content) {
+      log.info(memberId, postNum, parentRepNum, content);
+      Reply newReplyReply = replyService.replyReplyWrite(memberId, postNum, parentRepNum, content);
 
-		JSONObject jObj = new JSONObject();
+      JSONObject jObj = new JSONObject();
 
-		jObj.put("replyNum", newReplyReply.getNum());
-		jObj.put("parentRepNu", newReplyReply.getParentRepNum());
-		jObj.put("id", newReplyReply.getMember().getId());
-		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
-		jObj.put("repContent", newReplyReply.getContent());
+      jObj.put("replyNum", newReplyReply.getNum());
+      jObj.put("parentRepNu", newReplyReply.getParentRepNum());
+      jObj.put("id", newReplyReply.getMember().getId());
+      jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
+      jObj.put("repContent", newReplyReply.getContent());
 
-		return jObj;
+      return jObj;
 
-	}
+   }
 
-	// 댓글 삭제하기
-	@PostMapping("/community/deletereply")
-	public String replyDelete(Long num) {
-		log.info("컨트롤러 실행 ");
+   // 댓글 삭제하기
+   @PostMapping("/community/deletereply")
+   public String replyDelete(Long num) {
+      log.info("컨트롤러 실행 ");
 
-		replyService.replyDelete(num);
+      replyService.replyDelete(num);
 
-		return "redirect:list";
-	}
+      return "redirect:list";
+   }
 }
