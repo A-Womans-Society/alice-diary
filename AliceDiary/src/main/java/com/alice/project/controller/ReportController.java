@@ -30,10 +30,6 @@ public class ReportController {
 	@PostMapping("community/reportpost")
 	@ResponseBody
 	public boolean reportPost(String userId, Long postNum, String reportReason, String content) {
-		log.info("!!!!!!!!!!!!!!!!!!!!userId  :" + userId);
-		log.info("!!!!!!!!!!!!!!!!!!!!postNum  :" + postNum);
-		log.info("!!!!!!!!!!!!!!!!!!!!repostReason  :" + reportReason);
-		log.info("!!!!!!!!!!!!!!!!!!!!content  :" + content);
 
 		Member member = memberService.findById(userId);
 		reportService.postReport(Report.createPostReport(postNum, reportReason, content, member));
@@ -41,16 +37,17 @@ public class ReportController {
 		return true;
 	}
 
+	@PostMapping("community/checkExist")
+	@ResponseBody
+	public int checkExist(Long targetNum, String userId) {
+		return reportService.checkExist(targetNum, userId).size();
+	}
+	
 	// 댓글신고하기
 	@PostMapping("community/reportreply")
 	@ResponseBody
 	public boolean reportReply(@ModelAttribute ReportDto reportDto, String userId, String reportReason, String content) {
 	
-		log.info("!!!!!!!!!!!!!!!!!!!!userId  :" + userId);
-		log.info("!!!!!!!!!!!!!!!!!!!!replyNum  :" + reportDto.getReplyNum());
-		log.info("!!!!!!!!!!!!!!!!!!!!repostReason  :" + reportReason);
-		log.info("!!!!!!!!!!!!!!!!!!!!content  :" + content);
-
 		Member member = memberService.findById(userId);
 		reportService.replyReport(Report.createReplyReport(reportDto.getReplyNum(), reportReason, content, member));
 

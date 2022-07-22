@@ -13,9 +13,4 @@ public class PostSearchDto {
 	
 	private String keyword;
 
-
-	private String type;
-
-	private String keyword;
-
 }

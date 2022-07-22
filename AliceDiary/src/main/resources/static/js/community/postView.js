@@ -8,28 +8,52 @@ function replySubmit(postNum, memberId) {
 	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	    	if (httpRequest.status === 200) {
 	    		let result = JSON.parse(httpRequest.response);
-				console.log(result);
-				let url = window.location.href;
-
-				let tagArea = document.getElementById('replyTable');
-				let newReply = document.createElement('li');
-				newReply.setAttribute('id', 'parentRepContentTable'+result.replyNum);
-				let memberId = document.createElement('span');
-				memberId.innerText = result.id;
-				let repDate = document.createElement('span');
-				repDate.innerText = result.repDate;
-				let content = document.createElement('span');
-				content.innerText = result.repContent;
-				let btn1 = document.createElement('span');
-				btn1.innerHTML = "<button type='button' onclick='deleteParent("+result.replyNum+")'>삭제</button>";						
-				let btn2 = document.createElement('span');
-				btn2.innerHTML = "<button type='button' onclick='showReplyBox(replyReplyBox"+result.replyNum+")'>답글</button>";
 				
-				newReply.appendChild(memberId);
-				newReply.appendChild(repDate);
-				newReply.appendChild(content);
-				newReply.appendChild(btn1);
-				newReply.appendChild(btn2);
+				let tagArea = document.getElementById('replyList');
+				let newReply = document.createElement('ul');
+				newReply.setAttribute('id', 'parentRepContentTable'+result.replyNum);
+				newReply.setAttribute('class', 'comments pt-2');
+												
+				if (result.profileImg == 'default'){
+					newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
+				} else {
+					newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.id+".JPG' class='avatar' alt=''>";
+				}
+				
+				let postComments = document.createElement('div');
+				postComments.setAttribute('class', 'post-comments');
+				let meta = document.createElement('p');
+				meta.setAttribute('class','meta');
+																			
+				let span1 = document.createElement('span');
+				span1.innerHTML = "&nbsp;<span style='color:black;'>"+ result.id +"</span>&nbsp;<span>"+result.repDate+"</span>";
+                
+				let span2 = document.createElement('span');
+				let btn1 = document.createElement('span');
+				btn1.innerHTML = "<button type='button' class='btn btn-sm' onclick='deleteParent("+result.replyNum+")'>삭제</button>";						
+				let btn2 = document.createElement('span');
+				btn2.innerHTML = "<button type='button' class='btn btn-sm' onclick='showReplyBox(replyReplyBox"+result.replyNum+")'>답글</button>";
+
+                span2.appendChild(btn2);
+                span2.appendChild(btn1);
+
+                meta.appendChild(span1);
+                meta.appendChild(span2);
+
+                let content = document.createElement('p');
+                content.setAttribute('class', 'm-0 pb-2');
+                content.style.fontSize = 'small';
+                let contentSpan = document.createElement('span');
+                contentSpan.style.wordBreak = 'break-all';
+                contentSpan.innerText = result.repContent;
+                
+                content.appendChild(contentSpan);
+
+                postComments.appendChild(meta);
+                postComments.appendChild(content);
+
+
+
 				
 				let replyBox = document.createElement('li');
 				replyBox.setAttribute('id', "replyReplyBox"+result.replyNum);
@@ -47,11 +71,14 @@ function replySubmit(postNum, memberId) {
 				replyBtn.innerText="등록";
 				replyBoxtd2.appendChild(replyBtn);
 				replyBoxtd1.appendChild(replyBoxInput);
+				
 				replyBox.appendChild(replyBoxtd1);
 				replyBox.appendChild(replyBoxtd2);
+				
+				newReply.appendChild(postComments);
+                newReply.appendChild(replyBox);
 
 				tagArea.appendChild(newReply);
-				tagArea.appendChild(replyBox);
 				
 				document.getElementById('replyContent').value = "";
 	     	alert('댓글이 달렸습니다!');
@@ -114,37 +141,56 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
 	let httpRequest = new XMLHttpRequest();
 	let param = "memberId="+memberId+"&postNum="+postNum+
 	"&parentRepNum="+parentRepNum+"&content="+replyReplyContent.value;	
-	console.log(param);
-	console.log(parentRepContentTable);
+
     httpRequest.onreadystatechange = function(){
 	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	    	if (httpRequest.status === 200) {
 	       		let result = JSON.parse(httpRequest.response);
-				console.log(result);
-				let url = window.location.href;
 
 				let tagArea = parentRepContentTable;
-				console.log(tagArea);
-				let newReply = document.createElement('li');
+
+				let newReply = document.createElement('ul');
 				newReply.setAttribute('id', 'childRepContentTable'+result.replyNum);
-				let img = document.createElement('span');
-				img.innerHTML = "<img src='../img/replyreply.png' width='20' height='20'>";
-				let memberId = document.createElement('span');
-				memberId.innerText = result.id;
-				let repDate = document.createElement('span');
-				repDate.innerText = result.repDate;
-				let content = document.createElement('span');
-				content.innerText = result.repContent;
-				let btn1 = document.createElement('span');
-				btn1.innerHTML = "<button type='button' onclick='deleteChild("+result.replyNum+", "+result.parentRepNum+")'>삭제</button>";
+                newReply.setAttribute('class', 'childComments');
+              
+                if (result.profileImg == 'default'){
+					newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
+				} else {
+					newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.id+".JPG' class='avatar' alt=''>";
+				}
+			
 				
-				console.log(newReply);
-				newReply.appendChild(img);				
-				newReply.appendChild(memberId);
-				newReply.appendChild(repDate);
-				newReply.appendChild(content);
-				newReply.appendChild(btn1);
-				tagArea.after(newReply);
+                let postComments = document.createElement('div');
+				postComments.setAttribute('class', 'post-comments');
+				let meta = document.createElement('p');
+				meta.setAttribute('class','meta');
+
+                let span1 = document.createElement('span');
+				span1.innerHTML = "&nbsp;<span style='color:black;'>"+ result.id +"</span>&nbsp;<span>"+result.repDate+"</span>";
+
+				let span2 = document.createElement('span');
+				let btn1 = document.createElement('span');
+				btn1.innerHTML = "<button type='button' class='btn btn-sm' onclick='deleteChild("+result.replyNum+")'>삭제</button>";	
+                
+                span2.appendChild(btn1);
+
+                meta.appendChild(span1);
+                meta.appendChild(span2);
+
+                let content = document.createElement('p');
+                content.setAttribute('class', 'm-0 pb-2');
+                content.style.fontSize = 'small';
+                let contentSpan = document.createElement('span');
+                contentSpan.style.wordBreak = 'break-all';
+                contentSpan.innerText = result.repContent;
+
+                content.appendChild(contentSpan);
+
+                postComments.appendChild(meta);
+                postComments.appendChild(content);
+
+				newReply.appendChild(postComments);
+                tagArea.after(newReply);
 				
 				replyReplyBox.style.display = "none";
 				replyReplyContent.value = "";
@@ -223,8 +269,31 @@ function deleteParent(pNum) {
 }
 
 function openModalPost(postNum, userId){
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
 
-	$('#postReportModal').modal('show');	
+	httpRequest.onreadystatechange = function() {
+		if (httpRequest.readyState === XMLHttpRequest.DONE) {
+			if (httpRequest.status === 200) {
+				if (httpRequest.response == 0) {
+					$('#postReportModal').modal('show');	
+				} else {			
+					alert("이미 신고한 게시물입니다.");
+				}
+				
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
+
+	//POST로 요청
+	httpRequest.open('POST', "./checkExist", true);
+	httpRequest.setRequestHeader(header, token);
+	httpRequest.setRequestHeader('Content-type',
+			'application/x-www-form-urlencoded');
+	httpRequest.send("targetNum=" + postNum+"&userId="+userId); // 요게 문제였습니다!!
 	
 }
 

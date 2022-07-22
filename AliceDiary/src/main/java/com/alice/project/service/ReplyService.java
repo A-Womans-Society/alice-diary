@@ -67,7 +67,7 @@ public class ReplyService {
 				rdto.setPostNum(r.getPost().getNum());
 				rdto.setHeart(r.getHeart());
 				rdto.setStatus(r.getStatus());
-				log.info("살려주세요" + r.getStatus());
+				rdto.setProfileImg(r.getMember().getProfileImg());
 				result.add(rdto);
 			}
 

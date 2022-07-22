@@ -15,26 +15,27 @@ import lombok.ToString;
 @ToString
 public class ReplyDto {
 
-	private Long num; //댓글번호
+	private Long num; // 댓글번호
 
 	private Long parentRepNum;
 
+	private String content;
 
-   private String content;
+	private LocalDateTime repDate;
 
-   private LocalDateTime repDate;
-
-   private Boolean edit;
+	private Boolean edit;
 
 	private Long heart;
 
-   private String memberId;
+	private String memberId;
 
-   private Long memberNum;
+	private Long memberNum;
 
-   private Long postNum;
+	private Long postNum;
 
 	private ReplyStatus status;
+
+	private String profileImg;
 
 	public ReplyDto(String content, String memberId, Long postNum) {
 		this.content = content;

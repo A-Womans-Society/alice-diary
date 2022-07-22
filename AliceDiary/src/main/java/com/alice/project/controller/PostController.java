@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PostController {
 
-@Autowired
+	@Autowired
 	private PostService postService;
 
 	@Autowired
@@ -51,9 +51,10 @@ public class PostController {
 
 	// 글쓰기
 	@GetMapping("/community/post")
-	public String writeform(Model model) {
+	public String writeform(Model model, @AuthenticationPrincipal UserDetails user) {
 		log.info("get");
 		model.addAttribute("writeFormDto", new WriteFormDto());
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 		return "community/writeForm";
 	}
 
@@ -77,7 +78,8 @@ public class PostController {
 	// 게시글 리스트 가져오기
 	@GetMapping("/community/list")
 	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
-			@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
+			@AuthenticationPrincipal UserDetails user,
+			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
 
 		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 
@@ -118,6 +120,7 @@ public class PostController {
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", postSearchDto.getType());
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 
 		log.info("nowPage:" + nowPage);
 		log.info("startPage:" + startPage);
@@ -128,7 +131,8 @@ public class PostController {
 
 	// 게시글 상세보기
 	@GetMapping("/community/get")
-	public String postView(Model model, Long num, Pageable pageable, HttpSession session) {
+	public String postView(Model model, Long num, Pageable pageable, HttpSession session,
+			@AuthenticationPrincipal UserDetails user) {
 
 		log.info("num :" + num);
 		Post viewPost = postService.postView(num);
@@ -142,17 +146,15 @@ public class PostController {
 
 		List<ReplyDto> replyList = replyService.replyList(num);
 
-		for (ReplyDto rdto : replyList) {
-			log.info("리스트 각각 : " + rdto.toString());
-		}
 		model.addAttribute("replyList", replyList);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 
 		return "community/postView";
 	}
 
 	// 게시글 수정하기 첨부파일도 수정
 	@GetMapping("/community/put")
-	public String getUpdate(Long num, Model model, Pageable pageable) {
+	public String getUpdate(Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
 		log.info("수정컨트롤러 get");
 
 		Post getUpdate = postService.postView(num);
@@ -162,7 +164,7 @@ public class PostController {
 
 		model.addAttribute("files", files);
 		model.addAttribute("updateDto", updateDto);
-
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 		return "community/updateForm";
 	}
 
