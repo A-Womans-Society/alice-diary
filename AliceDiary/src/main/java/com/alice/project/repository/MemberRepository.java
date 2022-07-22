@@ -35,4 +35,7 @@ public interface MemberRepository
 	List<Member> findByIdOrName(Long adderNum, String friends);
 
 	Member findByName(String name);
+
+	@Query(value = "select * from Member where ID like '%'||:id||'%'", nativeQuery = true)
+	Member findMemberById(String id);
 }

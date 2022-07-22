@@ -24,144 +24,95 @@ import com.alice.project.web.WriteFormDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "post")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @ToString
 @EqualsAndHashCode(of = "num")
 public class Post {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_SEQ_GENERATOR")
-	@SequenceGenerator(name = "POST_SEQ_GENERATOR", sequenceName = "SEQ_POST_NUM", initialValue = 1, allocationSize = 1)
-	@Column(name = "post_num")
-	private Long num; // 게시물번호
-	private String title; // 게시물 제목
-	private LocalDateTime postDate; // 게시물 작성일자
-	private LocalDateTime updateDate; // 게시물 수정일자
+   @Id
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_SEQ_GENERATOR")
+   @SequenceGenerator(name = "POST_SEQ_GENERATOR", sequenceName = "SEQ_POST_NUM", initialValue = 1, allocationSize = 1)
+   @Column(name = "post_num")
+   private Long num; // 게시물번호
+   private String title; // 게시물 제목
+   private LocalDateTime postDate; // 게시물 작성일자
+   private LocalDateTime updateDate; // 게시물 수정일자
 
-	@Column(length = 50000)
-	private String content; // 게시물 내용
-	private Long viewCnt = 0L; // 게시물 조회수 (default=0)
+   @Column(length = 4000)
+   private String content; // 게시물 내용
+   private Long viewCnt = 0L; // 게시물 조회수 (default=0)
 
-	@Enumerated(EnumType.STRING)
-	private PostType postType; // 게시물 종류 [NOTICE, OPEN, CUSTOM]
+   @Enumerated(EnumType.STRING)
+   private PostType postType; // 게시물 종류 [NOTICE, OPEN, CUSTOM]
 
-	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name = "member_num")
-	private Member member; // 작성회원 객체
+   @ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+   @JoinColumn(name = "member_num")
+   private Member member; // 작성회원 객체
 
-	/* community가 null일 수 있음 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "community_num")
-	private Community community; // 소속 커뮤니티 객체
+   /* community가 null일 수 있음 */
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "community_num")
+   private Community community; // 소속 커뮤니티 객체
 
-	/* replies가 null일 수 있음 */
-//	@OneToMany(mappedBy = "post")
-//	private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
+   /* replies가 null일 수 있음 */
+//   @OneToMany(mappedBy = "post")
+//   private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
 
-	/* files가 null일 수 있음 */
-	@OneToMany(mappedBy = "post")
-	@JsonIgnore
-	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
+   /* files가 null일 수 있음 */
+   @OneToMany(mappedBy = "post")
+   @JsonIgnore
+   private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
 
-	// 연관관계 메서드 (양방향관계)
-	/*
-	 * public void setMember(Member member) { this.member = member;
-	 * member.getPosts().add(this); }
-	 */
+   // 연관관계 메서드 (양방향관계)
+   /*
+    * public void setMember(Member member) { this.member = member;
+    * member.getPosts().add(this); }
+    */
 
-	public void setCommunity(Community community) {
-		this.community = community;
-		community.getPosts().add(this);
-	}
+   public void setCommunity(Community community) {
+      this.community = community;
+      community.getPosts().add(this);
+   }
 
-	@PrePersist
-	public void post_Date() {
-		this.postDate = LocalDateTime.now();
-	}
+   @PrePersist
+   public void post_Date() {
+      this.postDate = LocalDateTime.now();
+   }
 
-	@PreUpdate
-	public void update_Date() {
-		this.updateDate = LocalDateTime.now();
-	}
+   @PreUpdate
+   public void update_Date() {
+      this.updateDate = LocalDateTime.now();
+   }
 
-	// 게시물 객체 생성 메서드
-	public static Post createPost(WriteFormDto wirteFormDto) {
-		Post post = new Post();
-		/*
-		 * Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
-		 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
-		 * ZonedDateTime .toLocalDate();
-		 * 
-		 * Member member = new Member("test", "12341234", "tester", localDate,
-		 * Gender.FEMALE, "test@test.com", "01012341234", localDate, Status.USER_IN);
-		 */
-		post.setTitle(wirteFormDto.getTitle());
-		post.setPostDate(post.getPostDate());
-		post.setUpdateDate(post.getPostDate());
-		post.setContent(wirteFormDto.getContent());
-		post.setViewCnt(post.getViewCnt());
-		post.setPostType(PostType.OPEN);
-//		post.setMember(member);
+   // 게시물 객체 생성 메서드
+   public static Post createPost(WriteFormDto wirteFormDto, Member member) {
+      Post post = new Post(wirteFormDto.getTitle(), LocalDateTime.now(), wirteFormDto.getContent(), PostType.OPEN,
+            member);
 
-		return post;
-	}
+      return post;
+   }
 
-	// 조회수 증가 메소드
-	public void viewCntUp() {
-		this.viewCnt++;
-	}
+   // 조회수 증가 메소드
+   public void viewCntUp() {
+      this.viewCnt++;
+   }
 
-	public static Post updatePost(WriteFormDto updateDto) {
-		Post post = new Post();
-		/*
-		 * Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
-		 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
-		 * ZonedDateTime .toLocalDate(); Member member = new Member("test", "12341234",
-		 * "tester", localDate, Gender.FEMALE, "test@test.com", "01012341234",
-		 * localDate, Status.USER_IN);
-		 */
-		post.setTitle(updateDto.getTitle());
-		post.setUpdateDate(post.getUpdateDate());
-		post.setContent(updateDto.getContent());
-
-//		post.setMember(member);
-
-		return post;
-	}
-	/*
-	 * public static Post updatePost(UpdateFormDto updateFormDto) { Post post = new
-	 * Post(); Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
-	 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
-	 * ZonedDateTime .toLocalDate(); Member member = new Member("test", "12341234",
-	 * "tester", localDate, Gender.FEMALE, "test@test.com", "01012341234",
-	 * localDate, Status.USER_IN); post.setTitle(updateFormDto.getTitle());
-	 * post.setUpdateDate(post.getUpdateDate());
-	 * post.setContent(updateFormDto.getContent());
-	 * 
-	 * // post.setMember(member);
-	 * 
-	 * return post; }
-	 */
-
-	public Post(String title, LocalDateTime postDate, LocalDateTime updateDate, String content, Long viewCnt,
-			PostType postType, Member member, Community community) {
-		this.title = title;
-		this.postDate = postDate;
-		this.updateDate = updateDate;
-		this.content = content;
-		this.viewCnt = viewCnt;
-		this.postType = postType;
-//		this.member = member;
-		this.community = community;
-	}
+   @Builder
+   public Post(String title, LocalDateTime postDate, String content, PostType postType, Member member) {
+      super();
+      this.title = title;
+      this.postDate = postDate;
+      this.content = content;
+      this.postType = postType;
+      this.member = member;
+   }
 }
