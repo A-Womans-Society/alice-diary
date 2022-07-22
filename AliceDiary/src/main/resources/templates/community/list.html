@@ -58,15 +58,30 @@
 							value="글쓰기"></a>
 
 						<!-- pagination -->
-						<!-- 						<nav aria-label="Page navigation" class="paging">
-							<ul class="pagination" th:if="${posts.page.totalPages > 1}">
-								<li class="page-item"
+<!-- 						<nav aria-label="Page navigation" class="paging">
+							<ul class="pagination" th:if="${posts.page.totalPages > 1}"> -->
+								<!-- 				<li class="page-item"
 									th:classappend="${!posts.paging.isPrevEnabled()? 'disabled' : ''}">
 									<a class="page-link"
 									th:href="@{'/?pageNumber=' + ${posts.paging.pageNumber - 1}}"
 									tabindex="-1">Previous</a>
-								</li>
-								<th:block th:each="item : ${posts.paging.getItems()}">
+								</li> -->
+								<nav aria-label="Page navigation example">
+									<ul class="pagination">
+
+										<th:block
+											th:each="page : ${#numbers.sequence(startPage, endPage)}">
+											<li class="page-item"><a class="page-link"
+												th:if="${page != nowPage}"
+												th:href="@{/community/list(page = ${page-1})}"
+												th:text="${page}"></a></li>
+											<strong th:if="${page == nowPage}" th:text="${page}"
+												style="color: red"></strong>
+										</th:block>
+									</ul>
+								</nav>
+
+								<!-- 			<th:block th:each="item : ${posts.paging.getItems()}">
 									<li class="page-item"
 										th:classappend="${item.index == posts.paging.pageNumber? 'active' : ''}"
 										th:if="${item.pageItemType.name() == 'PAGE'}"><a
@@ -76,12 +91,14 @@
 										th:if="${item.pageItemType.name() == 'DOTS'}"><a
 										class="page-link" href="#">...</a></li>
 								</th:block>
-								<li class="page-item"
+ -->
+								<!-- 				<li class="page-item"
 									th:classappend="${!posts.paging.isNextEnabled()? 'disabled' : ''}">
 									<a class="page-link"
 									th:href="@{'/?pageNumber=' + ${posts.paging.pageNumber + 1}}">Next</a>
 								</li>
-							</ul>
+				 -->
+						<!-- </ul>
 						</nav> -->
 					</div>
 				</div>
