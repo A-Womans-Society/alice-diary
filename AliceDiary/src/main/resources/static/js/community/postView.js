@@ -17,7 +17,7 @@ function replySubmit(postNum, memberId) {
 				if (result.profileImg == 'default'){
 					newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
 				} else {
-					newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.id+".JPG' class='avatar' alt=''>";
+					newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.profileImg+"' class='avatar' alt=''>";
 				}
 				
 				let postComments = document.createElement('div');
@@ -156,7 +156,7 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
                 if (result.profileImg == 'default'){
 					newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
 				} else {
-					newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.id+".JPG' class='avatar' alt=''>";
+					newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.profileImg+"' class='avatar' alt=''>";
 				}
 			
 				
