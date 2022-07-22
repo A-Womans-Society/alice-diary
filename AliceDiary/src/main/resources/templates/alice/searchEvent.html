@@ -50,11 +50,11 @@
 							<th:block th:unless="${#lists.isEmpty(resultEvents)}"
 								th:each="event:${resultEvents}">
 								<tr>
-									<td th:text="|${event.startDate} ~ ${event.endDate}"|></td>
-									<td th:text="${event.content}"></td>
-									<td th:text="${event.memberList}"></td>
-									<td th:text="${event.location}"></td>
-									<td th:text="${event.memo}"></td>
+									<td class="text-center" th:text="|${event.startDate} ~ ${event.endDate}"|></td>
+									<td class="text-center" th:text="${event.content}"></td>
+									<td class="text-center" th:text="${event.memberList}"></td>
+									<td class="text-center" th:text="${event.location}"></td>
+									<td class="text-center" th:text="${event.memo}"></td>
 									<td class="text-center" th:if="${event.publicity == true}"
 										th:text="공개"></td>
 									<td class="text-center" th:unless="${event.publicity == true}"

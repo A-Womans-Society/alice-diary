@@ -61,6 +61,7 @@ public class SearchController {
 		}
 		model.addAttribute("resultEvents", resultDto);
 		model.addAttribute("dto", new SearchEventFormDto());
+		model.addAttribute("member", member);
 		return "alice/searchEvent";
 	}
 
@@ -118,7 +119,7 @@ public class SearchController {
 				SearchEventsResultDto tmp = new SearchEventsResultDto();
 				tmp.setContent(c.getContent());
 				tmp.setStartDate(c.getStartDate());
-				tmp.setEndDate(c.getEndDate());
+				tmp.setEndDate(c.getEndDate().minusDays(1));
 				tmp.setLocation(c.getLocation());
 				tmp.setMemo(c.getMemo());
 				tmp.setPublicity(c.getPublicity());
@@ -135,6 +136,7 @@ public class SearchController {
 		}
 		model.addAttribute("resultEvents", resultDto);
 		model.addAttribute("dto", dto);
+		model.addAttribute("member", m);
 		return "alice/searchEvent";
 	}
 }

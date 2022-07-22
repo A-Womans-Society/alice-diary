@@ -16,7 +16,7 @@ function regSuccess() {
 			alert("성별을 선택해주세요.");
 			return false;
 		}else{
-		alert("가입을 축하합니다!");
+		alert("이메일에서 회원 가입 인증을 진행해주세요.");
 		return true;
 	}
 }

@@ -71,6 +71,7 @@ public class FriendsController {
 			friendship.add(dto);
 		}
 		model.addAttribute("friendList", friendship);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 		return "friends/friendslist";
 	}
 
@@ -86,8 +87,7 @@ public class FriendsController {
 			Friend fg = friendService.groupNum(adderNum, f.getNum());
 			String groupName = friendsGroupService.getGroupName(fg.getGroupNum());
 			log.info("그룹이름:" + groupName);
-			FriendshipDto dto = new FriendshipDto(sf.getNum(), sf.getId(),
-					sf.getName(), sf.getMobile(), sf.getBirth(),
+			FriendshipDto dto = new FriendshipDto(sf.getNum(), sf.getId(), sf.getName(), sf.getMobile(), sf.getBirth(),
 					sf.getGender(), sf.getEmail(), groupName);
 			searchFriendList.add(dto);
 		}
