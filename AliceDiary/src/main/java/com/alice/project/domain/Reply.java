@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+
+import com.sun.istack.NotNull;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,11 +38,24 @@ public class Reply {
 	@GeneratedValue
 	@Column(name = "reply_num")
 	private Long num; // 댓글 번호
+	
 	private Long parentRepNum; // 부모댓글 번호
+	
+	@NotNull
 	private String content; // 댓글 내용
+    
+	@NotNull
 	private LocalDateTime repDate; // 댓글작성일자
+    
+	@NotNull
 	private Long heart = 0L; // 공감 수 (default=0)
+	
+	@NotNull
 	private Boolean edit; // 수정여부 (False, True) SQL문 : CHAR(1) Check(edit IN('0', '1')
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private ReplyStatus status; 
 	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_num")
@@ -53,9 +70,9 @@ public class Reply {
 		this.repDate = LocalDateTime.now();
 	}
 
-	//댓글쓰기
+	//부모댓글쓰기
 	@Builder
-	public Reply(String content, LocalDateTime repDate, Boolean edit, Post post, Member member) {
+	public Reply(String content, LocalDateTime repDate, Boolean edit, Post post, Member member, ReplyStatus status) {
 		super();
 
 		this.content = content;
@@ -63,11 +80,12 @@ public class Reply {
 		this.edit = edit;
 		this.post = post;
 		this.member = member;
+		this.status = status;
 	}
 	
 	//대댓글쓰기
 	@Builder
-	public Reply(String content, LocalDateTime repDate, Boolean edit, Long parentRepNum, Post post, Member member) {
+	public Reply(String content, LocalDateTime repDate, Boolean edit, Long parentRepNum, Post post, Member member, ReplyStatus status) {
 		super();
 
 		this.content = content;
@@ -76,6 +94,7 @@ public class Reply {
 		this.parentRepNum = parentRepNum;
 		this.post = post;
 		this.member = member;
+		this.status = status;
 	}
 	
 	
@@ -90,9 +109,5 @@ public class Reply {
 		member.getReplies().add(this);
 	}
 	
-	/*
-	 * // 댓글 객체 생성 메서드 public static Reply createReply(Post post, Member member) {
-	 * Reply reply = new Reply(); reply.setPost(post); reply.setMember(member);
-	 * return reply; }
-	 */
+
 }

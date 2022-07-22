@@ -37,13 +37,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PostController {
 
-	@Autowired private PostService postService;
+	@Autowired
+	private PostService postService;
 
-	@Autowired private AttachedFileService attachedFileService;
+	@Autowired
+	private AttachedFileService attachedFileService;
 
-	@Autowired private MemberService memberService;
+	@Autowired
+	private MemberService memberService;
 
-	@Autowired private ReplyService replyService;
+	@Autowired
+	private ReplyService replyService;
 
 	// 글쓰기
 	@GetMapping("/community/post")
@@ -73,7 +77,7 @@ public class PostController {
 	// 게시글 리스트 가져오기
 	@GetMapping("/community/list")
 	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
-			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
 
 		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 
@@ -91,7 +95,20 @@ public class PostController {
 
 		int nowPage = list.getPageable().getPageNumber() + 1;
 		int startPage = Math.max(nowPage - 2, 1);
-		int endPage = Math.min(nowPage + 3, list.getTotalPages());
+		int endPage = 0;
+		if (startPage == 1) {
+			if (list.getTotalPages() < 5) {
+				endPage = list.getTotalPages();
+			} else {
+				endPage = 5;
+			}
+		} else {
+			endPage = Math.min(nowPage + 2, list.getTotalPages());
+		}
+
+		if (endPage == list.getTotalPages() && (endPage - startPage) < 5) {
+			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
+		}
 
 		model.addAttribute("list", list);
 		model.addAttribute("size", size);
@@ -99,6 +116,8 @@ public class PostController {
 		model.addAttribute("nowPage", nowPage);
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("type", postSearchDto.getType());
 
 		log.info("nowPage:" + nowPage);
 		log.info("startPage:" + startPage);
@@ -108,7 +127,7 @@ public class PostController {
 	}
 
 	// 게시글 상세보기
-	@GetMapping("community/get")
+	@GetMapping("/community/get")
 	public String postView(Model model, Long num, Pageable pageable, HttpSession session) {
 
 		log.info("num :" + num);
@@ -131,7 +150,6 @@ public class PostController {
 		return "community/postView";
 	}
 
-	
 	// 게시글 수정하기 첨부파일도 수정
 	@GetMapping("/community/put")
 	public String getUpdate(Long num, Model model, Pageable pageable) {
@@ -160,13 +178,13 @@ public class PostController {
 
 		return "redirect:list";
 	}
-	
+
 	// 게시글 수정에서 파일하나 삭제하기
 	@PostMapping("/community/put/filedelete")
 	@ResponseBody
 	public JSONObject oneFileDelete(Long num, Long postNum) {
 		log.info("!!!!!!! file num : " + num);
-		
+
 		postService.deleteOneFile(num);
 
 		JSONObject jObj = new JSONObject();
@@ -189,7 +207,5 @@ public class PostController {
 
 		return "redirect:list";
 	}
-
-	
 
 }
