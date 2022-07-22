@@ -14,25 +14,25 @@ import com.alice.project.domain.Reply;
 @Transactional(readOnly = true)
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-   List<Reply> findByPostNum(Long num);
+	List<Reply> findByPostNum(Long num);
 
-   @Modifying
-   @Transactional
-   @Query(value = "delete from Reply where post_num = :num", nativeQuery = true)
-   Integer deletePostwithReply(Long num);
+	@Modifying
+	@Transactional
+	@Query(value = "delete from Reply where post_num = :num", nativeQuery = true)
+	Integer deletePostwithReply(Long num);
 
-   @Query(value = "SELECT * FROM Reply WHERE post_num = :num AND parent_rep_num IS NULL ORDER BY rep_date ASC", nativeQuery = true)
-   List<Reply> findParentReplysByNum(Long num);
+	@Query(value = "SELECT * FROM Reply WHERE post_num = :num AND parent_rep_num IS NULL ORDER BY rep_date ASC", nativeQuery = true)
+	List<Reply> findParentReplysByNum(Long num);
 
-   @Query(value = "SELECT * FROM Reply WHERE parent_rep_num = :num ORDER BY rep_date DESC", nativeQuery = true)
-   List<Reply> findChildByParentNum(Long num);
+	@Query(value = "SELECT * FROM Reply WHERE parent_rep_num = :num ORDER BY rep_date DESC", nativeQuery = true)
+	List<Reply> findChildByParentNum(Long num);
 
-   Reply findByNum(Long num);
-   
-   @Modifying
-   @Transactional
-   @Query(value = "UPDATE REPLY set status = 'DEAD' WHERE reply_num = :num", nativeQuery = true)
-   Integer deleteParentHaveChild(Long num);
-   
-   
+	Reply findByNum(Long num);
+	
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE REPLY set status = 'DEAD' WHERE reply_num = :num", nativeQuery = true)
+	Integer deleteParentHaveChild(Long num);
+	
+	
 }

@@ -16,15 +16,16 @@ import com.alice.project.service.AttachedFileService;
 @Controller
 public class AttachedFileController {
 
-   @Autowired
-   private AttachedFileService attachedFileService;
+	@Autowired
+	private AttachedFileService attachedFileService;
 
-   // 파일 다운로드하기
-   @GetMapping("/community/download/{num}")
-   public ResponseEntity<UrlResource> fileDownload(@PathVariable("num") Long num)
-         throws MalformedURLException, UnsupportedEncodingException {
+	// 파일 다운로드하기
+	@GetMapping("/community/download/{num}")
+	public ResponseEntity<UrlResource> fileDownload(@PathVariable("num") Long num)
+			throws MalformedURLException, UnsupportedEncodingException {
 
-      return attachedFileService.postFileDownload(num);
-   }
+		return attachedFileService.postFileDownload(num);
+	}
 
 }
+

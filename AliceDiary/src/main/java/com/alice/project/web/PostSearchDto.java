@@ -8,6 +8,11 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PostSearchDto {
+	
+	private String type;
+	
+	private String keyword;
+
 
 	private String type;
 

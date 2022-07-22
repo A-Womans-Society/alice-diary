@@ -15,9 +15,10 @@ import lombok.ToString;
 @ToString
 public class ReplyDto {
 
-   private Long num; //댓글번호
+	private Long num; //댓글번호
 
-   private Long parentRepNum;
+	private Long parentRepNum;
+
 
    private String content;
 
@@ -25,7 +26,7 @@ public class ReplyDto {
 
    private Boolean edit;
 
-   private Long heart;
+	private Long heart;
 
    private String memberId;
 
@@ -33,22 +34,22 @@ public class ReplyDto {
 
    private Long postNum;
 
-   private ReplyStatus status;
+	private ReplyStatus status;
 
-   public ReplyDto(String content, String memberId, Long postNum) {
-      this.content = content;
-      this.memberId = memberId;
-      this.postNum = postNum;
-   }
+	public ReplyDto(String content, String memberId, Long postNum) {
+		this.content = content;
+		this.memberId = memberId;
+		this.postNum = postNum;
+	}
 
-   public ReplyDto(String content, LocalDateTime repDate, Boolean edit, String memberId, Long heart, Long postNum) {
-      super();
-      this.content = content;
-      this.repDate = repDate;
-      this.edit = edit;
-      this.memberId = memberId;
-      this.postNum = postNum;
-      this.heart = heart;
-   }
+	public ReplyDto(String content, LocalDateTime repDate, Boolean edit, String memberId, Long heart, Long postNum) {
+		super();
+		this.content = content;
+		this.repDate = repDate;
+		this.edit = edit;
+		this.memberId = memberId;
+		this.postNum = postNum;
+		this.heart = heart;
+	}
 
 }

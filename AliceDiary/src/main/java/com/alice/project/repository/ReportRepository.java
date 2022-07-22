@@ -7,6 +7,6 @@ import com.alice.project.domain.Report;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long>{
-   
-   
+	
+	
 }

@@ -8,10 +8,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -31,7 +33,9 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "num")
 public class Community {
 	
-	@Id @GeneratedValue
+	@Id 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COM_SEQ_GENERATOR")
+	@SequenceGenerator(name = "COM_SEQ_GENERATOR", sequenceName = "SEQ_COMMUNITY_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name="community_num")
 	private Long num; // 커뮤니티 번호
 	private String name; // 커뮤니티 이름

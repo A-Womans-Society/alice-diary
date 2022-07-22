@@ -27,7 +27,7 @@
 
 		<div id="fileBox">
 			<p th:each="file : ${files}" th:if="${file.originName != null}">
-				첨부파일: <a id="filewow" th:href="|community/download/${file.num}|"
+				첨부파일: <a id="filewow" th:href="|./download/${file.num}|"
 					th:text="${file.originName}"></a>
 				<button type="button" id="delete_file"
 					th:onclick="deleteFile([[${file.num}]],[[${updateDto.postNum}]])">파일삭제</button>

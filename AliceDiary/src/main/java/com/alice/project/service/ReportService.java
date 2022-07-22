@@ -11,19 +11,19 @@ import com.alice.project.repository.ReportRepository;
 @Transactional(readOnly = true)
 public class ReportService {
 
-   @Autowired
-   private ReportRepository reportRepository;
+	@Autowired
+	private ReportRepository reportRepository;
 
-   // 게시글 신고하기
-   @Transactional
-   public Report postReport(Report report) {
-      return reportRepository.save(report);
-   }
+	// 게시글 신고하기
+	@Transactional
+	public Report postReport(Report report) {
+		return reportRepository.save(report);
+	}
 
-   // 댓글 신고하기
-   @Transactional
-   public Report replyReport(Report report) {
-      return reportRepository.save(report);
-   }
+	// 댓글 신고하기
+	@Transactional
+	public Report replyReport(Report report) {
+		return reportRepository.save(report);
+	}
 
 }

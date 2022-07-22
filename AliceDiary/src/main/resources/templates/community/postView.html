@@ -6,6 +6,8 @@
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/postView.js}"></script>
+	<!-- 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+ -->
 </th:block>
 
 <div layout:fragment="content">
@@ -13,12 +15,11 @@
 	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
 		<div class='row ml-5 mr-5' style="height: 80%;">
 			<div class="col-6 h-100 border">
-
 				<div class="h-25 d-flex justify-content-center"
 					style="flex-direction: column;">
 					<h3 th:text="${postView.title}"></h3>
 					<div class="d-flex justify-content-between">
-						작성자 넣는 자리 <span
+						<span th:text="${postView.member.id}></span><span
 							th:text="${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span>
 						<span th:if="${postView.updateDate != null}"
 							style="color: grey; font-size: 15px;"
@@ -31,48 +32,177 @@
 					<div th:text="${postView.content}"></div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
-							<td>첨부파일: <a th:href="|/community/download/${file.num}|"
-								th:text="${file.originName}"></a>
+							<td>첨부파일: <a th:href="|./download/${file.num}|"
+								th:text="${file.originName}"></a></td>
 						</div>
 					</div>
 				</div>
-
-				<div class="text-right">
-					<input type="button" value="신고" th:href="@{/community/list}"
-						class="btn"> <input type="button" value="수정"
+<div class="text-right">
+					<input type="button"
+			th:if="${#authentication.name} != ${postView.member.id}"
+			th:onclick="openModalPost([[${postView.num}]],[[${#authentication.name}]])"
+			th:value="신고"
+						class="btn"> 
+            
+            <input type="button" value="수정"
 						class="btn">
 					<button type="button" id="delete_confirm"
 						th:onclick="deleteConfirm([[${postView.num}]])"
 						class="btn">삭제</button>
 					<input type="button" value="목록" class="btn btn-secondary">
+          	<div>
+		<input type="button"
+			th:if="${#authentication.name} != ${postView.member.id}"
+			th:onclick="openModalPost([[${postView.num}]],[[${#authentication.name}]])"
+			th:value="신고"> <a th:href="@{/community/list}"><input
+			th:href="@{/community/list}" type="button" value="목록"></a>
+	</div>
+
+	<div th:if="${#authentication.name} == ${postView.member.id}">
+		<a th:href="@{/community/put(num=${postView.num})}"> <input
+			type="button" value="수정"></a>
+		<button type="button" id="delete_confirm"
+			th:onclick="deleteConfirm([[${postView.num}]])">삭제</button>
+	</div>
 				</div>
 			</div>
 			<div class='col-6 h-100 border'>
 
+	<div id="replyList">
+		<ul id="replyTable">
+			<th:block th:each="reply : ${replyList}">
+				<li
+					th:id="${reply.parentRepNum} == null ? |parentRepContentTable${reply.num}| : |childRepContentTable${reply.num}| ">
+					<th:block th:if="${reply.status.name() == 'DEAD'}">
+						<span colspan="4">삭제된 댓글입니다.</span>
+					</th:block> <th:block th:unless="${reply.status.name() == 'DEAD'}">
+						<span th:if="${reply.parentRepNum} != null"><img
+							th:src="@{/img/replyreply.png}" width="20" height="20"></span>
+						<span th:text="${reply.memberId}"></span>
+						<span
+							th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
+						<span th:text="${reply.content}"></span>
 
-				<div id="replyList">
-					<table id="replyTable">
-						<tr th:each="reply : ${replyList}">
 
-							<td th:text="${reply.memberId}" />
-							<td
-								th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}" />
-							<td th:text="${reply.content}"></td>
-							<td><button type="button">답글쓰기</button></td>
-						</tr>
-					</table>
-
-					<div class="commentBox">
-						<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
-						<div>
+						<span th:if="${reply.parentRepNum} == null">
 							<button type="button"
-								th:onclick="replySubmit([[${postView.num}]], [[${#authentication.name}]])">등록</button>
-						</div>
+								th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
+						</span>
+						<span><button type="button"
+								th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">삭제</button>
+						</span>
+						<span th:if="${#authentication.name} != ${reply.memberId}">
+							<button type="button"
+								th:onclick="openModalReply([[${reply.num}]],[[${#authentication.name}]])">신고</button>
 
-					</div>
+						</span>
+					</th:block> <!-- <td> 
+						<img th:src="@{/img/heart.jpg}" width="20" height="20" th:onclick="heart([[${reply.num}]])"/>
+						<strong th:text="${reply.heart}" style="color:red;"></strong>
+					</td> -->
+				</li>
 
+				<li th:if="${reply.parentRepNum} == null"
+					th:id="|replyReplyBox${reply.num}|" style="display: none;"><span><input
+						type="text" placeholder="댓글을 입력해주세요"
+						th:id="|replyReplyContent${reply.num}|"></span> <span><button
+							type="button"
+							th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], 
+							replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button></span>
+				</li>
+			</th:block>
+		</ul>
+	</div>
+
+	<div class="commentBox">
+		<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
+		<button type="button"
+			th:onclick="replySubmit([[${postView.num}]],[[${#authentication.name}]])">등록</button>
+	</div>
+
+
+
+	<!-- 게시글 신고 Modal -->
+	<div class="modal" tabindex="-1" role="dialog" id="postReportModal">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="align-items: baseline;">
+					<h1 class="modal-title">신고하기</h1>
+					<span>신고는 취소할 수 없습니다. 정말 신고하시겠습니까?</span>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
 
+				<form th:action="@{/community/reportpost}" method="post">
+					<div class="modal-body">
+						<div>
+							<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
+							표현 <input type="radio" name="reportReasons" id="LEAK"
+								value="LEAK" />개인정보유출 <input type="radio" name="reportReasons"
+								id="SPAM" value="SPAM" />스팸홍보/도배글 <input type="radio"
+								name="reportReasons" id="ETC" value="ETC" />기타
+						</div>
+						<div>
+							<input type="text" id="reportContent"
+								placeholder="신고 내용을 신중히 작성해주세요" size="90">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<input type="hidden" name="TargetNum" th:value="${postView.num}">
+						<button type="button"
+							th:onclick="postReport([[${#authentication.name}]],[[${postView.num}]])">신고하기</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 댓글신고 Modal -->
+	<div class="modal" tabindex="-1" role="dialog" id="replyReportModal">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="align-items: baseline;">
+					<h1 class="modal-title">신고하기</h1>
+					<span>신고는 취소할 수 없습니다. 정말 신고하시겠습니까?</span>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<form th:action="@{/community/reportreply}" method="post">
+					<div class="modal-body">
+						<div>
+							<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
+							표현 <input type="radio" name="reportReasons" id="LEAK"
+								value="LEAK" />개인정보유출 <input type="radio" name="reportReasons"
+								id="SPAM" value="SPAM" />스팸홍보/도배글 <input type="radio"
+								name="reportReasons" id="ETC" value="ETC" />기타
+						</div>
+						<div>
+							<input type="text" id="reportRepContent"
+								placeholder="신고 내용을 신중히 작성해주세요" size="90">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button"
+							th:onclick="replyReport([[${#authentication.name}]])">신고하기</button>
+					</div>
+					<input type="hidden" id="replyTarget">
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+
+			
 			</div>
 		</div>
 	</div>

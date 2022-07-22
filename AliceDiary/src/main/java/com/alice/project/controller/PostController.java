@@ -37,175 +37,175 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PostController {
 
-   @Autowired
-   private PostService postService;
+@Autowired
+	private PostService postService;
 
-   @Autowired
-   private AttachedFileService attachedFileService;
+	@Autowired
+	private AttachedFileService attachedFileService;
 
-   @Autowired
-   private MemberService memberService;
+	@Autowired
+	private MemberService memberService;
 
-   @Autowired
-   private ReplyService replyService;
+	@Autowired
+	private ReplyService replyService;
 
-   // 글쓰기
-   @GetMapping("/community/post")
-   public String writeform(Model model) {
-      log.info("get");
-      model.addAttribute("writeFormDto", new WriteFormDto());
-      return "community/writeForm";
-   }
+	// 글쓰기
+	@GetMapping("/community/post")
+	public String writeform(Model model) {
+		log.info("get");
+		model.addAttribute("writeFormDto", new WriteFormDto());
+		return "community/writeForm";
+	}
 
-   // 글쓰기
-   @PostMapping("/community/post")
-   public String writeSubmit(WriteFormDto writeFormDto, HttpSession session,
-         @AuthenticationPrincipal UserDetails user) {
-      log.info("controller 실행");
+	// 글쓰기
+	@PostMapping("/community/post")
+	public String writeSubmit(WriteFormDto writeFormDto, HttpSession session,
+			@AuthenticationPrincipal UserDetails user) {
+		log.info("controller 실행");
 
-      Member member = memberService.findById(user.getUsername());
+		Member member = memberService.findById(user.getUsername());
 
-      Post post = Post.createPost(writeFormDto, member);
-      postService.write(post);
+		Post post = Post.createPost(writeFormDto, member);
+		postService.write(post);
 
-      attachedFileService.postFileUpload(writeFormDto.getOriginName(), postService.write(post), session,
-            user.getUsername());
+		attachedFileService.postFileUpload(writeFormDto.getOriginName(), postService.write(post), session,
+				user.getUsername());
 
-      return "redirect:list";
-   }
+		return "redirect:list";
+	}
 
-   // 게시글 리스트 가져오기
-   @GetMapping("/community/list")
-   public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
-         @PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
+	// 게시글 리스트 가져오기
+	@GetMapping("/community/list")
+	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
+			@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable) {
 
-      log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
+		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 
-      String keyword = postSearchDto.getKeyword();
-      Long size = 0L;
-      Page<Post> list = null;
+		String keyword = postSearchDto.getKeyword();
+		Long size = 0L;
+		Page<Post> list = null;
 
-      if (keyword == null) {
-         list = postService.list(pageable);
-         size = list.getTotalElements();
-      } else {
-         list = postService.searchList(postSearchDto, pageable);
-         size = list.getTotalElements();
-      }
+		if (keyword == null) {
+			list = postService.list(pageable);
+			size = list.getTotalElements();
+		} else {
+			list = postService.searchList(postSearchDto, pageable);
+			size = list.getTotalElements();
+		}
 
-      int nowPage = list.getPageable().getPageNumber() + 1;
-      int startPage = Math.max(nowPage - 2, 1);
-      int endPage = 0;
-      if (startPage == 1) {
-         if (list.getTotalPages() < 5) {
-            endPage = list.getTotalPages();
-         } else {
-            endPage = 5;
-         }
-      } else {
-         endPage = Math.min(nowPage + 2, list.getTotalPages());
-      }
+		int nowPage = list.getPageable().getPageNumber() + 1;
+		int startPage = Math.max(nowPage - 2, 1);
+		int endPage = 0;
+		if (startPage == 1) {
+			if (list.getTotalPages() < 5) {
+				endPage = list.getTotalPages();
+			} else {
+				endPage = 5;
+			}
+		} else {
+			endPage = Math.min(nowPage + 2, list.getTotalPages());
+		}
 
-      if (endPage == list.getTotalPages() && (endPage - startPage) < 5) {
-         startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
-      }
+		if (endPage == list.getTotalPages() && (endPage - startPage) < 5) {
+			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
+		}
 
-      model.addAttribute("list", list);
-      model.addAttribute("size", size);
-      log.info("size : " + size);
-      model.addAttribute("nowPage", nowPage);
-      model.addAttribute("startPage", startPage);
-      model.addAttribute("endPage", endPage);
-      model.addAttribute("keyword", keyword);
-      model.addAttribute("type", postSearchDto.getType());
+		model.addAttribute("list", list);
+		model.addAttribute("size", size);
+		log.info("size : " + size);
+		model.addAttribute("nowPage", nowPage);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("type", postSearchDto.getType());
 
-      log.info("nowPage:" + nowPage);
-      log.info("startPage:" + startPage);
-      log.info("endPage:" + endPage);
+		log.info("nowPage:" + nowPage);
+		log.info("startPage:" + startPage);
+		log.info("endPage:" + endPage);
 
-      return "community/list";
-   }
+		return "community/list";
+	}
 
-   // 게시글 상세보기
-   @GetMapping("/community/get")
-   public String postView(Model model, Long num, Pageable pageable, HttpSession session) {
+	// 게시글 상세보기
+	@GetMapping("/community/get")
+	public String postView(Model model, Long num, Pageable pageable, HttpSession session) {
 
-      log.info("num :" + num);
-      Post viewPost = postService.postView(num);
+		log.info("num :" + num);
+		Post viewPost = postService.postView(num);
 
-      postService.viewCntUp(num);
+		postService.viewCntUp(num);
 
-      model.addAttribute("postView", viewPost);
+		model.addAttribute("postView", viewPost);
 
-      List<AttachedFile> files = attachedFileService.fileView(viewPost, pageable);
-      model.addAttribute("files", files);
+		List<AttachedFile> files = attachedFileService.fileView(viewPost, pageable);
+		model.addAttribute("files", files);
 
-      List<ReplyDto> replyList = replyService.replyList(num);
+		List<ReplyDto> replyList = replyService.replyList(num);
 
-      for (ReplyDto rdto : replyList) {
-         log.info("리스트 각각 : " + rdto.toString());
-      }
-      model.addAttribute("replyList", replyList);
+		for (ReplyDto rdto : replyList) {
+			log.info("리스트 각각 : " + rdto.toString());
+		}
+		model.addAttribute("replyList", replyList);
 
-      return "community/postView";
-   }
+		return "community/postView";
+	}
 
-   // 게시글 수정하기 첨부파일도 수정
-   @GetMapping("/community/put")
-   public String getUpdate(Long num, Model model, Pageable pageable) {
-      log.info("수정컨트롤러 get");
+	// 게시글 수정하기 첨부파일도 수정
+	@GetMapping("/community/put")
+	public String getUpdate(Long num, Model model, Pageable pageable) {
+		log.info("수정컨트롤러 get");
 
-      Post getUpdate = postService.postView(num);
+		Post getUpdate = postService.postView(num);
 
-      WriteFormDto updateDto = new WriteFormDto(num, getUpdate.getTitle(), getUpdate.getContent());
-      List<AttachedFile> files = attachedFileService.fileView(getUpdate, pageable);
+		WriteFormDto updateDto = new WriteFormDto(num, getUpdate.getTitle(), getUpdate.getContent());
+		List<AttachedFile> files = attachedFileService.fileView(getUpdate, pageable);
 
-      model.addAttribute("files", files);
-      model.addAttribute("updateDto", updateDto);
+		model.addAttribute("files", files);
+		model.addAttribute("updateDto", updateDto);
 
-      return "community/updateForm";
-   }
+		return "community/updateForm";
+	}
 
-   // 게시글 수정하기 첨부파일도 수정
-   @PostMapping("/community/put")
-   public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
+	// 게시글 수정하기 첨부파일도 수정
+	@PostMapping("/community/put")
+	public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
-      postService.updatePost(updateDto.getPostNum(), updateDto);
+		postService.updatePost(updateDto.getPostNum(), updateDto);
 
-      Post updatedPost = postService.findOne(updateDto.getPostNum());
+		Post updatedPost = postService.findOne(updateDto.getPostNum());
 
-      attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
+		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
 
-      return "redirect:list";
-   }
+		return "redirect:list";
+	}
 
-   // 게시글 수정에서 파일하나 삭제하기
-   @PostMapping("/community/put/filedelete")
-   @ResponseBody
-   public JSONObject oneFileDelete(Long num, Long postNum) {
-      log.info("!!!!!!! file num : " + num);
+	// 게시글 수정에서 파일하나 삭제하기
+	@PostMapping("/community/put/filedelete")
+	@ResponseBody
+	public JSONObject oneFileDelete(Long num, Long postNum) {
+		log.info("!!!!!!! file num : " + num);
 
-      postService.deleteOneFile(num);
+		postService.deleteOneFile(num);
 
-      JSONObject jObj = new JSONObject();
+		JSONObject jObj = new JSONObject();
 
-      List<AttachedFile> files = attachedFileService.newFileView(postNum);
+		List<AttachedFile> files = attachedFileService.newFileView(postNum);
 
-      jObj.put("files", files);
+		jObj.put("files", files);
 
-      return jObj;
-   }
+		return jObj;
+	}
 
-   // 게시글 삭제하기
-   @RequestMapping("/community/delete")
-   public String postDelete(Long num) {
-      log.info("컨트롤러 실행 num:" + num);
+	// 게시글 삭제하기
+	@RequestMapping("/community/delete")
+	public String postDelete(Long num) {
+		log.info("컨트롤러 실행 num:" + num);
 
-      postService.deletePostwithReply(num);
-      postService.deletePostwithFile(num);
-      postService.deletePost(num);
+		postService.deletePostwithReply(num);
+		postService.deletePostwithFile(num);
+		postService.deletePost(num);
 
-      return "redirect:list";
-   }
+		return "redirect:list";
+	}
 
 }

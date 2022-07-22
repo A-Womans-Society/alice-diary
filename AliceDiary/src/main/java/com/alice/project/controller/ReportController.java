@@ -30,7 +30,6 @@ public class ReportController {
 	@PostMapping("community/reportpost")
 	@ResponseBody
 	public boolean reportPost(String userId, Long postNum, String reportReason, String content) {
-
 		log.info("!!!!!!!!!!!!!!!!!!!!userId  :" + userId);
 		log.info("!!!!!!!!!!!!!!!!!!!!postNum  :" + postNum);
 		log.info("!!!!!!!!!!!!!!!!!!!!repostReason  :" + reportReason);
@@ -45,9 +44,8 @@ public class ReportController {
 	// 댓글신고하기
 	@PostMapping("community/reportreply")
 	@ResponseBody
-	public boolean reportReply(@ModelAttribute ReportDto reportDto, String userId, String reportReason,
-			String content) {
-
+	public boolean reportReply(@ModelAttribute ReportDto reportDto, String userId, String reportReason, String content) {
+	
 		log.info("!!!!!!!!!!!!!!!!!!!!userId  :" + userId);
 		log.info("!!!!!!!!!!!!!!!!!!!!replyNum  :" + reportDto.getReplyNum());
 		log.info("!!!!!!!!!!!!!!!!!!!!repostReason  :" + reportReason);

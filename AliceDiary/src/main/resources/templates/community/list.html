@@ -13,10 +13,15 @@
 					<div class="d-flex align-items-center"
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
 						<div class="w-100 text-center">
-							<form th:action="@{/community/list}" method="post">
-								<input type="text" name="keyword" placeholder="검색어를 입력해주세요">
-								<button type="submit">검색</button>
-							</form>
+							<form th:action="@{/community/list}" method="get"
+		modelAttribute="postSearchDto">
+		<select name="type">
+			<option value="title">제목</option>
+			<option value="content">내용</option>
+			<option value="writer">작성자</option>
+		</select> <input type="text" name="keyword" placeholder="검색어를 입력해주세요">
+		<button type="submit">검색</button>
+	</form>
 						</div>
 					</div>
 				</div>
@@ -33,73 +38,46 @@
 									<th>조회수</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr th:each="post : ${list}" class="text-center">
-									<td th:text="${post.num}"></td>
-									<td><a th:text="${post.title}"
-										th:href="@{/community/get(num=${post.num})}"></a></td>
-									<td th:text="${#authentication.name}"></td>
-									<td
-										th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
-									<td th:text="${post.viewCnt}"></td>
-								</tr>
-							</tbody>
+							<th:block th:if="${endPage} == 0">
+				<tbody  class="text-center">
+					<tr>
+						<td colspan="5">게시글이 없습니다</td>
+					</tr>
+				</tbody>
+			</th:block>
+			<th:block th:unless="${endPage == 0}" >
+				<tbody  class="text-center">
+					<tr th:each="post, status: ${list}">
+						<td th:text="${size - status.index-(nowPage-1)*list.size}" />
+						<td><a th:text="${post.title}"
+							th:href="@{/community/get(num=${post.num})}"></a></td>
+						<td th:text="${post.member.id}"></td>
+						<td
+							th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
+						<td th:text="${post.viewCnt}"></td>
+					</tr>
+				</tbody>
+			</th:block>
 						</table>
-						<th:block
-							th:each="page : ${#numbers.sequence(startPage, endPage)}">
-							<a th:if="${page != nowPage}"
-								th:href="@{/community/list(page = ${page-1})}" th:text="${page}"></a>
-							<strong th:if="${page == nowPage}" th:text="${page}"
-								style="color: red"></strong>
-						</th:block>
+            
+					<div th:if="${endPage != 0}">
+			<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+				<a th:if="${page != nowPage} and ${type} != null and ${keyword} != null"
+					th:href="@{/community/list(page=${page-1},type=${type},keyword=${keyword})}" th:text="${page}"></a>
+				<a th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
+					th:href="@{/community/list(page=${page-1})}" th:text="${page}"></a>
+				<strong th:if="${page == nowPage}" th:text="${page}"
+					style="color: red"></strong>
+			</th:block>
+		</div>
+		<a th:href="@{/community/post}"><input type="button" value="글쓰기"></a>
+		<a th:if="${postSearchDto.keyword != null}"	th:href="@{/community/list}"><input type="button" value="목록"></a>
 
 
-						<a th:href="@{/community/post}"><input type="button"
-							value="글쓰기"></a>
 
-						<!-- pagination -->
-<!-- 						<nav aria-label="Page navigation" class="paging">
-							<ul class="pagination" th:if="${posts.page.totalPages > 1}"> -->
-								<!-- 				<li class="page-item"
-									th:classappend="${!posts.paging.isPrevEnabled()? 'disabled' : ''}">
-									<a class="page-link"
-									th:href="@{'/?pageNumber=' + ${posts.paging.pageNumber - 1}}"
-									tabindex="-1">Previous</a>
-								</li> -->
-								<nav aria-label="Page navigation example">
-									<ul class="pagination">
+					
 
-										<th:block
-											th:each="page : ${#numbers.sequence(startPage, endPage)}">
-											<li class="page-item"><a class="page-link"
-												th:if="${page != nowPage}"
-												th:href="@{/community/list(page = ${page-1})}"
-												th:text="${page}"></a></li>
-											<strong th:if="${page == nowPage}" th:text="${page}"
-												style="color: red"></strong>
-										</th:block>
-									</ul>
-								</nav>
-
-								<!-- 			<th:block th:each="item : ${posts.paging.getItems()}">
-									<li class="page-item"
-										th:classappend="${item.index == posts.paging.pageNumber? 'active' : ''}"
-										th:if="${item.pageItemType.name() == 'PAGE'}"><a
-										class="page-link" th:href="@{'/?pageNumber=' + ${item.index}}"
-										th:text="${item.index}"></a></li>
-									<li class="page-item disabled"
-										th:if="${item.pageItemType.name() == 'DOTS'}"><a
-										class="page-link" href="#">...</a></li>
-								</th:block>
- -->
-								<!-- 				<li class="page-item"
-									th:classappend="${!posts.paging.isNextEnabled()? 'disabled' : ''}">
-									<a class="page-link"
-									th:href="@{'/?pageNumber=' + ${posts.paging.pageNumber + 1}}">Next</a>
-								</li>
-				 -->
-						<!-- </ul>
-						</nav> -->
+							
 					</div>
 				</div>
 			</div>
