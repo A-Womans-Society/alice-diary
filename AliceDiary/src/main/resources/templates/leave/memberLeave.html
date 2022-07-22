@@ -44,7 +44,7 @@
 				placeholder="현재 비밀번호 입력" required>
 		</div>
 		<input class="btn btn-secondary" name="check" type="submit"
-			th:onclick="return leaveCheck()" value="확인" /> <input
+			th:onclick="return leaveCheck()" value="탈퇴" /> <input
 			class="btn btn-secondary" type="button" th:onclick="leaveCancle()"
 			value="취소" /> <input type="hidden" id="memID" th:value="${member.id}">
 		<input type="hidden" id="memPwd" th:value="${member.password}">

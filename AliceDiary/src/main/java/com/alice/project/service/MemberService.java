@@ -3,7 +3,12 @@ package com.alice.project.service;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,10 +16,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import com.alice.project.config.AppProperties;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
 import com.alice.project.repository.MemberRepository;
+import com.alice.project.web.MemberAccount;
+import com.alice.project.web.UserDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +34,79 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor // final 필드 생성자 생성해줌
 @Slf4j
 public class MemberService implements UserDetailsService { // MemberService가 UserDetailService를 구현
-
+	
 	private final MemberRepository memberRepository;
-	PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	private final EntityManager em;
+	private final AppProperties appProperties;
+	private final TemplateEngine templateEngine;	
+	private final EmailService emailService;
+	private final ModelMapper modelMapper;
 
+	
+	@Transactional
+    public Member processNewMember(UserDto userDto) {
+		log.info("processNewMember 진입");
+    	Member newMember = saveNewMember(userDto);
+    	Member.setProfileImg(newMember);
+    	log.info("newMember.getId = " + newMember.getProfileImg());
+        sendSignUpConfirmEmail(newMember);
+        return newMember;
+    }
+	
+	@Transactional
+    private Member saveNewMember(@Valid UserDto userDto) {
+		log.info("saveNewMember 진입");
+    	userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    	Member member = modelMapper.map(userDto, Member.class);
+        member.generateEmailCheckToken();
+        return memberRepository.save(member);
+    }
+	
+	@Transactional
+    public void completeSignUp(Member member) {
+    	member.completeRegister();
+    	login(member);
+    	Member.changeMemberIn(member);
+    }
+	
+	@Transactional
+    public void login(Member member) {
+    	List<SimpleGrantedAuthority> authorities = MemberAccount.createAuthor();
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new MemberAccount(member, authorities),
+                member.getPassword());
+        
+        log.info("token getName: " +token.getName());
+        log.info("token getAuthorities: " +token.getAuthorities());
+        
+        SecurityContextHolder.getContext().setAuthentication(token);
+    }
+	
+	@Transactional
+    public void sendSignUpConfirmEmail(Member newMember) {
+		log.info("sendSignUpConfirmEmail 진입");
+        Context context = new Context();
+        context.setVariable("link", "/check-email-token?token=" + newMember.getEmailCheckToken() +
+                "&email=" + newMember.getEmail());
+        context.setVariable("id", newMember.getId());
+		log.info("newMember.getId() = " + newMember.getId());
+        context.setVariable("linkName", "이메일 인증하기");
+        context.setVariable("message", "앨리스 다이어리 서비스를 사용하려면 링크를 클릭하세요.");
+        context.setVariable("host", appProperties.getHost()+"/AliceDiary");
+        String message = templateEngine.process("login/simple-link", context);
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(newMember.getEmail())
+                .subject("앨리스 다이어리, 회원 가입 인증")
+                .message(message)
+                .build();
+
+        log.info("to????????? = " + newMember.getEmail());
+        emailService.sendEmail(emailMessage);
+    }
+	
+	
 	@Transactional
 	public Member saveMember(Member member) {
 		return memberRepository.save(member); // insert

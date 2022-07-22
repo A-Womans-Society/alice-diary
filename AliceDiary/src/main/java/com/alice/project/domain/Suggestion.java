@@ -16,6 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.alice.project.web.SuggestionDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class Suggestion {
 		
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="member_num")
+	@JsonBackReference
 	private Member member; // 건의자 객체
 	
 	@PrePersist

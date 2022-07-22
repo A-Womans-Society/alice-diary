@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -44,10 +46,12 @@ public class Reply {
 
   @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_num")
+	@JsonBackReference
 	private Post post; // 댓글 소속 게시물 객체
 
 	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "member_num")
+	@JsonBackReference
 	private Member member; // 댓글 작성 회원 객체
 
 	@PrePersist
