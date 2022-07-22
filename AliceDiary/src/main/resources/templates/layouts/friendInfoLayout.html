@@ -34,9 +34,6 @@
 <link rel="stylesheet" th:href="@{/css/layout/navbar.css}">
 <link rel="stylesheet" th:href="@{/css/layout/sidebar.css}">
 
-<link id="contextPathHolder"
-	th:data-contextPath="${#httpServletRequest.getContextPath()}" />
-
 <th:block layout:fragment="script"></th:block>
 <th:block layout:fragment="css"></th:block>
 </head>
@@ -44,9 +41,9 @@
 	<!-- import header -->
 	<div th:replace="fragments/header::header"></div>
 	<div style="height: 92%;" class="container-fluid">
-		<div class="row h-100">
+		<div class="row">
 			<!-- import sidebar -->
-			<div th:replace="fragments/friendsSidebar::sidebar" class="col-3"></div>
+			<div th:replace="fragments/friendInfoSidebar::sidebar" class="col-3"></div>
 			<!-- import content -->
 			<div layout:fragment="content" class="col-9"></div>
 		</div>

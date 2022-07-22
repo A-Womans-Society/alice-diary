@@ -6,8 +6,8 @@
 <div th:fragment="header" style="height: 8%;">
 	<nav class="navbar navbar-expand-lg navbar-light"
 		style="background: #a979c8; height: 100%;">
-		<a class="navbar-brand text-white" href="/AliceDiary/alice"><h2 class="nav-texts">Alice
-			Diary</h2></a>
+		<a class="navbar-brand text-white" href="/AliceDiary/alice"><h2
+				class="nav-texts">Alice Diary</h2></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarNav" aria-controls="navbarNav"
 			aria-expanded="false" aria-label="Toggle navigation">
@@ -21,26 +21,34 @@
 				<li class="nav-item"><a class="nav-link text-white"
 					href="/AliceDiary/friends"><h5 class="nav-texts">친구 목록</h5></a></li>
 				<li class="nav-item"><a class="nav-link text-white"
-					th:href="'/AliceDiary/messagebox/' + ${#authentication.name}"><h5 class="nav-texts">쪽지함</h5></a></li>
+					th:href="'/AliceDiary/messagebox/' + ${#authentication.name}"><h5
+							class="nav-texts">쪽지함</h5></a></li>
 
 				<li class="nav-item"><a class="nav-link text-white"
 					href="/AliceDiary/community/list"><h5 class="nav-texts">커뮤니티</h5></a></li>
-				<li class="nav-item"><a class="nav-link text-white" href="#"><h5 class="nav-texts">공지사항</h5></a></li>
+				<li class="nav-item"><a class="nav-link text-white" href="#"><h5
+							class="nav-texts">공지사항</h5></a></li>
 			</ul>
-			<div>
-				<th:block sec:authorize="isAuthenticated()">
-					<div align="center">
-						<!-- 					<h2>
-							<span sec:authentication="Principal.username"></span>님 환영합니다!
-						</h2> -->
-						<button
-							th:onclick="|location.href='/AliceDiary/member/@{${#authentication.name}}'|">내
-							프로필</button>
-						<button onclick="location.href='/AliceDiary/logout'">로그아웃</button>
-				
-					</div>
-				</th:block>
-			</div>
+			<ul class="navbar-nav align-items-center">
+				<li class="nav-item" data-toggle="tooltip" data-placement="bottom"
+					title="내 프로필 보기"
+					th:onclick="|location.href='/AliceDiary/member/@{${#authentication.name}}'|">
+
+					<th:block th:if="${member.profileImg.equals('default')}">
+						<img th:src="@{/upload/Alice.png}" alt="user" width="45"
+							class="rounded-circle">
+					</th:block> <th:block th:unless="${member.profileImg.equals('default')}">
+						<img th:src="@{/upload/}+@{${member.profileImg}}" alt="user"
+							width="45" class="rounded-circle">
+					</th:block> 
+						
+
+
+				</li>
+				<li class="nav-item p-0"><h2 class="nav-texts text-white">/</h2></li>
+				<li class="nav-item  p-0"><a class="nav-link text-white"
+					href="/AliceDiary/logout"><h5 class="nav-texts">로그아웃</h5></a></li>
+			</ul>
 		</div>
 	</nav>
 </div>

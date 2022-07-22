@@ -64,5 +64,4 @@ public class MessageDto implements Comparable<MessageDto>{
 	public int compareTo(MessageDto o) {
 		return this.getSendDate().compareTo(o.getSendDate());
 	}
-
 }

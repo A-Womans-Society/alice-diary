@@ -26,17 +26,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "post")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @ToString
 @EqualsAndHashCode(of = "num")
 public class Post {
@@ -50,7 +49,7 @@ public class Post {
 	private LocalDateTime postDate; // 게시물 작성일자
 	private LocalDateTime updateDate; // 게시물 수정일자
 
-	@Column(length = 50000)
+	@Column(length = 4000)
 	private String content; // 게시물 내용
 	private Long viewCnt = 0L; // 게시물 조회수 (default=0)
 
@@ -99,23 +98,9 @@ public class Post {
 	}
 
 	// 게시물 객체 생성 메서드
-	public static Post createPost(WriteFormDto wirteFormDto) {
-		Post post = new Post();
-		/*
-		 * Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
-		 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
-		 * ZonedDateTime .toLocalDate();
-		 * 
-		 * Member member = new Member("test", "12341234", "tester", localDate,
-		 * Gender.FEMALE, "test@test.com", "01012341234", localDate, Status.USER_IN);
-		 */
-		post.setTitle(wirteFormDto.getTitle());
-		post.setPostDate(post.getPostDate());
-		post.setUpdateDate(post.getPostDate());
-		post.setContent(wirteFormDto.getContent());
-		post.setViewCnt(post.getViewCnt());
-		post.setPostType(PostType.OPEN);
-//		post.setMember(member);
+	public static Post createPost(WriteFormDto wirteFormDto, Member member) {
+		Post post = new Post(wirteFormDto.getTitle(), LocalDateTime.now(), wirteFormDto.getContent(), PostType.OPEN,
+				member);
 
 		return post;
 	}
@@ -125,47 +110,14 @@ public class Post {
 		this.viewCnt++;
 	}
 
-	public static Post updatePost(WriteFormDto updateDto) {
-		Post post = new Post();
-		/*
-		 * Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
-		 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
-		 * ZonedDateTime .toLocalDate(); Member member = new Member("test", "12341234",
-		 * "tester", localDate, Gender.FEMALE, "test@test.com", "01012341234",
-		 * localDate, Status.USER_IN);
-		 */
-		post.setTitle(updateDto.getTitle());
-		post.setUpdateDate(post.getUpdateDate());
-		post.setContent(updateDto.getContent());
-
-//		post.setMember(member);
-
-		return post;
-	}
-	/*
-	 * public static Post updatePost(UpdateFormDto updateFormDto) { Post post = new
-	 * Post(); Date date = new Date(); // 2. Date -> LocalDate LocalDate localDate =
-	 * date.toInstant() // Date -> .atZone(ZoneId.systemDefault()) // Instant ->
-	 * ZonedDateTime .toLocalDate(); Member member = new Member("test", "12341234",
-	 * "tester", localDate, Gender.FEMALE, "test@test.com", "01012341234",
-	 * localDate, Status.USER_IN); post.setTitle(updateFormDto.getTitle());
-	 * post.setUpdateDate(post.getUpdateDate());
-	 * post.setContent(updateFormDto.getContent());
-	 * 
-	 * // post.setMember(member);
-	 * 
-	 * return post; }
-	 */
-
-	public Post(String title, LocalDateTime postDate, LocalDateTime updateDate, String content, Long viewCnt,
-			PostType postType, Member member, Community community) {
+	@Builder
+	public Post(String title, LocalDateTime postDate, String content, PostType postType, Member member) {
+		super();
 		this.title = title;
 		this.postDate = postDate;
-		this.updateDate = updateDate;
 		this.content = content;
-		this.viewCnt = viewCnt;
 		this.postType = postType;
-//		this.member = member;
-		this.community = community;
+		this.member = member;
 	}
 }
+

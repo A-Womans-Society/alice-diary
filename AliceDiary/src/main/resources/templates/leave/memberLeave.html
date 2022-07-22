@@ -20,34 +20,50 @@
 
 <div layout:fragment="content">
 
-	<form th:action="@{./leave}" method="post" th:object="${suggestionDto}">
-		<div>
-			<b><span th:text="${member.name}"></span></b>님! 지금까지 저희 사이트를 이용해 주셔서
-			감사합니다.
-		</div>
-		<div>부족한 점이 있었다면 너그러운 양해 바라며, 개선해야 할 점이 있다면 남겨주세요!</div>
-		<div>회원님의 의견을 적극 반영하여 이용에 불편이 없도록 개선하겠습니다.</div>
-		<div>
-			<b>※ 사이트 이용 건의</b>
-		</div>
-		<div>
-			<div>
-				<span style="color: #aaa;" id="counter">(0자 / 최대 500자)</span>
-			</div>
-			<textarea th:field="*{content}" style="width: 500px; height: 100px;"
-				class="DOC_TEXT" name="DOC_TEXT" placeholder=" 500자 이내로 작성해주세요."
-				th:onkeyup="count()"></textarea>
-		</div>
+	<div class="container-fluid h-100">
+		<div class="row h-100">
+			<div class="col-12 h-100">
+				<h2 class="text-center m-0 pt-5" style="height: 15%;">회원 탈퇴</h2>
 
-		<div>
-			비밀번호 입력 : <input type="password" th:field="*{password}"
-				placeholder="현재 비밀번호 입력" required>
+				<div class="d-flex justify-content-center" style="height: 80%;">
+					<form th:action="@{./leave}" method="post"
+						th:object="${suggestionDto}" class="w-75">
+						<div id="leaveContent" class='text-center pt-5'>
+							<Strong><span th:text="${member.name}"></span></Strong>님! 지금까지 저희
+							사이트를 이용해 주셔서 감사합니다.
+							<div>부족한 점이 있었다면 너그러운 양해 바라며, 개선해야 할 점이 있다면 남겨주세요!</div>
+							<div>회원님의 의견을 적극 반영하여 이용에 불편이 없도록 개선하겠습니다.</div>
+						</div>
+						<div class="d-flex justify-content-around pt-5">
+							<b>※ 사이트 이용 건의</b><span style="color: #aaa;" id="counter">(0자
+								/ 최대 500자)</span>
+						</div>
+						<div class="text-center">
+							<textarea th:field="*{content}" style="resize: none;" rows="6"
+								class="DOC_TEXT w-75" name="DOC_TEXT"
+								placeholder=" 500자 이내로 작성해주세요." th:onkeyup="count()"></textarea>
+						</div>
+						<div class="d-flex justify-content-center">
+							<div class='d-flex align-items-center' style="width: 60%;">
+								<span class="w-25">비밀번호 입력</span>
+								<div class="w-75">
+									<input class="form-control " type="password"
+										th:field="*{password}" placeholder="현재 비밀번호 입력" required>
+								</div>
+							</div>
+						</div>
+						<div class='text-center pt-3'>
+							<input class="btn btn-secondary" name="check" type="submit"
+								th:onclick="return leaveCheck()" value="확인" /> <input
+								class="btn btn-secondary" type="button"
+								th:onclick="leaveCancle()" value="취소" />
+						</div>
+						<input type="hidden" id="memID" th:value="${member.id}"> <input
+							type="hidden" id="memPwd" th:value="${member.password}">
+					</form>
+				</div>
+			</div>
 		</div>
-		<input class="btn btn-secondary" name="check" type="submit"
-			th:onclick="return leaveCheck()" value="탈퇴" /> <input
-			class="btn btn-secondary" type="button" th:onclick="leaveCancle()"
-			value="취소" /> <input type="hidden" id="memID" th:value="${member.id}">
-		<input type="hidden" id="memPwd" th:value="${member.password}">
-	</form>
+	</div>
 </div>
 </html>
