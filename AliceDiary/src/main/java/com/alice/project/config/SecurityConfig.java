@@ -43,15 +43,16 @@ public class SecurityConfig {
 				.failureHandler(customFailureHandler)
 				
 			.and()
-			.logout().deleteCookies("JSESSIONID")
-					 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-					 .logoutSuccessUrl("/");
+			.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					 .logoutSuccessUrl("/")
+					 .deleteCookies("JSESSIONID");
+					 
 
 		http.authorizeRequests()
-				.mvcMatchers("/css/**", "/js/**", "/img/**").permitAll()
+				.mvcMatchers("/css/**", "/font/**", "/js/**", "/img/**").permitAll()
 				.mvcMatchers("/", "/login/**").permitAll()
-				.mvcMatchers("/alice/**", "/messagebox/**", "/member/**", "/friends/**", "/community/**").hasAuthority("ROLE_USER_IN")
-				.mvcMatchers("/admin/**").hasAuthority("ROLE_ADMIN");
+				.mvcMatchers("/admin/**").hasRole("ADMIN")
+				.anyRequest().hasAnyRole("ADMIN","USER_IN");
 		
 		
 //        http.exceptionHandling()
