@@ -16,10 +16,11 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.alice.project.web.ReportDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -29,6 +30,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@EqualsAndHashCode(of = "num")
 public class Report {
 
 	@Id
@@ -36,7 +38,6 @@ public class Report {
 	@SequenceGenerator(name = "REPORT_SEQ_GENERATOR", sequenceName = "SEQ_REPORT_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "report_num")
 	private Long num; // 신고 번호
-
 	private Long targetNum; // 신고대상물 번호
 
 	@Enumerated(EnumType.STRING)
@@ -50,13 +51,40 @@ public class Report {
 
 	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "mem_num")
-
+	@JsonBackReference
 	private Member member; // 신고회원 객체
+
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "post_num")
+	@JsonBackReference
+	private Post post; // 게시물 객체
+
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "reply_num")
+	@JsonBackReference
+	private Reply reply; // 댓글 객체
 
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {
 		this.member = member;
 		member.getReports().add(this);
+	}
+
+	public void setPost(Post post) {
+		this.post = post;
+		post.getReports().add(this);
+	}
+
+	public void setReply(Reply reply) {
+		this.reply = reply;
+		reply.getReports().add(this);
+	}
+
+	// 신고 객체 생성 메서드
+	public static Report createReport(Member member) {
+		Report report = new Report();
+		report.setMember(member);
+		return report;
 	}
 
 	@PrePersist
@@ -92,5 +120,4 @@ public class Report {
 		return report;
 	}
 
-	
 }

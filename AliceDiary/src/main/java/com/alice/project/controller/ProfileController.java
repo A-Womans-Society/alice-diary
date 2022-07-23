@@ -2,8 +2,6 @@ package com.alice.project.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alice.project.domain.Member;
@@ -123,7 +120,7 @@ public class ProfileController {
 			log.info("현재 비밀번호 에러");
 			model.addAttribute("msg", "현재 비밀번호가 일치하지 않습니다. 비밀번호를 다시 한번 확인해주세요.");
 			re.addAttribute("msg", "현재 비밀번호가 일치하지 않습니다. 비밀번호를 다시 한번 확인해주세요.");
-			
+
 			return "redirect:/member/" + id + "/editPwd";
 		} else {
 			UserDto uDto = new UserDto(member, userDto.getNewPwd());

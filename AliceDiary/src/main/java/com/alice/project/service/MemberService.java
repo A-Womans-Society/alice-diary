@@ -1,11 +1,15 @@
 package com.alice.project.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -174,6 +178,12 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		return memberRepository.findAll();
 	}
 
+	   /* 회원 전체 조회 */
+    public Page<Member> getMemberList(Pageable pageable) {
+       return memberRepository.findAll(pageable);
+    }
+
+    
 	/* 개별 회원 조회 */
 	// 값을 가져오는 메서드에서는 기본 읽기전용옵션 적용됨
 	public Member findOne(Long memberNum) {
@@ -213,4 +223,43 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findByName(String name){
 		return memberRepository.findByName(name);
 	}
+	
+    /* 회원 검색 기능 */    
+   public Page<Member> searchMember(String type, String keyword, Pageable pageable) {        
+//      List<Sort.Order> sorts = new ArrayList<>();
+//        sorts.add(Sort.Order.desc("num"));
+//        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+      
+      Page<Member> memberList = null;
+      if (type.equals("num")) {
+         memberList = memberRepository.searchByNum(Long.parseLong(keyword), pageable);        
+      } else if (type.equals("id")) {
+         memberList = memberRepository.searchById(keyword, pageable);        
+      } else if (type.equals("name")) {
+         memberList = memberRepository.findByNameContaining(keyword, pageable);        
+      } else if (type.equals("mobile")) {
+         memberList = memberRepository.findByMobileContaining(keyword, pageable);        
+      } else if (type.equals("email")) {
+         memberList = memberRepository.findByEmailContaining(keyword, pageable);        
+      } else if (type.equals("reportCnt")) {
+         memberList = memberRepository.findByReportCnt(Long.parseLong(keyword), pageable);        
+      }
+      return memberList;    
+   }
+   
+   public Page<Member> searchMemberByStatus(String keyword, Pageable pageable) {        
+      Page<Member> memberList = memberRepository.findAll(pageable);  
+      List<Member> list = new ArrayList<>();
+      for (Member m : memberList) {
+         if (m.getStatus().toString().contains(keyword)) {
+            list.add(m);   
+         }
+      }
+      final int start = (int)pageable.getOffset();
+      final int end = Math.min((start + pageable.getPageSize()), list.size());
+      memberList = new PageImpl<>(list.subList(start, end), pageable, list.size());
+      return memberList;    
+   }
+
+   
 }

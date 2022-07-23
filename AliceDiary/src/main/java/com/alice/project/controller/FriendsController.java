@@ -64,8 +64,7 @@ public class FriendsController {
 		for (Friend f : friendList) {
 			Member m = memberService.findByNum(f.getAddeeNum());
 			String groupName = friendsGroupService.getGroupName(f.getGroupNum());
-			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(),
-					m.getMobile(), m.getBirth(),
+			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(), m.getMobile(), m.getBirth(),
 					m.getGender(), m.getEmail(), groupName);
 
 			friendship.add(dto);
