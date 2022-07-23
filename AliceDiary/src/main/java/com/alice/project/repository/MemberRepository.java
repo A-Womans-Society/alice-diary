@@ -2,12 +2,15 @@ package com.alice.project.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Status;
 
 @Repository
 public interface MemberRepository
@@ -35,4 +38,24 @@ public interface MemberRepository
 	List<Member> findByIdOrName(Long adderNum, String friends);
 
 	Member findByName(String name);
+
+	@Query(value = "select * from Member where ID like '%'||:id||'%'", nativeQuery = true)
+	Member findMemberById(String id);
+	
+	@Query("SELECT m FROM Member AS m WHERE id LIKE '%'||:keyword||'%'")
+	Page<Member> searchById(String keyword, Pageable pageable);
+	
+	@Query("SELECT m FROM Member AS m WHERE num LIKE '%'||:keyword||'%'")
+	Page<Member> searchByNum(Long keyword, Pageable pageable);
+	
+	Page<Member> findByNameContaining(String keyword, Pageable pageable);
+
+	Page<Member> findByMobileContaining(String keyword, Pageable pageable);
+
+	Page<Member> findByEmailContaining(String keyword, Pageable pageable);
+
+	Page<Member> findByReportCnt(Long keyword, Pageable pageable);
+
+	Page<Member> findByStatus(Status status, Pageable pageable);
+
 }

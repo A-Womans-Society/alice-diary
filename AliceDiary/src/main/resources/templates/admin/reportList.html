@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/adminLayout}">
+
+<th:block layout:fragment="css">
+</th:block>
+
+<div layout:fragment="content">
+
+	<div th:align="center">
+		<h1>신고 목록</h1>
+		<h3>회원들의 게시물과 댓글에 대한 신고를 확인할 수 있습니다.</h3>	
+	</div>
+	
+	<!--/* 검색 영역 */-->
+	<div class="row">
+		<form name="searchForm" id="searchForm" modelAttribute="searchDto" th:method="get" >
+			<select id="type" name="type" class="col-3">
+				<option value="">카테고리 선택</option>
+				<option value="reporterId">신고자</option>
+				<option value="targetId">신고대상자</option>
+				<option value="reportReason">신고사유</option>
+				<option value="content">신고내용</option>
+				<option value="reportReason">신고종류</option>
+			</select> 
+			<input type="text" id="keyword" name="keyword" class="col-5" placeholder="카테고리 선택 후 검색해주세요." />
+			<button type="submit" class="btn btn-primary" id="btn_search">검색</button>
+		</form>
+	</div>
+
+	<!--/* 게시글 영역 */-->
+	<div class="container">
+		<div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>신고자</th>
+						<th>신고대상자</th>
+						<th>신고일자</th>
+						<th>신고사유</th>
+						<th>신고내용</th>
+						<th>신고종류</th>
+						<th>해당 게시물/댓글</th>
+					</tr>
+				</thead>
+				<th:block th:if="${endPage} == 0">
+					<tbody>
+						<tr>
+							<td colspan="5">신고 목록이 비었습니다!</td>
+						</tr>
+					</tbody>
+				</th:block>
+				<!--/* 게시글 리스트 Rendering 영역 */-->
+				<th:block th:unless="${endPage == 0}">
+					<tbody align="center">
+						<tr th:each="report, status: ${reports}">
+							<td th:text="${size - status.index-(nowPage-1)*reports.size}"></td>
+							<td><a th:href="@{'/admin/member/'+${report.member.id}}"> <span
+									th:text="${report.member.id}"></span>
+							</a></td>	
+							<td th:if="${#strings.equals(report.reportType, 'REPLY')}">
+								<a th:href="@{'/admin/member/'+${report.reply.member.id}}"> 
+									<span th:text="${report.reply.member.id}"></span>
+								</a>
+							</td>						
+							<td th:if="${#strings.equals(report.reportType, 'POST')}">
+							<a th:href="@{'/admin/member/'+${report.post.member.id}}"> <span
+									th:text="${report.post.member.id}"></span>
+							</a></td>
+							<td th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}"></td>
+							<td th:text="${report.reportReason}"></td>
+							<td th:text="${report.content}"></td>
+							<td th:text="${report.reportType}"></td>
+							<td>
+								<th:block th:if="${#strings.equals(report.reportType, 'POST')}">
+									<a th:href="@{'/community/get?num='+${report.post.num}}">해당 게시물/댓글 링크</a>
+								</th:block>
+								<th:block th:if="${#strings.equals(report.reportType, 'REPLY')}">
+									<a th:href="@{'/community/get?num='+${report.reply.num}}">해당 게시물/댓글 링크</a>
+								</th:block>
+							</td>		
+						</tr>
+					</tbody>
+				</th:block>
+			</table>
+			<!--/* 페이징처리 영역 */-->
+				<div th:if="${endPage != 0}">
+					<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+						<a th:if="${page != nowPage} and ${type} != null and ${keyword} != null"
+							th:href="@{/admin/reports(page=${page-1},type=${type},keyword=${keyword})}" th:text="${page}"></a>
+						<a th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
+							th:href="@{/admin/reports(page=${page-1})}" th:text="${page}"></a>
+						<strong th:if="${page == nowPage}" th:text="${page}"
+							style="color: red"></strong>
+					</th:block>
+				</div>					
+		</div>
+	</div>
+</div>
+<th:block layout:fragment="script">
+
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+	<script th:src="@{/js/admin/reportList.js}"></script>
+
+</th:block>
+</html>

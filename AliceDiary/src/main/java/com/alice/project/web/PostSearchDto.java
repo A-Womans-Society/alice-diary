@@ -1,5 +1,10 @@
 package com.alice.project.web;
 
-public class PostSearchDto {
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter @Setter
+public class PostSearchDto {
+	private String type;
+	private String keyword;
 }
