@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,20 +29,52 @@ public class FriendsGroup {
 	@Id @GeneratedValue
 	@Column(name="group_num")
 	private Long num; // 그룹 번호
-	private String groupName = "기본그룹"; // 그룹이름 (default="기본그룹")
-	// private Long groupCreatorNum; // 그룹생성 회원번호
+	private String groupName; // 그룹이름 (default="기본그룹")
+	private Long groupCreatorNum; // 그룹생성 회원번호
 
-	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name="member_num")
-	@JsonBackReference
-	private Member member; // 그룹 생성 회원 객체
+	// 기본 그룹 생성자
+	@Builder
+	public FriendsGroup(String groupName) {
+		this.groupName = groupName;
+	}
+
+	@Builder
+	public FriendsGroup(String groupName, Long groupCreatorNum) {
+		this.groupName = groupName;
+		this.groupCreatorNum = groupCreatorNum;
+	}
+	
+	// 그룹 객체 생성 메서드(멤버)
+//	public static FriendsGroup creatFriendsGroup(Member member) {
+//		FriendsGroup friendsGroup = new FriendsGroup();
+//		friendsGroup.setMember(member);
+//		return friendsGroup;
+//	}
+//	// 연관관계 메서드 (양방향관계)
+//	public void setMember(Member member) {
+//		this.member = member;
+//		member.getGroups().add(this);
+//	}
+	
+//	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+//	@JoinColumn(name="member_num")
+//	@JsonBackReference
+//	private Member member; // 그룹 생성 회원 객체
 	
 //	@OneToMany(mappedBy="group")
 //	private List<Friend> friends = new ArrayList<>(); // 해당 그룹에 속한 친구객체 리스트
 
-	// 연관관계 메서드 (양방향관계)
-	public void setMember(Member member) {
-		this.member = member;
-		member.getGroups().add(this);
-	}
+//	
+//	@Builder
+//	public FriendsGroup(Member member, String groupName) {
+//		this.groupName = groupName;
+//		setMember(member);
+//	}
+//	
+//	// 그룹 객체 생성 메서드
+//	public static FriendsGroup createFriendsGroup(Friend friend) {
+//		FriendsGroup friendsGroup = new FriendsGroup();
+//		friendsGroup.setMember(member);
+//		return friendsGroup;
+//	}
 }

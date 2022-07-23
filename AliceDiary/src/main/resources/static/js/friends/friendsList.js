@@ -22,8 +22,8 @@ function addOk(){
 		return true;
 	}
 }
-	
-function loadMembers() {
+
+					function loadMembers() {
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
 	let httpRequest = new XMLHttpRequest();
@@ -37,10 +37,19 @@ function loadMembers() {
 				if (httpRequest.response.length != 0) {
 					let result = JSON.parse(httpRequest.response);
 
-					let html = "<img src=\"img/image.png\"><p>" + result.id
-							+ " / " + result.mbti + "</p>";
-					document.getElementById("memberInfo").innerHTML = html;
-					document.getElementById("checkSearch").value = true;
+					if (result.profileImg == 'default'){
+                        let html = "<img src='/AliceDiary/upload/Alice.png'><p>" + result.id
+                                + " / " + result.mbti + "</p>";
+                        
+                        document.getElementById("memberInfo").innerHTML = html;
+                        document.getElementById("checkSearch").value = true;
+					} else {
+                        let html = "<img src='/AliceDiary/upload/"+result.profileImg+"'><p>" + result.id
+                                + " / " + result.mbti + "</p>";
+                        document.getElementById("memberInfo").innerHTML = html;
+                        document.getElementById("checkSearch").value = true;
+					
+                    }					
 				} else {
 					document.getElementById("memberInfo").innerText = "일치하는 회원이 없습니다.";
 					document.getElementById("checkSearch").value = false;					

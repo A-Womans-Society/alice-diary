@@ -35,4 +35,5 @@ public interface MemberRepository
 	List<Member> findByIdOrName(Long adderNum, String friends);
 
 	Member findByName(String name);
+	
 }

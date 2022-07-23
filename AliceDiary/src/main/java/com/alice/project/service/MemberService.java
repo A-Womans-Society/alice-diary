@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alice.project.domain.FriendsGroup;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
 import com.alice.project.repository.MemberRepository;
@@ -135,4 +136,5 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findByName(String name){
 		return memberRepository.findByName(name);
 	}
+
 }
