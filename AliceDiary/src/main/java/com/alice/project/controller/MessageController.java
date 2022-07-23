@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +44,7 @@ public class MessageController {
 	// 쪽지 목록 보기
 	@GetMapping(value = "/messagebox/{id}")
 	public String messageList(@PathVariable("id") String id, Model model, @ModelAttribute MessageDto mdto,
-			MsgSearchDto msdto) {
+			MsgSearchDto msdto, @AuthenticationPrincipal UserDetails user) {
 		// log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
 		// String messageFromNum = (String) session.getAttribute("num");
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
@@ -51,11 +53,25 @@ public class MessageController {
 		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromId", id);
 		model.addAttribute("msdto", msdto);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+
+		// 친구목록 가져오기
+		List<Friend> friendsList = friendService.friendship(num);
+		List<FriendshipDto> friendsDtoList = new ArrayList<>();
+		for (Friend f : friendsList) {
+			FriendshipDto tmp = new FriendshipDto();
+			Member m = memberService.findByNum(f.getAddeeNum());
+			tmp.setNum(m.getNum());
+			tmp.setName(m.getName());
+			tmp.setId(m.getId());
+			friendsDtoList.add(tmp);
+		}
+		model.addAttribute("friendsList", friendsDtoList);
 
 		List<Message> msgList = new ArrayList<>();
 		msgList = messageService.findUserMsg(num);
-		if (msgList == null) {
-			return "message/msgList";
+		if (msgList.size() == 0) {
+			return "message/msgListNull";
 		}
 
 		List<MsgListDto> mldtos = new ArrayList<>();
@@ -83,19 +99,6 @@ public class MessageController {
 			mldto.setDirection(m.getDirection());
 			mldtos.add(mldto);
 		}
-
-		// 친구목록 가져오기
-		List<Friend> friendsList = friendService.friendship(num);
-		List<FriendshipDto> friendsDtoList = new ArrayList<>();
-		for (Friend f : friendsList) {
-			FriendshipDto tmp = new FriendshipDto();
-			Member m = memberService.findByNum(f.getAddeeNum());
-			tmp.setNum(m.getNum());
-			tmp.setName(m.getName());
-			tmp.setId(m.getId());
-			friendsDtoList.add(tmp);
-		}
-		model.addAttribute("friendsList", friendsDtoList);
 
 		model.addAttribute("receiverNum", receiverNum);
 		model.addAttribute("mldtos", mldtos);

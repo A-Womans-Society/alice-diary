@@ -43,7 +43,7 @@ public class SecurityConfig {
 
 		http.authorizeRequests()
 				.mvcMatchers("/css/**", "/font/**", "/js/**", "/img/**").permitAll()
-				.mvcMatchers("/", "/login/**").permitAll()
+				.mvcMatchers("/","/agree", "/register", "/login/**", "/check-email-token/**").permitAll()
 				.mvcMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().hasAnyRole("ADMIN","USER_IN");
 		
