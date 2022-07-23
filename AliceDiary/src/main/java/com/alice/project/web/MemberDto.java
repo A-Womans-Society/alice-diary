@@ -4,7 +4,12 @@ import java.time.LocalDate;
 
 import com.alice.project.domain.Gender;
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Status;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class MemberDto {
 	private String id; // 회원 아이디
 	private String password; // 회원 비밀번호
@@ -16,6 +21,7 @@ public class MemberDto {
 	private String mbti; // 회원 MBTI
 	private String wishlist; // 회원 위시리스트
 	private String profileImg; // 프로필사진 저장된 파일명(ex. 회원아이디.jpeg)
+	private Status status;
 	
 	public Member toEntity() { // 필요한 엔티티는 이런식으로 추가
 		Member member = Member.builder()

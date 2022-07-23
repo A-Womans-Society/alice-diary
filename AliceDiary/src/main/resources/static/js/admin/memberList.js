@@ -59,3 +59,16 @@ function returnMember(num) {
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     httpRequest.send("num=" + num);
 };
+
+function changeSelect() {
+ 	var select = document.getElementById("type");
+	var selectValue = select.options[select.selectedIndex].value;
+	if(selectValue=='status') {
+		document.getElementById("selectStatus").style.display = 'block';
+		document.getElementById("keyword").style.display = 'none';
+	} else {
+		document.getElementById("selectStatus").style.display = 'none';
+		document.getElementById("keyword").style.display = 'block';
+	}
+}
+

@@ -27,36 +27,57 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="MESSAGE_SEQ_GENERATOR")
 	@SequenceGenerator(name="MESSAGE_SEQ_GENERATOR", sequenceName="SEQ_MESSAGE_NUM", initialValue=1, allocationSize = 1)
 	@Column(name="message_num")
-	private Long num; // 쪽지 번호
-	private Long messageFromNum; // 쪽지 보내는회원 번호 -> 아래 객체있으니까 필요없지?
-	private Long messageToNum; // 쪽지 받는회원 번호
+	private Long msgNum; // 쪽지 번호
+	private Long user1Num; // 쪽지 보내는회원 번호 -> 아래 객체있으니까 필요없지?
+	private Long user2Num; // 쪽지 받는회원 번호
 	private LocalDateTime sendDate; // 쪽지 발송일자
 	private String content; // 쪽지내용
-	private Long senderStatus; // 보낸사람 상태
-	private Long receiverStatus; // 받은사람 상태
-
-	public Message(Long num, Long messageFromNum, Long messageToNum, 
-			LocalDateTime sendDate, String content,
-			Long senderStatus, Long receiverStatus) {
-		this.num = num;
-		this.messageFromNum = messageFromNum;
-		this.messageToNum = messageToNum;
+	private Long msgStatus; // 보낸사람 상태 (지우면 0, 안지우면 1)
+	private Long direction; // user1Num->user2Num : 0, 반대면 1
+	
+	public Message(Long msgNum, Long user1Num, Long user2Num, LocalDateTime sendDate, String content, Long msgStatus, Long direction) {
+		this.msgNum = msgNum;
+		this.user1Num = user1Num;
+		this.user2Num = user2Num;
 		this.sendDate = sendDate;
 		this.content = content;
-		this.senderStatus = senderStatus;
-		this.receiverStatus = receiverStatus;
+		this.msgStatus = msgStatus;
+		this.direction = direction;
 	}
+	
+	@Builder
+	public Message(Long user1Num, Long user2Num, LocalDateTime sendDate, String content, Long msgStatus, Long direction) {
+		this.user1Num = user1Num;
+		this.user2Num = user2Num;
+		this.sendDate = sendDate;
+		this.content = content;
+		this.msgStatus = msgStatus;
+		this.direction = direction;
+	}
+	
+	
+//	public Message(Long num, Long messageFromNum, Long messageToNum, 
+//			LocalDateTime sendDate, String content,
+//			Long senderStatus, Long receiverStatus) {
+//		this.num = num;
+//		this.messageFromNum = messageFromNum;
+//		this.messageToNum = messageToNum;
+//		this.sendDate = sendDate;
+//		this.content = content;
+//		this.senderStatus = senderStatus;
+//		this.receiverStatus = receiverStatus;
+//	}
 
 	@Builder
-	public Message(Long messageFromNum, Long messageToNum, 
-			LocalDateTime sendDate, String content) {
-		this.messageFromNum = messageFromNum;
-		this.messageToNum = messageToNum;
-		this.sendDate = sendDate;
-		this.content = content;
-		this.senderStatus = 1L;
-		this.receiverStatus = 1L;
-	}
+//	public Message(Long messageFromNum, Long messageToNum, 
+//			LocalDateTime sendDate, String content) {
+//		this.messageFromNum = messageFromNum;
+//		this.messageToNum = messageToNum;
+//		this.sendDate = sendDate;
+//		this.content = content;
+//		this.senderStatus = 1L;
+//		this.receiverStatus = 1L;
+//	}
 
 	@Override
 	public int compare(Message o1, Message o2) {
@@ -75,9 +96,10 @@ public class Message implements Comparator<Message>, Comparable<Message>{
 	}
 
 
+
 	
 //	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-//	@JoinColumn(name="messageFromNum")
+//	@JoinColumn(name="member_num")
 //	private Member member; // 쪽지 보내는회원 객체
 	
 //	@OneToOne(mappedBy="message")

@@ -11,10 +11,13 @@ public class Alert {
 	String href = "";
 	
 	public Alert(String word, String href) {
-		super();
 		this.word = word;
 		this.href = href;
 	}
+	
+//	public Alert(String word) {
+//		this.word = word;
+//	}
 	
 	
 }

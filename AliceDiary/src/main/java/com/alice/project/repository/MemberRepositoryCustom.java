@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.alice.project.domain.Member;
 import com.alice.project.web.MemberDto;
-import com.alice.project.web.MemberSearchDto;
+import com.alice.project.web.SearchDto;
 
 public interface MemberRepositoryCustom {
 

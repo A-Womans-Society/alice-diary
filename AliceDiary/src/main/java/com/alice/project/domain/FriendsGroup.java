@@ -25,7 +25,7 @@ public class FriendsGroup {
 	@Column(name="group_num")
 	private Long num; // 그룹 번호
 	private String groupName = "기본그룹"; // 그룹이름 (default="기본그룹")
-	private Long groupCreatorNum; // 그룹생성 회원번호
+//	private Long groupCreatorNum; // 그룹생성 회원번호
 
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="member_num")
