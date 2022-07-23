@@ -72,7 +72,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member processUpdateMember(Long num, UserDto userDto, boolean changeIMg) {
 		log.info("processUpdateMember 진입");
 		Member updateMember = saveUpdateMember(num, userDto, changeIMg);
-		sendSignUpConfirmEmail(updateMember);
+		Member.updateProfileImg(updateMember, userDto);
 		return updateMember;
 	}
 
@@ -130,6 +130,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("to????????? = " + newMember.getEmail());
 		emailService.sendEmail(emailMessage);
 	}
+	
 
 	@Transactional
 	public Member saveMember(Member member) {

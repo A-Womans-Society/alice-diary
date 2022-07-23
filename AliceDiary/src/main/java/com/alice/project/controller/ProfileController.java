@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Status;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.ProfileService;
 import com.alice.project.web.UserDto;
@@ -50,7 +51,7 @@ public class ProfileController {
 	// 내 프로필 수정 화면 GET
 	@GetMapping(value = "/member/update/{id}")
 	public String updateProfile(@PathVariable String id, Model model) {
-		log.info("POST 진입!!");
+		log.info("내 프로필 수정 GET 진입!!");
 		Member member = profileService.findById(id);
 		model.addAttribute("member", member);
 		model.addAttribute("userDto", new UserDto());
@@ -71,12 +72,14 @@ public class ProfileController {
 
 			try {
 				userDto.getProfileImg().transferTo(new File(savePath, saveName));
-				userDto.setSaveName(saveName);
 
 				Member updateMember = profileService.findMemById(id);
 				userDto.setPassword(updateMember.getPassword());
 				userDto.setGender(updateMember.getGender());
+				userDto.setRegDate(updateMember.getRegDate());
+				userDto.setStatus(Status.USER_IN);
 				userDto.setSaveName(saveName);
+				log.info(("userDto.saveName = " + userDto.getSaveName()));
 				memberService.processUpdateMember(num, userDto, true);
 //            userDto.setBirth(LocalDate.parse(newBirth, DateTimeFormatter.ISO_DATE));
 //            updateMember = Member.createMember(num, userDto, passwordEncoder);
@@ -91,6 +94,8 @@ public class ProfileController {
 			Member updateMember = profileService.findMemById(id);
 			userDto.setPassword(updateMember.getPassword());
 			userDto.setGender(updateMember.getGender());
+			userDto.setRegDate(updateMember.getRegDate());
+			userDto.setStatus(Status.USER_IN);
 			userDto.setSaveName("default");
 //         userDto.setBirth(LocalDate.parse(newBirth, DateTimeFormatter.ISO_DATE));
 			memberService.processUpdateMember(num, userDto, false);

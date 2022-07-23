@@ -116,6 +116,7 @@ public class MemberController {
 	public int checkIdDuplication(@RequestParam(value = "id") String id) {
 		log.info("userIdCheck 진입");
 		int check = memberService.checkIdDuplicate(id);
+		log.info("check== " + check);
 		return check;
 	}
 

@@ -285,6 +285,11 @@ public class Member {
 		member.profileImg = "default";
 		return member;
 	}
+	
+	public static Member updateProfileImg(Member member, UserDto userDto) {
+		member.profileImg = userDto.getSaveName();
+		return member;
+	}
 
 	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {

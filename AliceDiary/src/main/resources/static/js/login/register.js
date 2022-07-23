@@ -74,6 +74,7 @@ function regSuccess() {
 				xhr.setRequestHeader(header, token);
 			},
 			success : function(check) { //컨트롤러에서 넘어온 check값을 받는다
+			console.log(check);
 				if (check != 1) {
 					$('.id_ok').css("display", "inline-block");
 					$('.id_already').css("display", "none");

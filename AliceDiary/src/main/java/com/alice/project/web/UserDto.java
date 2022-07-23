@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.Gender;
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Status;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -76,6 +77,10 @@ public class UserDto {
 
 	// 이메일 인증 토큰 생성 일자
 	private LocalDateTime emailCheckTokenGeneratedAt;
+	
+	private Status status;
+	
+	private LocalDate regDate;
 
 	public UserDto(String id, String password, String confirmPassword, String name, LocalDate birth, Gender gender,
 			String email, String mobile, String mbti, String wishlist, String saveName, MultipartFile profileImg) {
