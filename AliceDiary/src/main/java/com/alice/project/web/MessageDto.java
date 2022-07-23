@@ -13,12 +13,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @ToString
-public class MessageDto implements Comparable<MessageDto>{ 
-	
-	@Autowired private MessageService ms;
+public class MessageDto implements Comparable<MessageDto> {
+
+	@Autowired
+	private MessageService ms;
 
 	private Long user1Num; // 보내는 사람 번호
 	private Long user2Num; // 받는사람 번호
@@ -27,12 +29,11 @@ public class MessageDto implements Comparable<MessageDto>{
 	private String messageFromId; // 보내는 사람 아이디
 	private String messageToId; // 받는 사람 아이디
 	private Long direction;
-	//private MultipartFile originName; // 파일 이름
+	// private MultipartFile originName; // 파일 이름
 
 	@Builder
-	public MessageDto(Long user1Num, Long user2Num, 
-			LocalDateTime sendDate, String content,
-			String messageFromId, String messageToId, Long direction) {
+	public MessageDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String content, String messageFromId,
+			String messageToId, Long direction) {
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
 		this.sendDate = sendDate;
@@ -41,9 +42,8 @@ public class MessageDto implements Comparable<MessageDto>{
 		this.messageToId = messageToId;
 		this.direction = direction;
 	}
-	
-	public MessageDto(Long user1Num, Long user2Num, 
-			LocalDateTime sendDate, String content, Long direction) {
+
+	public MessageDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String content, Long direction) {
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
 		this.sendDate = sendDate;
@@ -52,7 +52,7 @@ public class MessageDto implements Comparable<MessageDto>{
 		this.messageToId = ms.findIdByNum(user2Num);
 		this.direction = direction;
 
-	}	
+	}
 
 	public MessageDto(Message message, MessageService ms) {
 		this.user1Num = message.getUser1Num();

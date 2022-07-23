@@ -38,12 +38,12 @@ public class MessageController {
 	private final MessageService messageService;
 	private final MemberService memberService;
 	private final FriendService friendService;
-	
+
 	// 쪽지 목록 보기
 	@GetMapping(value = "/messagebox/{id}")
-	public String messageList(@PathVariable("id") String id, Model model, 
-			@ModelAttribute MessageDto mdto, MsgSearchDto msdto) {
-		//log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
+	public String messageList(@PathVariable("id") String id, Model model, @ModelAttribute MessageDto mdto,
+			MsgSearchDto msdto) {
+		// log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
 		// String messageFromNum = (String) session.getAttribute("num");
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
 		log.info("사용자 id : " + id);
@@ -51,13 +51,13 @@ public class MessageController {
 		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromId", id);
 		model.addAttribute("msdto", msdto);
-		
+
 		List<Message> msgList = new ArrayList<>();
 		msgList = messageService.findUserMsg(num);
 		if (msgList == null) {
 			return "message/msgList";
 		}
-		
+
 		List<MsgListDto> mldtos = new ArrayList<>();
 		Long receiverNum = 0L;
 		for (Message m : msgList) {
@@ -82,8 +82,8 @@ public class MessageController {
 			mldto.setMessageFromId(memberService.findOne(num).getId());
 			mldto.setDirection(m.getDirection());
 			mldtos.add(mldto);
-		}	
-		
+		}
+
 		// 친구목록 가져오기
 		List<Friend> friendsList = friendService.friendship(num);
 		List<FriendshipDto> friendsDtoList = new ArrayList<>();
@@ -96,7 +96,7 @@ public class MessageController {
 			friendsDtoList.add(tmp);
 		}
 		model.addAttribute("friendsList", friendsDtoList);
-		
+
 		model.addAttribute("receiverNum", receiverNum);
 		model.addAttribute("mldtos", mldtos);
 		model.addAttribute("mdto", mdto);
@@ -107,12 +107,12 @@ public class MessageController {
 
 	// 쪽지 목록에서 쪽지 보내기
 	@PostMapping("/messagebox/{id}")
-	public String sendMessage(@PathVariable("id") String id, Model model, 
-			HttpSession session, @ModelAttribute MessageDto mdto) {
+	public String sendMessage(@PathVariable("id") String id, Model model, HttpSession session,
+			@ModelAttribute MessageDto mdto) {
 		log.info("들오오니?????????????????????????????");
 		Long senderNum = messageService.findNumById(id);
 		Long receiverNum = messageService.findNumById(mdto.getMessageToId());
-		
+
 		if (senderNum > receiverNum) {
 			mdto.setUser1Num(receiverNum);
 			mdto.setUser2Num(senderNum);
@@ -122,17 +122,17 @@ public class MessageController {
 			mdto.setUser2Num(receiverNum);
 			mdto.setDirection(0L);
 		}
-		
+
 		mdto.setMessageFromId(id);
 		mdto.setSendDate(LocalDateTime.now());
 		log.info("mdto" + mdto.toString());
-		
+
 		Message result = messageService.sendMsg(mdto);
 		log.info("result.toString() : " + result.toString());
 		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + id));
 		return "message/alert";
-	}		
-	
+	}
+
 	// 쪽지함 삭제
 	@PostMapping("/messagebox/{fromId}/delete")
 	@ResponseBody
@@ -141,20 +141,19 @@ public class MessageController {
 		model.addAttribute("data", new Alert("쪽지가 성공적으로 삭제되었습니다!", ""));
 		return "1";
 	}
-	
 
 	// 개별 쪽지함 상세보기
 	@GetMapping("/messagebox/{fromId}/{toId}")
-	public String showMessages(@PathVariable("fromId") String fromId, @PathVariable("toId") String toId, 
-			Model model, HttpSession session, MessageDto mdto) {
+	public String showMessages(@PathVariable("fromId") String fromId, @PathVariable("toId") String toId, Model model,
+			HttpSession session, MessageDto mdto) {
 		Long fromNum = messageService.findNumById(fromId);
 		Long toNum = messageService.findNumById(toId);
-		
+
 		List<Message> msgList = messageService.findUserConv(fromNum, toNum);
-		
+
 		model.addAttribute("fromId", fromId);
 		model.addAttribute("mdtos", msgList);
-		
+
 //		String toId = messageService.findIdByNum(toNum);
 //		String userNum = session.getAttribute("userNum").toString();
 		// 세션에서 사용자번호 받아서 넣기
@@ -166,14 +165,14 @@ public class MessageController {
 
 		return "message/msgDetail";
 	}
-	
+
 	// 쪽지함 내에서 쪽지보내기
 	@PostMapping("/messagebox/{fromId}/{toId}")
-	public String sendMessages(@PathVariable("fromId") String fromId, @PathVariable("toId") String toId,
-			Model model, @ModelAttribute MessageDto mdto) {
+	public String sendMessages(@PathVariable("fromId") String fromId, @PathVariable("toId") String toId, Model model,
+			@ModelAttribute MessageDto mdto) {
 		Long senderNum = messageService.findNumById(fromId);
 		Long receiverNum = messageService.findNumById(toId);
-		
+
 		if (senderNum > receiverNum) {
 			mdto.setUser1Num(receiverNum);
 			mdto.setUser2Num(senderNum);
@@ -184,25 +183,24 @@ public class MessageController {
 			mdto.setDirection(0L);
 
 		}
-		
+
 		mdto.setMessageFromId(fromId);
 		mdto.setSendDate(LocalDateTime.now());
 		log.info("mdto" + mdto.toString());
-		
+
 		Message result = messageService.sendMsg(mdto);
 		log.info("result.toString() : " + result.toString());
 		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + toId));
 		return "message/alert";
 	}
-	
+
 	// 쪽지 검색하기
 	@GetMapping("/messagebox/{id}/search")
-	public String searchByContent(@RequestParam(value="keyword", required=false) String keyword, 
-			@RequestParam(value="type", required=true) String type,
-			@PathVariable String id, String content, Model model, 
-			@ModelAttribute MessageDto mdto, MsgSearchDto msdto) {
+	public String searchByContent(@RequestParam(value = "keyword", required = false) String keyword,
+			@RequestParam(value = "type", required = true) String type, @PathVariable String id, String content,
+			Model model, @ModelAttribute MessageDto mdto, MsgSearchDto msdto) {
 		log.info("들어오니??");
-		//log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
+		// log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
 		// String messageFromNum = (String) session.getAttribute("num");
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
 		log.info("사용자 id : " + id);
@@ -210,7 +208,7 @@ public class MessageController {
 		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromId", id);
 		model.addAttribute("msdto", msdto);
-		
+
 		List<Message> msgList = new ArrayList<>();
 		List<MsgListDto> mldtos = new ArrayList<>();
 		Long receiverNum = 0L;
@@ -239,10 +237,12 @@ public class MessageController {
 				mldto.setMessageToId(memberService.findOne(receiverNum).getId());
 				mldto.setMessageFromId(memberService.findOne(num).getId());
 				mldto.setDirection(m.getDirection());
-				if (mldto.getMessageFromId().contains(msdto.getKeyword()) || 
-					mldto.getMessageToId().contains(msdto.getKeyword())) {
+				if (mldto.getMessageFromId().contains(msdto.getKeyword())
+						|| mldto.getMessageToId().contains(msdto.getKeyword())) {
 					mldtos.add(mldto);
-				} else { continue; }
+				} else {
+					continue;
+				}
 			}
 		} else if (msdto.getType().equals("content")) { // 내용으로 검색
 			for (Message m : msgList) {
@@ -274,7 +274,7 @@ public class MessageController {
 		} else { // 타입 선택 안할 시 전체 목록 반환
 			return "redirect:/messagebox/" + id;
 		}
-		
+
 		model.addAttribute("receiverNum", receiverNum);
 		model.addAttribute("mldtos", mldtos);
 		model.addAttribute("mdto", mdto);
@@ -282,6 +282,5 @@ public class MessageController {
 
 		return "message/msgList";
 	}
-	
 
 }

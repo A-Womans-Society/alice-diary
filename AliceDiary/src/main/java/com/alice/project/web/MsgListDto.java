@@ -8,10 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @ToString
-public class MsgListDto { 
+public class MsgListDto {
 	private Long user1Num; // 보내는 사람 번호
 	private Long user2Num; // 받는사람 번호
 	private LocalDateTime sendDate; // 발송일자
@@ -19,7 +20,6 @@ public class MsgListDto {
 	private String messageFromId; // 보내는 사람 아이디
 	private String messageToId; // 받는 사람 아이디
 	private Long direction; // user1Num->user2Num : 0, 반대면 1
-
 
 	@Builder
 	public MsgListDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String recentContent, String messageFromId,
@@ -33,7 +33,6 @@ public class MsgListDto {
 		this.direction = direction;
 	}
 
-	
 //	public MsgListDto(Long messageFromNum, Long messageToNum, 
 //			String recentContent, String messageFromId, String messageToId) {
 //		this.messageFromNum = messageFromNum;
@@ -43,7 +42,5 @@ public class MsgListDto {
 //		this.messageFromId = messageFromId;
 //		this.messageToId = messageToId;
 //	}
-
-
 
 }
