@@ -20,6 +20,7 @@ public class MsgListDto {
 	private String messageFromId; // 보내는 사람 아이디
 	private String messageToId; // 받는 사람 아이디
 	private Long direction; // user1Num->user2Num : 0, 반대면 1
+	private String profileImg;
 
 	@Builder
 	public MsgListDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String recentContent, String messageFromId,

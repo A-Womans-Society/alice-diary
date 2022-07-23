@@ -95,10 +95,11 @@ public class FriendsController {
 
 	// 친구 프로필 상세보기
 	@GetMapping("/friends/friendInfo/{id}")
-	public String friendInfo(Model model, @PathVariable("id") String id) {
+	public String friendInfo(Model model, @PathVariable("id") String id, @AuthenticationPrincipal UserDetails user) {
 		Member member = profileService.findById(id);
 		log.info("member=" + member);
-		model.addAttribute("member", member);
+		model.addAttribute("friend", member);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 		return "friends/friendInfo";
 	}
 }

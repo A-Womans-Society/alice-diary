@@ -38,79 +38,99 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor // final 필드 생성자 생성해줌
 @Slf4j
 public class MemberService implements UserDetailsService { // MemberService가 UserDetailService를 구현
-	
+
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final EntityManager em;
 	private final AppProperties appProperties;
-	private final TemplateEngine templateEngine;	
+	private final TemplateEngine templateEngine;
 	private final EmailService emailService;
 	private final ModelMapper modelMapper;
 
-	
+	// register member
 	@Transactional
-    public Member processNewMember(UserDto userDto) {
+	public Member processNewMember(UserDto userDto) {
 		log.info("processNewMember 진입");
-    	Member newMember = saveNewMember(userDto);
-    	Member.setProfileImg(newMember);
-    	log.info("newMember.getId = " + newMember.getProfileImg());
-        sendSignUpConfirmEmail(newMember);
-        return newMember;
-    }
-	
+		Member newMember = saveNewMember(userDto);
+		Member.setProfileImg(newMember);
+		log.info("newMember.getId = " + newMember.getProfileImg());
+		sendSignUpConfirmEmail(newMember);
+		return newMember;
+	}
+
 	@Transactional
-    private Member saveNewMember(@Valid UserDto userDto) {
+	private Member saveNewMember(@Valid UserDto userDto) {
 		log.info("saveNewMember 진입");
-    	userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-    	Member member = modelMapper.map(userDto, Member.class);
-        member.generateEmailCheckToken();
-        return memberRepository.save(member);
-    }
-	
+		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		Member member = modelMapper.map(userDto, Member.class);
+		member.generateEmailCheckToken();
+		return memberRepository.save(member);
+	}
+
+	// update member profile
 	@Transactional
-    public void completeSignUp(Member member) {
-    	member.completeRegister();
-    	login(member);
-    	Member.changeMemberIn(member);
-    }
-	
+	public Member processUpdateMember(Long num, UserDto userDto, boolean changeIMg) {
+		log.info("processUpdateMember 진입");
+		Member updateMember = saveUpdateMember(num, userDto, changeIMg);
+		sendSignUpConfirmEmail(updateMember);
+		return updateMember;
+	}
+
 	@Transactional
-    public void login(Member member) {
-    	List<SimpleGrantedAuthority> authorities = MemberAccount.createAuthor();
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new MemberAccount(member, authorities),
-                member.getPassword());
-        
-        log.info("token getName: " +token.getName());
-        log.info("token getAuthorities: " +token.getAuthorities());
-        
-        SecurityContextHolder.getContext().setAuthentication(token);
-    }
-	
+	private Member saveUpdateMember(Long num, @Valid UserDto userDto, boolean changeIMg) {
+		Member m = memberRepository.findByNum(num);
+		log.info("saveUpdateMember 진입");
+//    	userDto.setPassword(userDto.getPassword());
+		userDto.setEmailCheckToken(m.getEmailCheckToken());
+		userDto.setEmailCheckTokenGeneratedAt(m.getEmailCheckTokenGeneratedAt());
+		userDto.setNum(num);
+		userDto.setEmail(m.getEmail());
+		if (!changeIMg) {
+			userDto.setSaveName(m.getProfileImg());
+		}
+		Member member = modelMapper.map(userDto, Member.class);
+		return memberRepository.save(member);
+	}
+
 	@Transactional
-    public void sendSignUpConfirmEmail(Member newMember) {
+	public void completeSignUp(Member member) {
+		member.completeRegister();
+		login(member);
+		Member.changeMemberIn(member);
+	}
+
+	@Transactional
+	public void login(Member member) {
+		List<SimpleGrantedAuthority> authorities = MemberAccount.createAuthor();
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+				new MemberAccount(member, authorities), member.getPassword());
+
+		log.info("token getName: " + token.getName());
+		log.info("token getAuthorities: " + token.getAuthorities());
+
+		SecurityContextHolder.getContext().setAuthentication(token);
+	}
+
+	@Transactional
+	public void sendSignUpConfirmEmail(Member newMember) {
 		log.info("sendSignUpConfirmEmail 진입");
-        Context context = new Context();
-        context.setVariable("link", "/check-email-token?token=" + newMember.getEmailCheckToken() +
-                "&email=" + newMember.getEmail());
-        context.setVariable("id", newMember.getId());
+		Context context = new Context();
+		context.setVariable("link",
+				"/check-email-token?token=" + newMember.getEmailCheckToken() + "&email=" + newMember.getEmail());
+		context.setVariable("id", newMember.getId());
 		log.info("newMember.getId() = " + newMember.getId());
-        context.setVariable("linkName", "이메일 인증하기");
-        context.setVariable("message", "앨리스 다이어리 서비스를 사용하려면 링크를 클릭하세요.");
-        context.setVariable("host", appProperties.getHost()+"/AliceDiary");
-        String message = templateEngine.process("login/simple-link", context);
+		context.setVariable("linkName", "이메일 인증하기");
+		context.setVariable("message", "앨리스 다이어리 서비스를 사용하려면 링크를 클릭하세요.");
+		context.setVariable("host", appProperties.getHost() + "/AliceDiary");
+		String message = templateEngine.process("login/simple-link", context);
 
-        EmailMessage emailMessage = EmailMessage.builder()
-                .to(newMember.getEmail())
-                .subject("앨리스 다이어리, 회원 가입 인증")
-                .message(message)
-                .build();
+		EmailMessage emailMessage = EmailMessage.builder().to(newMember.getEmail()).subject("앨리스 다이어리, 회원 가입 인증")
+				.message(message).build();
 
-        log.info("to????????? = " + newMember.getEmail());
-        emailService.sendEmail(emailMessage);
-    }
-	
-	
+		log.info("to????????? = " + newMember.getEmail());
+		emailService.sendEmail(emailMessage);
+	}
+
 	@Transactional
 	public Member saveMember(Member member) {
 		return memberRepository.save(member); // insert
@@ -119,7 +139,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findById(String id) {
 		return memberRepository.findById(id);
 	}
-	
+
 //	public Member editPwd(String id, String password) {
 //		return memberRepository.findById(id);
 //	}
@@ -178,12 +198,11 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		return memberRepository.findAll();
 	}
 
-	   /* 회원 전체 조회 */
-    public Page<Member> getMemberList(Pageable pageable) {
-       return memberRepository.findAll(pageable);
-    }
+	/* 회원 전체 조회 */
+	public Page<Member> getMemberList(Pageable pageable) {
+		return memberRepository.findAll(pageable);
+	}
 
-    
 	/* 개별 회원 조회 */
 	// 값을 가져오는 메서드에서는 기본 읽기전용옵션 적용됨
 	public Member findOne(Long memberNum) {
@@ -219,47 +238,46 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("returnOne 실행하고 나서 resultMember.getStatus():" + resultMember.getStatus());
 		return 1; // 탈퇴회원 처리가 됐으면 1 반환
 	}
-	
-	public Member findByName(String name){
+
+	public Member findByName(String name) {
 		return memberRepository.findByName(name);
 	}
-	
-    /* 회원 검색 기능 */    
-   public Page<Member> searchMember(String type, String keyword, Pageable pageable) {        
+
+	/* 회원 검색 기능 */
+	public Page<Member> searchMember(String type, String keyword, Pageable pageable) {
 //      List<Sort.Order> sorts = new ArrayList<>();
 //        sorts.add(Sort.Order.desc("num"));
 //        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-      
-      Page<Member> memberList = null;
-      if (type.equals("num")) {
-         memberList = memberRepository.searchByNum(Long.parseLong(keyword), pageable);        
-      } else if (type.equals("id")) {
-         memberList = memberRepository.searchById(keyword, pageable);        
-      } else if (type.equals("name")) {
-         memberList = memberRepository.findByNameContaining(keyword, pageable);        
-      } else if (type.equals("mobile")) {
-         memberList = memberRepository.findByMobileContaining(keyword, pageable);        
-      } else if (type.equals("email")) {
-         memberList = memberRepository.findByEmailContaining(keyword, pageable);        
-      } else if (type.equals("reportCnt")) {
-         memberList = memberRepository.findByReportCnt(Long.parseLong(keyword), pageable);        
-      }
-      return memberList;    
-   }
-   
-   public Page<Member> searchMemberByStatus(String keyword, Pageable pageable) {        
-      Page<Member> memberList = memberRepository.findAll(pageable);  
-      List<Member> list = new ArrayList<>();
-      for (Member m : memberList) {
-         if (m.getStatus().toString().contains(keyword)) {
-            list.add(m);   
-         }
-      }
-      final int start = (int)pageable.getOffset();
-      final int end = Math.min((start + pageable.getPageSize()), list.size());
-      memberList = new PageImpl<>(list.subList(start, end), pageable, list.size());
-      return memberList;    
-   }
 
-   
+		Page<Member> memberList = null;
+		if (type.equals("num")) {
+			memberList = memberRepository.searchByNum(Long.parseLong(keyword), pageable);
+		} else if (type.equals("id")) {
+			memberList = memberRepository.searchById(keyword, pageable);
+		} else if (type.equals("name")) {
+			memberList = memberRepository.findByNameContaining(keyword, pageable);
+		} else if (type.equals("mobile")) {
+			memberList = memberRepository.findByMobileContaining(keyword, pageable);
+		} else if (type.equals("email")) {
+			memberList = memberRepository.findByEmailContaining(keyword, pageable);
+		} else if (type.equals("reportCnt")) {
+			memberList = memberRepository.findByReportCnt(Long.parseLong(keyword), pageable);
+		}
+		return memberList;
+	}
+
+	public Page<Member> searchMemberByStatus(String keyword, Pageable pageable) {
+		Page<Member> memberList = memberRepository.findAll(pageable);
+		List<Member> list = new ArrayList<>();
+		for (Member m : memberList) {
+			if (m.getStatus().toString().contains(keyword)) {
+				list.add(m);
+			}
+		}
+		final int start = (int) pageable.getOffset();
+		final int end = Math.min((start + pageable.getPageSize()), list.size());
+		memberList = new PageImpl<>(list.subList(start, end), pageable, list.size());
+		return memberList;
+	}
+
 }

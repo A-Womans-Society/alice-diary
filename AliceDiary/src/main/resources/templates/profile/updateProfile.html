@@ -17,7 +17,7 @@
 
 <div layout:fragment="content">
 	<form th:action="@{/member/update/}+${member.id}" method="post"
-		th:object="${member}" enctype="multipart/form-data">
+		th:object="${userDto}" enctype="multipart/form-data">
 		<div class=" overflow-hidden">
 			<div
 				class="row no-gutters row-bordered row-border-light d-flex justify-content-center">

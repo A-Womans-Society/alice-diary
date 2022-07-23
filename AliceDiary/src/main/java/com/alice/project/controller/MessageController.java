@@ -71,7 +71,8 @@ public class MessageController {
 		List<Message> msgList = new ArrayList<>();
 		msgList = messageService.findUserMsg(num);
 		if (msgList.size() == 0) {
-			return "message/msgListNull";
+			model.addAttribute("mldtos", msgList);
+			return "message/msgList";
 		}
 
 		List<MsgListDto> mldtos = new ArrayList<>();
@@ -94,8 +95,11 @@ public class MessageController {
 			mldto.setUser2Num(m.getUser2Num());
 			mldto.setSendDate(m.getSendDate());
 			mldto.setRecentContent(m.getContent());
+			log.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + receiverNum);
+			log.info("" + memberService.findOne(receiverNum).getId());
 			mldto.setMessageToId(memberService.findOne(receiverNum).getId());
 			mldto.setMessageFromId(memberService.findOne(num).getId());
+			mldto.setProfileImg(memberService.findOne(num).getProfileImg());
 			mldto.setDirection(m.getDirection());
 			mldtos.add(mldto);
 		}
@@ -104,6 +108,86 @@ public class MessageController {
 		model.addAttribute("mldtos", mldtos);
 		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromNum", num);
+
+		return "message/msgList";
+	}
+
+	// 개별 쪽지함 상세보기
+	@GetMapping("/messagebox/{fromId}/{toId}")
+	public String showMessages(@PathVariable("fromId") String fromId, @PathVariable("toId") String toId, Model model,
+			@AuthenticationPrincipal UserDetails user, HttpSession session, MessageDto mdto) {
+		Long fromNum = messageService.findNumById(fromId);
+		Long toNum = messageService.findNumById(toId);
+		Member theother = memberService.findById(toId);
+		model.addAttribute("friendProfile", theother.getProfileImg());
+
+		List<Message> msgList = messageService.findUserConv(fromNum, toNum);
+
+		model.addAttribute("fromId", fromId);
+		model.addAttribute("mdtos", msgList);
+
+//      String toId = messageService.findIdByNum(toNum);
+//      String userNum = session.getAttribute("userNum").toString();
+		// 세션에서 사용자번호 받아서 넣기
+//      model.addAttribute("userNum", 3); // ***테스트용으로 하드코딩한 것
+		model.addAttribute("userNum", fromNum);
+		model.addAttribute("toNum", toNum);
+		model.addAttribute("toId", toId);
+		model.addAttribute("mdto", mdto);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+
+		// 쪽지목록도 가져오기!!
+		// 친구목록 가져오기
+		List<Friend> friendsList = friendService.friendship(fromNum);
+		List<FriendshipDto> friendsDtoList = new ArrayList<>();
+		for (Friend f : friendsList) {
+			FriendshipDto tmp = new FriendshipDto();
+			Member m = memberService.findByNum(f.getAddeeNum());
+			tmp.setNum(m.getNum());
+			tmp.setName(m.getName());
+			tmp.setId(m.getId());
+			friendsDtoList.add(tmp);
+		}
+		model.addAttribute("friendsList", friendsDtoList);
+
+		List<Message> msgListAll = new ArrayList<>();
+		msgListAll = messageService.findUserMsg(fromNum);
+		if (msgListAll.size() == 0) {
+			return "message/msgList";
+		}
+
+		List<MsgListDto> mldtos = new ArrayList<>();
+		Long receiverNum = 0L;
+		for (Message m : msgListAll) {
+//		         receiverNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num(); 
+			if (fromNum == m.getUser1Num()) { // user1Num이 사용자라면 (2, 3만 보여야 함)
+				if (m.getMsgStatus() < 2) { // 0, 1
+					continue;
+				}
+				receiverNum = m.getUser2Num();
+			} else { // user2Num이 사용자라면 (1, 3만 보여야 함)
+				if (m.getMsgStatus() % 2 == 0) { // 0, 2
+					continue;
+				}
+				receiverNum = m.getUser1Num();
+			}
+			MsgListDto mldto = new MsgListDto();
+			mldto.setUser1Num(m.getUser1Num());
+			mldto.setUser2Num(m.getUser2Num());
+			mldto.setSendDate(m.getSendDate());
+			mldto.setRecentContent(m.getContent());
+			mldto.setMessageToId(memberService.findOne(receiverNum).getId());
+			mldto.setMessageFromId(memberService.findOne(fromNum).getId());
+			mldto.setProfileImg(memberService.findOne(fromNum).getProfileImg());
+			mldto.setDirection(m.getDirection());
+			mldtos.add(mldto);
+		}
+
+		model.addAttribute("receiverNum", receiverNum);
+		model.addAttribute("mldtos", mldtos);
+		model.addAttribute("fromNum", fromNum);
+		// 친구 member 객체 / profileImg 정보 & 내 이미지 정보
+		// model.addAttribute("friendImg", )
 
 		return "message/msgList";
 	}
@@ -143,30 +227,6 @@ public class MessageController {
 		messageService.changeMsgStatus(fromId, toId);
 		model.addAttribute("data", new Alert("쪽지가 성공적으로 삭제되었습니다!", ""));
 		return "1";
-	}
-
-	// 개별 쪽지함 상세보기
-	@GetMapping("/messagebox/{fromId}/{toId}")
-	public String showMessages(@PathVariable("fromId") String fromId, @PathVariable("toId") String toId, Model model,
-			HttpSession session, MessageDto mdto) {
-		Long fromNum = messageService.findNumById(fromId);
-		Long toNum = messageService.findNumById(toId);
-
-		List<Message> msgList = messageService.findUserConv(fromNum, toNum);
-
-		model.addAttribute("fromId", fromId);
-		model.addAttribute("mdtos", msgList);
-
-//      String toId = messageService.findIdByNum(toNum);
-//      String userNum = session.getAttribute("userNum").toString();
-		// 세션에서 사용자번호 받아서 넣기
-//      model.addAttribute("userNum", 3); // ***테스트용으로 하드코딩한 것
-		model.addAttribute("userNum", fromNum);
-		model.addAttribute("toNum", toNum);
-		model.addAttribute("toId", toId);
-		model.addAttribute("mdto", mdto);
-
-		return "message/msgDetail";
 	}
 
 	// 쪽지함 내에서 쪽지보내기
