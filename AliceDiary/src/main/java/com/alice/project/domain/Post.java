@@ -22,6 +22,7 @@ import javax.persistence.Table;
 
 import com.alice.project.web.WriteFormDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -69,6 +70,7 @@ public class Post {
 
 	/* files가 null일 수 있음 */
 	@OneToMany(mappedBy = "post")
+	@JsonManagedReference
 	@JsonIgnore
 	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
 
@@ -116,4 +118,3 @@ public class Post {
 		this.member = member;
 	}
 }
-
