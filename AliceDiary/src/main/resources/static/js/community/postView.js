@@ -396,3 +396,42 @@ function replyReport(userId, reportReason, content) {
     httpRequest.send(param);
 
 }
+
+function openModalMsg(msgTo, msgFrom){
+	document.getElementById('replyMsgTo').value = msgTo;
+	$('#replyMsg').modal('show');	
+			
+};
+
+function replyMsg(msgFrom, content) {
+	let replyMsgTo = document.getElementById('replyMsgTo').value;
+	console.log("msgFrom:"+msgFrom);
+	console.log("replyMsgTo:"+replyMsgTo);
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
+	let param = "messageFromId="+msgFrom+"&messageToId="+replyMsgTo
+	+"&content="+document.getElementById("replyMsgContent").value;
+	console.log(param);
+	
+    httpRequest.onreadystatechange = function(){
+	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+	    	if (httpRequest.status === 200) {
+	 
+				document.getElementById("reportRepContent").value = "";
+		     	alert('쪽지를 보냈습니다!');
+		     
+				$("#replyMsg").modal('hide');
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
+
+    //POST로 요청
+    httpRequest.open('POST', "replymsg", true);
+    httpRequest.setRequestHeader(header,token);
+    httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    httpRequest.send(param);
+
+}

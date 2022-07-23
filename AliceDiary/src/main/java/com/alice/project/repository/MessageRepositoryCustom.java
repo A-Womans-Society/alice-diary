@@ -21,6 +21,9 @@ public interface MessageRepositoryCustom {
 	/* 보낸 회원 번호의 살아있는 메시지리스트 반환 */
 	List<Message> findByLiveMessageFromNum(Long messageFromNum);
 	
+	/* 받는 회원 번호의 살아있는 메시지리스트 반환 */
+	List<Message> findByLiveMessageToNum(Long messageFromNum);	
+	
 	/* 보낸 회원번호와 받은 회원번호로 메시리리스트 반환 */
 	List<Message> findByMessageFromNumAndMessageToNum(Long messageFromNum, Long messageToNum);
 	
@@ -33,5 +36,15 @@ public interface MessageRepositoryCustom {
 	
 	/* 정상적인 쪽지함 하나 보여주기 */
 	public List<Message> findLiveMsgs(Long mfn, Long mtn);
+	
+	List<Message> findByUserNum(Long userNum);
+	
+	List<Message> searchByUserNum(Long userNum);
+	
+	List<Message> searchByContent(String content, Long userNum);
+	
+	List<Message> findByUserConv(Long userNum, Long youNum);
+	
+	Integer changeMsgStatus(Long fromNum, Long toNum, Boolean flag);
 	
 }

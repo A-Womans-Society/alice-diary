@@ -153,9 +153,12 @@
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"
-													th:text="${reply.memberId}"></span>&nbsp;<span
+													th:text="${reply.memberId}"> </span>&nbsp;<span
 													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
-												</span> <span> <span th:if="${reply.parentRepNum} == null">
+												</span> <span> <span th:if="${#authentication.name} != ${reply.memberId}"><button
+															th:onclick="openModalMsg([[${reply.memberId}]],[[${#authentication.name}]])">
+															<img th:src="@{/img/replymsg.jpg}" style="width: 10px;">
+														</button> </span> <span th:if="${reply.parentRepNum} == null">
 														<button type="button" class="btn btn-sm"
 															th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
 												</span> <span th:if="${#authentication.name} == ${reply.memberId}"><button
@@ -163,7 +166,7 @@
 															th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">삭제</button>
 												</span> <span th:if="${#authentication.name} != ${reply.memberId}">
 														<button type="button" class="btn btn-sm"
-															th:onclick="openModalReply([[${reply.num}]],[[${#authentication.name}]])">신고</button>
+															th:onclick="openModalReply([[${reply.memberId}]],[[${#authentication.name}]])">신고</button>
 												</span>
 												</span>
 											</p>
@@ -273,6 +276,41 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- 댓글메세지 Modal -->
+	<div class="modal" tabindex="-1" role="dialog" id="replyMsg">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="align-items: baseline;">
+					<h1 class="modal-title">쪽지보내기</h1>
+					<span>나는 쪽지세포야~</span>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<form th:action="@{/community/replymsg}" method="post">
+					<div class="modal-body">
+						<div>
+							받는 사람 : <input type="text" id="replyMsgTo" readonly />
+						</div>
+						<div>
+							내용 :
+							<textarea type="text" id="replyMsgContent" cols="50" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button"
+							th:onclick="replyMsg([[${#authentication.name}]])">쪽지보내기</button>
+					</div>
+					<input type="hidden" id="replyMsgTo">
+				</form>
+			</div>
+		</div>
+	</div>
+
 
 
 </div>

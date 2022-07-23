@@ -135,4 +135,8 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findByName(String name){
 		return memberRepository.findByName(name);
 	}
+
+	public Long findNumById(String id) {
+		return memberRepository.findMemberNumById(id);
+	}
 }
