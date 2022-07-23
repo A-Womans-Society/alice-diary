@@ -157,7 +157,7 @@
 													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
 												</span> <span> <span th:if="${#authentication.name} != ${reply.memberId}"><button
 															th:onclick="openModalMsg([[${reply.memberId}]],[[${#authentication.name}]])">
-															<img th:src="@{/img/replymsg.jpg}" style="width: 10px;">
+															<img th:src="@{/img/replymsg.png}" style="width: 20px;">
 														</button> </span> <span th:if="${reply.parentRepNum} == null">
 														<button type="button" class="btn btn-sm"
 															th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
