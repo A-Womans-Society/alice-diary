@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Reply;
+import com.alice.project.service.MemberService;
 import com.alice.project.service.ReplyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ public class ReplyController {
 
    @Autowired
    private ReplyService replyService;
+   @Autowired
+   private MemberService memberService;
 
    // 댓글쓰기
    @PostMapping("/community/reply")
@@ -34,7 +37,7 @@ public class ReplyController {
       jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
       jObj.put("repContent", newReply.getContent());
       jObj.put("postNum", newReply.getPost().getNum());
-
+      jObj.put("profileImg", newReply.getMember().getProfileImg());
       return jObj;
 
    }
@@ -53,6 +56,7 @@ public class ReplyController {
       jObj.put("id", newReplyReply.getMember().getId());
       jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
       jObj.put("repContent", newReplyReply.getContent());
+      jObj.put("profileImg", newReplyReply.getMember().getProfileImg());
 
       return jObj;
 

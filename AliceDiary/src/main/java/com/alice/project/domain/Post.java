@@ -44,7 +44,16 @@ public class Post {
 	@SequenceGenerator(name = "POST_SEQ_GENERATOR", sequenceName = "SEQ_POST_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "post_num")
 	private Long num; // 게시물번호
+	private String title; // 게시물 제목
+	private LocalDateTime postDate; // 게시물 작성일자
+	private LocalDateTime updateDate; // 게시물 수정일자
+
+	@Column(length = 4000)
+	private String content; // 게시물 내용
 	private Long viewCnt = 0L; // 게시물 조회수 (default=0)
+	
+	@Enumerated(EnumType.STRING)
+	private PostType postType; // 게시물 종류 [NOTICE, OPEN, CUSTOM]
 	
 	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "member_num")
@@ -56,17 +65,6 @@ public class Post {
 	@JoinColumn(name = "community_num")
 	@JsonBackReference
 	private Community community; // 소속 커뮤니티 객체
-	
-	private String title; // 게시물 제목
-	private LocalDateTime postDate; // 게시물 작성일자
-	private LocalDateTime updateDate; // 게시물 수정일자
-
-	@Column(length = 4000)
-	private String content; // 게시물 내용
-
-	@Enumerated(EnumType.STRING)
-	private PostType postType; // 게시물 종류 [NOTICE, OPEN, CUSTOM]
-
 
 	/* replies가 null일 수 있음 */
 //	@OneToMany(mappedBy = "post")
@@ -83,16 +81,17 @@ public class Post {
 	private List<Report> reports = new ArrayList<>(); // 게시물 소속 신고 리스트
 	
 	// 연관관계 메서드 (양방향관계)
-	/*
-	 * public void setMember(Member member) { this.member = member;
-	 * member.getPosts().add(this); }
-	 */
-
+	
+	public void setMember(Member member) { 
+		this.member = member;
+		member.getPosts().add(this); 
+	}
+	
 	public void setCommunity(Community community) {
 		this.community = community;
 		community.getPosts().add(this);
 	}
-
+		
 	@PrePersist
 	public void post_Date() {
 		this.postDate = LocalDateTime.now();

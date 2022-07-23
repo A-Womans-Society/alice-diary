@@ -40,7 +40,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Reply {
 
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REPLY_SEQ_GENERATOR")
 	@SequenceGenerator(name = "REPLY_SEQ_GENERATOR", sequenceName = "SEQ_REPLY_NUM", initialValue = 1, allocationSize = 1)

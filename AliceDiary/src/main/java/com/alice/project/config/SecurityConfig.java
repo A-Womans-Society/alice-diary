@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SecurityConfig {
    
    
-//   private final AuthenticationFailureHandler customFailureHandler;
+   private final AuthenticationFailureHandler customFailureHandler;
    private final DataSource dataSource; // jpa이라 자동으로 등록되어 있음
 
    
@@ -40,7 +40,7 @@ public class SecurityConfig {
             .defaultSuccessUrl("/alice")
             .usernameParameter("userid")
             .passwordParameter("password")
-//            .failureHandler(customFailureHandler)
+            .failureHandler(customFailureHandler)
             
          .and()
          .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -49,10 +49,10 @@ public class SecurityConfig {
                 
 
       http.authorizeRequests()
-	      .mvcMatchers("/css/**", "/font/**", "/js/**", "/img/**").permitAll()
-	      .mvcMatchers("/", "/login/**").permitAll()
-	      .mvcMatchers("/admin/**").hasRole("ADMIN")
-	      .anyRequest().hasAnyRole("ADMIN","USER_IN");
+            .mvcMatchers("/css/**", "/font/**", "/js/**", "/img/**").permitAll()
+            .mvcMatchers("/", "/login/**").permitAll()
+            .mvcMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().hasAnyRole("ADMIN","USER_IN");
       
       
 //        http.exceptionHandling()
@@ -64,10 +64,7 @@ public class SecurityConfig {
       return http.build();
    }
 
-   @Bean
-   public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-   }
+
 
    @Bean
     public PersistentTokenRepository tokenRepository() {
