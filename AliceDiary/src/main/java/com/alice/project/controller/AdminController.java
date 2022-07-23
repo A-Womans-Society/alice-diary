@@ -1,9 +1,5 @@
 package com.alice.project.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,9 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Member;
-import com.alice.project.domain.Post;
 import com.alice.project.domain.Report;
 import com.alice.project.domain.Suggestion;
 import com.alice.project.service.AttachedFileService;
@@ -29,7 +23,6 @@ import com.alice.project.service.PostService;
 import com.alice.project.service.ReplyService;
 import com.alice.project.service.ReportService;
 import com.alice.project.service.SuggestionService;
-import com.alice.project.web.ReplyDto;
 import com.alice.project.web.SearchDto;
 
 import lombok.RequiredArgsConstructor;

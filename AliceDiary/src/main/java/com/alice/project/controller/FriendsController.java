@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,6 +19,7 @@ import com.alice.project.domain.Member;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.FriendsGroupService;
 import com.alice.project.service.MemberService;
+import com.alice.project.service.ProfileService;
 import com.alice.project.web.FriendshipDto;
 
 import lombok.RequiredArgsConstructor;
@@ -31,11 +33,11 @@ public class FriendsController {
 	private final FriendService friendService;
 	private final MemberService memberService;
 	private final FriendsGroupService friendsGroupService;
+	private final ProfileService profileService;
 
 	// 친구 추가(회원 id검색)
 	@PostMapping("/friends/add")
 	public String addFriend(String searchId, @AuthenticationPrincipal UserDetails user) {
-//		Member m = memberService.findByName(user.getUsername() + ",");
 		Member m = memberService.findById(user.getUsername());
 		log.info("member : " + m.getId());
 		log.info("member : " + searchId);
@@ -46,7 +48,7 @@ public class FriendsController {
 	// 친구 검색해서 추가
 	@PostMapping("/friends/searchMember")
 	@ResponseBody
-	public Member searchMember(String id) {
+	public Member searchMember(String id, @AuthenticationPrincipal UserDetails user) {
 		return friendService.searchMember(id);
 	}
 
@@ -68,6 +70,7 @@ public class FriendsController {
 			friendship.add(dto);
 		}
 		model.addAttribute("friendList", friendship);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 		return "friends/friendslist";
 	}
 
@@ -87,7 +90,15 @@ public class FriendsController {
 					sf.getGender(), sf.getEmail(), groupName);
 			searchFriendList.add(dto);
 		}
-
 		return searchFriendList;
+	}
+
+	// 친구 프로필 상세보기
+	@GetMapping("/friends/friendInfo/{id}")
+	public String friendInfo(Model model, @PathVariable("id") String id) {
+		Member member = profileService.findById(id);
+		log.info("member=" + member);
+		model.addAttribute("member", member);
+		return "friends/friendInfo";
 	}
 }
