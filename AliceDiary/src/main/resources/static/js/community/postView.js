@@ -250,8 +250,7 @@ function deleteParent(pNum) {
 			if (httpRequest.status === 200) {
 				let removeTr = document.getElementById("parentRepContentTable"+pNum);
 				removeTr.innerHTML = "<span colspan='4'>삭제된 댓글입니다.</span>";
-//				console.log(removeTr);
-//				removeTr.parentNode.removeChild(removeTr);
+
 				alert('댓글이 삭제되었습니다!');
 
 			} else {
@@ -289,11 +288,11 @@ function openModalPost(postNum, userId){
 	};
 
 	//POST로 요청
-	httpRequest.open('POST', "./checkExist", true);
+	httpRequest.open('POST', "./postreportcheck", true);
 	httpRequest.setRequestHeader(header, token);
 	httpRequest.setRequestHeader('Content-type',
 			'application/x-www-form-urlencoded');
-	httpRequest.send("targetNum=" + postNum+"&userId="+userId); // 요게 문제였습니다!!
+	httpRequest.send("postNum=" + postNum+"&userId="+userId); 
 	
 }
 
@@ -334,7 +333,32 @@ function postReport(userId, postNum, reportReason, content) {
 
 function openModalReply(replyNum, userId){
 	document.getElementById('replyTarget').value = replyNum;
-	$('#replyReportModal').modal('show');	
+	
+	let token = $("meta[name='_csrf']").attr("content");
+	let header = $("meta[name='_csrf_header']").attr("content");
+	let httpRequest = new XMLHttpRequest();
+
+	httpRequest.onreadystatechange = function() {
+		if (httpRequest.readyState === XMLHttpRequest.DONE) {
+			if (httpRequest.status === 200) {
+				if (httpRequest.response == 0) {
+					$('#replyReportModal').modal('show');		
+				} else {			
+					alert("이미 신고한 댓글입니다.");
+				}
+				
+			} else {
+				alert('request에 뭔가 문제가 있어요.');
+			}
+		}
+	};
+	
+	//POST로 요청
+	httpRequest.open('POST', "./replyreportcheck", true);
+	httpRequest.setRequestHeader(header, token);
+	httpRequest.setRequestHeader('Content-type',
+			'application/x-www-form-urlencoded');
+	httpRequest.send("replyNum=" + replyNum+"&userId="+userId); // 요게 문제였습니다!!
 	
 }
 

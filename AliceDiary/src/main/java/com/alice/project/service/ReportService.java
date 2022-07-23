@@ -31,9 +31,16 @@ public class ReportService {
 	public Report replyReport(Report report) {
 		return reportRepository.save(report);
 	}
-
-	public List<Report> checkExist(Long targetN, String userId){
+	
+	//게시글 신고유무판단
+	public List<Report> postReportcheck(Long postNum, String userId){
 		Member member = memberRepository.findById(userId);
-		return reportRepository.findPostReportExist(targetN, member.getNum());
+		return reportRepository.findPostReportExist(postNum, member.getNum());
 	}
+	
+	//댓글신고유무판단
+		public List<Report> replyReportcheck(Long replyNum, String userId){
+			Member member = memberRepository.findById(userId);
+			return reportRepository.findReplyReportExist(replyNum, member.getNum());
+		}
 }

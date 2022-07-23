@@ -3,6 +3,7 @@ package com.alice.project.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class PostController {
 	// 글쓰기
 	@GetMapping("/community/post")
 	public String writeform(Model model, @AuthenticationPrincipal UserDetails user) {
-		log.info("get");
+		
 		model.addAttribute("writeFormDto", new WriteFormDto());
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		return "community/writeForm";
@@ -62,8 +63,7 @@ public class PostController {
 	@PostMapping("/community/post")
 	public String writeSubmit(WriteFormDto writeFormDto, HttpSession session,
 			@AuthenticationPrincipal UserDetails user) {
-		log.info("controller 실행");
-
+		
 		Member member = memberService.findById(user.getUsername());
 
 		Post post = Post.createPost(writeFormDto, member);
@@ -72,7 +72,7 @@ public class PostController {
 		attachedFileService.postFileUpload(writeFormDto.getOriginName(), postService.write(post), session,
 				user.getUsername());
 
-		return "redirect:list";
+		return "redirect:./list";
 	}
 
 	// 게시글 리스트 가져오기
@@ -152,7 +152,7 @@ public class PostController {
 		return "community/postView";
 	}
 
-	// 게시글 수정하기 첨부파일도 수정
+	// get 게시글 수정하기 첨부파일도 수정
 	@GetMapping("/community/put")
 	public String getUpdate(Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
 		log.info("수정컨트롤러 get");
@@ -168,17 +168,19 @@ public class PostController {
 		return "community/updateForm";
 	}
 
-	// 게시글 수정하기 첨부파일도 수정
+	// post 게시글 수정하기 첨부파일도 수정
 	@PostMapping("/community/put")
 	public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
-
+		
+		String postNum = Long.toString(updateDto.getPostNum());
+		
 		postService.updatePost(updateDto.getPostNum(), updateDto);
 
 		Post updatedPost = postService.findOne(updateDto.getPostNum());
 
 		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
 
-		return "redirect:list";
+		return "redirect:/community/get?num="+postNum;
 	}
 
 	// 게시글 수정에서 파일하나 삭제하기

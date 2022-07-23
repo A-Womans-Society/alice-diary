@@ -226,7 +226,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="hidden" name="TargetNum" th:value="${postView.num}">
+						<input type="hidden" name="postNum" th:value="${postView.num}">
 						<button type="button"
 							th:onclick="postReport([[${#authentication.name}]],[[${postView.num}]])">신고하기</button>
 					</div>

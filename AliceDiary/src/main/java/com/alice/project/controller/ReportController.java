@@ -13,10 +13,8 @@ import com.alice.project.service.ReportService;
 import com.alice.project.web.ReportDto;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@Slf4j
 @RequiredArgsConstructor
 public class ReportController {
 
@@ -37,10 +35,11 @@ public class ReportController {
 		return true;
 	}
 
-	@PostMapping("community/checkExist")
+	//게시글 신고유무 판단
+	@PostMapping("community/postreportcheck")
 	@ResponseBody
-	public int checkExist(Long targetNum, String userId) {
-		return reportService.checkExist(targetNum, userId).size();
+	public int postReportcheck(Long postNum, String userId) {
+		return reportService.postReportcheck(postNum, userId).size();
 	}
 	
 	// 댓글신고하기
@@ -52,5 +51,12 @@ public class ReportController {
 		reportService.replyReport(Report.createReplyReport(reportDto.getReplyNum(), reportReason, content, member));
 
 		return true;
+	}
+	
+	//댓글 신고유무 판단
+	@PostMapping("community/replyreportcheck")
+	@ResponseBody
+	public int replyReportcheck(Long replyNum, String userId) {
+		return reportService.replyReportcheck(replyNum, userId).size();
 	}
 }
