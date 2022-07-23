@@ -43,7 +43,6 @@ public class Friend {
 	@JoinColumn(name = "adder_num", unique = true)
 	@JsonBackReference
 	private Member member; // 친구 등록하는 회원 객체
-	
 
 	// 연관관계 메서드 (양방향관계)
 //	public void setGroup(FriendsGroup group) {
