@@ -53,7 +53,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("processNewMember 진입");
 		Member newMember = saveNewMember(userDto);
 		Member.setProfileImg(newMember);
-		log.info("newMember.getId = " + newMember.getProfileImg());
 		sendSignUpConfirmEmail(newMember);
 		return newMember;
 	}
@@ -80,11 +79,18 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	private Member saveUpdateMember(Long num, @Valid UserDto userDto, boolean changeIMg) {
 		Member m = memberRepository.findByNum(num);
 		log.info("saveUpdateMember 진입");
-//    	userDto.setPassword(userDto.getPassword());
+		if (userDto.getBirth() == null) {
+			userDto.setBirth(m.getBirth());
+		}
+		userDto.setPassword(m.getPassword());
+		userDto.setGender(m.getGender());
+		userDto.setRegDate(m.getRegDate());
+		userDto.setEmail(m.getEmail());
 		userDto.setEmailCheckToken(m.getEmailCheckToken());
 		userDto.setEmailCheckTokenGeneratedAt(m.getEmailCheckTokenGeneratedAt());
+		userDto.setEmailVerified(m.isEmailVerified());
+		userDto.setStatus(Status.USER_IN);
 		userDto.setNum(num);
-		userDto.setEmail(m.getEmail());
 		if (!changeIMg) {
 			userDto.setSaveName(m.getProfileImg());
 		}
@@ -130,7 +136,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("to????????? = " + newMember.getEmail());
 		emailService.sendEmail(emailMessage);
 	}
-	
 
 	@Transactional
 	public Member saveMember(Member member) {
@@ -148,8 +153,11 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	// id 중복테스트
 	public int checkIdDuplicate(String id) {
 		boolean check = memberRepository.existsById(id);
+		log.info("check : " + check);
 		if (check) {
 			return 1; // 아이디 중복이면 1
+		} else if (id.equals("default")) {
+			return 1;
 		} else {
 			return 0; // 사용 가능 아이디면 0
 		}

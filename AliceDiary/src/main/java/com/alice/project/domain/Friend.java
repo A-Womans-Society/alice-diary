@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AccessLevel;
@@ -26,6 +28,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "num")
+@DynamicInsert
 public class Friend {
 
 	@Id
@@ -33,25 +36,27 @@ public class Friend {
 	@SequenceGenerator(name = "FRIEND_SEQ_GENERATOR", sequenceName = "SEQ_FRIEND_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "friend_num")
 	private Long num; // 친구 번호
-//   private Long adderNum; // 등록하는 친구 회원번호
-	@Column(unique = true)
+	@Column(nullable = false)
 	private Long addeeNum; // 등록되는 친구 회원번호
+	@Column(nullable = false)
 	private Long groupNum; // 등록된 그룹 번호 (기본그룹 = 1)
+
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "adder_num")
+	@JsonBackReference
+	private Member member; // 친구 등록하는 회원 객체
 
 //   @ManyToOne(fetch=FetchType.LAZY)
 //   @JoinColumn(name="group_num")
+//	 @JsonBackReference
 //   private FriendsGroup group; // 친구 소속 그룹
-//    
-	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name = "adder_num", unique = true)
-	@JsonBackReference
-	private Member member; // 친구 등록하는 회원 객체
 
 	// 연관관계 메서드 (양방향관계)
 //   public void setGroup(FriendsGroup group) {
 //      this.group = group;
 //      group.getFriends().add(this);
 //   }
+
 	public void setMember(Member member) {
 		this.member = member;
 //      return member.getNum();

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -51,6 +52,7 @@ public class UserDto {
 
 	@NotEmpty(message = "이메일은 필수 입력 값입니다.")
 	@Email(message = "이메일 형식으로 입력해주세요.")
+	@Valid
 	private String email;
 
 	@NotBlank(message = "전화번호는 필수 입력 값입니다.")

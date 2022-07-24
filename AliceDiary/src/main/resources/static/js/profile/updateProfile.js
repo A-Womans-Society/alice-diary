@@ -16,3 +16,4 @@
 			location = contextPath + "/AliceDiary/member/"+id;
 		}
 	}
+	

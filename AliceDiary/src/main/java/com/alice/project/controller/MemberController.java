@@ -37,7 +37,7 @@ public class MemberController {
 	private final MemberRepository memberRepository;
 
 	// 먼저 Validator로 인증해주는 메서드
-	@InitBinder("userDto")
+	@InitBinder("memberDto")
 	public void initBinder(WebDataBinder webDataBinder) {
 		webDataBinder.addValidators(userDtoValidator);
 	}
@@ -66,11 +66,7 @@ public class MemberController {
 			log.info("에러 발생!");
 			return "login/registerForm";
 		}
-		if (userDto.getProfileImg() == null) {
-			memberService.processNewMember(userDto);
-		} /*
-			 * else { Member member = memberService.processNewMember(memberDto); }
-			 */
+		memberService.processNewMember(userDto);
 		return "redirect:/";
 	}
 
@@ -109,13 +105,13 @@ public class MemberController {
 		memberService.sendSignUpConfirmEmail(member);
 		return "redirect:/";
 	}
-
+	
 	// ID 중복체크 PostMapping
 	@PostMapping("/register/idCheck")
 	@ResponseBody
-	public int checkIdDuplication(@RequestParam(value = "id") String id) {
+	public String checkIdDuplication(String id) {
 		log.info("userIdCheck 진입");
-		int check = memberService.checkIdDuplicate(id);
+		String check = String.valueOf(memberService.checkIdDuplicate(id));
 		log.info("check== " + check);
 		return check;
 	}
