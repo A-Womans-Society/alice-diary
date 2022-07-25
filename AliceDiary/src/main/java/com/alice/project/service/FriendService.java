@@ -21,15 +21,14 @@ public class FriendService {
 	private final MemberRepository memberRepository;
 	private final FriendsGroupRepository fgRepository;
 
-	// 친구추가 서비스(추가하는 멤버회원 번호, 추가되는 멤버회원의 아이디)
+	// 새로운 친구추가 서비스(추가하는 멤버회원 번호, 추가되는 멤버회원의 아이디)
 	public boolean addFriendship(Member member, String searchId) {
 		Member f = memberRepository.findById(searchId);
-		int groupSize = fgRepository.findAll().size();
-		if (groupSize == 0) {
-			fgRepository.save(new FriendsGroup("기본그룹"));
-		}
+		FriendsGroup friendsGroup = new FriendsGroup("기본그룹", member.getNum());
+		fgRepository.save(friendsGroup);
+
 		List<Friend> check = friendRepository.checkAlreadyFriend(member.getNum(), f.getNum());
-		Long groupNum = 1L; // 일단 기본그룹에 추가
+		Long groupNum = 1L; // 기본그룹에 추가
 		if (check.size() <= 0) {
 			Friend friend = new Friend(member, f.getNum(), groupNum);
 			friendRepository.save(friend);
@@ -76,5 +75,10 @@ public class FriendService {
 		}
 		// 존재함
 		return true;
+	}
+	
+	// 친구 삭제하기
+	public void deleteFriend(Long adderNum, Long addeeNum) {
+		friendRepository.deleteById(addeeNum);
 	}
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,7 +39,7 @@ public class FriendsController {
 	// 친구 추가(회원 id검색)
 	@PostMapping("/friends/add")
 	public String addFriend(String searchId, @AuthenticationPrincipal UserDetails user) {
-		Member m = memberService.findById(user.getUsername());
+		Member m = memberService.findById(user.getUsername());		
 		log.info("member : " + m.getId());
 		log.info("member : " + searchId);
 		friendService.addFriendship(m, searchId);
@@ -64,7 +65,8 @@ public class FriendsController {
 		for (Friend f : friendList) {
 			Member m = memberService.findByNum(f.getAddeeNum());
 			String groupName = friendsGroupService.getGroupName(f.getGroupNum());
-			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(), m.getMobile(), m.getBirth(),
+			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(),
+					m.getName(),m.getMobile(), m.getBirth(),
 					m.getGender(), m.getEmail(), groupName);
 
 			friendship.add(dto);
@@ -85,7 +87,8 @@ public class FriendsController {
 			Friend fg = friendService.groupNum(adderNum, f.getNum());
 			String groupName = friendsGroupService.getGroupName(fg.getGroupNum());
 			log.info("그룹이름:" + groupName);
-			FriendshipDto dto = new FriendshipDto(sf.getNum(), sf.getId(), sf.getName(), sf.getMobile(), sf.getBirth(),
+			FriendshipDto dto = new FriendshipDto(sf.getNum(), sf.getId(),
+					sf.getName(), sf.getMobile(), sf.getBirth(),
 					sf.getGender(), sf.getEmail(), groupName);
 			searchFriendList.add(dto);
 		}
@@ -101,4 +104,11 @@ public class FriendsController {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		return "friends/friendInfo";
 	}
+	
+	// 친구 삭제하기
+	@PostMapping("friends/deleteFriend")
+	public void deleteFriend(String id) {
+		
+	}
+	
 }

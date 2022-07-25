@@ -32,10 +32,8 @@ public class AttachedFileService {
 
 	@Autowired
 	private AttachedFileRepository attachedFileRepository;
-	
-	
 
-	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session) {
+	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session, String id) {
 		log.info("list size : " + files.size());
 		if (files.size() != 0) {
 			log.info("service run");
@@ -43,7 +41,7 @@ public class AttachedFileService {
 
 				String savePath = "C:\\Temp\\upload\\";
 				String ofile = multipartFile.getOriginalFilename();
-				String sfile = postSaveFile(multipartFile, savePath, session);
+				String sfile = postSaveFile(multipartFile, savePath, session, id);
 
 				log.info("service run222222222");
 
@@ -59,12 +57,12 @@ public class AttachedFileService {
 		}
 	}
 
-	public String postSaveFile(MultipartFile file, String savePath, HttpSession session) {
+	public String postSaveFile(MultipartFile file, String savePath, HttpSession session, String id) {
 
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-		String sfile = currentTime + "_" + ofile;
+		String sfile = id + "_" + currentTime + "_" + ofile;
 
 		log.info("ofile:" + ofile);
 		log.info("sfile:" + sfile);
@@ -78,48 +76,47 @@ public class AttachedFileService {
 
 		return sfile;
 	}
-	
-	public ResponseEntity<UrlResource> postFileDownload(Long num) throws MalformedURLException, UnsupportedEncodingException{
-		
+
+	public ResponseEntity<UrlResource> postFileDownload(Long num)
+			throws MalformedURLException, UnsupportedEncodingException {
+
 		Optional<AttachedFile> findFile = attachedFileRepository.findById(num);
-		AttachedFile attachedFile = findFile.orElse (null);
-		if (findFile == null) return null;
-		
+		AttachedFile attachedFile = findFile.orElse(null);
+		if (findFile == null)
+			return null;
+
 		String sFileName = attachedFile.getSaveName();
 		String oFileName = attachedFile.getOriginName();
-		
-		
+
 		String encodeoFileName;
 
-			encodeoFileName = URLEncoder.encode(oFileName,"UTF-8").replace("+", "%20");
-			
-			String savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
-			UrlResource resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
-			
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath)
-					.body(resource);
-			
+		encodeoFileName = URLEncoder.encode(oFileName, "UTF-8").replace("+", "%20");
+
+		String savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
+		UrlResource resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath).body(resource);
+
 	}
-	
-	public List<AttachedFile> fileView(Post post,Pageable pageable) {
+
+	public List<AttachedFile> fileView(Post post, Pageable pageable) {
 		log.info("service run fileVIEW");
-		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
 		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
 			log.info("AFS의 fileView!!! af : " + oriName);
 		}
-		return attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+		return attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
 	}
-	
+
 	public List<AttachedFile> newFileView(Long postNum) {
 		log.info("service run newfileVIEW");
-		
+
 		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(postNum);
-		
+
 		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
-		
+
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
 			String saveName = af.getSaveName();
@@ -128,8 +125,5 @@ public class AttachedFileService {
 		}
 		return afs;
 	}
-	
 
-	
-	
 }

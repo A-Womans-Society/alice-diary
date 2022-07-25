@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alice.project.domain.FriendsGroup;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
 import com.alice.project.repository.MemberRepository;
@@ -38,7 +37,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findById(String id) {
 		return memberRepository.findById(id);
 	}
-	
+
 //	public Member editPwd(String id, String password) {
 //		return memberRepository.findById(id);
 //	}
@@ -132,9 +131,12 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		log.info("returnOne 실행하고 나서 resultMember.getStatus():" + resultMember.getStatus());
 		return 1; // 탈퇴회원 처리가 됐으면 1 반환
 	}
-	
-	public Member findByName(String name){
+
+	public Member findByName(String name) {
 		return memberRepository.findByName(name);
 	}
 
+	public Long findNumById(String id) {
+		return memberRepository.findMemberNumById(id);
+	}
 }

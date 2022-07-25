@@ -22,4 +22,5 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 	@Transactional
 	@Query(value = "SELECT * FROM Friend WHERE adder_num = :adderNum AND addee_num = :addeeNum", nativeQuery = true)
 	List<Friend> checkAlreadyFriend(Long adderNum, Long addeeNum);
+	
 }

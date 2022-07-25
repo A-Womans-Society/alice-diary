@@ -8,11 +8,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.DynamicInsert;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,31 +28,35 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="community")
-@NoArgsConstructor(access = AccessLevel.PROTECTED) //JPA 사용을위해 기본 생성자 생성은 필수 =  protected Community() { }
+@Table(name = "community")
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 사용을위해 기본 생성자 생성은 필수 = protected Community() { }
 @Getter
 @ToString
 @EqualsAndHashCode(of = "num")
+@DynamicInsert
 public class Community {
-	
-	@Id @GeneratedValue
-	@Column(name="community_num")
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COM_SEQ_GENERATOR")
+	@SequenceGenerator(name = "COM_SEQ_GENERATOR", sequenceName = "SEQ_COMMUNITY_NUM", initialValue = 1, allocationSize = 1)
+	@Column(name = "community_num")
 	private Long num; // 커뮤니티 번호
+	@Column(nullable = false)
 	private String name; // 커뮤니티 이름
+	@Column(nullable = false)
 	private String memberList; // 커뮤니티 참여회원 리스트
+	@Column(nullable = false)
 	private LocalDate regDate; // 커뮤니티 생성일자
 	private String description; // 커뮤니티 설명
 
-	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name="member_num")
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "member_num")
 	@JsonBackReference
 	private Member member; // 커뮤니티 생성 회원 객체
-	
-	@OneToMany(mappedBy="community")
+
+	@OneToMany(mappedBy = "community")
 	@JsonManagedReference
 	private List<Post> posts = new ArrayList<>(); // 해당 커뮤니티 소속 게시물리스트
-	/* (넣자구 하면 주길꺼져...?ㅎㅅㅎ) */
-	// private String thumbnail; // 커뮤니티 섬네일 이미지
 
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {

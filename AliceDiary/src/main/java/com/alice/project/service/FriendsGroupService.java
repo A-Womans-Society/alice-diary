@@ -7,13 +7,15 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.alice.project.controller.FriendsGroupController;
 import com.alice.project.domain.FriendsGroup;
 import com.alice.project.domain.Member;
 import com.alice.project.repository.FriendsGroupRepository;
 import com.alice.project.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 //@Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -22,27 +24,24 @@ public class FriendsGroupService {
 	private final FriendsGroupRepository friendsGroupRepository;
 	private final MemberRepository memberRepository;
 
-	// FriendsGroupName
+	// 그룹 이름
 	public String getGroupName(Long groupNum) {
 		FriendsGroup group = friendsGroupRepository.getById(groupNum);
 		return group.getGroupName();
 	}
-
-	public FriendsGroup getGroupByNum(Long groupNum) {
-		FriendsGroup group = friendsGroupRepository.findByNum(groupNum);
+	// 그룹 번호
+	public Long getGroupByNum(Long groupNum) {
+		Long group = friendsGroupRepository.findByNum(groupNum);
 		return group;
 	}
 	
-	// 그룹명 등록(그룹 생성 회원번호, 그룹이름)
-	@Transactional
+	// 그룹명 등록(그룹 생성한 회원번호, 그룹이름)
 	public FriendsGroup addGroup(Long groupCreatorNum, String groupName) {
-		//엔티티 조회
-		Member groupCreator = memberRepository.findByNum(groupCreatorNum);
-		FriendsGroup group = friendsGroupRepository.findByName(groupName);
-		
-		FriendsGroup friendsgroup = new FriendsGroup(groupName, groupCreatorNum);
-		
-		return friendsGroupRepository.save(friendsgroup);
+		Member m = memberRepository.findByNum(groupCreatorNum);
+		FriendsGroup saveGroup = new FriendsGroup(groupName, m.getNum());	
+		log.info("그룹생성한 회원 번호!!!!!!" + groupCreatorNum);
+		log.info("그룹 이름 !!!!!!!!!" + groupName);
+		return friendsGroupRepository.save(saveGroup);
 	}
 	
 	// 그룹명 전체 조회

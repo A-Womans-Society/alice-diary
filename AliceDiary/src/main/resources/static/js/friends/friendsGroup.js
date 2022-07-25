@@ -1,25 +1,6 @@
 function openModalGroup() {
-	document.getElementById("searchId").innerText = "";
-	document.getElementById("memberInfo").innerHTML = "";
-	$("#addGroup").modal();
-};
-
-function groupCheck(){
-	let check = document.getElementById("checkGroup").value;
-	if (check == 'false'){
-		alert("그룹명을 먼저 입력하세요.");
-		return false;
-	}else if(!confirm('그룹을 등록하시겠습니까?')){
-		return false;
-	} else {
-		return true;
-	}
-}
-
-```jsx
-function openModalGroup() {
-	document.getElementById("searchId").innerText = "";
-	document.getElementById("memberInfo").innerHTML = "";
+	//document.getElementById("searchId").innerText = "";
+	//document.getElementById("memberInfo").innerHTML = "";
 	$("#addGroup").modal();
 };
 
