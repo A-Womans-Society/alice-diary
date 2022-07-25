@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.AttachedFile;
+import com.alice.project.domain.Message;
 import com.alice.project.domain.Post;
+import com.alice.project.domain.PostType;
 import com.alice.project.repository.AttachedFileRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +41,15 @@ public class AttachedFileService {
 		log.info("list size : " + files.size());
 		if (files.size() != 0) {
 			log.info("service run");
+			String savePath = "";
+			if(post.getPostType() == PostType.NOTICE) {
+				savePath = "C:\\Temp\\upload\\notice\\";
+			}else if(post.getPostType() == PostType.OPEN){
+				savePath = "C:\\Temp\\upload\\open\\";
+			}else if(post.getPostType() == PostType.CUSTOM){
+				savePath = "C:\\Temp\\upload\\private\\";
+			}
 			for (MultipartFile multipartFile : files) {
-
-				String savePath = "C:\\Temp\\upload\\";
 				String ofile = multipartFile.getOriginalFilename();
 				String sfile = postSaveFile(multipartFile, savePath, session, id);
 
@@ -79,6 +87,24 @@ public class AttachedFileService {
 		return sfile;
 	}
 	
+	// 쪽지 첨부파일 저장
+	public String saveMsgFile(MultipartFile file, Message msg, HttpSession session, String id) {
+		String savePath = "C:\\Temp\\upload\\message\\";
+		String ofile = file.getOriginalFilename();
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		String sfile = id+"_" +currentTime + "_" + ofile;
+
+		AttachedFile savefile = new AttachedFile(ofile, sfile, savePath, msg);
+
+		attachedFileRepository.save(savefile);
+		try {
+			file.transferTo(new File(savePath + sfile));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return sfile;
+	}
 	public ResponseEntity<UrlResource> postFileDownload(Long num) throws MalformedURLException, UnsupportedEncodingException{
 		
 		Optional<AttachedFile> findFile = attachedFileRepository.findById(num);

@@ -26,4 +26,19 @@ public class AttachedFileController {
 		return attachedFileService.postFileDownload(num);
 	}
 
+	/* 공지사항 첨부파일 다운로드하기 */
+	@GetMapping("/admin/notice/download/{num}")
+	public ResponseEntity<UrlResource> adminNoticefileDownload(@PathVariable("num") Long num)
+			throws MalformedURLException, UnsupportedEncodingException {
+
+		return attachedFileService.postFileDownload(num);
+	}
+	
+	@GetMapping("/notice/download/{num}")
+	public ResponseEntity<UrlResource> noticefileDownload(@PathVariable("num") Long num)
+			throws MalformedURLException, UnsupportedEncodingException {
+
+		return attachedFileService.postFileDownload(num);
+	}
+
 }

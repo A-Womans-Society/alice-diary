@@ -38,11 +38,7 @@ public class ProfileController {
 	@GetMapping(value = "/member/{id}")
 	public String myProfile(@PathVariable String id, Model model) {
 		Member member = profileService.findById(id);
-//      if (member.getProfileImg() == "default") {
-//         UserDto userDto = new UserDto();
-//         userDto.setSaveName("defualt");
-//         model.addAttribute("member", userDto);
-//      }
+		log.info("수정 후 Birth" + member.getBirth());
 		model.addAttribute("member", member);
 		return "profile/myProfile";
 	}
@@ -50,7 +46,7 @@ public class ProfileController {
 	// 내 프로필 수정 화면 GET
 	@GetMapping(value = "/member/update/{id}")
 	public String updateProfile(@PathVariable String id, Model model) {
-		log.info("POST 진입!!");
+		log.info("내 프로필 수정 GET 진입!!");
 		Member member = profileService.findById(id);
 		model.addAttribute("member", member);
 		model.addAttribute("userDto", new UserDto());
@@ -63,24 +59,19 @@ public class ProfileController {
 			BindingResult bindingResult, Long num, HttpSession session) {
 		log.info("프로필 수정 페이지 진입");
 		log.info("member.num == " + num);
-		if (!userDto.getProfileImg().getOriginalFilename().equals("")) {
+		if (!userDto.getProfileImg().getOriginalFilename().isEmpty()) {
 			String originName = userDto.getProfileImg().getOriginalFilename();
 			String saveName = id + "." + originName.split("\\.")[1];
 			log.info("saveName == " + saveName);
-			String savePath = session.getServletContext().getRealPath("c:\\Temp\\upload");
+			String savePath = "C:\\Temp\\upload\\profile\\";
 
 			try {
-				userDto.getProfileImg().transferTo(new File(savePath, saveName));
 				userDto.setSaveName(saveName);
+				log.info("userDto.saveName = " + userDto.getSaveName());
+				userDto.getProfileImg().transferTo(new File(savePath + saveName));
+				log.info("userDto.getProfileImg = " + userDto.getProfileImg());
 
-				Member updateMember = profileService.findMemById(id);
-				userDto.setPassword(updateMember.getPassword());
-				userDto.setGender(updateMember.getGender());
-				userDto.setSaveName(saveName);
 				memberService.processUpdateMember(num, userDto, true);
-//            userDto.setBirth(LocalDate.parse(newBirth, DateTimeFormatter.ISO_DATE));
-//            updateMember = Member.createMember(num, userDto, passwordEncoder);
-//            memberService.saveMember(updateMember);
 
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
@@ -88,15 +79,8 @@ public class ProfileController {
 				e.printStackTrace();
 			}
 		} else {
-			Member updateMember = profileService.findMemById(id);
-			userDto.setPassword(updateMember.getPassword());
-			userDto.setGender(updateMember.getGender());
-			userDto.setSaveName("default");
-//         userDto.setBirth(LocalDate.parse(newBirth, DateTimeFormatter.ISO_DATE));
 			memberService.processUpdateMember(num, userDto, false);
-
 		}
-
 		return "redirect:/member/{id}";
 	}
 

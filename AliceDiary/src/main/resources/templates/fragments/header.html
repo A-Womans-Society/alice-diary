@@ -26,8 +26,8 @@
 
 				<li class="nav-item"><a class="nav-link text-white"
 					href="/AliceDiary/community/list"><h5 class="nav-texts">커뮤니티</h5></a></li>
-				<li class="nav-item"><a class="nav-link text-white" href="#"><h5
-							class="nav-texts">공지사항</h5></a></li>
+				<li class="nav-item"><a class="nav-link text-white"
+					href="/AliceDiary/notice/list"><h5 class="nav-texts">공지사항</h5></a></li>
 			</ul>
 			<ul class="navbar-nav align-items-center">
 				<li class="nav-item" data-toggle="tooltip" data-placement="bottom"
@@ -35,13 +35,17 @@
 					th:onclick="|location.href='/AliceDiary/member/@{${#authentication.name}}'|">
 
 
-					<th:block th:if="${#strings.equals(member.profileImg, 'default')}">
-						<img th:src="@{/upload/Alice.png}" alt="user" width="45"
-							class="rounded-circle">
-					</th:block> <th:block
-						th:unless="${#strings.equals(member.profileImg, 'default')}">
-						<img th:src="@{/upload/}+@{${member.profileImg}}" alt="user"
-							width="45" class="rounded-circle">
+<!-- 					<th:block th:if="${#strings.equals(member.profileImg, 'default')}"> -->
+<!-- 						<img th:src="@{/upload/profile/default.png}" alt="user" width="45" -->
+<!-- 							class="rounded-circle"> -->
+<!-- 					</th:block> <th:block -->
+<!-- 						th:unless="${#strings.equals(member.profileImg, 'default')}"> -->
+<!-- 						<img th:src="@{/upload/profile/}+@{${member.profileImg}}" -->
+<!-- 							alt="user" width="45" class="rounded-circle"> -->
+<!-- 					</th:block>  -->
+					<th:block>
+						<img th:src="@{/upload/profile/}+@{${member.profileImg}}"
+							alt="user" width="45" class="rounded-circle">
 					</th:block>
 
 				</li>

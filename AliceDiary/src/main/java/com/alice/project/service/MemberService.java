@@ -39,158 +39,169 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MemberService implements UserDetailsService { // MemberService가 UserDetailService를 구현
 
-	private final MemberRepository memberRepository;
-	private final PasswordEncoder passwordEncoder;
-	private final EntityManager em;
-	private final AppProperties appProperties;
-	private final TemplateEngine templateEngine;
-	private final EmailService emailService;
-	private final ModelMapper modelMapper;
+   private final MemberRepository memberRepository;
+   private final PasswordEncoder passwordEncoder;
+   private final EntityManager em;
+   private final AppProperties appProperties;
+   private final TemplateEngine templateEngine;
+   private final EmailService emailService;
+   private final ModelMapper modelMapper;
 
-	// register member
-	@Transactional
-	public Member processNewMember(UserDto userDto) {
-		log.info("processNewMember 진입");
-		Member newMember = saveNewMember(userDto);
-		Member.setProfileImg(newMember);
-		log.info("newMember.getId = " + newMember.getProfileImg());
-		sendSignUpConfirmEmail(newMember);
-		return newMember;
-	}
+   // register member
+   @Transactional
+   public Member processNewMember(UserDto userDto) {
+      log.info("processNewMember 진입");
+      Member newMember = saveNewMember(userDto);
+      Member.setProfileImg(newMember);
+      sendSignUpConfirmEmail(newMember);
+      return newMember;
+   }
 
-	@Transactional
-	private Member saveNewMember(@Valid UserDto userDto) {
-		log.info("saveNewMember 진입");
-		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-		Member member = modelMapper.map(userDto, Member.class);
-		member.generateEmailCheckToken();
-		return memberRepository.save(member);
-	}
+   @Transactional
+   private Member saveNewMember(@Valid UserDto userDto) {
+      log.info("saveNewMember 진입");
+      userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+      Member member = modelMapper.map(userDto, Member.class);
+      member.generateEmailCheckToken();
+      return memberRepository.save(member);
+   }
 
-	// update member profile
-	@Transactional
-	public Member processUpdateMember(Long num, UserDto userDto, boolean changeIMg) {
-		log.info("processUpdateMember 진입");
-		Member updateMember = saveUpdateMember(num, userDto, changeIMg);
-		sendSignUpConfirmEmail(updateMember);
-		return updateMember;
-	}
+   // update member profile
+   @Transactional
+   public Member processUpdateMember(Long num, UserDto userDto, boolean changeIMg) {
+      log.info("processUpdateMember 진입");
+      Member updateMember = saveUpdateMember(num, userDto, changeIMg);
+      Member.updateProfileImg(updateMember, userDto, memberRepository);
+      return updateMember;
+   }
 
-	@Transactional
-	private Member saveUpdateMember(Long num, @Valid UserDto userDto, boolean changeIMg) {
-		Member m = memberRepository.findByNum(num);
-		log.info("saveUpdateMember 진입");
-//    	userDto.setPassword(userDto.getPassword());
-		userDto.setEmailCheckToken(m.getEmailCheckToken());
-		userDto.setEmailCheckTokenGeneratedAt(m.getEmailCheckTokenGeneratedAt());
-		userDto.setNum(num);
-		userDto.setEmail(m.getEmail());
-		if (!changeIMg) {
-			userDto.setSaveName(m.getProfileImg());
-		}
-		Member member = modelMapper.map(userDto, Member.class);
-		return memberRepository.save(member);
-	}
+   @Transactional
+   private Member saveUpdateMember(Long num, @Valid UserDto userDto, boolean changeIMg) {
+      Member m = memberRepository.findByNum(num);
+      log.info("saveUpdateMember 진입");
+      if (userDto.getBirth() == null) {
+         userDto.setBirth(m.getBirth());
+      }
+      userDto.setPassword(m.getPassword());
+      userDto.setGender(m.getGender());
+      userDto.setRegDate(m.getRegDate());
+      userDto.setEmail(m.getEmail());
+      userDto.setEmailCheckToken(m.getEmailCheckToken());
+      userDto.setEmailCheckTokenGeneratedAt(m.getEmailCheckTokenGeneratedAt());
+      userDto.setEmailVerified(m.isEmailVerified());
+      userDto.setStatus(Status.USER_IN);
+      userDto.setNum(num);
+      log.info("!!!!!!!!!!!!changeImg" + changeIMg);
+      if (!changeIMg) { // 프로필 사진 안바꾸면
+         userDto.setSaveName(m.getProfileImg());
+      }
+      Member member = modelMapper.map(userDto, Member.class);
+      return memberRepository.save(member);
+   }
 
-	@Transactional
-	public void completeSignUp(Member member) {
-		member.completeRegister();
-		login(member);
-		Member.changeMemberIn(member);
-	}
+   @Transactional
+   public void completeSignUp(Member member) {
+      member.completeRegister();
+      login(member);
+      Member.changeMemberIn(member);
+   }
 
-	@Transactional
-	public void login(Member member) {
-		List<SimpleGrantedAuthority> authorities = MemberAccount.createAuthor();
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-				new MemberAccount(member, authorities), member.getPassword());
+   @Transactional
+   public void login(Member member) {
+      List<SimpleGrantedAuthority> authorities = MemberAccount.createAuthor();
+      UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+            new MemberAccount(member, authorities), member.getPassword());
 
-		log.info("token getName: " + token.getName());
-		log.info("token getAuthorities: " + token.getAuthorities());
+      log.info("token getName: " + token.getName());
+      log.info("token getAuthorities: " + token.getAuthorities());
 
-		SecurityContextHolder.getContext().setAuthentication(token);
-	}
+      SecurityContextHolder.getContext().setAuthentication(token);
+   }
 
-	@Transactional
-	public void sendSignUpConfirmEmail(Member newMember) {
-		log.info("sendSignUpConfirmEmail 진입");
-		Context context = new Context();
-		context.setVariable("link",
-				"/check-email-token?token=" + newMember.getEmailCheckToken() + "&email=" + newMember.getEmail());
-		context.setVariable("id", newMember.getId());
-		log.info("newMember.getId() = " + newMember.getId());
-		context.setVariable("linkName", "이메일 인증하기");
-		context.setVariable("message", "앨리스 다이어리 서비스를 사용하려면 링크를 클릭하세요.");
-		context.setVariable("host", appProperties.getHost() + "/AliceDiary");
-		String message = templateEngine.process("login/simple-link", context);
+   @Transactional
+   public void sendSignUpConfirmEmail(Member newMember) {
+      log.info("sendSignUpConfirmEmail 진입");
+      Context context = new Context();
+      context.setVariable("link",
+            "/check-email-token?token=" + newMember.getEmailCheckToken() + "&email=" + newMember.getEmail());
+      context.setVariable("id", newMember.getId());
+      log.info("newMember.getId() = " + newMember.getId());
+      context.setVariable("linkName", "이메일 인증하기");
+      context.setVariable("message", "앨리스 다이어리 서비스를 사용하려면 링크를 클릭하세요.");
+      context.setVariable("host", appProperties.getHost() + "/AliceDiary");
+      String message = templateEngine.process("login/simple-link", context);
 
-		EmailMessage emailMessage = EmailMessage.builder().to(newMember.getEmail()).subject("앨리스 다이어리, 회원 가입 인증")
-				.message(message).build();
+      EmailMessage emailMessage = EmailMessage.builder().to(newMember.getEmail()).subject("앨리스 다이어리, 회원 가입 인증")
+            .message(message).build();
 
-		log.info("to????????? = " + newMember.getEmail());
-		emailService.sendEmail(emailMessage);
-	}
+      log.info("to????????? = " + newMember.getEmail());
+      emailService.sendEmail(emailMessage);
+   }
 
-	@Transactional
-	public Member saveMember(Member member) {
-		return memberRepository.save(member); // insert
-	}
+   @Transactional
+   public Member saveMember(Member member) {
+      return memberRepository.save(member); // insert
+   }
 
-	public Member findById(String id) {
-		return memberRepository.findById(id);
-	}
+   public Member findById(String id) {
+      return memberRepository.findById(id);
+   }
 
-//	public Member editPwd(String id, String password) {
-//		return memberRepository.findById(id);
-//	}
+//   public Member editPwd(String id, String password) {
+//      return memberRepository.findById(id);
+//   }
 
-	// id 중복테스트
-	public int checkIdDuplicate(String id) {
-		boolean check = memberRepository.existsById(id);
-		if (check) {
-			return 1; // 아이디 중복이면 1
-		} else {
-			return 0; // 사용 가능 아이디면 0
-		}
-	}
+   // id 중복테스트
+   public int checkIdDuplicate(String id) {
+      boolean check = memberRepository.existsById(id);
+      log.info("check : " + check);
+      if (check) {
+         return 1; // 아이디 중복이면 1
+      } else if (id.equals("default")) {
+         return 1;
+      } else {
+         return 0; // 사용 가능 아이디면 0
+      }
+   }
 
-	// id 찾기
-	public Member findId(String name, String mobile, String email) {
-		Member member = memberRepository.findByNameAndMobileAndEmail(name, mobile, email);
-		return member;
-	}
+   // id 찾기
+   public Member findId(String name, String mobile, String email) {
+      Member member = memberRepository.findByNameAndMobileAndEmail(name, mobile, email);
+      return member;
+   }
 
-	// 비밀번호 찾기
-	public Member findPwd(String id, String name, String mobile) {
-		Member member = memberRepository.findByIdAndNameAndMobile(id, name, mobile);
+   // 비밀번호 찾기
+   public Member findPwd(String id, String name, String mobile) {
+      Member member = memberRepository.findByIdAndNameAndMobile(id, name, mobile);
 
-		return member;
-	}
+      return member;
+   }
 
-	public Member findByNum(Long num) {
-		return memberRepository.findByNum(num);
-	}
+   public Member findByNum(Long num) {
+      return memberRepository.findByNum(num);
+   }
 
-	// 비밀번호 재설정
-	@Transactional
-	public Member updateMember(Member member) {
-		return memberRepository.save(member);
-	}
+   // 비밀번호 재설정
+   @Transactional
+   public Member updateMember(Member member) {
+      return memberRepository.save(member);
+   }
 
-	@Override
-	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException { // 로그인 할 유저의 id를 파라미터로 전달받음
-		Member member = memberRepository.findById(id);
+   @Override
+   public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException { // 로그인 할 유저의 id를 파라미터로 전달받음
+      Member member = memberRepository.findById(id);
 
-		if (member == null) {
-			throw new UsernameNotFoundException(id);
-		}
-		/*
-		 * UserDetail을 구현하고 있는 User 객체 반환 User객체를 생성하기 위해 생성자로 회원의 아이디, 비밀번호, status를
-		 * 파라미터로 넘겨 줌
-		 */
-		return User.builder().username(member.getId()).password(member.getPassword())
-				.roles(member.getStatus().toString()).build();
-	}
+      if (member == null) {
+         throw new UsernameNotFoundException(id);
+      }
+      /*
+       * UserDetail을 구현하고 있는 User 객체 반환 User객체를 생성하기 위해 생성자로 회원의 아이디, 비밀번호, status를
+       * 파라미터로 넘겨 줌
+       */
+      return User.builder().username(member.getId()).password(member.getPassword())
+            .roles(member.getStatus().toString()).build();
+   }
+
 
 	/* 회원 전체 조회 */
 	// 값을 가져오는 메서드에서는 기본 읽기전용옵션 적용됨

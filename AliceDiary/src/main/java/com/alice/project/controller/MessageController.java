@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Message;
 import com.alice.project.handler.Alert;
+import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.MessageService;
@@ -40,7 +42,8 @@ public class MessageController {
 	private final MessageService messageService;
 	private final MemberService memberService;
 	private final FriendService friendService;
-
+	private final AttachedFileService attachedFileService;
+	
 	// 쪽지 목록 보기
 	@GetMapping(value = "/messagebox/{id}")
 	public String messageList(@PathVariable("id") String id, Model model, @ModelAttribute MessageDto mdto,
@@ -99,7 +102,7 @@ public class MessageController {
 			log.info("" + memberService.findOne(receiverNum).getId());
 			mldto.setMessageToId(memberService.findOne(receiverNum).getId());
 			mldto.setMessageFromId(memberService.findOne(num).getId());
-			mldto.setProfileImg(memberService.findOne(num).getProfileImg());
+			mldto.setSenderProfileImg(memberService.findOne(receiverNum).getProfileImg());
 			mldto.setDirection(m.getDirection());
 			mldtos.add(mldto);
 		}
@@ -178,7 +181,7 @@ public class MessageController {
 			mldto.setRecentContent(m.getContent());
 			mldto.setMessageToId(memberService.findOne(receiverNum).getId());
 			mldto.setMessageFromId(memberService.findOne(fromNum).getId());
-			mldto.setProfileImg(memberService.findOne(fromNum).getProfileImg());
+			mldto.setSenderProfileImg(memberService.findOne(receiverNum).getProfileImg());
 			mldto.setDirection(m.getDirection());
 			mldtos.add(mldto);
 		}
@@ -196,10 +199,10 @@ public class MessageController {
 	@PostMapping("/messagebox/{id}")
 	public String sendMessage(@PathVariable("id") String id, Model model, HttpSession session,
 			@ModelAttribute MessageDto mdto) {
-		log.info("들오오니?????????????????????????????");
 		Long senderNum = messageService.findNumById(id);
 		Long receiverNum = messageService.findNumById(mdto.getMessageToId());
-
+		MultipartFile originName = mdto.getOriginName();
+		
 		if (senderNum > receiverNum) {
 			mdto.setUser1Num(receiverNum);
 			mdto.setUser2Num(senderNum);
@@ -212,10 +215,14 @@ public class MessageController {
 
 		mdto.setMessageFromId(id);
 		mdto.setSendDate(LocalDateTime.now());
+		
+		Message resultMsg = messageService.sendMsg(mdto);
+		if (!mdto.getOriginName().isEmpty()) { // 첨부파일이 있다면
+			attachedFileService.saveMsgFile(originName, resultMsg, session, id);
+		}
 		log.info("mdto" + mdto.toString());
 
-		Message result = messageService.sendMsg(mdto);
-		log.info("result.toString() : " + result.toString());
+		log.info("result.toString() : " + resultMsg.toString());
 		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + id));
 		return "message/alert";
 	}

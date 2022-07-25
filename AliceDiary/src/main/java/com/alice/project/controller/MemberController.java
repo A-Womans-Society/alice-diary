@@ -1,6 +1,5 @@
 package com.alice.project.controller;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +36,7 @@ public class MemberController {
 	private final MemberRepository memberRepository;
 
 	// 먼저 Validator로 인증해주는 메서드
-	@InitBinder("userDto")
+	@InitBinder("memberDto")
 	public void initBinder(WebDataBinder webDataBinder) {
 		webDataBinder.addValidators(userDtoValidator);
 	}

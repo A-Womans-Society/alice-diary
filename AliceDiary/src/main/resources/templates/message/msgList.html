@@ -100,14 +100,8 @@ input::placeholder {
 									<div class="list-group-item list-group-item-action rounded-0">
 										<div class="media"
 											th:onclick="'location.href=\''+ @{|/messagebox/${m.messageFromId}/${m.messageToId}|} + '\''">
-											<th:block th:if="${m.profileImg.equals('default')}">
-												<img th:src="@{/upload/Alice.png}" alt="user" width="50"
-													class="rounded-circle">
-											</th:block>
-											<th:block th:unless="${m.profileImg.equals('default')}">
-												<img th:src="@{/upload/}+@{${m.profileImg}}" alt="user"
+												<img th:src="@{/upload/profile/}+@{${m.senderProfileImg}}" alt="user"
 													width="50" class="rounded-circle">
-											</th:block>
 											<!-- ${m.profileImg} : 채팅목록의 상대방 프로필 사진 -->
 											<div class="media-body ml-4">
 												<div
@@ -144,14 +138,14 @@ input::placeholder {
 
 											<th:block
 												th:if="${(m.user1Num != userNum and m.direction == 0) or (m.user1Num == userNum and m.direction == 1)}">
-												<th:block
-													th:if="${#strings.equals(friendProfile, 'default')}">
-													<img th:src="@{/upload/Alice.png}" alt="user" width="50"
-														class="rounded-circle">
-												</th:block>
+<!-- 												<th:block -->
+<!-- 													th:if="${#strings.equals(friendProfile, 'default')}"> -->
+<!-- 													<img th:src="@{/upload/pdefault.png}" alt="user" width="50" -->
+<!-- 														class="rounded-circle"> -->
+<!-- 												</th:block> -->
 												<th:block
 													th:unless="${#strings.equals(friendProfile, 'default')}">
-													<img th:src="@{/upload/}+@{${friendProfile}}" alt="user"
+													<img th:src="@{/upload/profile/}+@{${friendProfile}}" alt="user"
 														width="50" class="rounded-circle">
 												</th:block>
 											</th:block>
@@ -170,15 +164,17 @@ input::placeholder {
 							</div>
 							<div class="card-footer">
 								<!-- Typing area -->
-								<form th:object="${mdto}" method="post" th:action="@{|/messagebox/${fromId}/${toId}|}">
+								<form th:object="${mdto}" method="post"
+									th:action="@{|/messagebox/${fromId}/${toId}|}">
 									<div class="input-group">
 										<div class="input-group-append">
-											<span class="input-group-text iconify w-100 h-100 	"
+											<span class="input-group-text iconify w-100 h-100"
 												data-icon="fluent:attach-20-filled"></span>
 										</div>
 										<input type="text" placeholder="내용을 입력하세요"
 											aria-describedby="button-addon2" th:field="*{content}"
-											class="form-control rounded-0 border-2 bg-light" th:name="content" required>
+											class="form-control rounded-0 border-2 bg-light"
+											th:name="content" required>
 										<div class="input-group-append">
 											<button id="button-addon2" type="submit"
 												class="btn btn-secondary">전송</button>
@@ -201,13 +197,13 @@ input::placeholder {
 			role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title">쪽지 보내기✉️</h1>
+					<h3 class="modal-title">쪽지 보내기✉️</h3>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<form name="msgForm" id="msgForm" th:object="${mdto}"
+				<form name="msgForm" id="msgForm" th:object="${mdto}" enctype="multipart/form-data"
 					th:method="post" th:action="@{|/messagebox/${fromId}|}">
 					<div class="modal-body">
 						<div>
@@ -220,13 +216,21 @@ input::placeholder {
 
 								<th:block th:unless="${#lists.size(friendsList) == 0}">
 									<option th:each="f : ${friendsList}" th:value="${f.id}"
-										th:text="${f.name}"></option>
+										th:text="${f.name + '(' + f.id + ')'}"></option>
 								</th:block>
 							</select>
 							<div>
-								<label for="message-text" class="col-form-label">쪽지 내용</label>
+								<label for="message-text" class="col-form-label"> 
+									<strong>쪽지 내용</strong>
+								</label>
 								<textarea class="form-control" th:field="*{content}"
 									id="content" required></textarea>
+							</div>
+							<div>
+								<label for="message-file" class="col-form-label"> 
+									<strong>첨부 파일(1개)</strong>
+								</label> 
+								<input type="file" th:field="*{originName}">
 							</div>
 						</div>
 					</div>
