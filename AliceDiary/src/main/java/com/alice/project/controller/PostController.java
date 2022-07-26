@@ -3,10 +3,8 @@ package com.alice.project.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,51 +31,48 @@ import com.alice.project.web.PostSearchDto;
 import com.alice.project.web.ReplyDto;
 import com.alice.project.web.WriteFormDto;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class PostController {
 
-	@Autowired
-	private PostService postService;
+	private final PostService postService;
 
-	@Autowired
-	private AttachedFileService attachedFileService;
+	private final AttachedFileService attachedFileService;
 
-	@Autowired
-	private MemberService memberService;
+	private final MemberService memberService;
 
-	@Autowired
-	private ReplyService replyService;
+	private final ReplyService replyService;
 
 	// 글쓰기
-	@GetMapping("/community/post")
+	@GetMapping("/open/post")
 	public String writeform(Model model, @AuthenticationPrincipal UserDetails user) {
-		
+
 		model.addAttribute("writeFormDto", new WriteFormDto());
 		model.addAttribute("member", memberService.findById(user.getUsername()));
-		return "community/writeForm";
+		return "open/writeForm";
 	}
 
 	// 글쓰기
-	@PostMapping("/community/post")
+	@PostMapping("/open/post")
 	public String writeSubmit(WriteFormDto writeFormDto, HttpSession session,
 			@AuthenticationPrincipal UserDetails user) {
-		
+
 		Member member = memberService.findById(user.getUsername());
 
 		Post post = Post.createPost(writeFormDto, member);
-		postService.write(post);
+		Post writedPost = postService.write(post);
 
-		attachedFileService.postFileUpload(writeFormDto.getOriginName(), postService.write(post), session,
-				user.getUsername());
+		attachedFileService.postFileUpload(writeFormDto.getOriginName(), writedPost, session, user.getUsername());
 
 		return "redirect:./list";
 	}
 
 	// 게시글 리스트 가져오기
-	@GetMapping("/community/list")
+	@GetMapping("/open/list")
 	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
 			@AuthenticationPrincipal UserDetails user,
 			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
@@ -126,11 +122,11 @@ public class PostController {
 		log.info("startPage:" + startPage);
 		log.info("endPage:" + endPage);
 
-		return "community/list";
+		return "open/list";
 	}
 
 	// 게시글 상세보기
-	@GetMapping("/community/get")
+	@GetMapping("/open/get")
 	public String postView(Model model, Long num, Pageable pageable, HttpSession session,
 			@AuthenticationPrincipal UserDetails user) {
 
@@ -149,11 +145,11 @@ public class PostController {
 		model.addAttribute("replyList", replyList);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
-		return "community/postView";
+		return "open/postView";
 	}
 
 	// get 게시글 수정하기 첨부파일도 수정
-	@GetMapping("/community/put")
+	@GetMapping("/open/put")
 	public String getUpdate(Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
 		log.info("수정컨트롤러 get");
 
@@ -165,43 +161,42 @@ public class PostController {
 		model.addAttribute("files", files);
 		model.addAttribute("updateDto", updateDto);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
-		return "community/updateForm";
+		return "open/updateForm";
 	}
 
 	// post 게시글 수정하기 첨부파일도 수정
-	@PostMapping("/community/put")
+	@PostMapping("/open/put")
 	public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
-		
+
 		String postNum = Long.toString(updateDto.getPostNum());
-		
+
 		postService.updatePost(updateDto.getPostNum(), updateDto);
 
 		Post updatedPost = postService.findOne(updateDto.getPostNum());
 
 		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
 
-		return "redirect:/community/get?num="+postNum;
+		return "redirect:/open/get?num=" + postNum;
 	}
 
 	// 게시글 수정에서 파일하나 삭제하기
-	@PostMapping("/community/put/filedelete")
+	@PostMapping("/open/put/filedelete")
 	@ResponseBody
 	public JSONObject oneFileDelete(Long num, Long postNum) {
-		log.info("!!!!!!! file num : " + num);
-
+		
 		postService.deleteOneFile(num);
 
 		JSONObject jObj = new JSONObject();
 
-		List<AttachedFile> files = attachedFileService.newFileView(postNum);
+		List<AttachedFile> files = attachedFileService.fileDeleteAfterList(postNum);
 
 		jObj.put("files", files);
 
 		return jObj;
 	}
 
-	// 게시글 삭제하기
-	@RequestMapping("/community/delete")
+	// 공개게시글 삭제하기
+	@RequestMapping("/open/delete")
 	public String postDelete(Long num) {
 		log.info("컨트롤러 실행 num:" + num);
 
@@ -211,5 +206,6 @@ public class PostController {
 
 		return "redirect:list";
 	}
+	
 
 }

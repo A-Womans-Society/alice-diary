@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/communityLayout}">
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/community/createCommunity.js}"></script>
+	<!-- <script th:src="@{https://code.jquery.com/jquery-1.12.4.js}"></script> -->
+</th:block>
+
+<div layout:fragment="content">
+	<div class="container-fluid h-100">
+		<div class="row h-100">
+			<div class="col-12 h-100">
+				<h2 class="text-center m-0 pt-5" style="height: 15%;">커뮤니티 생성하기</h2>
+
+				<div>
+					<input type="text" id="searchFriend" name="searchFriend"
+						placeholder="친구 검색(아이디/이름)">
+					<button type="button"
+						th:onclick="loadFriends([[${#authentication.name}]])">검색</button>
+				</div>
+				<form th:action="@{/community/create}" method="post" id="form"
+					th:object="${ccdto}">
+					<div>
+						<table>
+							<thead>
+								<tr>
+									<th>check</th>
+									<th>ID</th>
+									<th>이름</th>
+									<th colspan="2">그룹</th>
+								</tr>
+							</thead>
+							<tbody id="friendsBody">
+								<th:block th:if="${#lists.isEmpty(searchFriendList)}">
+									<tr>
+										<td colspan="9" class="text-center">친구를 검색해주세요.</td>
+									</tr>
+								</th:block>
+								<th:block th:unless="${#lists.isEmpty(searchFriendList)}"
+									th:each="friend, status : ${searchFriendList}">
+									<tr>
+										<td><input type="checkbox" name="selected"
+											th:value="${friend.id}"></td>
+										<td th:text="${friend.id}" th:id="${friendId}"></td>
+										<td th:text="${friend.name}"></td>
+										<td th:text="${friend.groupName}"></td>
+										<!-- 	<td><button type="button" th:onclick="openModalInfo([[${friend.id]])">정보</button><td> -->
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+						<button type="button" th:onclick="selectFriends()">초대하기</button>
+					</div>
+
+					<div>
+
+						<table>
+							<thead>
+								<tr>
+									<th>ID</th>
+									<!-- <th>이름</th> -->
+								</tr>
+							</thead>
+							<tbody id="selectedFriends">
+								<th:block th:if="${#lists.isEmpty(searchFriendList)}">
+									<tr>
+										<td colspan="9" class="text-center">친구를 초대해주세요.</td>
+									</tr>
+								</th:block>
+								<th:block th:each="friend, status : ${searchFriendList}">
+									<tr>
+										<td th:text="${friend.id}" ></td>
+										<!-- 	<td th:text="${friend.name}"></td> -->
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+
+
+					<div>
+						커뮤니티 이름<input type="text" th:field="*{comName}">
+					</div>
+					<div>
+						커뮤니티 설명
+						<textarea type="text" th:field="*{description}" cols="10" rows="5"></textarea>
+					</div>
+
+					<input type="submit" th:onclick="return check()" value="커뮤니티 만들기">
+
+				</form>
+
+
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 	<div class="modal" tabindex="-1" role="dialog" id="modalInfo">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="align-items: baseline;">
+					<h1 class="modal-title">내 친구</h1>
+					<span>친구 정보입니다.</span>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<form th:action="@{/community/friendInfo}" method="get">
+					<div class="modal-body">친구정보 들어가는 란</div>
+					<div class="modal-footer">
+						<button type="button">닫기</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div> -->
+
+
+
+</div>
+</html>

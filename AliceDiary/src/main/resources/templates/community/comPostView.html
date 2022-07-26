@@ -5,7 +5,7 @@
 	layout:decorate="~{layouts/communityLayout}">
 
 <th:block layout:fragment="script">
-	<script th:src="@{/js/community/postView.js}"></script>
+	<script th:src="@{/js/community/comPostView.js}"></script>
 	<!-- 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
  -->
 </th:block>
@@ -115,19 +115,18 @@
 							th:value="신고" class="btn">
 
 						<button type="button"
-							th:onclick="|location.href='./put?num=${postView.num}'|"
+							th:onclick="|location.href='/AliceDiary/community/${comNum}/put/${postView.num}'|"
 							class="btn">수정</button>
 
 						<button type="button" id="delete_confirm"
-							th:onclick="deleteConfirm([[${postView.num}]])" class="btn">삭제</button>
+							th:onclick="deleteConfirm([[${postView.num}]],[[${comNum}]])" class="btn">삭제</button>
 
 					</th:block>
 					<input type="button"
 						th:if="${#authentication.name} != ${postView.member.id}"
 						th:onclick="openModalPost([[${postView.num}]],[[${#authentication.name}]])"
 						value="신고" class="btn btn-danger">
-					<button type="button" onClick="location.href='./list'"
-						class="btn btn-secondary">목록</button>
+					<a th:href="@{|/community/${comNum}/list|}"><button type="button" class="btn btn-secondary">목록</button></a>
 
 
 				</div>
@@ -145,11 +144,7 @@
 										<li class="clearfix">삭제된 댓글입니다.</li>
 									</th:block>
 									<th:block th:unless="${reply.status.name() == 'DEAD'}">
-										<img th:if="${reply.profileImg.equals('default')}"
-											th:src="@{/upload/Alice.png}" alt="" class="avatar">
-										<img th:unless="${reply.profileImg.equals('default')}"
-											th:src="@{/upload/}+@{${reply.profileImg}}" alt=""
-											class="avatar">
+										<img th:src="@{|/upload/profile/${reply.profileImg}|}" alt="" class="avatar">
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"
@@ -166,7 +161,7 @@
 															th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">삭제</button>
 												</span> <span th:if="${#authentication.name} != ${reply.memberId}">
 														<button type="button" class="btn btn-sm"
-															th:onclick="openModalReply([[${reply.memberId}]],[[${#authentication.name}]])">신고</button>
+															th:onclick="openModalReply([[${reply.num}]],[[${#authentication.name}]])">신고</button>
 												</span>
 												</span>
 											</p>
@@ -214,7 +209,7 @@
 					</button>
 				</div>
 
-				<form th:action="@{/community/reportpost}" method="post">
+				<form th:action="@{/open/reportpost}" method="post">
 					<div class="modal-body">
 						<div>
 							<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
@@ -253,7 +248,7 @@
 					</button>
 				</div>
 
-				<form th:action="@{/community/reportreply}" method="post">
+				<form th:action="@{/open/reportreply}" method="post">
 					<div class="modal-body">
 						<div>
 							<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
@@ -291,7 +286,7 @@
 					</button>
 				</div>
 
-				<form th:action="@{/community/replymsg}" method="post">
+				<form th:action="@{/open/replymsg}" method="post">
 					<div class="modal-body">
 						<div>
 							받는 사람 : <input type="text" id="replyMsgTo" readonly />

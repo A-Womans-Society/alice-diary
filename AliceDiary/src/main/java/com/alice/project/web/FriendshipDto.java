@@ -14,6 +14,14 @@ import lombok.Setter;
 // 추가된 친구 목록 보여줄 조회 페이지에 전달할 dto
 public class FriendshipDto {
 	
+	//커뮤니티 생성 친구검색
+	public FriendshipDto(String id, String name, String groupName) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.groupName = groupName;
+	}
+
 	@Autowired private MemberService ms;
 	
 	private Long num; // 회원번호

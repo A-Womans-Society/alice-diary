@@ -12,38 +12,46 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.AttachedFile;
+import com.alice.project.domain.Message;
 import com.alice.project.domain.Post;
 import com.alice.project.repository.AttachedFileRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class AttachedFileService {
 
-	@Autowired
-	private AttachedFileRepository attachedFileRepository;
-	
-	
+	private final AttachedFileRepository attachedFileRepository;
 
+	// 파일업로드
+	@Transactional
 	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session, String id) {
 		log.info("list size : " + files.size());
+		String savePath = "";
 		if (files.size() != 0) {
 			log.info("service run");
 			for (MultipartFile multipartFile : files) {
-
-				String savePath = "C:\\Temp\\upload\\";
+				if(post.getPostType().equals("OPEN")) {
+				savePath = "C:\\Temp\\upload\\open\\";
+				} else {
+					savePath = "C:\\Temp\\upload\\community\\";
+				}
+				
 				String ofile = multipartFile.getOriginalFilename();
-				String sfile = postSaveFile(multipartFile, savePath, session, id);
+				String sfile = makeSfile(multipartFile, savePath, session, id);
 
 				log.info("service run222222222");
 
@@ -59,12 +67,14 @@ public class AttachedFileService {
 		}
 	}
 
-	public String postSaveFile(MultipartFile file, String savePath, HttpSession session, String id) {
+	// 저장파일 이름만들기
+	@Transactional
+	public String makeSfile(MultipartFile file, String savePath, HttpSession session, String id) {
 
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-		String sfile = id+"_" +currentTime + "_" + ofile;
+		String sfile = id + "_" + currentTime + "_" + ofile;
 
 		log.info("ofile:" + ofile);
 		log.info("sfile:" + sfile);
@@ -79,55 +89,75 @@ public class AttachedFileService {
 		return sfile;
 	}
 	
-	public ResponseEntity<UrlResource> postFileDownload(Long num) throws MalformedURLException, UnsupportedEncodingException{
-		
+	  /* 쪽지 첨부파일 저장 */
+	   public String saveMsgFile(MultipartFile file, Message msg, HttpSession session, String id) {
+	      String savePath = "C:\\Temp\\upload\\message\\";
+	      String ofile = file.getOriginalFilename();
+	      String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+	      String sfile = id + "_" + currentTime + "_" + ofile;
+
+	      AttachedFile savefile = new AttachedFile(ofile, sfile, savePath, msg);
+
+	      attachedFileRepository.save(savefile);
+	      try {
+	         file.transferTo(new File(savePath + sfile));
+	      } catch (IllegalStateException | IOException e) {
+	         e.printStackTrace();
+	      }
+
+	      return sfile;
+	   }
+
+
+	// 파일다운로드
+	@Transactional
+	public ResponseEntity<UrlResource> postFileDownload(Long num)
+			throws MalformedURLException, UnsupportedEncodingException {
+
 		Optional<AttachedFile> findFile = attachedFileRepository.findById(num);
-		AttachedFile attachedFile = findFile.orElse (null);
-		if (findFile == null) return null;
-		
+		AttachedFile attachedFile = findFile.orElse(null);
+		if (findFile == null)
+			return null;
+
 		String sFileName = attachedFile.getSaveName();
 		String oFileName = attachedFile.getOriginName();
-		
-		
+
 		String encodeoFileName;
 
-			encodeoFileName = URLEncoder.encode(oFileName,"UTF-8").replace("+", "%20");
-			
-			String savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
-			UrlResource resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
-			
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath)
-					.body(resource);
-			
+		encodeoFileName = URLEncoder.encode(oFileName, "UTF-8").replace("+", "%20");
+
+		String savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
+		UrlResource resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath).body(resource);
+
 	}
-	
-	public List<AttachedFile> fileView(Post post,Pageable pageable) {
+
+	// 게시글 상세보기에서 저장된 파일 보여주기
+	@Transactional
+	public List<AttachedFile> fileView(Post post, Pageable pageable) {
 		log.info("service run fileVIEW");
-		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
-		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
+		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
+
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
-			log.info("AFS의 fileView!!! af : " + oriName);
+
 		}
-		return attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+		return attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
 	}
-	
-	public List<AttachedFile> newFileView(Long postNum) {
-		log.info("service run newfileVIEW");
-		
+
+	// 게시글 수정에서 파일 한개 삭제 후 파일리스트 다시 불러오기
+	@Transactional
+	public List<AttachedFile> fileDeleteAfterList(Long postNum) {
+
 		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(postNum);
-		
-		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
-		
+
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
 			String saveName = af.getSaveName();
-			log.info("AFS의 oriName!!! af : " + oriName);
-			log.info("AFS의 saveName!!! af : " + saveName);
+
 		}
 		return afs;
 	}
-	
-	
+
 }
