@@ -124,6 +124,10 @@ public class CommunityController {
 
 		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 
+		String memberList = communityService.findMemListByNum(comNum);
+		String[] memList = memberList.split(",");
+		model.addAttribute("memberList", memList);
+		
 		String keyword = postSearchDto.getKeyword();
 		Long size = 0L;
 		Page<Post> list = null;
@@ -162,6 +166,7 @@ public class CommunityController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("keyword", keyword);
+
 		model.addAttribute("type", postSearchDto.getType());
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
@@ -197,10 +202,10 @@ public class CommunityController {
 
 		return "redirect:./list";
 	}
-	
+
 	// 커뮤니티게시글 삭제하기
 	@RequestMapping("/community/delete")
-	public String comPostDelete(Long comNum,Long num) {
+	public String comPostDelete(Long comNum, Long num) {
 		log.info("컨트롤러 실행 num:" + num);
 
 		postService.deletePostwithReply(num);
@@ -210,11 +215,10 @@ public class CommunityController {
 		return "redirect:./" + comNum + "/list";
 	}
 
-
 	// 게시글 상세보기
 	@GetMapping("community/{comNum}/get/{num}")
-	public String postView(@PathVariable Long comNum, Model model, @PathVariable Long num, Pageable pageable, HttpSession session,
-			@AuthenticationPrincipal UserDetails user) {
+	public String postView(@PathVariable Long comNum, Model model, @PathVariable Long num, Pageable pageable,
+			HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
 		log.info("num :" + num);
 		log.info("user.getUsername() :" + user.getUsername());
@@ -235,10 +239,11 @@ public class CommunityController {
 
 		return "community/comPostView";
 	}
-	
+
 	// get 게시글 수정하기 첨부파일도 수정
 	@GetMapping("/community/{comNum}/put/{num}")
-	public String getUpdate(@PathVariable Long comNum,@PathVariable Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
+	public String getUpdate(@PathVariable Long comNum, @PathVariable Long num, Model model, Pageable pageable,
+			@AuthenticationPrincipal UserDetails user) {
 		log.info("수정컨트롤러 get");
 
 		Post getUpdate = postService.postView(num);
@@ -250,13 +255,14 @@ public class CommunityController {
 		model.addAttribute("updateDto", updateDto);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		model.addAttribute("comNum", comNum);
-		model.addAttribute("num", num); //해당 게시글 번호
+		model.addAttribute("num", num); // 해당 게시글 번호
 		return "community/comUpdateForm";
 	}
-	
+
 	// post 게시글 수정하기 첨부파일도 수정
 	@PostMapping("/community/{comNum}/put/{num}")
-	public String updatePorc(@PathVariable Long comNum, @PathVariable Long num,WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
+	public String updatePorc(@PathVariable Long comNum, @PathVariable Long num, WriteFormDto updateDto,
+			HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
 		String postNum = Long.toString(updateDto.getPostNum());
 
@@ -266,23 +272,31 @@ public class CommunityController {
 
 		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
 
-		return "redirect:/community/"+comNum+"/get/" + num;
+		return "redirect:/community/" + comNum + "/get/" + num;
+	}
+
+	// 게시글 수정에서 파일하나 삭제하기
+	@PostMapping("/community/put/filedelete")
+	@ResponseBody
+	public JSONObject oneFileDelete(Long num, Long postNum) {
+
+		postService.deleteOneFile(num);
+
+		JSONObject jObj = new JSONObject();
+
+		List<AttachedFile> files = attachedFileService.fileDeleteAfterList(postNum);
+
+		jObj.put("files", files);
+
+		return jObj;
 	}
 	
-	// 게시글 수정에서 파일하나 삭제하기
-		@PostMapping("/community/put/filedelete")
-		@ResponseBody
-		public JSONObject oneFileDelete(Long num, Long postNum) {
-			
-			postService.deleteOneFile(num);
+	// 커뮤니티 탈퇴하기
+	@RequestMapping("/community/resign")
+	public String resign(Long comNum, String userId) {
+	
+		communityService.resign(comNum, userId);
 
-			JSONObject jObj = new JSONObject();
-
-			List<AttachedFile> files = attachedFileService.fileDeleteAfterList(postNum);
-
-			jObj.put("files", files);
-
-			return jObj;
-		}
-
+		return "redirect:./create";
+	}
 }
