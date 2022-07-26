@@ -54,7 +54,6 @@ public class SearchController {
 						fNames += memberService.findByNum(Long.parseLong(n)).getName() + " ";
 					}
 				}
-				log.info("aaaaaaaaaaaaa" + fNames);
 				tmp.setMemberList(fNames);
 				resultDto.add(tmp);
 			}
@@ -129,7 +128,6 @@ public class SearchController {
 						fNames += memberService.findByNum(Long.parseLong(n)).getName() + " ";
 					}
 				}
-				log.info("aaaaaaaaaaaaa" + fNames);
 				tmp.setMemberList(fNames);
 				resultDto.add(tmp);
 			}

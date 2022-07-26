@@ -32,7 +32,7 @@ public class ReportController {
 	public boolean reportPost(String userId, Long postNum, String reportReason, String content) {
 
 		Member member = memberService.findById(userId);
-		reportService.postReport(Report.createPostReport(postNum, reportReason, content, member));
+//		reportService.postReport(Report.createPostReport(postNum, reportReason, content, member));
 
 		return true;
 	}
@@ -49,7 +49,7 @@ public class ReportController {
 	public boolean reportReply(@ModelAttribute ReportDto reportDto, String userId, String reportReason, String content) {
 	
 		Member member = memberService.findById(userId);
-		reportService.replyReport(Report.createReplyReport(reportDto.getReplyNum(), reportReason, content, member));
+//		reportService.replyReport(Report.createReplyReport(reportDto.getReplyNum(), reportReason, content, member));
 
 		return true;
 	}

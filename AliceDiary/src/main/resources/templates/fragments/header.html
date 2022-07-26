@@ -33,17 +33,8 @@
 				<li class="nav-item" data-toggle="tooltip" data-placement="bottom"
 					title="내 프로필 보기"
 					th:onclick="|location.href='/AliceDiary/member/@{${#authentication.name}}'|">
-
-
-					<th:block th:if="${#strings.equals(member.profileImg, 'default')}">
-						<img th:src="@{/upload/Alice.png}" alt="user" width="45"
-							class="rounded-circle">
-					</th:block> <th:block
-						th:unless="${#strings.equals(member.profileImg, 'default')}">
-						<img th:src="@{/upload/}+@{${member.profileImg}}" alt="user"
-							width="45" class="rounded-circle">
-					</th:block>
-
+					<img th:src="@{/upload/profile/}+@{${member.profileImg}}"
+					alt="user" width="45" class="rounded-circle">
 				</li>
 				<li class="nav-item p-0"><h2 class="nav-texts text-white">/</h2></li>
 				<li class="nav-item  p-0"><a class="nav-link text-white"
