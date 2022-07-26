@@ -26,30 +26,17 @@
 						<div class="tab-pane fade active show" id="account-general">
 
 							<div class="row w-100">
-								<th:block th:switch="${member.profileImg}">
-									<div th:case="default"
-										class="col-5 d-flex justify-content-center align-items-center"
-										style="flex-direction: column;">
-										<img id="profileImage" th:src="@{/upload/Alice.png}"
-											class="w-75" /> <label
-											class="btn btn-outline-primary btn-sm"> Upload new
-											photo <input type="file" class="account-settings-fileinput"
-											field="*{profileImg}" name="profileImg" id="file" onchange="PreviewImage();">
-										</label>
-									</div>
-									<div th:case="${member.profileImg}"
-										class="col-5 d-flex justify-content-center align-items-center"
-										style="flex-direction: column;">
-										<img id="profileImage"
-											th:src="@{/upload/}+@{${member.profileImg}}" class="w-75" />
-										<label class="btn btn-outline-primary btn-sm"> Upload
-											new photo <input type="file"
-											class="account-settings-fileinput" th:field="*{profileImg}"
-											id="file" onchange="PreviewImage();">
-										</label>
-									</div>
-
-								</th:block>
+								<div
+									class="col-5 d-flex justify-content-center align-items-center"
+									style="flex-direction: column;">
+									<img id="profileImage"
+										th:src="@{/upload/profile/}+@{${member.profileImg}}"
+										class="w-75" /> <label class="btn btn-outline-primary btn-sm">
+										Upload new photo <input type="file"
+										class="account-settings-fileinput" th:field="*{profileImg}"
+										id="file" onchange="PreviewImage();">
+									</label>
+								</div>
 								<div class="col-7 pr-0">
 									<div class="form-group ">
 										<label class="form-label">ID</label> <input type="text"
@@ -77,8 +64,8 @@
 
 					<div class="form-group">
 						<label class="form-label">생년월일</label> <input type="date"
-							class="form-control mb-1" th:field="${member.birth}"
-							th:value="${member.birth}" required>
+							class="form-control mb-1" th:field="*{birthStr}"
+							required>
 
 					</div>
 					<div class="form-group">

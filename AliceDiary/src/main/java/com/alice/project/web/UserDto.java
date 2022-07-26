@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.Gender;
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Status;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,7 @@ import lombok.Setter;
 public class UserDto {
 
 	private Long num;
-	
+
 	@NotBlank(message = "아이디는 필수 입력 값입니다.")
 	private String id;
 
@@ -50,6 +52,7 @@ public class UserDto {
 
 	@NotEmpty(message = "이메일은 필수 입력 값입니다.")
 	@Email(message = "이메일 형식으로 입력해주세요.")
+	@Valid
 	private String email;
 
 	@NotBlank(message = "전화번호는 필수 입력 값입니다.")
@@ -76,6 +79,12 @@ public class UserDto {
 
 	// 이메일 인증 토큰 생성 일자
 	private LocalDateTime emailCheckTokenGeneratedAt;
+
+	private Status status;
+
+	private LocalDate regDate;
+
+	private String birthStr;
 
 	public UserDto(String id, String password, String confirmPassword, String name, LocalDate birth, Gender gender,
 			String email, String mobile, String mbti, String wishlist, String saveName, MultipartFile profileImg) {

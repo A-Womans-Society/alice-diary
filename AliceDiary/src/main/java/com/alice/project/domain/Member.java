@@ -36,7 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter @Setter
+@Getter
+@Setter
 //@ToString
 @Slf4j
 @EqualsAndHashCode(of = "num")
@@ -248,7 +249,7 @@ public class Member {
 		return member;
 	}
 
-	//이메일 인증 시 필요한 메서드
+	// 이메일 인증 시 필요한 메서드
 	public void generateEmailCheckToken() {
 		this.emailCheckToken = UUID.randomUUID().toString(); // 토큰 만들기 (랜덤)
 		this.emailCheckTokenGeneratedAt = LocalDateTime.now();
@@ -271,15 +272,15 @@ public class Member {
 		member.id = "(알수없음)";
 		return member;
 	}
-	
+
 	public static Member setProfileImg(Member member) {
-		member.profileImg = "default";
+		member.profileImg = "default.png";
 		return member;
 	}
 
 	public static Member updateProfileImg(Member member, UserDto userDto) {
-			member.profileImg = userDto.getSaveName();
-			return member;
+		member.profileImg = userDto.getSaveName();
+		return member;
 	}
 
 	// 회원 내보내기 메서드
