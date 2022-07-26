@@ -54,14 +54,18 @@
 							</div>
 							<div style="overflow: overlay; height: 80%;">
 								<th:block th:if="${!alarmList.isEmpty}">
-									<ul>
+									<ul class="pl-4">
 										<li th:each="alarm: ${alarmList}">
-											<p>
-												<strong><span th:text="${alarm.content}"></span></strong> <small>
-													<span th:if="${!#strings.isEmpty(alarm.memberList)}"
-													th:text="|with ${alarm.memberList}|"> </span> <span
-													th:text="|(${alarm.startDate})|"> </span>
-												</small>
+											<p class="mb-1">
+												<strong><span th:text="${alarm.content}"></span></strong> <small
+													th:if="${!#strings.isEmpty(alarm.memberList)}">
+													with </small> <small th:if="${!#strings.isEmpty(alarm.memberList)}"
+													th:each="friend : ${alarm.memberList}"> <a
+													th:href="|./friends/friendInfo/${friend.id}|"><span
+														th:text="${friend.name}" data-toggle="tooltip"
+														data-placement="bottom" title="프로필 보기">
+													</span></a>
+												</small> <span th:text="|(${alarm.startDate})|"> </span>
 											</p>
 										</li>
 									</ul>
@@ -282,7 +286,7 @@
 											<p class="m-0">
 												<strong>공개여부</strong>
 											</p>
-											<p>
+											<p class="pl-3 mb-0">
 												<input type="radio" id="detailPublic"
 													onclick="return(false);"><label>공개</label> <input
 													type="radio" id="detailPrivate" onclick="return(false);"><label>비공개</label>
@@ -307,8 +311,16 @@
 						<input type="hidden" id="eventId">
 					</div>
 					<div class="modal-footer">
-						<input type="button" class="btn btn-danger" value="일정 삭제"
-							onclick="deleteEvent()">
+						<div id="deleteEventBtn" style="display: none;">
+							<input type="button" class="btn btn-danger" value="일정 삭제"
+								onclick="deleteEvent()">
+						</div>
+						<div id="sendMsgBtn" style="display: none;">
+							<input type="hidden" id="friendId"> <input type="button"
+								class="btn text-white" style="background: mediumpurple;"
+								value="쪽지 보내기" th:myId="${member.id}"
+								th:onclick="sendMessage(this.getAttribute('myId'))">
+						</div>
 					</div>
 				</div>
 			</div>
