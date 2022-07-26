@@ -1,6 +1,5 @@
 package com.alice.project.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -15,10 +14,13 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import com.alice.project.web.SuggestionDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -28,6 +30,8 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@EqualsAndHashCode(of = "num")
+@DynamicInsert
 public class Suggestion {
 	
 	@Id
@@ -35,7 +39,10 @@ public class Suggestion {
 	@SequenceGenerator(name = "SUGGESTION_SEQ_GENERATOR", sequenceName = "SEQ_SUGGESTION_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name="suggest_num")
 	private Long num; //건의사항 번호
+	
+	@Column(length = 4000)
 	private String content; //건의 내용
+	@Column(nullable = false)
 	private LocalDateTime suggestDate; //건의 일자
 		
 	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +45,6 @@ public class AliceController {
 
 	@GetMapping("/alice")
 	public String calendar(Model model, @AuthenticationPrincipal UserDetails user) {
-		log.info("user : " + user.getUsername());
 		Member member = memberService.findById(user.getUsername());
 		// events list
 		List<Calendar> events = calendarService.eventsList(member.getNum());
@@ -68,10 +68,33 @@ public class AliceController {
 			JSONObject jObj = new JSONObject();
 			jArray.add(jObj);
 		}
+
+		// friends Events
+		List<Friend> fList = friendService.weAreFriend(member.getNum());
+		for (Friend f : fList) {
+			List<Calendar> fEvents = calendarService.fEventsList(f.getMember().getNum());
+			String fName = f.getMember().getName();
+			if (fEvents.size() != 0) {
+				for (Calendar cal : fEvents) {
+					JSONObject jObj = new JSONObject();
+
+					jObj.put("title", "[" + fName + "] " + cal.getContent());
+					jObj.put("id", cal.getNum());
+					jObj.put("start", "\"" + cal.getStartDate() + "\"");
+					jObj.put("end", "\"" + cal.getEndDate() + "\"");
+					jObj.put("backgroundColor", "darkgray");
+					jObj.put("borderColor", "darkgray");
+
+					jArray.add(jObj);
+				}
+			}
+		}
 		obj.put("items", jArray);
+
 		// alarm list
 		LocalDate today = LocalDate.now();
 		List<EventAlarmDto> alarmList = calendarService.alarm(member.getNum(), today);
+
 		// friends list
 		List<Friend> friendsList = friendService.friendship(member.getNum());
 		List<FriendshipDto> friendsDtoList = new ArrayList<FriendshipDto>();
@@ -82,6 +105,7 @@ public class AliceController {
 			tmp.setName(m.getName());
 			friendsDtoList.add(tmp);
 		}
+
 		model.addAttribute("dto", new SearchEventFormDto());
 		model.addAttribute("alarmList", alarmList);
 		model.addAttribute("list", obj.toString());
@@ -111,9 +135,17 @@ public class AliceController {
 	@PostMapping("/showDetail")
 	@ResponseBody
 	public JSONObject showDetail(@RequestParam(value = "id") String id, HttpServletRequest req,
-			HttpServletResponse resp, Model model) {
+			HttpServletResponse resp, Model model, @AuthenticationPrincipal UserDetails user) {
+		Member member = memberService.findById(user.getUsername());
 		Calendar event = calendarService.eventDetail(Long.parseLong(id));
 		JSONObject jObj = new JSONObject();
+
+		// my event
+		if (event.getMember().getNum() == member.getNum()) {
+			jObj.put("title", event.getContent());
+		} else {
+			jObj.put("title", "[" + member.getName() + "] " + event.getContent());
+		}
 
 		if (event.getMemberList() != null) {
 			String fNames = "";
@@ -125,7 +157,6 @@ public class AliceController {
 			jObj.put("memberList", null);
 		}
 
-		jObj.put("title", event.getContent());
 		jObj.put("id", event.getNum());
 		jObj.put("start", event.getStartDate());
 		jObj.put("end", event.getEndDate().minusDays(1L));

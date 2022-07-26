@@ -35,6 +35,10 @@ public class CalendarService {
 		return events;
 	}
 
+	public List<Calendar> fEventsList(Long num) {
+		return calendarRepository.findOtherEvents(num);
+	}
+
 	public Calendar eventDetail(Long id) {
 		Calendar event = calendarRepository.getById(id);
 		return event;
