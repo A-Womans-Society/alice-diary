@@ -78,7 +78,7 @@ public class AliceController {
 				for (Calendar cal : fEvents) {
 					JSONObject jObj = new JSONObject();
 
-					jObj.put("title", "[" + fName + "] " + cal.getContent());
+					jObj.put("title", fName + " 💬 " + cal.getContent());
 					jObj.put("id", cal.getNum());
 					jObj.put("start", "\"" + cal.getStartDate() + "\"");
 					jObj.put("end", "\"" + cal.getEndDate() + "\"");
@@ -135,7 +135,7 @@ public class AliceController {
 	@PostMapping("/showDetail")
 	@ResponseBody
 	public JSONObject showDetail(@RequestParam(value = "id") String id, HttpServletRequest req,
-			HttpServletResponse resp, Model model, @AuthenticationPrincipal UserDetails user) {
+			HttpServletResponse resp, @AuthenticationPrincipal UserDetails user) {
 		Member member = memberService.findById(user.getUsername());
 		Calendar event = calendarService.eventDetail(Long.parseLong(id));
 		JSONObject jObj = new JSONObject();
@@ -143,8 +143,11 @@ public class AliceController {
 		// my event
 		if (event.getMember().getNum() == member.getNum()) {
 			jObj.put("title", event.getContent());
+			jObj.put("mine", true);
 		} else {
-			jObj.put("title", "[" + member.getName() + "] " + event.getContent());
+			jObj.put("title", member.getName() + " 💬 " + event.getContent());
+			jObj.put("friendId", event.getMember().getId());
+			jObj.put("mine", false);
 		}
 
 		if (event.getMemberList() != null) {
@@ -165,7 +168,6 @@ public class AliceController {
 		jObj.put("memo", event.getMemo());
 		jObj.put("publicity", event.getPublicity());
 		jObj.put("alarm", Period.between(event.getAlarm(), event.getStartDate()).getDays() + "일 전");
-
 		return jObj;
 	}
 

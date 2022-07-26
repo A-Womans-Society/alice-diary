@@ -11,6 +11,7 @@ import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Member;
 import com.alice.project.repository.CalendarRepository;
 import com.alice.project.repository.MemberRepository;
+import com.alice.project.web.AlarmMemberListDto;
 import com.alice.project.web.CalendarFormDto;
 import com.alice.project.web.EventAlarmDto;
 
@@ -56,13 +57,21 @@ public class CalendarService {
 			EventAlarmDto tmp = new EventAlarmDto();
 			tmp.setContent(c.getContent());
 			tmp.setStartDate(c.getStartDate());
-			String fNames = "";
+
 			if (c.getMemberList() != null) {
-				for (String n : c.getMemberList().split(",")) {
-					fNames += memberRepository.findByNum(Long.parseLong(n)).getName() + " ";
+				List<AlarmMemberListDto> aTmp = new ArrayList<AlarmMemberListDto>();
+
+				for (String id : c.getMemberList().split(",")) {
+					AlarmMemberListDto mTmp = new AlarmMemberListDto();
+					Member friend = memberRepository.findByNum(Long.parseLong(id));
+					mTmp.setName(friend.getName());
+					mTmp.setId(friend.getId());					
+					aTmp.add(mTmp);
 				}
+				tmp.setMemberList(aTmp);
+			} else {	
+				tmp.setMemberList(null);
 			}
-			tmp.setMemberList(fNames);
 			result.add(tmp);
 		}
 		return result;
