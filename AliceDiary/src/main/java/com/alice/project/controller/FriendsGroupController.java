@@ -5,8 +5,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.FriendsGroup;
 import com.alice.project.domain.Member;
@@ -27,20 +29,15 @@ public class FriendsGroupController {
 	private final FriendsGroupService friendsGroupService;
 
 	// 그룹명등록
-//	@GetMapping("/friends/addGroup")
-//	public String addGroup(Model model) {
-//		model.addAttribute(attributeName, attributeValue)
-//	}
-
-	// 그룹명등록
 	@PostMapping("/friends/addGroup")
-	public String addGroup(String groupName, @AuthenticationPrincipal UserDetails user, Model model) {
+	@ResponseBody
+	public boolean addGroup(String groupName, @AuthenticationPrincipal UserDetails user, Model model) {
 		Long creatorNum = memberService.findById(user.getUsername()).getNum();
 		log.info("그룹생성한 회원 번호!!" + creatorNum);
 		log.info("그룹 이름 !!!" + groupName);
-		friendsGroupService.addGroup(creatorNum, groupName);
-		model.addAttribute("grouplist", friendsGroupService.friendsGrouplist());
-		return "friends/friendsGrouplist";
+		FriendsGroup saveGroup = friendsGroupService.addGroup(creatorNum, groupName);
+		model.addAttribute("grouplist", saveGroup);
+		return true;
 	}
 
 	// 그룹명 목록확인

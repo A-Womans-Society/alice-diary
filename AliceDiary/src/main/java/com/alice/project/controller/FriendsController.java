@@ -107,7 +107,8 @@ public class FriendsController {
 	
 	// 친구 삭제하기
 	@PostMapping("friends/deleteFriend")
-	public void deleteFriend(String id) {
+	public void deleteFriend(String id, @AuthenticationPrincipal UserDetails user) {
+		Long adderNum = memberService.findById(user.getUsername()).getNum();
 		
 	}
 	

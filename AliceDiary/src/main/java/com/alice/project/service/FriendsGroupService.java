@@ -1,13 +1,9 @@
 package com.alice.project.service;
 
 import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.alice.project.controller.FriendsGroupController;
 import com.alice.project.domain.FriendsGroup;
 import com.alice.project.domain.Member;
 import com.alice.project.repository.FriendsGroupRepository;
@@ -17,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
-//@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FriendsGroupService {
 

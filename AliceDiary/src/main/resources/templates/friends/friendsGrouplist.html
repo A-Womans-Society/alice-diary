@@ -17,14 +17,14 @@
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
 						<div class="w-100 text-center">
 
-						<form th:action="@{/friends/addGroup}" method="post">
-								<input type="text" id="newGroup" name="newGroup" class="w-50" 
+<!--  						<form th:action="@{/friends/addGroup}" method="post">
+ -->								<input type="text" id="newGroup" name="newGroup" class="w-50" 
 								placeholder="그룹을 등록하세요.">
-								<input type="submit" class="btn btn-primary mb-2" 
-									 value="그룹 추가" >
+								<button type="button" class="btn btn-primary mb-2" 
+									  th:onclick= "addGroup()">그룹 추가</button>
 								<input type="hidden" id="checkGroup" value="false">
-						</form>
-						</div>
+<!-- 						</form>
+ -->						</div>
 					</div>
 				</div>
 
