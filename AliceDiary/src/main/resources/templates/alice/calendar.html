@@ -122,8 +122,10 @@
 									<div class="col-12">
 										<p>
 											<strong>일자</strong>&nbsp;<input id="startDate" type="date"
+												class="form-control d-inline w-25"
 												th:field="*{startDateStr}" readOnly>&nbsp;~&nbsp;<input
-												id="endDate" type="date" th:field="*{endDateStr}">
+												class="form-control d-inline w-25" id="endDate" type="date"
+												th:field="*{endDateStr}">
 										</p>
 									</div>
 								</div>
@@ -131,7 +133,7 @@
 									<div class="col-6">
 										<p>
 											<strong>내용</strong>&nbsp;<input type="text" id="eventContent"
-												th:field="*{content}">
+												class="form-control" th:field="*{content}">
 										</p>
 										<p>
 											<strong>멤버</strong>&nbsp;<select class="selectpicker"
@@ -149,7 +151,7 @@
 
 										<p>
 											<strong>장소</strong>&nbsp;<input type="text" id="location"
-												th:field="*{location}">
+												class="form-control" th:field="*{location}">
 										</p>
 										<div class="d-flex">
 											<strong>색상</strong>&nbsp;
@@ -200,7 +202,8 @@
 												checked="checked"> <label for="private">비공개</label>
 										</p>
 										<p>
-											<strong>알림</strong>&nbsp;<select th:field="*{alarm}">
+											<strong>알림</strong>&nbsp;<select th:field="*{alarm}"
+												class="form-control">
 												<option value="1">1일 전</option>
 												<option value="3">3일 전</option>
 												<option value="7">1주 전</option>
@@ -209,9 +212,10 @@
 												<option value="30">한 달 전</option>
 											</select>
 										</p>
-										<p class="d-flex">
+										<p>
 											<strong>메모</strong>&nbsp;
-											<textarea id="memo" th:field="*{memo}" style="resize: none;"></textarea>
+											<textarea id="memo" th:field="*{memo}" style="resize: none;"
+												class="form-control"></textarea>
 										</p>
 									</div>
 								</div>
@@ -244,53 +248,61 @@
 								<div class="col-12">
 									<p>
 										<strong>일자&nbsp;</strong><input id="detailStartDate"
-											type="date" readOnly>&nbsp;~&nbsp;<input
-											id="detailEndDate" type="date" readOnly>
+											class="form-control d-inline w-25" type="date" readOnly>&nbsp;~&nbsp;<input
+											class="form-control d-inline w-25" id="detailEndDate"
+											type="date" readOnly>
+									</p>
+									<p>
+										<strong>내용</strong>&nbsp;<input type="text"
+											class="form-control" id="detailContent" readOnly>
 									</p>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-6">
 									<p>
-										<strong>내용</strong>&nbsp;<input type="text" id="detailContent"
-											readOnly>
-									</p>
-									<p>
 										<strong>멤버</strong>&nbsp;<input type="text"
-											id="detailMemberList" readOnly>
+											class="form-control" id="detailMemberList" readOnly>
 									</p>
 
 
 									<p>
 										<strong>장소</strong>&nbsp;<input type="text"
-											id="detailLocation" readonly>
+											class="form-control" id="detailLocation" readonly>
 									</p>
-									<p>
-										<strong>색상</strong>&nbsp;
+									<div class="row">
+										<div class="col-6">
+											<p>
+												<strong>색상</strong>&nbsp;
 
-										<button id="colorbtn"></button>
-									</p>
-
+												<button id="colorbtn"></button>
+											</p>
+										</div>
+										<div class="col-6">
+											<p class="m-0">
+												<strong>공개여부</strong>
+											</p>
+											<p>
+												<input type="radio" id="detailPublic"
+													onclick="return(false);"><label>공개</label> <input
+													type="radio" id="detailPrivate" onclick="return(false);"><label>비공개</label>
+											</p>
+										</div>
+									</div>
 								</div>
 								<div class="col-6">
-									<p class="m-0">
-										<strong>공개여부</strong>
-									</p>
-									<p class="pl-3">
-										<input type="radio" id="detailPublic" onclick="return(false);"><label>공개</label>
-										<input type="radio" id="detailPrivate"
-											onclick="return(false);"><label>비공개</label>
-									</p>
 									<p>
 										<strong>알림</strong>&nbsp;<input type="text" id="detailAlarm"
-											readonly>
+											class="form-control" readonly>
 									</p>
-									<p class="d-flex">
+									<p>
 										<strong>메모</strong>&nbsp;
-										<textarea id="detailMemo" style="resize: none;" readOnly></textarea>
+										<textarea id="detailMemo" style="resize: none;"
+											class="form-control" readOnly></textarea>
 									</p>
 								</div>
 							</div>
+
 						</div>
 						<input type="hidden" id="eventId">
 					</div>

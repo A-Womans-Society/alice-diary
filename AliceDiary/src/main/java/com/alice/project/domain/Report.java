@@ -16,6 +16,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AccessLevel;
@@ -24,13 +26,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "report")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@Slf4j
 @EqualsAndHashCode(of = "num")
+@DynamicInsert
 public class Report {
 
 	@Id
@@ -38,14 +43,15 @@ public class Report {
 	@SequenceGenerator(name = "REPORT_SEQ_GENERATOR", sequenceName = "SEQ_REPORT_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "report_num")
 	private Long num; // 신고 번호
-	private Long targetNum; // 신고대상물 번호
 
 	@Enumerated(EnumType.STRING)
 	private ReportReason reportReason; // 신고사유 [BAD, LEAK, SPAM, ETC]
-
+	@Column(length = 4000)
 	private String content; // 신고내용
+	@Column(nullable = false)
 	private LocalDateTime reportDate; // 신고일자
-
+	
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ReportType reportType; // 신고종류 [POST, REPLY]
 
@@ -80,31 +86,14 @@ public class Report {
 		reply.getReports().add(this);
 	}
 
-	// 신고 객체 생성 메서드
-	public static Report createReport(Member member) {
-		Report report = new Report();
-		report.setMember(member);
-		return report;
-	}
-
 	@PrePersist
 	public void reportDate() {
 		this.reportDate = LocalDateTime.now();
 	}
 
-	// 게시글 신고 객체 생성 메서드
-	public static Report createPostReport(Long postNum, String reportReason, String content, Member member) {
-		Report report = new Report(postNum, ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
-				ReportType.POST, member);
-
-		return report;
-	}
-
 	@Builder
-	public Report(Long targetNum, ReportReason reportReason, String content, LocalDateTime reportDate,
+	public Report(ReportReason reportReason, String content, LocalDateTime reportDate,
 			ReportType reportType, Member member) {
-		super();
-		this.targetNum = targetNum;
 		this.reportReason = reportReason;
 		this.content = content;
 		this.reportDate = reportDate;
@@ -113,11 +102,41 @@ public class Report {
 	}
 
 	// 게시글 신고 객체 생성 메서드
-	public static Report createReplyReport(Long replyNum, String reportReason, String content, Member member) {
-		Report report = new Report(replyNum, ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
-				ReportType.REPLY, member);
+	public static Report createPostReport(Post post, String reportReason, String content, Member member) {
+		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
+				ReportType.POST, member, post);
+		
+		return report;
+	}
+	// 댓글 신고 객체 생성 메서드
+	public static Report createReplyReport(Reply reply, String reportReason, String content, Member member) {
+		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
+				ReportType.REPLY, member, reply);
 
 		return report;
+	}
+	
+	// 게시물 신고 
+	@Builder
+	public Report(ReportReason reportReason, String content, LocalDateTime reportDate, ReportType reportType,
+			Member member, Post post) {
+		this.reportReason = reportReason;
+		this.content = content;
+		this.reportDate = reportDate;
+		this.reportType = reportType;
+		this.member = member;
+		this.post = post;
+	}
+	// 댓글 신고
+	@Builder
+	public Report(ReportReason reportReason, String content, LocalDateTime reportDate, ReportType reportType,
+			Member member, Reply reply) {
+		this.reportReason = reportReason;
+		this.content = content;
+		this.reportDate = reportDate;
+		this.reportType = reportType;
+		this.member = member;
+		this.reply = reply;
 	}
 
 }

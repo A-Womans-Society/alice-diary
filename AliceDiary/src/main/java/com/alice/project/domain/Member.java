@@ -18,6 +18,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alice.project.service.FriendsGroupService;
@@ -39,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 //@ToString
 @Slf4j
 @EqualsAndHashCode(of = "num")
+@DynamicInsert
 public class Member {
 
 	@Id
@@ -66,17 +68,9 @@ public class Member {
 	private String profileImg; // 프로필사진 저장된 파일명(ex. 회원아이디.jpeg)
 	private final Long reportCnt = 0L; // 신고 누적횟수 (default=0)
 
-	// 일정 생성 알림 Web으로 받기 여부
-	private boolean calendarCreatedByWeb = true;
-
-	// 이메일이 검증 되었는지 여부
-	private boolean emailVerified;
-
-	// 이메일 인증 토큰
-	private String emailCheckToken;
-
-	// 이메일 인증 토큰 생성 일자
-	private LocalDateTime emailCheckTokenGeneratedAt;
+	private boolean emailVerified; // 이메일이 검증 되었는지 여부
+	private String emailCheckToken; // 이메일 인증 토큰
+	private LocalDateTime emailCheckTokenGeneratedAt; // 이메일 인증 토큰 생성 일자
 
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
@@ -108,13 +102,10 @@ public class Member {
 //	@OneToMany(mappedBy="member")
 //	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
 
-	@OneToMany(mappedBy = "member")
-	@JsonManagedReference
-	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
-
-// friends 주석
 //	@OneToMany(mappedBy = "member")
-//	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
+//	@JsonManagedReference
+//	private List<FriendsGroup> groups = new ArrayList<>(); // 사용자가 생성한 그룹 리스트
+
 	@OneToMany(mappedBy = "member")
 	@JsonManagedReference
 	private List<Friend> friends = new ArrayList<>(); // 사용자가 등록한 친구 리스트
@@ -146,9 +137,9 @@ public class Member {
 		return member;
 	}
 
-	public Member(Long groupNum, FriendsGroupService fgs) {
-		this.groups.add(fgs.getGroupByNum(groupNum));
-	}
+//	public Member(Long groupNum, FriendsGroupService fgs) {
+//		this.groups.add(fgs.getGroupByNum(groupNum));
+//	}
 
 	@Builder
 	public Member(String name) {
@@ -156,11 +147,11 @@ public class Member {
 		this.name = name;
 	}
 
-	@Builder
-	public Member(List<FriendsGroup> groups) {
-		super();
-		this.groups = groups;
-	}
+//	@Builder
+//	public Member(List<FriendsGroup> groups) {
+//		super();
+//		this.groups = groups;
+//	}
 
 	@Builder
 	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
@@ -284,6 +275,11 @@ public class Member {
 	public static Member setProfileImg(Member member) {
 		member.profileImg = "default";
 		return member;
+	}
+
+	public static Member updateProfileImg(Member member, UserDto userDto) {
+			member.profileImg = userDto.getSaveName();
+			return member;
 	}
 
 	// 회원 내보내기 메서드
