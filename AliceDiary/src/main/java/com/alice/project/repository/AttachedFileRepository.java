@@ -29,4 +29,7 @@ public interface AttachedFileRepository extends JpaRepository<AttachedFile, Long
    Integer deleteOneFile(Long num);
    
    List<AttachedFile> findAllByPostNum(Long postNum);
+   
+   
+   AttachedFile findByMessageNum(Long msgNum);
 }

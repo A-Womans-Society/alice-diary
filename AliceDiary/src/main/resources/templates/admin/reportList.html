@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layouts/adminReportLayout}">
 
@@ -26,7 +27,7 @@
 									<option value="targetId">신고대상자</option>
 									<option value="reportReason">신고사유</option>
 									<option value="content">신고내용</option>
-									<option value="reportReason">신고종류</option>
+									<option value="reportType">신고종류</option>
 								</select> <input type="text" id="keyword" name="keyword"
 									placeholder="카테고리 선택 후 검색해주세요." />
 								<button type="submit">검색</button>
@@ -85,24 +86,37 @@
 											th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}"></td>
 										<td th:text="${report.reportReason}"></td>
 										<td th:text="${report.content}"></td>
+
+										<!-- 										<td th:text="${#strings.substring(report.content, 0, 5)}"></td> -->
 										<td th:text="${report.reportType}"></td>
-										<td><th:block th:if="${#strings.equals(report.reportType, 'POST')}">
-												<th:block th:if="${#strings.equals(report.post.postType, 'OPEN')}">
-													<a th:href="@{'/admin/open/get?num='+${report.post.num}}">해당 게시물 링크</a>													
-												</th:block>		
-												<th:block th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">																					<th:block th:if="${#strings.equals(report.post.postType, 'OPEN')}">
-													<a th:href="@{'/admin/community/get?num='+${report.post.num}}">해당 게시물 링크</a>													
+										<td><th:block
+												th:if="${#strings.equals(report.reportType, 'POST')}">
+												<th:block
+													th:if="${#strings.equals(report.post.postType, 'OPEN')}">
+													<a th:href="@{'/admin/open/get?num='+${report.post.num}}">해당
+														게시물 링크</a>
+												</th:block>
+												<th:block
+													th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
+													<a th:href="@{'/admin/community/get?num='+${report.post.num}}">해당
+															게시물 링크</a>
 												</th:block>
 											</th:block> 
-											<th:block th:if="${#strings.equals(report.reportType, 'REPLY')}">
-												<th:block th:if="${#strings.equals(report.reply.post.postType, 'OPEN')}">
-													<a th:href="@{'/admin/open/get?num='+${report.reply.post.num}}">해당 댓글 링크</a>													
-												</th:block>		
-												<th:block th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">																					<th:block th:if="${#strings.equals(report.post.postType, 'OPEN')}">
-													<a th:href="@{'/admin/community/get?num='+${report.reply.post.num}}">해당 댓글 링크</a>													
+											<th:block
+												th:if="${#strings.equals(report.reportType, 'REPLY')}">
+												<th:block
+													th:if="${#strings.equals(report.reply.post.postType, 'OPEN')}">
+													<a
+														th:href="@{'/admin/open/get?num='+${report.reply.post.num}}">해당
+														댓글 링크</a>
 												</th:block>
-											</th:block>
-										</td>
+												<th:block
+													th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">
+														<a
+															th:href="@{'/admin/community/get?num='+${report.reply.post.num}}">해당
+															댓글 링크</a>
+													</th:block>
+												</th:block></td>
 									</tr>
 								</tbody>
 							</th:block>
@@ -127,7 +141,6 @@
 											style="color: purple;"
 											th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
 											th:href="@{/admin/reports(page=${page-1})}" th:text="${page}"></a></li>
-
 										<li class="page-item"><a class="page-link"
 											style="background: #e0c6f2; color: purple;"
 											th:if="${page == nowPage} and ${type} != null and ${keyword} != null"
@@ -137,7 +150,6 @@
 											style="background: #e0c6f2; color: purple;"
 											th:if="${page == nowPage} and ${type} == null and ${keyword} == null"
 											th:href="@{/admin/reports(page=${page-1})}" th:text="${page}"></a></li>
-
 									</th:block>
 									<li class="page-item"><a class="page-link"
 										th:href="@{/admin/reports(page=${endPage-1})}"
@@ -147,12 +159,14 @@
 								</ul>
 							</nav>
 						</div>
+
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
 <th:block layout:fragment="script">
 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
 	<script th:src="@{/js/admin/reportList.js}"></script>

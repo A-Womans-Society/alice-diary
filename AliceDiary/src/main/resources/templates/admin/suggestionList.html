@@ -69,9 +69,10 @@
 										</a></td>
 										<td
 											th:text="${#temporals.format(s.suggestDate, 'yyyy-MM-dd HH:mm')}"></td>
-										<td><a th:href="@{'/admin/suggestions/'+${s.num}}"> <span
-												th:text="${s.content}"></span>
-										</a></td>
+										<td><span
+												th:text="${s.content}">
+											</span>
+										</td>
 									</tr>
 								</tbody>
 							</th:block>
@@ -95,7 +96,8 @@
 										<li class="page-item"><a class="page-link"
 											style="color: purple;"
 											th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
-											th:href="@{/admin/suggestions(page=${page-1})}" th:text="${page}"></a></li>
+											th:href="@{/admin/suggestions(page=${page-1})}"
+											th:text="${page}"></a></li>
 
 										<li class="page-item"><a class="page-link"
 											style="background: #e0c6f2; color: purple;"
@@ -105,7 +107,8 @@
 										<li class="page-item"><a class="page-link"
 											style="background: #e0c6f2; color: purple;"
 											th:if="${page == nowPage} and ${type} == null and ${keyword} == null"
-											th:href="@{/admin/suggestions(page=${page-1})}" th:text="${page}"></a></li>
+											th:href="@{/admin/suggestions(page=${page-1})}"
+											th:text="${page}"></a></li>
 
 									</th:block>
 									<li class="page-item"><a class="page-link"
@@ -116,6 +119,7 @@
 								</ul>
 							</nav>
 						</div>
+
 					</div>
 				</div>
 			</div>

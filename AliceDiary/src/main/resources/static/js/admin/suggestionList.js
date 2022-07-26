@@ -31,3 +31,8 @@ window.onload = function(){
 //			}
 //		}
 
+/* 건의사항 내용보기 모달 열기 */
+ function openModal(suggestion){
+ let s = suggestion;
+    $('#suggestionModal').modal();
+ }

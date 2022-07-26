@@ -50,7 +50,7 @@ public class PostController {
 	private ReplyService replyService;
 
 	// 글쓰기
-	@GetMapping("/community/post")
+	@GetMapping("/open/post")
 	public String writeform(Model model, @AuthenticationPrincipal UserDetails user) {
 		log.info("get");
 		model.addAttribute("writeFormDto", new WriteFormDto());
@@ -59,7 +59,7 @@ public class PostController {
 	}
 
 	// 글쓰기
-	@PostMapping("/community/post")
+	@PostMapping("/open/post")
 	public String writeSubmit(WriteFormDto writeFormDto, HttpSession session,
 			@AuthenticationPrincipal UserDetails user) {
 		log.info("controller 실행");
@@ -76,7 +76,7 @@ public class PostController {
 	}
 
 	// 게시글 리스트 가져오기
-	@GetMapping("/community/list")
+	@GetMapping("/open/list")
 	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
 			@AuthenticationPrincipal UserDetails user,
 			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
@@ -130,7 +130,7 @@ public class PostController {
 	}
 
 	// 게시글 상세보기
-	@GetMapping("/community/get")
+	@GetMapping("/open/get")
 	public String postView(Model model, Long num, Pageable pageable, HttpSession session,
 			@AuthenticationPrincipal UserDetails user) {
 
@@ -153,7 +153,7 @@ public class PostController {
 	}
 
 	// 게시글 수정하기 첨부파일도 수정
-	@GetMapping("/community/put")
+	@GetMapping("/open/put")
 	public String getUpdate(Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
 		log.info("수정컨트롤러 get");
 
@@ -169,7 +169,7 @@ public class PostController {
 	}
 
 	// 게시글 수정하기 첨부파일도 수정
-	@PostMapping("/community/put")
+	@PostMapping("/open/put")
 	public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
 		postService.updatePost(updateDto.getPostNum(), updateDto);
@@ -182,7 +182,7 @@ public class PostController {
 	}
 
 	// 게시글 수정에서 파일하나 삭제하기
-	@PostMapping("/community/put/filedelete")
+	@PostMapping("/open/put/filedelete")
 	@ResponseBody
 	public JSONObject oneFileDelete(Long num, Long postNum) {
 		log.info("!!!!!!! file num : " + num);
@@ -199,10 +199,10 @@ public class PostController {
 	}
 
 	// 게시글 삭제하기
-	@RequestMapping("/community/delete")
+	@RequestMapping("/open/delete")
 	public String postDelete(Long num) {
 		log.info("컨트롤러 실행 num:" + num);
-
+		
 		postService.deletePostwithReply(num);
 		postService.deletePostwithFile(num);
 		postService.deletePost(num);

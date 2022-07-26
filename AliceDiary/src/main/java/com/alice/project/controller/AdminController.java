@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Post;
 import com.alice.project.domain.Report;
 import com.alice.project.domain.Suggestion;
 import com.alice.project.service.AttachedFileService;
@@ -57,7 +58,7 @@ public class AdminController {
 
 		Page<Member> members = null;
 
-		if (searchDto.getKeyword() == null) {
+		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
 			members = memberService.getMemberList(pageable);
 		} else {
 			if (type.equals("status")) {
@@ -133,7 +134,16 @@ public class AdminController {
 			@AuthenticationPrincipal UserDetails user) {
 		Page<Report> reports = reportService.findReports(pageable);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
-
+		
+//		for (Report r : reports) {
+//			//log.info("r.getReply() : " + r.getReply().toString());
+//			r.get
+//			r.setReply(null)
+//			Long replyNum = r.getReply().getNum();
+//			Post post = replyService.getPostByReplyNum(replyNum);
+//			r.getReply().setPost(post);
+//		}
+		
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 
@@ -148,6 +158,8 @@ public class AdminController {
 				reports = reportService.searchReportByTargetId(searchDto, pageable);
 			} else if (type.equals("reportReason")) {
 				reports = reportService.searchReportByReportReason(searchDto, pageable);
+			} else if (type.equals("reportType")) {
+				reports = reportService.searchReportByReportType(searchDto, pageable);
 			}
 		}
 

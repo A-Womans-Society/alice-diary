@@ -1,6 +1,7 @@
 package com.alice.project.controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -28,6 +29,7 @@ import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.PostService;
 import com.alice.project.service.ReplyService;
+import com.alice.project.service.ReportService;
 import com.alice.project.web.PostSearchDto;
 import com.alice.project.web.ReplyDto;
 import com.alice.project.web.WriteFormDto;
@@ -45,6 +47,7 @@ public class AdminPostController {
 	private final PostService postService;
 	private final AttachedFileService attachedFileService;
 	private final MemberService memberService;
+	private final ReportService reportService;
 
 	// 공지사항 관리
 	/* 공지사항 목록 */
@@ -134,9 +137,10 @@ public class AdminPostController {
 		Member member = memberService.findById(user.getUsername());
 
 		Post post = Post.createNotice(writeFormDto, member);
-		postService.write(post);
+		Post result = postService.write(post);
+		
 		if (!writeFormDto.getOriginName().isEmpty()) {
-			attachedFileService.postFileUpload(writeFormDto.getOriginName(), postService.write(post), session,
+			attachedFileService.postFileUpload(writeFormDto.getOriginName(), result, session,
 					user.getUsername());
 		}
 
@@ -319,6 +323,71 @@ public class AdminPostController {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
 		return "/admin/openView";
+	}
+	
+	/* 공개게시판 글 내리기 */
+	@RequestMapping("/open/delete")
+	public String deleteOpenPost(Long num) {		
+		List<Reply> replies = replyService.getReplyByPostNum(num);
+		for (Reply r : replies) {
+			reportService.deleteReportWithReply(r.getNum()); // 게시글의 댓글에 대한 신고 삭제
+		}
+		
+		reportService.deleteReportWithPost(num); // 게시글에 대한 신고삭제
+		postService.deletePostwithReply(num); // 게시글의 댓글 삭제
+		postService.deletePostwithFile(num); // 게시글의 첨부파일 삭제
+		postService.deletePost(num); // 게시글 삭제
+
+		return "redirect:list";
+	}
+	
+	/* 공개게시판 댓글쓰기 */
+	@PostMapping("/open/reply")
+	@ResponseBody
+	public JSONObject writeOpenReply(String memberId, Long postNum, String content) {
+		log.info(memberId, postNum, content);
+		Reply newReply = replyService.replyWrite(memberId, postNum, content);
+
+		JSONObject jObj = new JSONObject();
+
+		jObj.put("replyNum", newReply.getNum());
+		jObj.put("id", newReply.getMember().getId());
+		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
+		jObj.put("repContent", newReply.getContent());
+		jObj.put("postNum", newReply.getPost().getNum());
+		jObj.put("profileImg", newReply.getMember().getProfileImg());
+		return jObj;
+
+	}
+
+	/* 공개게시판 답글쓰기 */
+	@PostMapping("/open/replyreply")
+	@ResponseBody
+	public JSONObject writeOpenChildReply(String memberId, Long postNum, Long parentRepNum, String content) {
+		log.info(memberId, postNum, parentRepNum, content);
+		Reply newReplyReply = replyService.replyReplyWrite(memberId, postNum, parentRepNum, content);
+
+		JSONObject jObj = new JSONObject();
+
+		jObj.put("replyNum", newReplyReply.getNum());
+		jObj.put("parentRepNu", newReplyReply.getParentRepNum());
+		jObj.put("id", newReplyReply.getMember().getId());
+		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
+		jObj.put("repContent", newReplyReply.getContent());
+		jObj.put("profileImg", newReplyReply.getMember().getProfileImg());
+
+		return jObj;
+
+	}
+
+	/* 공개게시판 댓글삭제하기 */
+	@PostMapping("/open/deletereply")
+	public String deleteReply(Long num) {
+		log.info("컨트롤러 실행 ");
+
+		replyService.replyDelete(num);
+
+		return "redirect:list";
 	}
 
 }

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.AttachedFile;
@@ -30,23 +31,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@Transactional
 public class AttachedFileService {
 
 	@Autowired
 	private AttachedFileRepository attachedFileRepository;
-	
-	
 
 	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session, String id) {
 		log.info("list size : " + files.size());
 		if (files.size() != 0) {
 			log.info("service run");
 			String savePath = "";
-			if(post.getPostType() == PostType.NOTICE) {
+			if (post.getPostType() == PostType.NOTICE) {
 				savePath = "C:\\Temp\\upload\\notice\\";
-			}else if(post.getPostType() == PostType.OPEN){
+			} else if (post.getPostType() == PostType.OPEN) {
 				savePath = "C:\\Temp\\upload\\open\\";
-			}else if(post.getPostType() == PostType.CUSTOM){
+			} else if (post.getPostType() == PostType.CUSTOM) {
 				savePath = "C:\\Temp\\upload\\private\\";
 			}
 			for (MultipartFile multipartFile : files) {
@@ -72,7 +72,7 @@ public class AttachedFileService {
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-		String sfile = id+"_" +currentTime + "_" + ofile;
+		String sfile = id + "_" + currentTime + "_" + ofile;
 
 		log.info("ofile:" + ofile);
 		log.info("sfile:" + sfile);
@@ -86,13 +86,13 @@ public class AttachedFileService {
 
 		return sfile;
 	}
-	
-	// 쪽지 첨부파일 저장
+
+	/* 쪽지 첨부파일 저장 */
 	public String saveMsgFile(MultipartFile file, Message msg, HttpSession session, String id) {
 		String savePath = "C:\\Temp\\upload\\message\\";
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		String sfile = id+"_" +currentTime + "_" + ofile;
+		String sfile = id + "_" + currentTime + "_" + ofile;
 
 		AttachedFile savefile = new AttachedFile(ofile, sfile, savePath, msg);
 
@@ -105,47 +105,45 @@ public class AttachedFileService {
 
 		return sfile;
 	}
-	public ResponseEntity<UrlResource> postFileDownload(Long num) throws MalformedURLException, UnsupportedEncodingException{
-		
+
+	public ResponseEntity<UrlResource> postFileDownload(Long num)
+			throws MalformedURLException, UnsupportedEncodingException {
+
 		Optional<AttachedFile> findFile = attachedFileRepository.findById(num);
-		AttachedFile attachedFile = findFile.orElse (null);
-		if (findFile == null) return null;
-		
+		AttachedFile attachedFile = findFile.orElse(null);
+		if (findFile == null) { return null; }
 		String sFileName = attachedFile.getSaveName();
 		String oFileName = attachedFile.getOriginName();
-		
-		
+
 		String encodeoFileName;
 
-			encodeoFileName = URLEncoder.encode(oFileName,"UTF-8").replace("+", "%20");
-			
-			String savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
-			UrlResource resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
-			
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath)
-					.body(resource);
-			
+		encodeoFileName = URLEncoder.encode(oFileName, "UTF-8").replace("+", "%20");
+
+		String savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
+		UrlResource resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath).body(resource);
+
 	}
-	
-	public List<AttachedFile> fileView(Post post,Pageable pageable) {
+
+	public List<AttachedFile> fileView(Post post, Pageable pageable) {
 		log.info("service run fileVIEW");
-		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
 		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
 			log.info("AFS의 fileView!!! af : " + oriName);
 		}
-		return attachedFileRepository.findAllByPostNum(post.getNum(),pageable);
+		return attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
 	}
-	
+
 	public List<AttachedFile> newFileView(Long postNum) {
 		log.info("service run newfileVIEW");
-		
+
 		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(postNum);
-		
+
 		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
-		
+
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
 			String saveName = af.getSaveName();
@@ -155,5 +153,10 @@ public class AttachedFileService {
 		return afs;
 	}
 	
+	public AttachedFile getFileByMsgNum(Long msgNum) {
+		return attachedFileRepository.findByMessageNum(msgNum);
+	}
 	
+	
+
 }

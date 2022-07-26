@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -29,7 +32,9 @@ import com.alice.project.service.MessageService;
 import com.alice.project.web.FriendshipDto;
 import com.alice.project.web.MessageDto;
 import com.alice.project.web.MsgListDto;
+import com.alice.project.web.MsgFileDto;
 import com.alice.project.web.MsgSearchDto;
+import com.alice.project.web.SearchDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -202,6 +207,7 @@ public class MessageController {
 		Long senderNum = messageService.findNumById(id);
 		Long receiverNum = messageService.findNumById(mdto.getMessageToId());
 		MultipartFile originName = mdto.getOriginName();
+		MessageDto fileAlarm = new MessageDto();
 		
 		if (senderNum > receiverNum) {
 			mdto.setUser1Num(receiverNum);
@@ -216,9 +222,19 @@ public class MessageController {
 		mdto.setMessageFromId(id);
 		mdto.setSendDate(LocalDateTime.now());
 		
-		Message resultMsg = messageService.sendMsg(mdto);
+		Message resultMsg = messageService.sendMsg(mdto); // 쪽지+첨부파일 저장
+		log.info("!!!!!!!!!!!setContent : " + mdto.getOriginName());
+
 		if (!mdto.getOriginName().isEmpty()) { // 첨부파일이 있다면
-			attachedFileService.saveMsgFile(originName, resultMsg, session, id);
+			fileAlarm.setContent(originName.getOriginalFilename() + "를 보냅니다!");
+			fileAlarm.setDirection(mdto.getDirection());
+			fileAlarm.setUser1Num(mdto.getUser1Num());
+			fileAlarm.setUser2Num(mdto.getUser2Num());
+			fileAlarm.setMessageFromId(mdto.getMessageFromId());
+			fileAlarm.setMessageToId(mdto.getMessageToId());
+			fileAlarm.setSendDate(mdto.getSendDate());
+			log.info("!!!!!!!!!!!setContent : " + fileAlarm.getContent());
+			messageService.sendMsg(fileAlarm); // 첨부파일 알림 쪽지보내기
 		}
 		log.info("mdto" + mdto.toString());
 
@@ -228,7 +244,7 @@ public class MessageController {
 	}
 
 	// 쪽지함 삭제
-	@PostMapping("/messagebox/{fromId}/delete")
+	@PostMapping("/messagebox/{fromId}/{toId}/delete")
 	@ResponseBody
 	public String deleteMessage(@PathVariable String fromId, String toId, Model model) {
 		messageService.changeMsgStatus(fromId, toId);
@@ -239,10 +255,13 @@ public class MessageController {
 	// 쪽지함 내에서 쪽지보내기
 	@PostMapping("/messagebox/{fromId}/{toId}")
 	public String sendMessages(@PathVariable("fromId") String fromId, @PathVariable("toId") String toId, Model model,
-			@ModelAttribute MessageDto mdto) {
+			@ModelAttribute MessageDto mdto,
+			@AuthenticationPrincipal UserDetails user,
+			HttpSession session) {
 		Long senderNum = messageService.findNumById(fromId);
 		Long receiverNum = messageService.findNumById(toId);
-
+		MessageDto fileAlarm = new MessageDto();
+		MultipartFile originName = mdto.getOriginName();
 		if (senderNum > receiverNum) {
 			mdto.setUser1Num(receiverNum);
 			mdto.setUser2Num(senderNum);
@@ -259,6 +278,20 @@ public class MessageController {
 		log.info("mdto" + mdto.toString());
 
 		Message result = messageService.sendMsg(mdto);
+		log.info("!!!!!!!!!!!setContent : " + mdto.getOriginName());
+
+		if (!mdto.getOriginName().isEmpty()) { // 첨부파일이 있다면
+			fileAlarm.setContent(originName.getOriginalFilename() + "를 보냅니다!");
+			fileAlarm.setDirection(mdto.getDirection());
+			fileAlarm.setUser1Num(mdto.getUser1Num());
+			fileAlarm.setUser2Num(mdto.getUser2Num());
+			fileAlarm.setMessageFromId(mdto.getMessageFromId());
+			fileAlarm.setMessageToId(mdto.getMessageToId());
+			fileAlarm.setSendDate(mdto.getSendDate());
+			log.info("!!!!!!!!!!!setContent : " + fileAlarm.getContent());
+			messageService.sendMsg(fileAlarm); // 첨부파일 알림 쪽지보내기
+		}
+		log.info("mdto" + mdto.toString());
 		log.info("result.toString() : " + result.toString());
 		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + toId));
 		return "message/alert";
@@ -268,11 +301,14 @@ public class MessageController {
 	@GetMapping("/messagebox/{id}/search")
 	public String searchByContent(@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "type", required = true) String type, @PathVariable String id, String content,
-			Model model, @ModelAttribute MessageDto mdto, MsgSearchDto msdto) {
+			Model model, @ModelAttribute MessageDto mdto, MsgSearchDto msdto,
+			@AuthenticationPrincipal UserDetails user) {
 		log.info("들어오니??");
 		// log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
 		// String messageFromNum = (String) session.getAttribute("num");
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+
 		log.info("사용자 id : " + id);
 		log.info("사용자 num : " + num);
 		model.addAttribute("mdto", mdto);
@@ -351,6 +387,86 @@ public class MessageController {
 		model.addAttribute("fromNum", num);
 
 		return "message/msgList";
+	}
+	
+	// 사진 파일 모아보기
+	@GetMapping(value = "/messagebox/pictures/{id}")
+	public String showPictureList(@PathVariable("id") String id,
+			@PageableDefault(page = 0, size = 10, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
+			@ModelAttribute("searchDto") SearchDto searchDto, 
+			@AuthenticationPrincipal UserDetails user, Model model,
+			@ModelAttribute MsgFileDto mpdto,
+			Long num) {
+		String type = searchDto.getType();
+		String keyword = searchDto.getKeyword();
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("type", type);
+		
+		Member member = memberService.findById(user.getUsername());
+		Long memNum = member.getNum();
+		model.addAttribute("member", member);
+		
+		List<MsgFileDto> mpdtos = new ArrayList<>();	
+		Integer size = 0;
+		
+		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+			mpdtos = messageService.findMsgPictures(memNum);	
+			if (mpdtos == null) {
+				return "/message/pictureList";
+			}
+			size = mpdtos.size();
+		} else {
+			mpdtos = messageService.searchMsgPicturesByKeyword(memNum, searchDto);
+			if (mpdtos == null) {
+				return "/message/pictureList";
+			}
+			size = mpdtos.size();
+		}
+		
+		model.addAttribute("mpdtos", mpdtos);
+		model.addAttribute("size", size);
+
+		return "/message/pictureList";
+	}
+	
+	// 문서 파일 모아보기
+	@GetMapping(value = "/messagebox/docs/{id}")
+	public String showDocList(@PathVariable("id") String id,
+			@PageableDefault(page = 0, size = 10, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
+			@ModelAttribute("searchDto") SearchDto searchDto, 
+			@AuthenticationPrincipal UserDetails user, Model model,
+			@ModelAttribute MsgFileDto mpdto,
+			Long num) {
+		String type = searchDto.getType();
+		String keyword = searchDto.getKeyword();
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("type", type);
+		
+		Member member = memberService.findById(user.getUsername());
+		Long memNum = member.getNum();
+		model.addAttribute("member", member);
+		
+		List<MsgFileDto> mpdtos = new ArrayList<>();	
+		Integer size = 0;
+		
+		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+			mpdtos = messageService.findMsgDocs(memNum);	
+			if (mpdtos == null) {
+				return "/message/docList";
+			}
+			size = mpdtos.size();
+		} else {
+			mpdtos = messageService.searchMsgDocsByKeyword(memNum, searchDto);
+			if (mpdtos == null) {
+				return "/message/docList";
+			}
+			size = mpdtos.size();
+		}
+
+		model.addAttribute("mpdtos", mpdtos);
+		model.addAttribute("size", size);
+
+		return "/message/docList";
 	}
 
 }

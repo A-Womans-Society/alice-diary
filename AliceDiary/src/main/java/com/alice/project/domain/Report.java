@@ -2,6 +2,7 @@ package com.alice.project.domain;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -65,7 +66,7 @@ public class Report {
 	@JsonBackReference
 	private Post post; // 게시물 객체
 
-	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "reply_num")
 	@JsonBackReference
 	private Reply reply; // 댓글 객체

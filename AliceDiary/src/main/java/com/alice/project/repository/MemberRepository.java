@@ -61,5 +61,8 @@ public interface MemberRepository
 	Page<Member> findByReportCnt(Long keyword, Pageable pageable);
 
 	Page<Member> findByStatus(Status status, Pageable pageable);
+	
+	List<Member> findByIdContaining(String keyword);
+
 
 }

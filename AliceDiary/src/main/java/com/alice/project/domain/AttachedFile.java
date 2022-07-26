@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -50,7 +51,7 @@ public class AttachedFile {
 	@JsonBackReference
 	private Post post; // 소속 게시물 객체
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name="message_num")
 	@JsonBackReference
 	private Message message; // 소속 메시지 객체

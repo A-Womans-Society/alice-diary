@@ -69,9 +69,9 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 		this.direction = direction;
 	}
 
-	public Message(Long num, Long user1Num, Long user2Num, Long msgStatus, Long direction, LocalDateTime sendDate,
+	public Message(Long user1Num, Long user2Num, Long msgStatus, Long direction, 
+			LocalDateTime sendDate,
 			String content, AttachedFile file) {
-		this.num = num;
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
 		this.msgStatus = msgStatus;
