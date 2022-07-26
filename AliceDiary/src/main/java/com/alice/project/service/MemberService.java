@@ -39,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MemberService implements UserDetailsService { // MemberService가 UserDetailService를 구현
 
+
    private final MemberRepository memberRepository;
    private final PasswordEncoder passwordEncoder;
    private final EntityManager em;
@@ -91,7 +92,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
       userDto.setEmailVerified(m.isEmailVerified());
       userDto.setStatus(Status.USER_IN);
       userDto.setNum(num);
-      log.info("!!!!!!!!!!!!changeImg" + changeIMg);
       if (!changeIMg) { // 프로필 사진 안바꾸면
          userDto.setSaveName(m.getProfileImg());
       }

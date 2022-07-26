@@ -34,19 +34,8 @@
 					title="내 프로필 보기"
 					th:onclick="|location.href='/AliceDiary/member/@{${#authentication.name}}'|">
 
-
-<!-- 					<th:block th:if="${#strings.equals(member.profileImg, 'default')}"> -->
-<!-- 						<img th:src="@{/upload/profile/default.png}" alt="user" width="45" -->
-<!-- 							class="rounded-circle"> -->
-<!-- 					</th:block> <th:block -->
-<!-- 						th:unless="${#strings.equals(member.profileImg, 'default')}"> -->
-<!-- 						<img th:src="@{/upload/profile/}+@{${member.profileImg}}" -->
-<!-- 							alt="user" width="45" class="rounded-circle"> -->
-<!-- 					</th:block>  -->
-					<th:block>
-						<img th:src="@{/upload/profile/}+@{${member.profileImg}}"
-							alt="user" width="45" class="rounded-circle">
-					</th:block>
+					<img th:src="@{/upload/profile/}+@{${member.profileImg}}"
+					alt="user" width="45" class="rounded-circle">
 
 				</li>
 				<li class="nav-item p-0"><h2 class="nav-texts text-white">/</h2></li>

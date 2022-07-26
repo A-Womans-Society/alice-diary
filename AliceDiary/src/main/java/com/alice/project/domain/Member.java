@@ -275,7 +275,12 @@ public class Member {
 	}
 
 	public static Member setProfileImg(Member member) {
-		member.profileImg = "default";
+		member.profileImg = "default.png";
+		return member;
+	}
+
+	public static Member updateProfileImg(Member member, UserDto userDto) {
+		member.profileImg = userDto.getSaveName();
 		return member;
 	}
 	

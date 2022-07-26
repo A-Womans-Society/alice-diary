@@ -6,6 +6,7 @@ if (jsonData.length == 14){
 } else {
 	var jsonConvertList = eval(JSON.stringify(JSON.parse(jsonData).items))
 }
+
 document.addEventListener('DOMContentLoaded', function() {
 	var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -39,8 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
-
 function makeRequest(id) {
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
@@ -50,7 +49,7 @@ function makeRequest(id) {
 	    if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	    	if (httpRequest.status === 200) {
 				var result = JSON.parse(httpRequest.response);
-				console.log(result);
+
 				document.getElementById("detailMemo").value = result.memo;
 				document.getElementById("detailStartDate").value = result.start;
 				document.getElementById("detailEndDate").value = result.end;
@@ -73,6 +72,17 @@ function makeRequest(id) {
 				}
 				document.getElementById("colorbtn").style.background = result.backgroundColor;
 				document.getElementById("eventId").value = result.id;
+
+				if(result.mine == true){
+					document.getElementById("deleteEventBtn").style.display = 'inline';
+					document.getElementById("sendMsgBtn").style.display = 'none';
+					document.getElementById("friendId").value = '';
+				} else {
+					document.getElementById("deleteEventBtn").style.display = 'none';
+					document.getElementById("sendMsgBtn").style.display = 'inline';
+					document.getElementById("friendId").value = result.friendId;
+				}
+				
 				$("#showEvent").modal();
 			} else {
 				alert('request에 뭔가 문제가 있어요.');
@@ -116,4 +126,10 @@ function checkNull(){
 		return false;
 	} 
 	return true;
+}
+
+function sendMessage(sender){
+	friendId = document.getElementById("friendId").value;
+	console.log(friendId);
+	location.href='./messagebox/'+sender+"/"+friendId;
 }

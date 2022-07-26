@@ -2,6 +2,10 @@ package com.alice.project.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -38,8 +42,21 @@ public class ProfileController {
 	@GetMapping(value = "/member/{id}")
 	public String myProfile(@PathVariable String id, Model model) {
 		Member member = profileService.findById(id);
-		log.info("수정 후 Birth" + member.getBirth());
+
+		List<String> wishList = new ArrayList<String>();
+		log.info("wish list : " + member.getWishlist());
+		// wish list 존재
+		if (member.getWishlist() != null) {
+			String wish = member.getWishlist().replaceAll(",", " ");
+			String[] wishs = wish.split(" ");
+			for (String s : wishs) {
+				wishList.add(s);
+			}
+		}
+		log.info("wish list : " + wishList.size());
+
 		model.addAttribute("member", member);
+		model.addAttribute("wishList", wishList);
 		return "profile/myProfile";
 	}
 
@@ -48,8 +65,11 @@ public class ProfileController {
 	public String updateProfile(@PathVariable String id, Model model) {
 		log.info("내 프로필 수정 GET 진입!!");
 		Member member = profileService.findById(id);
+		UserDto dto = new UserDto();
+		dto.setBirthStr(member.getBirth().format(DateTimeFormatter.ofPattern("yyy-MM-dd")));
 		model.addAttribute("member", member);
-		model.addAttribute("userDto", new UserDto());
+		model.addAttribute("userDto", dto);
+//		model.addAttribute("birthStr", member.getBirth().format(DateTimeFormatter.ofPattern("yyy-MM-dd")));
 		return "profile/updateProfile";
 	}
 
@@ -59,7 +79,10 @@ public class ProfileController {
 			BindingResult bindingResult, Long num, HttpSession session) {
 		log.info("프로필 수정 페이지 진입");
 		log.info("member.num == " + num);
-		if (!userDto.getProfileImg().getOriginalFilename().isEmpty()) {
+
+		LocalDate newBirth = LocalDate.parse(userDto.getBirthStr(), DateTimeFormatter.ISO_DATE);
+		userDto.setBirth(newBirth);
+		if (!userDto.getProfileImg().getOriginalFilename().equals("")) {
 			String originName = userDto.getProfileImg().getOriginalFilename();
 			String saveName = id + "." + originName.split("\\.")[1];
 			log.info("saveName == " + saveName);
@@ -69,7 +92,6 @@ public class ProfileController {
 				userDto.setSaveName(saveName);
 				log.info("userDto.saveName = " + userDto.getSaveName());
 				userDto.getProfileImg().transferTo(new File(savePath + saveName));
-				log.info("userDto.getProfileImg = " + userDto.getProfileImg());
 
 				memberService.processUpdateMember(num, userDto, true);
 

@@ -48,6 +48,7 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 	@Column(nullable = false)
 	private Long direction; // user1이 user2에게 보내면 : 0, 반대면 1
 
+
 	@Column(nullable = false)
 	private LocalDateTime sendDate; // 쪽지 발송일자
 	@Column(nullable = false, length = 4000)
@@ -129,4 +130,5 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 //      message.setMember(member);
 //      return message;
 //   }
+
 }

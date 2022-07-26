@@ -119,6 +119,7 @@ public class Reply {
 	public void setPost(Post post) {
 		this.post = post;
 		post.getReplies().add(this);
+
 	}
 
 	public void setMember(Member member) {
