@@ -22,7 +22,7 @@
       <th:block th:each="m : ${mdtos}">
          <div th:attr="class=${(m.user1Num != userNum and m.direction == 0) or (m.user1Num == userNum and m.direction == 1) ? 'row d-flex justify-content-start' : 'row d-flex justify-content-end'}">
             <div th:attr="class=${(m.user1Num != userNum and m.direction == 1) or (m.user1Num == userNum and m.direction == 0) ? 'col-6 bg-info' : 'col-6'}">
-<!--                <p><img id="profile" th:src="${m.profile}" alt="프로필사진" th:if="${m.profile != null}" /></p> -->
+               <p><img id="profile" th:src="@{/upload/profile/}+@{${m.profileImg}}" alt="프로필사진" th:if="${m.profileImg != null}" /></p>
                <p th:if="${m.user1Num == userNum and m.direction == 1}" th:text="${m.user2Num}"></p>
                <p th:if="${m.user2Num == userNum and m.direction == 0}" th:text="${m.user1Num}"></p>
                <p th:text="${m.content}"></p>

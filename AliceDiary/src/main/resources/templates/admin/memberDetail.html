@@ -3,6 +3,9 @@
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layouts/adminLayout}">
 
+<th:block layout:fragment="css">
+</th:block>
+
 <th:block layout:fragment="script">
 	<script th:src="@{/js/admin/memberDetail.js}"></script>
 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
@@ -18,9 +21,9 @@
 			<!--/* 회원 정보 Rendering 영역 */-->
 			<th:block th:each="member : ${member}">
 				<p th:text="|회원번호 : ${member.num}|"></p>
-				<p th:text="|프로필사진 : ${member.profileImg}|"></p>
-				<p>
-					<img id="profileImg" th:src="${member.profileImg}" alt="프로필사진" />
+				<p>프로필 사진
+					<img th:src="@{/upload/profile/}+@{${member.profileImg}}"
+							alt="user" width="45" class="rounded-circle">
 				</p>
 				<p th:text="|아이디 : ${member.id}|"></p>
 <!-- 				<p th:text="|비밀번호 : ${member.password}|"></p> -->

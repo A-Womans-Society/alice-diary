@@ -20,11 +20,12 @@ public class MsgListDto {
 	private String messageFromId; // 보내는 사람 아이디
 	private String messageToId; // 받는 사람 아이디
 	private Long direction; // user1Num->user2Num : 0, 반대면 1
-	private String profileImg;
+	private String senderProfileImg; // 보내는 사람 프로필 사진
 
 	@Builder
-	public MsgListDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String recentContent, String messageFromId,
-			String messageToId, Long direction) {
+	public MsgListDto(Long user1Num, Long user2Num, LocalDateTime sendDate, 
+			String recentContent, String messageFromId,
+			String messageToId, Long direction, String senderProfileImg) {
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
 		this.sendDate = sendDate;
@@ -32,6 +33,7 @@ public class MsgListDto {
 		this.messageFromId = messageFromId;
 		this.messageToId = messageToId;
 		this.direction = direction;
+		this.senderProfileImg = senderProfileImg;
 	}
 
 //   public MsgListDto(Long messageFromNum, Long messageToNum, 

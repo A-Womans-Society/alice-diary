@@ -20,8 +20,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.alice.project.service.FriendsGroupService;
+import com.alice.project.repository.MemberRepository;
 import com.alice.project.web.UserDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -280,6 +281,14 @@ public class Member {
 
 	public static Member updateProfileImg(Member member, UserDto userDto) {
 		member.profileImg = userDto.getSaveName();
+		return member;
+	}
+	
+	@Transactional
+	public static Member updateProfileImg(Member member, UserDto userDto, MemberRepository mr) {
+		member.profileImg = userDto.getSaveName();
+		log.info("userDto.getSaveName" + userDto.getSaveName());
+		mr.save(member);
 		return member;
 	}
 

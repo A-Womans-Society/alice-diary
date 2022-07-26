@@ -27,6 +27,7 @@ public class ReportController {
 	private ReportService reportService;
 
 	// 게시글신고하기
+
 	@PostMapping("community/reportpost")
 	@ResponseBody
 	public boolean reportPost(String userId, Long postNum, String reportReason, String content) {

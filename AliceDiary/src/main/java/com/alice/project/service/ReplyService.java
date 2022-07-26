@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alice.project.domain.Post;
 import com.alice.project.domain.Reply;
 import com.alice.project.domain.ReplyStatus;
 import com.alice.project.repository.MemberRepository;
@@ -100,5 +101,21 @@ public class ReplyService {
 			replyRepository.delete(replyDelete);
 		}
 
+	}
+
+	public Post getPostByReplyNum(Long replyNum) {
+		Long postNum = replyRepository.searchPostNumByReplyNum(replyNum).longValue();
+		Post post = postRepository.findByNum(postNum);
+		return post;
+	}
+	
+	public List<Reply> getReplyByPostNum(Long postNum) {
+		List<Reply> replies = replyRepository.findByPostNum(postNum);
+//		List<Long> replyNums = new ArrayList<>();
+//		for (Reply r : replies) {
+//			replyNums.add(r.getNum());
+//		}
+		
+		return replies;
 	}
 }

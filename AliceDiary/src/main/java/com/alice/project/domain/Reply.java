@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -77,7 +78,7 @@ public class Reply {
 	private Member member; // 댓글 작성 회원 객체
 
 	/* reports가 null일 수 있음 */
-	@OneToMany(mappedBy = "reply")
+	@OneToMany(mappedBy = "reply", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<Report> reports = new ArrayList<>(); // 댓글 소속 신고 리스트
 
@@ -117,7 +118,8 @@ public class Reply {
 	// 연관관계 메서드 (양방향관계)
 	public void setPost(Post post) {
 		this.post = post;
-//      post.getReplies().add(this);
+		post.getReplies().add(this);
+
 	}
 
 	public void setMember(Member member) {

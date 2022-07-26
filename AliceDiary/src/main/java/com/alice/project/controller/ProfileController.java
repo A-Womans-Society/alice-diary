@@ -42,6 +42,7 @@ public class ProfileController {
 	@GetMapping(value = "/member/{id}")
 	public String myProfile(@PathVariable String id, Model model) {
 		Member member = profileService.findById(id);
+
 		List<String> wishList = new ArrayList<String>();
 		log.info("wish list : " + member.getWishlist());
 		// wish list 존재
@@ -62,7 +63,7 @@ public class ProfileController {
 	// 내 프로필 수정 화면 GET
 	@GetMapping(value = "/member/update/{id}")
 	public String updateProfile(@PathVariable String id, Model model) {
-		log.info("POST 진입!!");
+		log.info("내 프로필 수정 GET 진입!!");
 		Member member = profileService.findById(id);
 		UserDto dto = new UserDto();
 		dto.setBirthStr(member.getBirth().format(DateTimeFormatter.ofPattern("yyy-MM-dd")));
@@ -78,6 +79,7 @@ public class ProfileController {
 			BindingResult bindingResult, Long num, HttpSession session) {
 		log.info("프로필 수정 페이지 진입");
 		log.info("member.num == " + num);
+
 		LocalDate newBirth = LocalDate.parse(userDto.getBirthStr(), DateTimeFormatter.ISO_DATE);
 		userDto.setBirth(newBirth);
 		if (!userDto.getProfileImg().getOriginalFilename().equals("")) {
@@ -87,9 +89,10 @@ public class ProfileController {
 			String savePath = "C:\\Temp\\upload\\profile\\";
 
 			try {
-				userDto.getProfileImg().transferTo(new File(savePath + saveName));
 				userDto.setSaveName(saveName);
-				log.info(("userDto.saveName = " + userDto.getSaveName()));
+				log.info("userDto.saveName = " + userDto.getSaveName());
+				userDto.getProfileImg().transferTo(new File(savePath + saveName));
+
 				memberService.processUpdateMember(num, userDto, true);
 
 			} catch (IllegalStateException e) {
