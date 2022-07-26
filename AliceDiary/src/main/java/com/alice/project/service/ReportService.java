@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReportService {
 
+	private final MemberService ms;
 	private final ReportRepository reportRepository;
 	private final MemberRepository memberRepository;
 
@@ -55,9 +56,16 @@ public class ReportService {
 
 		String type = sdto.getType();
 		String keyword = sdto.getKeyword();
-
-		if (type.equals("reporterId")) { // 신고자 검색
-			reportList = reportRepository.searchByReporterId(keyword, pageable);
+		List<Report> reports = new ArrayList<>();
+		if (type.equals("reporterId")) { // 신고자 검색 (신고자 아이디)
+			List<Member> memberlist = memberRepository.findByIdContaining(keyword);
+			for (Member m : memberlist) {
+				Report r = reportRepository.searchByReporterId(m.getNum());
+				reports.add(r);
+			}
+			final int start = (int) pageable.getOffset();
+			final int end = Math.min((start + pageable.getPageSize()), reports.size());
+			reportList = new PageImpl<>(reports.subList(start, end), pageable, reports.size());
 		} else if (type.equals("content")) { // 신고내용 검색
 			reportList = reportRepository.findByContentContaining(keyword, pageable);
 		}
@@ -70,14 +78,18 @@ public class ReportService {
 
 		Page<Report> reportList = reportRepository.findAll(pageable);
 		List<Report> list = new ArrayList<>();
+		log.info("reportList.getSize()  : " + reportList.getSize());
+		if (reportList == null || reportList.isEmpty() || reportList.getSize() == 0) {
+			return null;
+		}
 		for (Report report : reportList) {
-			log.info("!!!!!!!!!!!!report.getReply().getNum() : " + report.getReply().getMember().getNum());
-			if (report.getReportType().equals("POST")) {
+			log.info("!!!!!!!!!!!!report.getReply().getId() : " + report.getReply().getMember().getId());
+			if (report.getReportType().toString().equals("POST")) {
 				log.info("!!!!!!!!!!!!!!!!!!postid : " + report.getPost().getMember().getId());
 				if (report.getPost().getMember().getId().contains(keyword)) {
 					list.add(report);
 				}
-			} else if (report.getReportType().equals("REPLY")) {
+			} else if (report.getReportType().toString().equals("REPLY")) {
 				log.info("!!!!!!!!!!!!!!!!!!replyid : " + report.getReply().getMember().getId());
 				if (report.getReply().getMember().getId().contains(keyword)) {
 					list.add(report);
@@ -99,7 +111,7 @@ public class ReportService {
 		Page<Report> reportList = reportRepository.findAll(pageable);
 		List<Report> list = new ArrayList<>();
 		for (Report report : reportList) {
-			if (report.getReportReason().toString().equals(keyword)) {
+			if (report.getReportReason().toString().contains(keyword)) {
 				list.add(report);
 			}
 		}
@@ -108,6 +120,33 @@ public class ReportService {
 		reportList = new PageImpl<>(list.subList(start, end), pageable, list.size());
 
 		return reportList;
+	}
+	
+	public Page<Report> searchReportByReportType(SearchDto sdto, Pageable pageable) {
+		// String type = sdto.getType();
+		String keyword = sdto.getKeyword();
+
+		Page<Report> reportList = reportRepository.findAll(pageable);
+		List<Report> list = new ArrayList<>();
+		for (Report report : reportList) {
+			if (report.getReportType().toString().contains(keyword)) {
+				//log.info("!!!!!!!!!!!!!!report.toString()" + report.toString());
+				list.add(report);
+			}
+		}
+		final int start = (int) pageable.getOffset();
+		final int end = Math.min((start + pageable.getPageSize()), list.size());
+		reportList = new PageImpl<>(list.subList(start, end), pageable, list.size());
+
+		return reportList;
+	}
+	
+	public void deleteReportWithReply(Long replyNum) {
+		reportRepository.deleteByReplyNum(replyNum);
+	}
+	
+	public void deleteReportWithPost(Long postNum) {
+		reportRepository.deleteByPostNum(postNum);
 	}
 
 }

@@ -20,6 +20,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import com.alice.project.web.WriteFormDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -37,6 +39,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "num")
+@DynamicInsert
 public class Post {
 
    @Id
@@ -44,11 +47,13 @@ public class Post {
    @SequenceGenerator(name = "POST_SEQ_GENERATOR", sequenceName = "SEQ_POST_NUM", initialValue = 1, allocationSize = 1)
    @Column(name = "post_num")
    private Long num; // 게시물번호
+   @Column(nullable = false)
    private String title; // 게시물 제목
+   @Column(nullable = false)
    private LocalDateTime postDate; // 게시물 작성일자
    private LocalDateTime updateDate; // 게시물 수정일자
 
-   @Column(length = 4000)
+   @Column(length = 4000, nullable = false)
    private String content; // 게시물 내용
    private Long viewCnt = 0L; // 게시물 조회수 (default=0)
    
@@ -67,8 +72,9 @@ public class Post {
    private Community community; // 소속 커뮤니티 객체
 
    /* replies가 null일 수 있음 */
-//   @OneToMany(mappedBy = "post")
-//   private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
+   @OneToMany(mappedBy = "post")
+   @JsonManagedReference
+   private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
 
    /* files가 null일 수 있음 */
    @OneToMany(mappedBy = "post")

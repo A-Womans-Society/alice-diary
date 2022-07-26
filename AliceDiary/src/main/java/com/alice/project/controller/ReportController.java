@@ -27,15 +27,15 @@ public class ReportController {
 	private ReportService reportService;
 
 	// 게시글신고하기
-	@PostMapping("community/reportpost")
-	@ResponseBody
-	public boolean reportPost(String userId, Long postNum, String reportReason, String content) {
-
-		Member member = memberService.findById(userId);
-		reportService.postReport(Report.createPostReport(postNum, reportReason, content, member));
-
-		return true;
-	}
+//	@PostMapping("community/reportpost")
+//	@ResponseBody
+//	public boolean reportPost(String userId, Long postNum, String reportReason, String content) {
+//		
+//		Member member = memberService.findById(userId);
+//		reportService.postReport(Report.createPostReport(reportReason, content, member, post));
+//
+//		return true;
+//	}
 
 	@PostMapping("community/checkExist")
 	@ResponseBody
@@ -44,13 +44,13 @@ public class ReportController {
 	}
 	
 	// 댓글신고하기
-	@PostMapping("community/reportreply")
-	@ResponseBody
-	public boolean reportReply(@ModelAttribute ReportDto reportDto, String userId, String reportReason, String content) {
-	
-		Member member = memberService.findById(userId);
-		reportService.replyReport(Report.createReplyReport(reportDto.getReplyNum(), reportReason, content, member));
-
-		return true;
-	}
+//	@PostMapping("community/reportreply")
+//	@ResponseBody
+//	public boolean reportReply(@ModelAttribute ReportDto reportDto, String userId, String reportReason, String content) {
+//	
+//		Member member = memberService.findById(userId);
+//		reportService.replyReport(Report.createReplyReport(reportDto.getReplyNum(), reportReason, content, member));
+//
+//		return true;
+//	}
 }

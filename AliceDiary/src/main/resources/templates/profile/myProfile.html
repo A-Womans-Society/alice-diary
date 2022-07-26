@@ -10,20 +10,18 @@
 	<form th:action="@{/member/}+${member.id}" method="post">
 
 		<div class=" overflow-hidden">
-			<div class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
+			<div
+				class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
 				<div class="col-7 pt-2">
 					<div class="tab-content">
 						<div class="tab-pane fade active show" id="account-general">
-
 							<div class="row w-100">
-								<div th:if="${member.profileImg.equals('default')}"
-									class="col-5 d-flex justify-content-center align-items-center">
-									<img class="w-75" th:src="@{/upload/Alice.png}" />
-								</div>
-
-								<div th:unless="${member.profileImg.equals('default')}"
-									class="col-5 d-flex justify-content-center align-items-center">
-									<img class="w-75" th:src="@{/upload/}+@{${member.profileImg}}" />
+								<div
+									class="col-5 d-flex justify-content-center align-items-center"
+									style="flex-direction: column;">
+									<img id="profileImage"
+										th:src="@{/upload/profile/}+@{${member.profileImg}}"
+										class="w-75" />
 								</div>
 								<div class="col-7 pr-0">
 									<div class="form-group ">

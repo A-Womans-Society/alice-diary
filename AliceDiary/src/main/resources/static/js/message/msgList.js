@@ -31,7 +31,7 @@ function deleteMessage(fromId, toId) {
       }
    };
 
-    httpRequest.open('POST', "./" + fromId + "/delete", true);
+    httpRequest.open('POST', "./" + fromId + "/" + toId + "/delete", true);
     httpRequest.setRequestHeader(header,token);
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
     httpRequest.send(param);
@@ -112,4 +112,3 @@ function openMessagebox(fromId, toId) {
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
     httpRequest.send(param);
 };
-  
