@@ -3,7 +3,6 @@ package com.alice.project.controller;
 import java.time.format.DateTimeFormatter;
 
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,19 +11,18 @@ import com.alice.project.domain.Reply;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.ReplyService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class ReplyController {
 
-	@Autowired
-	private ReplyService replyService;
-	@Autowired
-	private MemberService memberService;
+	private final ReplyService replyService;
 
 	// 댓글쓰기
-	@PostMapping("/community/reply")
+	@PostMapping("/open/reply")
 	@ResponseBody
 	public JSONObject replyWrite(String memberId, Long postNum, String content) {
 		log.info(memberId, postNum, content);
@@ -41,9 +39,9 @@ public class ReplyController {
 		return jObj;
 
 	}
-
+	
 	// 대댓쓰기
-	@PostMapping("/community/replyreply")
+	@PostMapping("/open/replyreply")
 	@ResponseBody
 	public JSONObject replyReplyWrite(String memberId, Long postNum, Long parentRepNum, String content) {
 		log.info(memberId, postNum, parentRepNum, content);
@@ -63,7 +61,7 @@ public class ReplyController {
 	}
 
 	// 댓글 삭제하기
-	@PostMapping("/community/deletereply")
+	@PostMapping("/open/deletereply")
 	public String replyDelete(Long num) {
 		log.info("컨트롤러 실행 ");
 

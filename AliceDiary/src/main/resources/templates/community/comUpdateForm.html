@@ -4,7 +4,7 @@
 	layout:decorate="~{layouts/communityLayout}">
 
 <th:block layout:fragment="script">
-	<script th:src="@{/js/community/updateForm.js}"></script>
+	<script th:src="@{/js/community/comUpdateForm.js}"></script>
 </th:block>
 
 <div layout:fragment="content">
@@ -13,7 +13,7 @@
 		<div class='row mt-3 ml-5 mr-5' style="height: 90%;">
 			<div class="col-12">
 
-				<form th:action="@{/community/put}" th:object="${updateDto}"
+				<form th:action="@{|/community/${comNum}/put/${num}}" th:object="${updateDto}"
 					method="post" enctype="multipart/form-data" class="h-100">
 					<table class="table w-100">
 						<tr>
@@ -33,7 +33,7 @@
 								<td><a class="attachedFile" id="filewow" th:href="|./download/${file.num}|"
 									th:text="${file.originName}"></a>
 									<button type="button" id="delete_file"
-										th:onclick="deleteFile([[${file.num}]],[[${updateDto.postNum}]])">파일삭제</button>
+										th:onclick="deleteFile([[${file.num}]],[[${updateDto.postNum}]],[[${comNum}]])">파일삭제</button>
 								</td>
 							</th:block>
 						</tr>

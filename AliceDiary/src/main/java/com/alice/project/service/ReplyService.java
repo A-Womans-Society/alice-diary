@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Reply;
 import com.alice.project.domain.ReplyStatus;
@@ -14,22 +14,23 @@ import com.alice.project.repository.PostRepository;
 import com.alice.project.repository.ReplyRepository;
 import com.alice.project.web.ReplyDto;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ReplyService {
 
-	@Autowired
-	private ReplyRepository replyRepository;
+	private final ReplyRepository replyRepository;
 
-	@Autowired
-	private MemberRepository memberRepository;
+	private final MemberRepository memberRepository;
 
-	@Autowired
-	private PostRepository postRepository;
+	private final PostRepository postRepository;
 
 	// 아이디로 회원번호 찾기
+	@Transactional
 	public Long getMemNumById(String memberId) {
 		log.info("memberId : " + memberId);
 		Long member = memberRepository.findMemberNumById(memberId);
@@ -37,6 +38,7 @@ public class ReplyService {
 	}
 
 	// 댓글쓰기
+	@Transactional
 	public Reply replyWrite(String memberId, Long postNum, String content) {
 		log.info("memberId : " + memberId);
 
@@ -47,6 +49,7 @@ public class ReplyService {
 	}
 
 	// 댓글 불러오기
+	@Transactional
 	public List<ReplyDto> replyList(Long num) {
 		List<ReplyDto> result = new ArrayList<>();
 
@@ -76,6 +79,7 @@ public class ReplyService {
 	}
 
 	// 대댓쓰기
+	@Transactional
 	public Reply replyReplyWrite(String memberId, Long postNum, Long parentRepNum, String content) {
 		log.info("parentRepNum : " + parentRepNum);
 
@@ -86,6 +90,7 @@ public class ReplyService {
 	}
 
 	// 댓글 삭제하기
+	@Transactional
 	public void replyDelete(Long num) {
 		log.info("댓글 지우러 서비스옴!!!!!!!!!!!");
 
@@ -101,4 +106,11 @@ public class ReplyService {
 		}
 
 	}
+
+	// 댓글번호로 객체 찾기
+	@Transactional
+	public Reply findByNum(Long num) {
+		return replyRepository.findByNum(num);
+	}
+
 }

@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class WriteFormDto {
 	
-	private Long postNum; //postNum
+	private Long postNum; 
 	
 	private String title;
 

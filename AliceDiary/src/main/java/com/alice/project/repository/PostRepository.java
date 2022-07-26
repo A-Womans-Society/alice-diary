@@ -14,11 +14,15 @@ import com.alice.project.domain.Post;
 
 @Repository
 @Transactional(readOnly = true)
-public interface PostRepository
-		extends JpaRepository<Post, Long>{
-	
-	@Query(value = "select * from Post order by post_num desc", nativeQuery=true)
-	Page<Post> findAll(Pageable pageable); // 전체 조회 및 페이징처리
+public interface PostRepository extends JpaRepository<Post, Long> {
+
+	// 공개게시판 전체글 조회하기
+	@Query(value = "select * from Post where post_type = 'OPEN' order by post_num desc", nativeQuery = true)
+	Page<Post> findAllOpenPost(Pageable pageable);
+
+	// 커뮤니티게시판 전체글 조회하기
+	@Query(value = "select * from Post where post_type = 'CUSTOM' and community_num = :comNum order by post_num desc", nativeQuery = true)
+	Page<Post> findAllCustomPost(Long comNum, Pageable pageable);
 
 	@Modifying
 	@Transactional
@@ -42,14 +46,24 @@ public interface PostRepository
 	@Query("update Post p set p.updateDate = :updateDate where p.num = :num")
 	Integer editDate(Long num, LocalDateTime updateDate);
 	
-	@Query(value = "select * from Post where title like '%'||:title||'%' order by post_num desc", nativeQuery = true)
+	//공개게시판 검색 3개
+	@Query(value = "select * from Post where title like '%'||:title||'%' and post_type = 'OPEN' order by post_num desc", nativeQuery = true)
 	Page<Post> searchTitle(String title, Pageable pageable);
 
-	@Query(value = "select * from Post where content like '%'||:content||'%' order by post_num desc", nativeQuery = true)
+	@Query(value = "select * from Post where content like '%'||:content||'%' and post_type = 'OPEN' order by post_num desc", nativeQuery = true)
 	Page<Post> searchContent(String content, Pageable pageable);
-	
-	@Query(value = "select * from Post where member_num = :memberNum order by post_num desc", nativeQuery=true)
-	Page<Post> searchWriter(Long memberNum, Pageable pageable);
 
+	@Query(value = "select * from Post where member_num = :memberNum and post_type = 'OPEN' order by post_num desc", nativeQuery = true)
+	Page<Post> searchWriter(Long memberNum, Pageable pageable);
 	
+	//커뮤니티게시판 검색 3개
+	@Query(value = "select * from Post where title like '%'||:title||'%' and post_type = 'CUSTOM' and community_num = :comNum order by post_num desc", nativeQuery = true)
+	Page<Post> comSearchTitle(Long comNum, String title, Pageable pageable);
+
+	@Query(value = "select * from Post where content like '%'||:content||'%' and post_type = 'CUSTOM' and community_num = :comNum order by post_num desc", nativeQuery = true)
+	Page<Post> comSearchContent(Long comNum, String content, Pageable pageable);
+
+	@Query(value = "select * from Post where member_num = :memberNum and post_type = 'CUSTOM' and community_num = :comNum order by post_num desc", nativeQuery = true)
+	Page<Post> comSearchWriter(Long comNum, Long memberNum, Pageable pageable);
+
 }
