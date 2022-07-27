@@ -435,7 +435,7 @@ public class MessageController {
 		List<MsgFileDto> mpdtos = new ArrayList<>();	
 		Integer size = 0;
 		
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			mpdtos = messageService.findMsgPictures(memNum);	
 			if (mpdtos == null) {
 				return "/message/pictureList";
@@ -475,7 +475,7 @@ public class MessageController {
 		List<MsgFileDto> mpdtos = new ArrayList<>();	
 		Integer size = 0;
 		
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			mpdtos = messageService.findMsgDocs(memNum);	
 			if (mpdtos == null) {
 				return "/message/docList";

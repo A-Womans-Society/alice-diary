@@ -58,7 +58,7 @@ public class NoticeController {
 		model.addAttribute("type", type);
 		model.addAttribute("keyword", keyword);
 
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			notices = postService.notceList(pageable);
 		} else {
 			notices = postService.searchNoticeList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정

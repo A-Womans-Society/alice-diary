@@ -62,7 +62,7 @@ public class AdminPostController {
 		String keyword = postSearchDto.getKeyword();
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			notices = postService.notceList(pageable);
 		} else {
 			notices = postService.searchNoticeList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정
@@ -273,7 +273,7 @@ public class AdminPostController {
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", type);
 		
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			opens = postService.openList(pageable);
 		} else {
 			opens = postService.searchList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정

@@ -58,7 +58,7 @@ public class AdminController {
 
 		Page<Member> members = null;
 
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			members = memberService.getMemberList(pageable);
 		} else {
 			if (type.equals("status")) {
@@ -147,7 +147,7 @@ public class AdminController {
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			reports = reportService.findReports(pageable);
 		} else {
 			model.addAttribute("keyword", searchDto.getKeyword());
@@ -202,7 +202,7 @@ public class AdminController {
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 		
-		if (keyword==null || type==null || keyword.isBlank() || type.isBlank()) {
+		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			suggestions = suggestionService.getSuggestionList(pageable);
 		} else {
 			model.addAttribute("keyword", keyword);

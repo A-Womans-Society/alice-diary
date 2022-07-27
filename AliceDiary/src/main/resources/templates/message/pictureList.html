@@ -11,35 +11,39 @@
 	<div class="container-fluid h-100">
 		<div class="row h-100">
 			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">사진 모아보기</h2>
-				<h5 class="text-center m-0 pt-5" style="height: 20%;">주고받은 사진파일들을
-					모아보는 곳입니다.</h5>
+				<div style="height: 15%;">
+					<h2 class="text-center m-0 pt-4">사진 모아보기</h2>
+					<h5 class="text-center">주고받은 사진파일들을 모아보는 곳입니다.</h5>
+				</div>
 				<!--/* 검색 영역 */-->
 				<div class="d-flex justify-content-center" style="height: 13%;">
 					<div class="d-flex align-items-center"
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
-						<div class="w-100 text-center">
+						<div class="w-100 d-flex justify-content-center">
 							<form name="searchForm" id="searchForm"
+								class="d-flex justify-content-center" style="width: 70%;"
 								th:action="@{|/messagebox/pictures/${#authentication.name}|}"
 								modelAttribute="searchForm" th:method="get">
-								<select id="type" name="type">
+								<select id="type" name="type" class="form-control"
+									style="width: 35%;">
 									<option value="">카테고리 선택</option>
 									<option value="filename">사진파일명</option>
 									<option value="id">상대아이디</option>
 								</select> <input type="text" id="keyword" name="keyword"
-									placeholder="카테고리 선택 후 검색해주세요." />
+									class="form-control" placeholder="카테고리 선택 후 검색해주세요."
+									style="width: 50%;">
 								<button type="submit">검색</button>
 							</form>
 						</div>
 					</div>
 				</div>
 				<!--/* 게시글 영역 */-->
-				<div class="d-flex justify-content-center" style="height: 72%;">
+				<div class="d-flex justify-content-center" style="height: 70%;">
 					<div class="pt-3 pb-3" style="width: 80%; height: 95%;">
 						<div class='text-right'>
 							<a th:if="${searchDto.keyword != null}"
-								th:href="@{|/messagebox/pictures/${#authentication.name}|}"><input type="button" class="btn"
-								value="목록"></a>
+								th:href="@{|/messagebox/pictures/${#authentication.name}|}"><input
+								type="button" class="btn" value="목록"></a>
 						</div>
 						<table class="table table-striped">
 							<thead>
@@ -53,7 +57,7 @@
 							<th:block th:if="${mpdtos == null || #lists.size(mpdtos) == 0}">
 								<tbody class="text-center">
 									<tr>
-										<td colspan="5">사진파일 목록이 비었습니다!</td>
+										<td colspan="5">사진파일 목록이 비었습니다</td>
 									</tr>
 								</tbody>
 							</th:block>
