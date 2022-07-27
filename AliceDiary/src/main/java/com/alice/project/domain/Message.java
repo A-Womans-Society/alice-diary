@@ -58,8 +58,6 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 	@JsonManagedReference
 	private AttachedFile file = new AttachedFile();
 
-	
-
 	public Message(Long num, Long user1Num, Long user2Num, LocalDateTime sendDate, String content, Long msgStatus,
 			Long direction) {
 		this.num = num;
@@ -71,9 +69,8 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 		this.direction = direction;
 	}
 
-	public Message(Long num, Long user1Num, Long user2Num, Long msgStatus, Long direction, LocalDateTime sendDate,
-			String content, AttachedFile file) {
-		this.num = num;
+	public Message(Long user1Num, Long user2Num, Long msgStatus, Long direction, LocalDateTime sendDate, String content,
+			AttachedFile file) {
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
 		this.msgStatus = msgStatus;
@@ -118,7 +115,8 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 
 	// 초대장 보내기 객체 생성 메서드
 	public static Message createInviteMsg(Long user1Num, Long user2Num, Long direction, String comName) {
-		Message message = new Message(user1Num, user2Num, LocalDateTime.now(), "새로운 커뮤니티("+comName+")에 초대되었습니다! 얼른 방문해보세요 :)", 3L,direction);
+		Message message = new Message(user1Num, user2Num, LocalDateTime.now(),
+				"새로운 커뮤니티(" + comName + ")에 초대되었습니다! 얼른 방문해보세요 :)", 3L, direction);
 		return message;
 	}
 
@@ -131,11 +129,5 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 //      this.member = member;
 //      member.getMessages().add(this);
 //   }
-//
-//   // 쪽지 객체 생성 메서드
-//   public static Message createMessage(Member member) {
-//      Message message = new Message();
-//      message.setMember(member);
-//      return message;
-//   }
+
 }

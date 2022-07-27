@@ -17,6 +17,9 @@ import com.alice.project.domain.Post;
 @Transactional(readOnly = true)
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+	@Query(value = "select * from Post order by post_num desc", nativeQuery = true)
+	Page<Post> findAll(Pageable pageable); // 전체 조회 및 페이징처리
+
 	// 공개게시판 전체글 조회하기
 	@Query(value = "select * from Post where post_type = 'OPEN' order by post_num desc", nativeQuery = true)
 	Page<Post> findAllOpenPost(Pageable pageable);
@@ -46,8 +49,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	@Transactional
 	@Query("update Post p set p.updateDate = :updateDate where p.num = :num")
 	Integer editDate(Long num, LocalDateTime updateDate);
-	
-	//공개게시판 검색 3개
+
+	// 공개게시판 검색 3개
 	@Query(value = "select * from Post where title like '%'||:title||'%' and post_type = 'OPEN' order by post_num desc", nativeQuery = true)
 	Page<Post> searchTitle(String title, Pageable pageable);
 
@@ -56,8 +59,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@Query(value = "select * from Post where member_num = :memberNum and post_type = 'OPEN' order by post_num desc", nativeQuery = true)
 	Page<Post> searchWriter(Long memberNum, Pageable pageable);
-	
-	//커뮤니티게시판 검색 3개
+
+	// 커뮤니티게시판 검색 3개
 	@Query(value = "select * from Post where title like '%'||:title||'%' and post_type = 'CUSTOM' and community_num = :comNum order by post_num desc", nativeQuery = true)
 	Page<Post> comSearchTitle(Long comNum, String title, Pageable pageable);
 
@@ -66,8 +69,19 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@Query(value = "select * from Post where member_num = :memberNum and post_type = 'CUSTOM' and community_num = :comNum order by post_num desc", nativeQuery = true)
 	Page<Post> comSearchWriter(Long comNum, Long memberNum, Pageable pageable);
-	
+
 	@Query(value = "select * from Post where community_num = :comNum", nativeQuery = true)
 	List<Post> findBycomNum(Long comNum);
+
+	// 공지사항 목록 조회
+	@Query(value = "select post_num, community_num, member_num, view_cnt, content, post_date, post_type, title, update_date from Post where post_type = 'NOTICE' order by post_num desc", nativeQuery = true)
+	Page<Post> findAllNotices(Pageable pageable);
+
+	// 공개게시판 목록 조회
+	@Query(value = "select post_num, community_num, member_num, view_cnt, content, post_date, post_type, title, update_date from Post where post_type = 'OPEN' order by post_num desc", nativeQuery = true)
+	Page<Post> findAllOpens(Pageable pageable);
+
+	// @Query("SELECT p FROM Post as p WHERE postType='NOTICE' and p.num = :num")
+	// List<Post> searchNoticeByPostNum(Long num);
 
 }

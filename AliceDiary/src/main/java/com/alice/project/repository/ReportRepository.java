@@ -2,9 +2,12 @@ package com.alice.project.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +17,7 @@ import com.alice.project.domain.Reply;
 import com.alice.project.domain.Report;
 
 @Repository
-public interface ReportRepository extends JpaRepository<Report, Long> {
+public interface ReportRepository extends JpaRepository<Report, Long>, QuerydslPredicateExecutor<Report> {
 
 	// 게시글 신고 유무 판단
 	@Query(value = "SELECT r FROM Report r WHERE post_num = :post AND mem_num = :member AND report_type = 'POST'")
@@ -23,6 +26,18 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 	// 댓글 신고 유무 판단
 	@Query(value = "SELECT r FROM Report r WHERE reply_num = :reply AND mem_num = :member AND report_type = 'REPLY'")
 	List<Report> findReplyReportExist(Reply reply, Member member);
+
+	/* 모든 신고목록 반환 */
+	Page<Report> findAll(Pageable pageable);
+
+	/* 모든 신고목록 반환 */
+	@Query(value = "select * from Report order by report_num desc", nativeQuery = true)
+	List<Report> searchAll();
+
+	@Query(value = "SELECT * FROM Report WHERE mem_num = :num", nativeQuery = true)
+	Report searchByReporterId(Long num);
+
+	Page<Report> findByContentContaining(String keyword, Pageable pageable);
 
 	@Modifying
 	@Transactional
@@ -33,4 +48,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 	@Transactional
 	@Query(value = "DELETE FROM Report WHERE post_num = :postNum", nativeQuery = true)
 	void deleteByPostNum(Long postNum);
+
 }

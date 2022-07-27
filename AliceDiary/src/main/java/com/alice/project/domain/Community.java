@@ -18,7 +18,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 
-import com.alice.project.web.CommunityCreateDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -43,10 +42,12 @@ public class Community {
 	@SequenceGenerator(name = "COM_SEQ_GENERATOR", sequenceName = "SEQ_COMMUNITY_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "community_num")
 	private Long num; // 커뮤니티 번호
+	
 	@Column(nullable = false)
 	private String name; // 커뮤니티 이름
 	@Column(nullable = false)
 	private String memberList; // 커뮤니티 참여회원 리스트
+	
 	@Column(nullable = false)
 	private LocalDate regDate; // 커뮤니티 생성일자
 	private String description; // 커뮤니티 설명
@@ -67,9 +68,8 @@ public class Community {
 	}
 
 	// 커뮤니티 객체 생성 메서드
-	public static Community createCommunity(String comMembers,String comName, String description, Member member) {
-		Community community = new Community(comName, comMembers, LocalDate.now(), 
-				description, member);
+	public static Community createCommunity(String comMembers, String comName, String description, Member member) {
+		Community community = new Community(comName, comMembers, LocalDate.now(), description, member);
 		return community;
 	}
 
@@ -82,10 +82,4 @@ public class Community {
 		this.description = description;
 		this.member = member;
 	}
-
-	public Community(String comName, List<String> comMembers, LocalDate now, String description2, Member member2) {
-		// TODO Auto-generated constructor stub
-	}
-	
-	
 }

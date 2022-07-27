@@ -36,6 +36,7 @@ public class Friend {
 	@SequenceGenerator(name = "FRIEND_SEQ_GENERATOR", sequenceName = "SEQ_FRIEND_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "friend_num")
 	private Long num; // 친구 번호
+
 	@Column(nullable = false)
 	private Long addeeNum; // 등록되는 친구 회원번호
 	@Column(nullable = false)
