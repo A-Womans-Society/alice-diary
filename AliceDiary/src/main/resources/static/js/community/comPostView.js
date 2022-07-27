@@ -370,6 +370,8 @@ function replyReport(userId, reportReason, content) {
 	       		let result = JSON.parse(httpRequest.response);
 				console.log(result);
 				document.getElementById("reportRepContent").value = "";
+				var radio = document.querySelector('input[type=radio][name=reportReasons]:checked');
+				radio.checked = false;
 		     	alert('댓글이 신고되었습니다.');
 		     
 				$("#replyReportModal").modal('hide');

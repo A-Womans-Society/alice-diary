@@ -1,6 +1,7 @@
 package com.alice.project.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,5 +66,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@Query(value = "select * from Post where member_num = :memberNum and post_type = 'CUSTOM' and community_num = :comNum order by post_num desc", nativeQuery = true)
 	Page<Post> comSearchWriter(Long comNum, Long memberNum, Pageable pageable);
+	
+	@Query(value = "select * from Post where community_num = :comNum", nativeQuery = true)
+	List<Post> findBycomNum(Long comNum);
 
 }

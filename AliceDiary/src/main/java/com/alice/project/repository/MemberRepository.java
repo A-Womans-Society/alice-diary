@@ -45,5 +45,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	@Transactional
 	@Query(value = "update Member set report_cnt = report_cnt + 1 where member_num = :num", nativeQuery = true)
 	Integer reportCntUp(Long num);
+	
+	//회원번호로 아이디 찾기
+	@Query(value = "select id from Member where member_num = :num", nativeQuery = true)
+	String findIdByNum(Long num);
+
+	Member findAllById(String[] members);
 }
 

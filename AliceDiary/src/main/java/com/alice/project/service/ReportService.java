@@ -57,4 +57,12 @@ public class ReportService {
 
 		return reportRepository.findReplyReportExist(reply, member);
 	}
+
+	public void deleteReportWithReply(Long replyNum) {
+		reportRepository.deleteByReplyNum(replyNum);
+	}
+
+	public void deleteReportWithPost(Long postNum) {
+		reportRepository.deleteByPostNum(postNum);
+	}
 }

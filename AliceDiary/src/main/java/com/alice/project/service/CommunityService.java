@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.codehaus.groovy.runtime.ArrayUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Community;
+import com.alice.project.domain.Member;
 import com.alice.project.repository.CommunityRepository;
+import com.alice.project.repository.MemberRepository;
+import com.alice.project.web.CommunityCreateDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class CommunityService {
 
 	private final CommunityRepository comRepository;
+	private final MemberRepository memberRepository;
 
 	// 커뮤니티 생성하기
 	@Transactional
@@ -47,13 +50,42 @@ public class CommunityService {
 		StringBuffer memList = new StringBuffer();
 		List<String> ls = new ArrayList<>(Arrays.asList(memberList.split(",")));
 		ls.remove(memId);
-		for(String i : ls) {
+		for (String i : ls) {
 			memList.append(i).append(",");
 		}
 		memList.deleteCharAt(memList.lastIndexOf(","));
 		System.out.println(memList.toString());
 		String newMemList = memList.toString();
-		
+
 		comRepository.memberListUpdate(num, newMemList);
+	}
+
+	// 커뮤니티번호로 방장아이디 찾기
+	public String findMemberIdByNum(Long num) {
+		Long hostMemNum = comRepository.findMemberNumByNum(num);
+		String hostMemberId = memberRepository.findIdByNum(hostMemNum);
+		return hostMemberId;
+	}
+
+	// 커뮤니티 수정하기
+	@Transactional
+	public void edit(Long comNum, CommunityCreateDto manageCom) {
+		comRepository.nameEdit(comNum, manageCom.getComName());
+		comRepository.descriptionEdit(comNum, manageCom.getDescription());
+
+	}
+
+	public void deleteCom(Long comNum) {
+		 comRepository.deleteCom(comNum);
+	}
+	
+	//멤버객체로 커뮤니티 객체 찾기
+	public List<Community> findByMember(Member member) {
+		return comRepository.findByMember(member);
+	}
+	
+	//전체 커뮤니티 중 번호랑 멤버리스트(string) 칼럼 2개 가져오기
+	public List<Community> getAll() {
+		return comRepository.getAll();
 	}
 }

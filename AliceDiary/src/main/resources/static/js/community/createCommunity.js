@@ -12,7 +12,7 @@ function loadFriends(memberId) {
 				if (httpRequest.response) {					
 					let result = JSON.parse(httpRequest.response);
 
-					if (result.length == 0 && document.getElementById("searchFriend").value == null ) {
+					if (result.length == 0 || document.getElementById("searchFriend").value == "" ) {
 						document.getElementById("friendsBody").innerHTML="<tr><td colspan='9' class='text-center'>친구를 다시 검색해주세요.</td></tr>";
 					} else {
 						let resultHtml = "";
@@ -61,17 +61,17 @@ function selectFriends() {
 }
 
 function check() {
-	const form = document.getElementById('form');
-
+	let form = document.getElementById('form');
+	let selectBox=document.getElementById("comMembers").value;
+	
 	if(!form.comName.value.trim()){
 		alert("커뮤니티 이름을 입력해주세요!");
 		form.comName.focus();
 		return false;
-	//} else if(document.getElementsByName("selected")[i].value == null) {
-	//	alert("친구를 초대해주세요!");
-		
-	//	return false;
-		} else {
+	} else if(selectBox.length == 0) {
+		alert("친구를 초대하세요");
+		return false;
+	} else {
 		return true;
-}
+	}
 }

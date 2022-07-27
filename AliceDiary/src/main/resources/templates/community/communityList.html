@@ -117,17 +117,42 @@
 							</nav>
 							<th:block th:each="member : ${memberList}">
 								<a th:if="${#authentication.name} == ${member}"> <input
-									type="button" th:onclick="resign([[${comNum}]],[[${#authentication.name}]])" class="btn"
-									value="탈퇴하기"></a>
+									type="button"
+									th:onclick="resign([[${comNum}]],[[${#authentication.name}]])"
+									class="btn" value="탈퇴하기"></a>
 							</th:block>
+							<a th:if="${#authentication.name} == ${hostMemId}"
+								th:href="@{|/community/${comNum}/manage|}" class="btn"> <img
+								th:src="@{/img/comMng.png}" style="width: 20px;"></a>
+
 
 						</div>
 
 					</div>
 				</div>
+
+
+
 			</div>
 
 		</div>
 	</div>
+	
+			<div>
+					<th:block th:each="hostCom : ${hostComs}"
+						th:if="${#authentication.name} == ${hostCom.member.id}">
+						<ul>
+							<li><a th:href="@{|/community/${hostCom.num}/list|}"
+								th:text="${hostCom.name}"></a></li>
+						</ul>
+					</th:block>
+					<th:block th:each="myCom : ${myComList}">
+						<ul>
+							<li><a th:href="@{|/community/${myCom.num}/list|}"
+								th:text="${myCom.name}"></a></li>
+						</ul>
+					</th:block>
+				</div>
+				
 </div>
 </html>

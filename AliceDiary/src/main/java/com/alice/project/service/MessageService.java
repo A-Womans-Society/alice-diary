@@ -343,4 +343,10 @@ public class MessageService {
 	public Message replyMsg(Message message) {
 		return messageRepository.save(message);
 	}
+	
+	/* 커뮤니티 초대장 발송 */
+	@Transactional
+	public Message inviteMsg(Message message) {
+		return messageRepository.save(message);
+	}
 }

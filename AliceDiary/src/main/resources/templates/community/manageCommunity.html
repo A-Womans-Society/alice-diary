@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/communityLayout}">
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/community/manageCommunity.js}"></script>
+	<!-- <script th:src="@{https://code.jquery.com/jquery-1.12.4.js}"></script> -->
+</th:block>
+
+
+
+<div layout:fragment="content">
+
+
+
+	<div class="container-fluid h-100">
+		<div class="row h-100">
+			<div class="col-12 h-100">
+				<h2 class="text-center m-0 pt-5" style="height: 15%;">
+					커뮤니티 관리 #
+					<th:block th:text="${manageCom.comName}"></th:block>
+				</h2>
+
+
+				<form th:action="@{|/community/${comNum}/manage|}" method="post"
+					id="form" th:object="${manageCom}">
+					<div>
+						<table>
+							<thead>
+								<h3>우리 커뮤니티 회원</h3>
+								<tr>
+									<th>ID</th>
+									<!-- <th>이름</th>  -->
+								</tr>
+							</thead>
+							<tbody id="communityMembers">
+								<th:block th:each="member : ${comMembers}">
+									<tr>
+										<td th:text="${member}"></td>
+										<!-- 	<td th:text="이름넣구싶다"></td>  -->
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+
+					<div>
+						커뮤니티 이름<input type="text" th:field="*{comName}"> 커뮤니티 설명
+						<textarea type="text" th:field="*{description}" cols="10" rows="5"></textarea>
+					</div>
+
+					<input type="submit" th:onclick="return check()" value="커뮤니티 수정하기">
+					<button th:onclick="deleteCommunity([[${comNum}]])">커뮤니티
+						삭제</button>
+					<input type="button" onClick="history.go(-1)" value="취소"
+						class="btn">
+				</form>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+</div>
+</html>
