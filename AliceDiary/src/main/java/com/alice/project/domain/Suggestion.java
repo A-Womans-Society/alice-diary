@@ -37,17 +37,16 @@ public class Suggestion {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SUGGESTION_SEQ_GENERATOR")
 	@SequenceGenerator(name = "SUGGESTION_SEQ_GENERATOR", sequenceName = "SEQ_SUGGESTION_NUM", initialValue = 1, allocationSize = 1)
+	@Column(name = "suggest_num")
+	private Long num; // 건의사항 번호
 
-	@Column(name="suggest_num")
-	private Long num; //건의사항 번호
-	
 	@Column(length = 4000)
-	private String content; //건의 내용
+	private String content; // 건의 내용
 	@Column(nullable = false)
-	private LocalDateTime suggestDate; //건의 일자
-		
-	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name="member_num")
+	private LocalDateTime suggestDate; // 건의 일자
+
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "member_num")
 	@JsonBackReference
 	private Member member; // 건의자 객체
 

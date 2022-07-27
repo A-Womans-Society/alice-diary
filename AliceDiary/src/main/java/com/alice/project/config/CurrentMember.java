@@ -1,4 +1,5 @@
 package com.alice.project.config;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.lang.annotation.ElementType;

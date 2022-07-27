@@ -47,7 +47,5 @@ public interface MessageRepositoryCustom {
 	List<Message> findByUserConv(Long userNum, Long youNum);
 
 	Integer changeMsgStatus(Long fromNum, Long toNum, Boolean flag);
-	
-	
 
 }

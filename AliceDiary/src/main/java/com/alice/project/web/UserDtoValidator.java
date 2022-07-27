@@ -3,7 +3,6 @@ package com.alice.project.web;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -35,10 +34,10 @@ public class UserDtoValidator implements Validator {
 			errors.rejectValue("email", "invalid.email", new Object[] { userDto.getEmail() }, "이미 사용중인 이메일입니다.");
 		}
 		if (memberService.checkIdDuplicate(userDto.getId()) == 1) {
-			log.info("memberService.checkIdDuplicate(userDto.getId()) = " + memberService.checkIdDuplicate(userDto.getId()) );
+			log.info("memberService.checkIdDuplicate(userDto.getId()) = "
+					+ memberService.checkIdDuplicate(userDto.getId()));
 			errors.rejectValue("id", "invalid.id", new Object[] { userDto.getId() }, "이미 사용중인 아이디입니다.");
 		}
-
 	}
 
 }

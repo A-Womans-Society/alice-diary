@@ -12,17 +12,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class MsgFileDto {
-	
+
 	private String theOtherId;
 	private String originName;
 	private Long fileNum;
 	private LocalDateTime sendDate;
-	
+
 	public MsgFileDto(String theOtherId, String originName, Long fileNum, LocalDateTime sendDate) {
 		this.theOtherId = theOtherId;
 		this.originName = originName;
 		this.fileNum = fileNum;
 		this.sendDate = sendDate;
 	}
-	
+
 }

@@ -12,7 +12,6 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -27,15 +26,16 @@ import com.alice.project.domain.Post;
 import com.alice.project.domain.PostType;
 import com.alice.project.repository.AttachedFileRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class AttachedFileService {
 
-	@Autowired
-	private AttachedFileRepository attachedFileRepository;
+	private final AttachedFileRepository attachedFileRepository;
 
 	public void postFileUpload(List<MultipartFile> files, Post post, HttpSession session, String id) {
 		log.info("list size : " + files.size());
@@ -114,21 +114,22 @@ public class AttachedFileService {
 
 		Optional<AttachedFile> findFile = attachedFileRepository.findById(num);
 		AttachedFile attachedFile = findFile.orElse(null);
-		if (findFile == null) {
-			return null;
+		String savedFilePath = "";
+		UrlResource resource = null;
+
+		if (findFile != null) {
+			String sFileName = attachedFile.getSaveName();
+			String oFileName = attachedFile.getOriginName();
+
+			String encodeoFileName;
+
+			encodeoFileName = URLEncoder.encode(oFileName, "UTF-8").replace("+", "%20");
+
+			savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
+			resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
+
 		}
-		String sFileName = attachedFile.getSaveName();
-		String oFileName = attachedFile.getOriginName();
-
-		String encodeoFileName;
-
-		encodeoFileName = URLEncoder.encode(oFileName, "UTF-8").replace("+", "%20");
-
-		String savedFilePath = "attachment; filename=\"" + encodeoFileName + "\"";
-		UrlResource resource = new UrlResource("file:" + attachedFile.getFilePath() + sFileName);
-
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, savedFilePath).body(resource);
-
 	}
 
 	// 게시글 상세보기에서 저장된 파일 보여주기
@@ -153,11 +154,6 @@ public class AttachedFileService {
 
 		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(postNum);
 
-		for (AttachedFile af : afs) {
-			String oriName = af.getOriginName();
-			String saveName = af.getSaveName();
-
-		}
 		return afs;
 	}
 }

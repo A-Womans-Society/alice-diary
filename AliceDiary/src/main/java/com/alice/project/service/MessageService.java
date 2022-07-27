@@ -131,7 +131,6 @@ public class MessageService {
 //			log.info("*****************내용 각각 : " + msg.getContent());
 //		}
 		return msgs;
-
 	}
 
 	// 사용자측에서 삭제하지 않은 메시지만 가져오기
@@ -346,5 +345,4 @@ public class MessageService {
 	public Message inviteMsg(Message message) {
 		return messageRepository.save(message);
 	}
-
 }

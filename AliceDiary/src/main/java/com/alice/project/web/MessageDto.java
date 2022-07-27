@@ -33,8 +33,7 @@ public class MessageDto implements Comparable<MessageDto> {
 	private MultipartFile originName; // 파일 이름
 
 	@Builder
-	public MessageDto(Long user1Num, Long user2Num, LocalDateTime sendDate, 
-			String content, String messageFromId,
+	public MessageDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String content, String messageFromId,
 			String messageToId, Long direction) {
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
@@ -44,11 +43,10 @@ public class MessageDto implements Comparable<MessageDto> {
 		this.messageToId = messageToId;
 		this.direction = direction;
 	}
-	
+
 	// 첨부파일 있을 때 사용
 	public MessageDto(MessageService ms, Long user1Num, Long user2Num, LocalDateTime sendDate, String content,
 			String messageFromId, String messageToId, Long direction, MultipartFile originName) {
-		super();
 		this.ms = ms;
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
@@ -59,7 +57,7 @@ public class MessageDto implements Comparable<MessageDto> {
 		this.direction = direction;
 		this.originName = originName;
 	}
-	
+
 	public MessageDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String content, Long direction) {
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
