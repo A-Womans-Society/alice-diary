@@ -50,6 +50,17 @@ public interface PostRepository
 	
 	@Query(value = "select * from Post where member_num = :memberNum order by post_num desc", nativeQuery=true)
 	Page<Post> searchWriter(Long memberNum, Pageable pageable);
+	
+	// 공지사항 목록 조회
+	@Query(value = "select post_num, community_num, member_num, view_cnt, content, post_date, post_type, title, update_date from Post where post_type = 'NOTICE' order by post_num desc", nativeQuery=true)
+	Page<Post> findAllNotices(Pageable pageable); 
+	
+	// 공개게시판 목록 조회
+	@Query(value = "select post_num, community_num, member_num, view_cnt, content, post_date, post_type, title, update_date from Post where post_type = 'OPEN' order by post_num desc", nativeQuery=true)
+	Page<Post> findAllOpens(Pageable pageable); 
+	
+//	@Query("SELECT p FROM Post as p WHERE postType='NOTICE' and p.num = :num")
+//	List<Post> searchNoticeByPostNum(Long num); 
 
 	
 }

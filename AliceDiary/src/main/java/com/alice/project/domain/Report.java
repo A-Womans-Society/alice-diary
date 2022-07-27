@@ -2,6 +2,7 @@ package com.alice.project.domain;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -65,7 +66,7 @@ public class Report {
 	@JsonBackReference
 	private Post post; // 게시물 객체
 
-	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "reply_num")
 	@JsonBackReference
 	private Reply reply; // 댓글 객체
@@ -100,24 +101,24 @@ public class Report {
 		this.reportType = reportType;
 		this.member = member;
 	}
-
+  
 	// 게시글 신고 객체 생성 메서드
 	public static Report createPostReport(Post post, String reportReason, String content, Member member) {
-		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(), ReportType.POST,
-				member, post);
-
+		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
+				ReportType.POST, member, post);
+		
 		return report;
 	}
-
+  
 	// 댓글 신고 객체 생성 메서드
 	public static Report createReplyReport(Reply reply, String reportReason, String content, Member member) {
-		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(), ReportType.REPLY,
-				member, reply);
+		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
+				ReportType.REPLY, member, reply);
 
 		return report;
 	}
-
-	// 게시물 신고
+	
+	// 게시물 신고 
 	@Builder
 	public Report(ReportReason reportReason, String content, LocalDateTime reportDate, ReportType reportType,
 			Member member, Post post) {
@@ -128,7 +129,6 @@ public class Report {
 		this.member = member;
 		this.post = post;
 	}
-
 	// 댓글 신고
 	@Builder
 	public Report(ReportReason reportReason, String content, LocalDateTime reportDate, ReportType reportType,

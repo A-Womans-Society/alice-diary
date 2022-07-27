@@ -56,12 +56,9 @@ public class SecurityConfig {
 				.mvcMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().hasAnyRole("ADMIN","USER_IN");
 		
-		
 //      http.exceptionHandling()
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 //        ;
-		
-
 		
 		return http.build();
 	}

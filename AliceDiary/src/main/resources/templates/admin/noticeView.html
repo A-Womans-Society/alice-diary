@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/adminLayout}">
+
+<th:block layout:fragment="css">
+	<style>
+.blog-comment::before, .blog-comment::after, .blog-comment-form::before,
+	.blog-comment-form::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.blog-comment ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.blog-comment ul.comments {
+	border-top: 1px solid;
+	margin: 0;
+}
+
+.blog-comment img {
+	opacity: 1;
+	filter: Alpha(opacity = 100);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-o-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.blog-comment img.avatar {
+	position: relative;
+	float: left;
+	margin-left: 0;
+	margin-top: 0;
+	width: 40px;
+	height: 40px;
+}
+
+.blog-comment .meta {
+	font-size: 13px;
+	color: #aaaaaa;
+	padding-bottom: 8px;
+	margin-bottom: 10px !important;
+	border-bottom: 1px solid #eee;
+	display: flex;
+	justify-content: space-between;
+	align-items: end;
+}
+
+.blog-comment ul.childComments {
+	list-style-type: none;
+	padding: 0;
+	margin-left: 50px;
+	margin-bottom: 0;
+}
+
+.blog-comment-form {
+	padding-left: 15%;
+	padding-right: 15%;
+	padding-top: 40px;
+}
+
+.blog-comment h3, .blog-comment-form h3 {
+	margin-bottom: 40px;
+	font-size: 26px;
+	line-height: 30px;
+	font-weight: 800;
+}
+</style>
+</th:block>
+
+<div layout:fragment="content">
+	<h3 class="text-center m-0 pt-5" style="height: 15%;">공지사항 상세보기</h3>
+	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
+		<div class='row ml-5 mr-5' style="height: 80%;">
+			<div class="col-6 h-100 border">
+				<div class="h-25 d-flex justify-content-center"
+					style="flex-direction: column;">
+					<h3 th:text="${postView.title}"></h3>
+					<div class="d-flex justify-content-between">
+						<span th:text="${postView.member.name}"></span><span
+							th:text="
+							${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span>
+						<span th:if="${postView.updateDate != null}"
+							style="color: grey; font-size: 15px;"
+							th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></span>
+					</div>
+				</div>
+				<div
+					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
+					style="flex-direction: column; height: 60%;">
+					<div th:text="${postView.content}"></div>
+					<div>
+						<div th:each="file : ${files}" th:if="${file.originName != null}">
+							<td>첨부파일: <a th:href="|./download/${file.num}|"
+								th:text="${file.originName}"></a></td>
+						</div>
+					</div>
+				</div>
+				<div class="text-right" id="btnBox">
+					<button type="button"
+						th:onclick="|location.href='./put?num=${postView.num}'|"
+						class="btn">수정</button>
+					<button type="button" id="delete_confirm"
+						th:onclick="deleteConfirm([[${postView.num}]])" class="btn">삭제</button>
+					<button type="button" onclick="location.href='./list'"
+						class="btn btn-secondary">목록</button>
+				</div>
+			</div>
+			<div class='col-6 h-100 border p-0'>
+				<div class="card h-100">
+					<div class="card-body h-100 blog-comment">
+						<div id="replyList" style="overflow-y: scroll; height: 90%;">
+							<th:block th:each="reply : ${replyList}">
+								<ul
+									th:id="${reply.parentRepNum} == null ? |parentRepContentTable${reply.num}| : |childRepContentTable${reply.num}| "
+									th:class="${reply.parentRepNum} == null ? 'comments pt-2' : childComments ">
+
+									<th:block th:if="${reply.status.name() == 'DEAD'}">
+										<li class="clearfix">삭제된 댓글입니다.</li>
+									</th:block>
+									<th:block th:unless="${reply.status.name() == 'DEAD'}">
+										<img th:src="@{/upload/profile/}+@{${reply.profileImg}}"
+											alt="" class="avatar">
+										<div class="post-comments">
+											<p class="meta">
+												<span> &nbsp;<span style="color: black;"
+													th:text="${reply.memberId}"></span>&nbsp; <span
+													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
+												</span> <span> <span th:if="${reply.parentRepNum} == null">
+														<button type="button" class="btn btn-sm"
+															th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
+												</span> <span th:if="${#authentication.name} != ${reply.memberId}">
+														<button type="button" class="btn btn-sm"
+															th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">내리기</button>
+												</span> 
+												</span>
+											</p>
+											<p style="font-size: small;" class="m-0 pb-2">
+												<span style="word-break: break-all;"
+													th:text="${reply.content}"></span>
+											</p>
+										</div>
+										<li th:if="${reply.parentRepNum} == null"
+											th:id="|replyReplyBox${reply.num}|" style="display: none;">
+											<span> <input type="text" placeholder="답글을 입력해주세요"
+												th:id="|replyReplyContent${reply.num}|">
+											</span> <span>
+												<button type="button"
+													th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button>
+											</span>
+										</li>
+									</th:block>
+								</ul>
+						</div>
+
+						<div class="card-footer commentBox">
+							<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
+							<button type="button"
+								th:onclick="replySubmit([[${postView.num}]],[[${#authentication.name}]])">등록</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<th:block layout:fragment="script">
+	<script th:src="@{/js/admin/postView.js}"></script>
+	<!-- 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+ -->
+</th:block>
+</html>

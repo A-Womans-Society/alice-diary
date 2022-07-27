@@ -20,7 +20,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.alice.project.repository.MemberRepository;
 import com.alice.project.web.UserDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -35,11 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 @Entity
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter @Setter
+@Getter
+@Setter
 //@ToString
 @Slf4j
 @EqualsAndHashCode(of = "num")
 @DynamicInsert
+
 public class Member extends BaseTimeEntity {
 
 	@Id
@@ -77,7 +81,7 @@ public class Member extends BaseTimeEntity {
 	private boolean emailVerified; // 이메일이 검증 되었는지 여부
 	private String emailCheckToken; // 이메일 인증 토큰
 	private LocalDateTime emailCheckTokenGeneratedAt; // 이메일 인증 토큰 생성 일자
-	
+
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 
@@ -254,7 +258,7 @@ public class Member extends BaseTimeEntity {
 		return member;
 	}
 
-	//이메일 인증 시 필요한 메서드
+	// 이메일 인증 시 필요한 메서드
 	public void generateEmailCheckToken() {
 		this.emailCheckToken = UUID.randomUUID().toString(); // 토큰 만들기 (랜덤)
 		this.emailCheckTokenGeneratedAt = LocalDateTime.now();
@@ -277,9 +281,18 @@ public class Member extends BaseTimeEntity {
 		member.id = "(알수없음)";
 		return member;
 	}
-	
+
 	public static Member setProfileImg(Member member) {
 		member.profileImg = "default.png";
+		return member;
+	}
+
+
+	@Transactional
+	public static Member updateProfileImg(Member member, UserDto userDto, MemberRepository mr) {
+		member.profileImg = userDto.getSaveName();
+		log.info("userDto.getSaveName" + userDto.getSaveName());
+		mr.save(member);
 		return member;
 	}
 
@@ -302,6 +315,7 @@ public class Member extends BaseTimeEntity {
 		return member;
 	}
 
+
 	public Member update(String name, String profileImg) {
 		this.name = name;
 		this.profileImg = profileImg;
@@ -317,6 +331,5 @@ public class Member extends BaseTimeEntity {
     public String getStatusKey(){
     	return this.status.getKey();
     }
-
 
 }

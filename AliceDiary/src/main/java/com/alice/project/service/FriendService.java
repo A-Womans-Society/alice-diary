@@ -22,15 +22,15 @@ public class FriendService {
 	// 친구추가 서비스(추가하는 멤버회원 번호, 추가되는 멤버회원의 아이디)
 	public boolean addFriendship(Member member, String searchId) {
 		Member f = memberRepository.findById(searchId);
-		//Friend exist = friendRepository.findGroupByAddeeAdderNum(member.getNum(), f.getNum());
+		// Friend exist = friendRepository.findGroupByAddeeAdderNum(member.getNum(),
+		// f.getNum());
 		List<Friend> check = friendRepository.checkAlreadyFriend(member.getNum(), f.getNum());
-		Long groupNum = 1L; //일단 기본그룹에 추가
+		Long groupNum = 1L; // 일단 기본그룹에 추가
 		if (check.size() <= 0) {
 			Friend friend = new Friend(member, f.getNum(), groupNum);
 			friendRepository.save(friend);
 			return true;
-		}
-		else {	
+		} else {
 		}
 		return false;
 	}
@@ -57,7 +57,7 @@ public class FriendService {
 
 	// 추가된 친구 목록에서 이름 & 아이디로 검색
 	public List<Member> searchFriend(String friends, Long adderNum) {
-		return memberRepository.findByIdOrName(adderNum, friends); 
+		return memberRepository.findByIdOrName(adderNum, friends);
 	}
 
 	// 친구 상세보기(등록된 친구 번호 조회)
@@ -73,5 +73,9 @@ public class FriendService {
 		// 존재함
 		return true;
 
+	}
+
+	public List<Friend> weAreFriend(Long adderNum) {
+		return friendRepository.weAreFriend(adderNum);
 	}
 }

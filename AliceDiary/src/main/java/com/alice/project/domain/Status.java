@@ -13,6 +13,5 @@ public enum Status {
 	
 	private final String key;
 	private final String title;
-
-	
 }
+

@@ -3,6 +3,7 @@ package com.alice.project.domain;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,12 +48,13 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 	@Column(nullable = false)
 	private Long direction; // user1이 user2에게 보내면 : 0, 반대면 1
 
+
 	@Column(nullable = false)
 	private LocalDateTime sendDate; // 쪽지 발송일자
 	@Column(nullable = false, length = 4000)
 	private String content; // 쪽지내용
 
-	@OneToOne(mappedBy = "message")
+	@OneToOne(mappedBy = "message", cascade=CascadeType.ALL)
 	@JoinColumn(name = "file_num")
 	@JsonManagedReference
 	private AttachedFile file = new AttachedFile();
@@ -68,9 +70,9 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 		this.direction = direction;
 	}
 
-	public Message(Long num, Long user1Num, Long user2Num, Long msgStatus, Long direction, LocalDateTime sendDate,
+	public Message(Long user1Num, Long user2Num, Long msgStatus, Long direction, 
+			LocalDateTime sendDate,
 			String content, AttachedFile file) {
-		this.num = num;
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;
 		this.msgStatus = msgStatus;
@@ -129,4 +131,5 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 //      message.setMember(member);
 //      return message;
 //   }
+
 }

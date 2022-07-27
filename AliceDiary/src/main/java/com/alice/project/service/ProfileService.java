@@ -1,18 +1,16 @@
 package com.alice.project.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.ProfileRepository;
-import com.alice.project.web.UserDto;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true) // 기본적으로 못바꾸게 해놓고
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProfileService {

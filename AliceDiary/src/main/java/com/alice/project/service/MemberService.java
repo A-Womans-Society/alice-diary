@@ -72,7 +72,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member processUpdateMember(Long num, UserDto userDto, boolean changeIMg) {
 		log.info("processUpdateMember 진입");
 		Member updateMember = saveUpdateMember(num, userDto, changeIMg);
-		Member.updateProfileImg(updateMember, userDto);
+		Member.updateProfileImg(updateMember, userDto, memberRepository);
 		return updateMember;
 	}
 

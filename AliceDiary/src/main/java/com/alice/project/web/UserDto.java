@@ -83,6 +83,8 @@ public class UserDto {
 	private Status status;
 	
 	private LocalDate regDate;
+  
+  private String birthStr;
 
 	public UserDto(String id, String password, String confirmPassword, String name, LocalDate birth, Gender gender,
 			String email, String mobile, String mbti, String wishlist, String saveName, MultipartFile profileImg) {
@@ -128,5 +130,4 @@ public class UserDto {
 		this.saveName = member.getProfileImg();
 
 	}
-
 }
