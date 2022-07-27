@@ -15,7 +15,7 @@
 		<div class="row h-100">
 			<div class="col-12 h-100">
 				<h2 class="text-center m-0 pt-5" style="height: 15%;">
-					나의 커뮤니티 #
+					#
 					<th:block th:text="${comName}"></th:block>
 				</h2>
 				<div class="d-flex justify-content-center" style="height: 13%;">
@@ -137,22 +137,24 @@
 
 		</div>
 	</div>
-	
-			<div>
-					<th:block th:each="hostCom : ${hostComs}"
-						th:if="${#authentication.name} == ${hostCom.member.id}">
-						<ul>
-							<li><a th:href="@{|/community/${hostCom.num}/list|}"
-								th:text="${hostCom.name}"></a></li>
-						</ul>
-					</th:block>
-					<th:block th:each="myCom : ${myComList}">
-						<ul>
-							<li><a th:href="@{|/community/${myCom.num}/list|}"
-								th:text="${myCom.name}"></a></li>
-						</ul>
-					</th:block>
-				</div>
-				
+
+	<div>
+		<input type="button" onclick="location.href='../create'"
+			value="커뮤니티 추가하기">
+		<th:block th:each="hostCom : ${hostComs}"
+			th:if="${#authentication.name} == ${hostCom.member.id}">
+			<ul>
+				<li><a th:href="@{|/community/${hostCom.num}/list|}"
+					th:text="${hostCom.name}"></a></li>
+			</ul>
+		</th:block>
+		<th:block th:each="myCom : ${myComList}">
+			<ul>
+				<li><a th:href="@{|/community/${myCom.num}/list|}"
+					th:text="${myCom.name}"></a></li>
+			</ul>
+		</th:block>
+	</div>
+
 </div>
 </html>

@@ -51,12 +51,28 @@
 						<textarea type="text" th:field="*{description}" cols="10" rows="5"></textarea>
 					</div>
 
-					<input type="submit" th:onclick="return check()" value="커뮤니티 수정하기">
-					<button th:onclick="deleteCommunity([[${comNum}]])">커뮤니티
-						삭제</button>
+					<input type="submit" th:onclick="return check()" class="btn" value="저장">
+					<button th:onclick="deleteCommunity([[${comNum}]])" class="btn">삭제</button>
 					<input type="button" onClick="history.go(-1)" value="취소"
 						class="btn">
 				</form>
+				
+				<div>
+					<input type="button" onclick="location.href='../create'" value="커뮤니티 추가하기">
+					<th:block th:each="hostCom : ${hostComs}"
+						th:if="${#authentication.name} == ${hostCom.member.id}">
+						<ul>
+							<li><a th:href="@{|/community/${hostCom.num}/list|}"
+								th:text="${hostCom.name}"></a></li>
+						</ul>
+					</th:block>
+					<th:block th:each="myCom : ${myComList}">
+						<ul>
+							<li><a th:href="@{|/community/${myCom.num}/list|}"
+								th:text="${myCom.name}"></a></li>
+						</ul>
+					</th:block>
+				</div>
 
 
 			</div>

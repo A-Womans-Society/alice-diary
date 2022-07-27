@@ -62,14 +62,12 @@ public class CommunityController {
 	private final ReportService reportService;
 	private final MessageService messageService;
 
-	@GetMapping("/community/create")
-	public String createForm(@AuthenticationPrincipal UserDetails user, Model model) {
-		log.info("create 도착");
+	@GetMapping("/community/checkExist")
+	public String checkExist(@AuthenticationPrincipal UserDetails user) {
 
 		// 내가 방장인 커뮤니티 목록불러오기
 		Member hostMem = memberService.findById(user.getUsername());
 		List<Community> hostComs = communityService.findByMember(hostMem);
-		model.addAttribute("hostComs", hostComs);
 
 		// 내가 소속회원인 커뮤니티 목록 불러오기
 		List<Community> memberComs = communityService.getAll();
@@ -81,14 +79,43 @@ public class CommunityController {
 				resultList.add(c);
 			}
 		}
-		model.addAttribute("myComList", resultList);
 
+		if (hostComs.size() > 0) {
+			return "redirect:./" + hostComs.get(0).getNum() + "/list";
+		} else if (resultList.size() > 0) {
+			return "redirect:./" + resultList.get(0).getNum() + "/list";
+		} else {
+			return "redirect:./create";
+		}
+	}
+
+	@GetMapping("/community/create")
+	public String createForm(@AuthenticationPrincipal UserDetails user, Model model) {
+
+		// 내가 방장인 커뮤니티 목록불러오기
+		Member hostMem = memberService.findById(user.getUsername());
+		List<Community> hostComs = communityService.findByMember(hostMem);
+
+		// 내가 소속회원인 커뮤니티 목록 불러오기
+		List<Community> memberComs = communityService.getAll();
+		List<Community> resultList = new ArrayList<>();
+		for (Community c : memberComs) {
+			String memberList = c.getMemberList();
+			Boolean result = memberList.contains(user.getUsername());
+			if (result) {
+				resultList.add(c);
+			}
+		}
+
+		model.addAttribute("hostComs", hostComs);
+		model.addAttribute("myComList", resultList);
+		
 		// 내 친구들 목록 불러오기
 		List<Friend> fList = friendService.friendship(hostMem.getNum());
 		CommunityCreateDto ccdto = new CommunityCreateDto();
 		List<AlarmMemberListDto> cTmp = new ArrayList<AlarmMemberListDto>();
-		
-		for(Friend f : fList) {
+
+		for (Friend f : fList) {
 			Member fInfo = memberService.findByNum(f.getAddeeNum());
 			AlarmMemberListDto tmp = new AlarmMemberListDto();
 			tmp.setId(fInfo.getId());
@@ -99,6 +126,7 @@ public class CommunityController {
 
 		model.addAttribute("ccdto", ccdto);
 		model.addAttribute("member", hostMem);
+
 		return "community/createCommunity";
 	}
 
@@ -190,7 +218,6 @@ public class CommunityController {
 			}
 		}
 		model.addAttribute("myComList", resultList);
-
 
 		String memberList = communityService.findMemListByNum(comNum);
 		String[] memList = memberList.split(",");
@@ -380,6 +407,23 @@ public class CommunityController {
 	// 커뮤니티 관리페이지 - 커뮤니티 정보 가져오기
 	@GetMapping("community/{comNum}/manage")
 	public String getComManage(@PathVariable Long comNum, Model model, @AuthenticationPrincipal UserDetails user) {
+
+		// 내가 방장인 커뮤니티 목록불러오기
+		Member hostMem = memberService.findById(user.getUsername());
+		List<Community> hostComs = communityService.findByMember(hostMem);
+		model.addAttribute("hostComs", hostComs);
+
+		// 내가 소속회원인 커뮤니티 목록 불러오기
+		List<Community> memberComs = communityService.getAll();
+		List<Community> resultList = new ArrayList<>();
+		for (Community c : memberComs) {
+			String memberList = c.getMemberList();
+			Boolean result = memberList.contains(user.getUsername());
+			if (result) {
+				resultList.add(c);
+			}
+		}
+		model.addAttribute("myComList", resultList);
 
 		Community community = communityService.findByNum(comNum);
 		String memberList = community.getMemberList();
