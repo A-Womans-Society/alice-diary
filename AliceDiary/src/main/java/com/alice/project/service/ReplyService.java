@@ -31,7 +31,6 @@ public class ReplyService {
 	private final PostRepository postRepository;
 
 	// 아이디로 회원번호 찾기
-	@Transactional
 	public Long getMemNumById(String memberId) {
 		log.info("memberId : " + memberId);
 		Long member = memberRepository.findMemberNumById(memberId);
@@ -50,7 +49,6 @@ public class ReplyService {
 	}
 
 	// 댓글 불러오기
-	@Transactional
 	public List<ReplyDto> replyList(Long num) {
 		List<ReplyDto> result = new ArrayList<>();
 
@@ -74,7 +72,6 @@ public class ReplyService {
 				rdto.setProfileImg(r.getMember().getProfileImg());
 				result.add(rdto);
 			}
-
 		}
 		return result;
 	}
@@ -105,11 +102,9 @@ public class ReplyService {
 			Reply replyDelete = replyRepository.findByNum(num);
 			replyRepository.delete(replyDelete);
 		}
-
 	}
 
 	// 댓글번호로 객체 찾기
-	@Transactional
 	public Reply findByNum(Long num) {
 		return replyRepository.findByNum(num);
 	}
@@ -129,5 +124,4 @@ public class ReplyService {
 
 		return replies;
 	}
-
 }

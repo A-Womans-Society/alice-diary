@@ -74,5 +74,4 @@ public class Suggestion {
 		this.suggestDate = suggestDate;
 		this.member = member;
 	}
-
 }
