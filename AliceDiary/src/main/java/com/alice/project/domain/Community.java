@@ -28,18 +28,18 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="community")
-@NoArgsConstructor(access = AccessLevel.PROTECTED) //JPA 사용을위해 기본 생성자 생성은 필수 =  protected Community() { }
+@Table(name = "community")
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 사용을위해 기본 생성자 생성은 필수 = protected Community() { }
 @Getter
 @ToString
 @EqualsAndHashCode(of = "num")
 @DynamicInsert
 public class Community {
-	
-	@Id 
+
+	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COM_SEQ_GENERATOR")
 	@SequenceGenerator(name = "COM_SEQ_GENERATOR", sequenceName = "SEQ_COMMUNITY_NUM", initialValue = 1, allocationSize = 1)
-	@Column(name="community_num")
+	@Column(name = "community_num")
 	private Long num; // 커뮤니티 번호
 	@Column(nullable = false)
 	private String name; // 커뮤니티 이름
@@ -49,12 +49,12 @@ public class Community {
 	private LocalDate regDate; // 커뮤니티 생성일자
 	private String description; // 커뮤니티 설명
 
-	@ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name="member_num")
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "member_num")
 	@JsonBackReference
 	private Member member; // 커뮤니티 생성 회원 객체
-	
-	@OneToMany(mappedBy="community")
+
+	@OneToMany(mappedBy = "community")
 	@JsonManagedReference
 	private List<Post> posts = new ArrayList<>(); // 해당 커뮤니티 소속 게시물리스트
 

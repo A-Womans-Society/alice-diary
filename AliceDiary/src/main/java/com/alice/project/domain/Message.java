@@ -114,6 +114,7 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 		Message message = new Message(user1Num, user2Num, LocalDateTime.now(), content, 3L, 0L);
 		return message;
 	}
+
 //   @ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 //   @JoinColumn(name="member_num")
 //   private Member member; // 쪽지 보내는회원 객체

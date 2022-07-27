@@ -36,6 +36,7 @@ public class Friend {
 	@SequenceGenerator(name = "FRIEND_SEQ_GENERATOR", sequenceName = "SEQ_FRIEND_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "friend_num")
 	private Long num; // 친구 번호	
+
 	@Column(nullable = false)
 	private Long addeeNum; // 등록되는 친구 회원번호
 	@Column(nullable = false)
@@ -45,18 +46,18 @@ public class Friend {
 	@JoinColumn(name = "adder_num")
 	@JsonBackReference
 	private Member member; // 친구 등록하는 회원 객체
-	
+
 //   @ManyToOne(fetch=FetchType.LAZY)
 //   @JoinColumn(name="group_num")
 //	 @JsonBackReference
 //   private FriendsGroup group; // 친구 소속 그룹
-  
+
 	// 연관관계 메서드 (양방향관계)
 //   public void setGroup(FriendsGroup group) {
 //      this.group = group;
 //      group.getFriends().add(this);
 //   }
-	
+
 	public void setMember(Member member) {
 		this.member = member;
 //      return member.getNum();

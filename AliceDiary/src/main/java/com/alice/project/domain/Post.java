@@ -41,7 +41,6 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "num")
 @DynamicInsert
 public class Post {
-
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_SEQ_GENERATOR")
    @SequenceGenerator(name = "POST_SEQ_GENERATOR", sequenceName = "SEQ_POST_NUM", initialValue = 1, allocationSize = 1)
@@ -76,66 +75,66 @@ public class Post {
    @JsonManagedReference
    private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
 
-   /* files가 null일 수 있음 */
-   @OneToMany(mappedBy = "post")
-   @JsonManagedReference
-   private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
+	/* files가 null일 수 있음 */
+	@OneToMany(mappedBy = "post")
+	@JsonManagedReference
+	private List<AttachedFile> files = new ArrayList<>(); // 게시물 소속 첨부파일 리스트
 
-   /* reports가 null일 수 있음 */
-   @OneToMany(mappedBy = "post")
-   @JsonManagedReference
-   private List<Report> reports = new ArrayList<>(); // 게시물 소속 신고 리스트
-   
-   // 연관관계 메서드 (양방향관계)
-   
-   public void setMember(Member member) { 
-      this.member = member;
-      member.getPosts().add(this); 
-   }
-   
-   public void setCommunity(Community community) {
-      this.community = community;
-      community.getPosts().add(this);
-   }
-      
-   @PrePersist
-   public void post_Date() {
-      this.postDate = LocalDateTime.now();
-   }
+	/* reports가 null일 수 있음 */
+	@OneToMany(mappedBy = "post")
+	@JsonManagedReference
+	private List<Report> reports = new ArrayList<>(); // 게시물 소속 신고 리스트
 
-   @PreUpdate
-   public void update_Date() {
-      this.updateDate = LocalDateTime.now();
-   }
+	// 연관관계 메서드 (양방향관계)
 
-   // 게시물 객체 생성 메서드
-   public static Post createPost(WriteFormDto wirteFormDto, Member member) {
-      Post post = new Post(wirteFormDto.getTitle(), LocalDateTime.now(), wirteFormDto.getContent(), PostType.OPEN,
-            member);
+	public void setMember(Member member) {
+		this.member = member;
+		member.getPosts().add(this);
+	}
 
-      return post;
-   }
-   
-   /* 공지사항 객체 생성 메서드 */
-   public static Post createNotice(WriteFormDto wirteFormDto, Member member) {
-      Post post = new Post(wirteFormDto.getTitle(), LocalDateTime.now(), wirteFormDto.getContent(), PostType.NOTICE,
-            member);
+	public void setCommunity(Community community) {
+		this.community = community;
+		community.getPosts().add(this);
+	}
 
-      return post;
-   }
+	@PrePersist
+	public void post_Date() {
+		this.postDate = LocalDateTime.now();
+	}
 
-   // 조회수 증가 메소드
-   public void viewCntUp() {
-      this.viewCnt++;
-   }
+	@PreUpdate
+	public void update_Date() {
+		this.updateDate = LocalDateTime.now();
+	}
 
-   @Builder
-   public Post(String title, LocalDateTime postDate, String content, PostType postType, Member member) {
-      super();
-      this.title = title;
-      this.postDate = postDate;
-      this.content = content;
-      this.postType = postType;
-      this.member = member;
-   }
+	// 게시물 객체 생성 메서드
+	public static Post createPost(WriteFormDto wirteFormDto, Member member) {
+		Post post = new Post(wirteFormDto.getTitle(), LocalDateTime.now(), wirteFormDto.getContent(), PostType.OPEN,
+				member);
+
+		return post;
+	}
+
+	/* 공지사항 객체 생성 메서드 */
+	public static Post createNotice(WriteFormDto wirteFormDto, Member member) {
+		Post post = new Post(wirteFormDto.getTitle(), LocalDateTime.now(), wirteFormDto.getContent(), PostType.NOTICE,
+				member);
+
+		return post;
+	}
+
+	// 조회수 증가 메소드
+	public void viewCntUp() {
+		this.viewCnt++;
+	}
+
+	@Builder
+	public Post(String title, LocalDateTime postDate, String content, PostType postType, Member member) {
+		super();
+		this.title = title;
+		this.postDate = postDate;
+		this.content = content;
+		this.postType = postType;
+		this.member = member;
+	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alice.project.config.PrincipalDetails;
 import com.alice.project.domain.Member;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.ProfileService;
@@ -40,9 +42,9 @@ public class ProfileController {
 
 	// 내 프로필 보기 GET
 	@GetMapping(value = "/member/{id}")
-	public String myProfile(@PathVariable String id, Model model) {
-		Member member = profileService.findById(id);
 
+	public String myProfile(@PathVariable String id, Model model, @AuthenticationPrincipal PrincipalDetails user) {
+		Member member = profileService.findById(user.getUsername());
 		List<String> wishList = new ArrayList<String>();
 		log.info("wish list : " + member.getWishlist());
 		// wish list 존재
@@ -53,7 +55,6 @@ public class ProfileController {
 				wishList.add(s);
 			}
 		}
-		log.info("wish list : " + wishList.size());
 
 		model.addAttribute("member", member);
 		model.addAttribute("wishList", wishList);
@@ -62,11 +63,13 @@ public class ProfileController {
 
 	// 내 프로필 수정 화면 GET
 	@GetMapping(value = "/member/update/{id}")
-	public String updateProfile(@PathVariable String id, Model model) {
+
+	public String updateProfile(@PathVariable String id, Model model, @AuthenticationPrincipal PrincipalDetails user) {
 		log.info("내 프로필 수정 GET 진입!!");
-		Member member = profileService.findById(id);
+		Member member = profileService.findById(user.getUsername());
 		UserDto dto = new UserDto();
 		dto.setBirthStr(member.getBirth().format(DateTimeFormatter.ofPattern("yyy-MM-dd")));
+
 		model.addAttribute("member", member);
 		model.addAttribute("userDto", dto);
 //		model.addAttribute("birthStr", member.getBirth().format(DateTimeFormatter.ofPattern("yyy-MM-dd")));
@@ -76,7 +79,7 @@ public class ProfileController {
 	// 내 프로필 수정하기 POST
 	@PostMapping(value = "/member/update/{id}")
 	public String updateProfile(@PathVariable String id, @ModelAttribute("member") @Valid UserDto userDto,
-			BindingResult bindingResult, Long num, HttpSession session) {
+			BindingResult bindingResult, Long num) {
 		log.info("프로필 수정 페이지 진입");
 		log.info("member.num == " + num);
 
@@ -89,10 +92,10 @@ public class ProfileController {
 			String savePath = "C:\\Temp\\upload\\profile\\";
 
 			try {
-				userDto.setSaveName(saveName);
-				log.info("userDto.saveName = " + userDto.getSaveName());
-				userDto.getProfileImg().transferTo(new File(savePath + saveName));
 
+				userDto.getProfileImg().transferTo(new File(savePath+saveName));
+				userDto.setSaveName(saveName);
+				log.info(("userDto.saveName = " + userDto.getSaveName()));
 				memberService.processUpdateMember(num, userDto, true);
 
 			} catch (IllegalStateException e) {
@@ -108,9 +111,9 @@ public class ProfileController {
 
 	// 비밀번호 재설정 Get
 	@GetMapping(value = "/member/{id}/editPwd")
-	public String updatePwd(@PathVariable String id, Model model, String msg) {
+	public String updatePwd(@PathVariable String id, Model model, String msg, @AuthenticationPrincipal PrincipalDetails user) {
 		log.info("프로필 비밀번호 재설정 GET 진입");
-		Member member = memberService.findById(id);
+		Member member = profileService.findById(user.getUsername());
 		model.addAttribute("member", member);
 		model.addAttribute("msg", msg);
 		return "profile/editPwd";

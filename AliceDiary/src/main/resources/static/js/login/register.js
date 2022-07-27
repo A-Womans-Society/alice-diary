@@ -1,3 +1,51 @@
+function checkId() {
+		var header = $("meta[name='_csrf_header']").attr('content');
+		var token = $("meta[name='_csrf']").attr('content');
+		var input = document.getElementById("id").value; //id값이 "id"인 입력란의 값을 저장
+		console.log(input);
+		$.ajax({
+			url : './register/idCheck', //컨트롤러에서 인식할 주소
+			type : 'POST', //POST 방식으로 전달
+			data : {
+				id : input
+			},
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+			success : function(data) { //컨트롤러에서 넘어온 check값을 받는다
+				if (data == 0) {
+					$('.id_ok').css("display", "inline-block");
+					$('.id_already').css("display", "none");
+				} else if (data == 1) {
+					$('.id_already').css("display", "inline-block");
+					$('.id_ok').css("display", "none");
+				}
+			},
+			error : function() {
+				alert("에러가 발생했습니다.");
+			}
+		});
+
+	};
+function checkPwd() {
+	var password = document.getElementById('password');
+	var confirmPassword = document.getElementById('confirmPassword');
+	var confirmMsg = document.getElementById('confirmMsg');
+	var correctColor = "#00ff00";
+	var wrongColor = "#ff0000";
+	var correct = 0;
+	var wrong = 1;
+
+	if (password.value == confirmPassword.value) {
+		confirmMsg.innerHTML = "";
+		document.regForm.hiddenNum.value = 0;
+	} else {
+		confirmMsg.style.color = wrongColor;
+		confirmMsg.innerHTML = "비밀번호 불일치";
+		document.regForm.hiddenNum.value = 1;
+		
+	}
+}	
 function regSuccess() {
 		if (document.getElementById("id").value.length == 0 || 
 			document.getElementById("password").value.length <= 7 ||
@@ -15,9 +63,9 @@ function regSuccess() {
 		}else if(document.getElementById("gender").value=="none") {
 			alert("성별을 선택해주세요.");
 			return false;
-		}else{
-		alert("이메일에서 회원 가입 인증을 진행해주세요.");
-		return true;
+		}else {
+			alert("이메일에서 회원 가입 인증을 진행해주세요.");
+			return true;
 	}
 }
 	
@@ -32,25 +80,7 @@ function regSuccess() {
 		}
 	}
 	
-	function checkPwd() {
-		var password = document.getElementById('password');
-		var confirmPassword = document.getElementById('confirmPassword');
-		var confirmMsg = document.getElementById('confirmMsg');
-		var correctColor = "#00ff00";
-		var wrongColor = "#ff0000";
-		var correct = 0;
-		var wrong = 1;
 
-		if (password.value == confirmPassword.value) {
-			confirmMsg.innerHTML = "";
-			document.regForm.hiddenNum.value = 0;
-		} else {
-			confirmMsg.style.color = wrongColor;
-			confirmMsg.innerHTML = "비밀번호 불일치";
-			document.regForm.hiddenNum.value = 1;
-			
-		}
-	}
 
 	function PreviewImage() {
 		var preview = new FileReader();
@@ -60,30 +90,4 @@ function regSuccess() {
 		preview.readAsDataURL(document.getElementById("file").files[0]);
 	};
 
-	function checkId() {
-		var header = $("meta[name='_csrf_header']").attr('content');
-		var token = $("meta[name='_csrf']").attr('content');
-		var id = document.getElementById("id").value; //id값이 "id"인 입력란의 값을 저장
-		$.ajax({
-			url : './register/idCheck', //컨트롤러에서 인식할 주소
-			type : 'post', //POST 방식으로 전달
-			data : {
-				id : id
-			},
-			beforeSend : function(xhr) { //데이터 전송 전에 헤더에 csrf값 설정
-				xhr.setRequestHeader(header, token);
-			},
-			success : function(check) { //컨트롤러에서 넘어온 check값을 받는다
-				if (check != 1) {
-					$('.id_ok').css("display", "inline-block");
-					$('.id_already').css("display", "none");
-				} else {
-					$('.id_already').css("display", "inline-block");
-					$('.id_ok').css("display", "none");
-				}
-			},
-			error : function() {
-				alert("에러가 발생했습니다.");
-			}
-		});
-	};
+	

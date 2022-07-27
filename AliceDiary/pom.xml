@@ -135,8 +135,13 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.11.3</version>
 		</dependency>
-
-		<!-- json dependency -->
+    
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+		</dependency>
+		
+    <!-- json dependency -->
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
@@ -162,9 +167,17 @@
 			<version>2.3.6</version>
 		</dependency>
 
+		<!-- 소셜 로그인 -->
 		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>javax.annotation-api</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+			<version>2.7.1</version>
 		</dependency>
 	</dependencies>
 

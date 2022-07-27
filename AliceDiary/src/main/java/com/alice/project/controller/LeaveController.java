@@ -2,6 +2,7 @@ package com.alice.project.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alice.project.config.PrincipalDetails;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Suggestion;
 import com.alice.project.service.MemberService;
@@ -27,10 +29,10 @@ public class LeaveController {
 	private final MemberService memberService;
 	private final SuggestionService suggestionService;
 
-	@GetMapping(value = "/member/{id}/leave")
-	public String memberLeave(@PathVariable String id, Model model, String msg) {
+	@GetMapping(value = "/member/{id}/leave" )
+	public String memberLeave(@PathVariable String id, Model model, String msg, @AuthenticationPrincipal PrincipalDetails user) {
 		log.info("GET 진입");
-		Member member = memberService.findById(id);
+		Member member = memberService.findById(user.getUsername());
 		model.addAttribute("member", member);
 		model.addAttribute("suggestionDto", new SuggestionDto());
 		model.addAttribute("msg", msg);

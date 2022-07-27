@@ -4,6 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Alice Diary</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 
 <!-- bootstrap 4 -->
 <link rel="stylesheet"
@@ -23,13 +26,19 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 
+<script th:src="@{/js/login/login.js}"></script>
+<script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+
+
 <link rel="stylesheet" th:href="@{/css/layout/default.css}" />
+
+
 </head>
 <body>
 	<th:block sec:authorize="isAuthenticated()">
 		<meta http-equiv="refresh" content="0; url=/AliceDiary/alice"></meta>
 	</th:block>
-	
+
 	<th:block sec:authorize="isAnonymous()">
 		<div class="container-fluid h-100">
 			<div
@@ -56,10 +65,10 @@
 						</div>
 
 						<div class="d-flex justify-content-between align-items-center">
-							<!-- <div class="form-group form-check mb-0">
-								<input type="checkbox" class="form-check-input me-2"  id="remember" name="obscure-remember-me" checked/> 
-								<label class="form-check-label" for="rememberMe" aria-describedby="rememberMeHelp">아이디 기억하기</label>
-							</div> -->
+							<div class="form-group form-check mb-0">
+								<input type="checkbox" class="form-check-input me-2"  id="checkId" name="checkId"/> 
+								<label class="form-check-label" for="checkId">아이디 기억하기</label>
+							</div>
 							<div>
 								<a th:href="@{/login/findId}" class="text-body">아이디 찾기</a> / <a
 									th:href="@{/login/findPwd}" class="text-body">비밀번호 찾기</a>
@@ -68,17 +77,27 @@
 
 						<div class="text-center text-lg-start mt-4 pt-2">
 
-						<div th:if="${#strings.equals(error, 'true')}">
-						   <p id="valid" style="color: red; font-size:12px;"><a th:text="${exception}"></a></p>
-						</div>
+							<div th:if="${#strings.equals(error, 'true')}">
+								<p id="valid" style="color: red; font-size: 12px;">
+									<a th:text="${exception}"></a>
+								</p>
+							</div>
 							<input type="submit" class="btn btn-primary btn-lg"
 								style="padding-left: 2.5rem; padding-right: 2.5rem;"
 								value="Login">
 							<p class="small fw-bold mt-2 pt-1 mb-0">
-								아직 회원이 아닌신가요? <a th:href="@{/agree}" class="link-danger">회원가입</a>
+								아직 회원이 아니신가요? <a th:href="@{/agree}" class="link-danger">회원가입</a>
 							</p>
-						</div>           
-						
+
+							<a th:href="@{/oauth2/authorization/google}" >
+								<img th:src="@{./img/google-icon-file.png}" width="80px" height="80px"></a>
+								
+								
+								<a th:href="@{/oauth2/authorization/naver}"
+								>
+								<img th:src="@{./img/naver-icon-file.png}" width="60px" height="60px"></a>
+						</div>
+
 					</form>
 				</div>
 			</div>

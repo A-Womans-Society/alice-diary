@@ -26,17 +26,18 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name="suggestion")
+@Table(name = "suggestion")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
 @EqualsAndHashCode(of = "num")
 @DynamicInsert
 public class Suggestion {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SUGGESTION_SEQ_GENERATOR")
 	@SequenceGenerator(name = "SUGGESTION_SEQ_GENERATOR", sequenceName = "SEQ_SUGGESTION_NUM", initialValue = 1, allocationSize = 1)
+
 	@Column(name="suggest_num")
 	private Long num; //건의사항 번호
 	
@@ -49,30 +50,29 @@ public class Suggestion {
 	@JoinColumn(name="member_num")
 	@JsonBackReference
 	private Member member; // 건의자 객체
-	
+
 	@PrePersist
 	public void suggestDate() {
 		this.suggestDate = LocalDateTime.now();
 	}
-	
+
 	// 연관관계 메서드 (양방향관계)
 	public void setMember(Member member) {
 		this.member = member;
 		member.getSuggestions().add(this);
 	}
-	
+
 	// 건의사항 객체 생성 메서드
 	public static Suggestion createSuggestion(SuggestionDto suggestionDto, Member member) {
-		Suggestion suggestion = new Suggestion(suggestionDto.getSuggestNum(), suggestionDto.getContent(), suggestionDto.getSuggestDate(), member);
+		Suggestion suggestion = new Suggestion(suggestionDto.getSuggestNum(), suggestionDto.getContent(),
+				suggestionDto.getSuggestDate(), member);
 		return suggestion;
 	}
-	
+
 	public Suggestion(Long num, String content, LocalDateTime suggestDate, Member member) {
 		this.num = num;
 		this.content = content;
 		this.suggestDate = suggestDate;
 		this.member = member;
 	}
-	
-	
 }

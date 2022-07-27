@@ -12,6 +12,8 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.alice.project.service.CustomOAuth2UserService;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class SecurityConfig {
 	
 	private final AuthenticationFailureHandler customFailureHandler;
 	private final DataSource dataSource; // jpa이라 자동으로 등록되어 있음
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	
 	@Bean
@@ -38,21 +41,24 @@ public class SecurityConfig {
 			.and()
 			.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					 .logoutSuccessUrl("/")
-					 .deleteCookies("JSESSIONID");
+					 .deleteCookies("JSESSIONID")
 					 
+			.and()
+			.oauth2Login()//OAuth2 로그인 기능에 대한 여러 설정의 진입점
+			.defaultSuccessUrl("/member/update/{#authentication.name}")
+			.userInfoEndpoint() //OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정들을 담당
+			.userService(customOAuth2UserService);
+		
 
 		http.authorizeRequests()
 				.mvcMatchers("/css/**", "/font/**", "/js/**", "/img/**").permitAll()
-				.mvcMatchers("/","/agree/**", "/register/**", "/login/**", "/check-email-token/**").permitAll()
+				.mvcMatchers("/","/agree/**", "/register/**", "/login/**", "/check-email-token/**", "/oauth2/**","/**").permitAll()
 				.mvcMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().hasAnyRole("ADMIN","USER_IN");
 		
-		
-//        http.exceptionHandling()
+//      http.exceptionHandling()
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 //        ;
-		
-
 		
 		return http.build();
 	}

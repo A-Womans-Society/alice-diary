@@ -1,6 +1,7 @@
 package com.alice.project.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,10 @@ import com.alice.project.domain.Status;
 @Repository
 public interface MemberRepository
 		extends JpaRepository<Member, Long>, QuerydslPredicateExecutor<Member>, MemberRepositoryCustom {
+	
+	// 소셜 로그인으로 반환되는 값 중에서  email을 통해 이미 생성된 사용자인지 처음 가입한 사용자인지 판단
+//	Optional<Member> findByEmail(String email);
+	Member findByEmail(String email);
 
 	@Query(value = "select member_num from Member where id = :id", nativeQuery = true)
 	Long findMemberNumById(String id);
@@ -35,8 +40,9 @@ public interface MemberRepository
 	Member findByNum(Long num);
 
 	boolean existsByEmail(String email);
-
-	Member findByEmail(String email);
+	
+	@Query(value = "select * FROM Member where email = :email", nativeQuery = true)
+	Member searchByEmailForToken(String email);
 
 	@Query("SELECT m FROM Member AS m WHERE num IN (SELECT addeeNum FROM Friend WHERE adder_num = :adderNum) AND (name LIKE '%'||:friends||'%' OR id LIKE '%'||:friends||'%')")
 	List<Member> findByIdOrName(Long adderNum, String friends);

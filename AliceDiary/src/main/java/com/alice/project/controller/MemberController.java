@@ -1,5 +1,9 @@
 package com.alice.project.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.Valid;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,8 +14,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -65,17 +70,13 @@ public class MemberController {
 			log.info("에러 발생!");
 			return "login/registerForm";
 		}
-		if (userDto.getProfileImg() == null) {
-			memberService.processNewMember(userDto);
-		} /*
-			 * else { Member member = memberService.processNewMember(memberDto); }
-			 */
+		memberService.processNewMember(userDto);
 		return "redirect:/";
 	}
 
 	@GetMapping("/check-email-token")
 	public String checkEmailToken(String token, String email, Model model) {
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.searchByEmailForToken(email);
 		String view = "login/checked-email";
 		if (member == null) {
 			model.addAttribute("error", "wrong.email");
@@ -108,13 +109,14 @@ public class MemberController {
 		memberService.sendSignUpConfirmEmail(member);
 		return "redirect:/";
 	}
-
+	
 	// ID 중복체크 PostMapping
 	@PostMapping("/register/idCheck")
 	@ResponseBody
-	public int checkIdDuplication(@RequestParam(value = "id") String id) {
+	public String checkIdDuplication(String id) {
 		log.info("userIdCheck 진입");
-		int check = memberService.checkIdDuplicate(id);
+		String check = String.valueOf(memberService.checkIdDuplicate(id));
+		log.info("check== " + check);
 		return check;
 	}
 
@@ -186,5 +188,5 @@ public class MemberController {
 
 		return "redirect:/";
 	}
-
+	
 }

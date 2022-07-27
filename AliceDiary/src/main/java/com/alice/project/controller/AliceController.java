@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alice.project.config.PrincipalDetails;
 import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
@@ -44,7 +45,7 @@ public class AliceController {
 	private final FriendService friendService;
 
 	@GetMapping("/alice")
-	public String calendar(Model model, @AuthenticationPrincipal UserDetails user) {
+	public String calendar(Model model, @AuthenticationPrincipal PrincipalDetails user) {
 		Member member = memberService.findById(user.getUsername());
 		// events list
 		List<Calendar> events = calendarService.eventsList(member.getNum());

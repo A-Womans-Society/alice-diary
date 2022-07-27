@@ -51,7 +51,7 @@ public class Report {
 	private String content; // 신고내용
 	@Column(nullable = false)
 	private LocalDateTime reportDate; // 신고일자
-	
+
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ReportType reportType; // 신고종류 [POST, REPLY]
@@ -93,15 +93,15 @@ public class Report {
 	}
 
 	@Builder
-	public Report(ReportReason reportReason, String content, LocalDateTime reportDate,
-			ReportType reportType, Member member) {
+	public Report(ReportReason reportReason, String content, LocalDateTime reportDate, ReportType reportType,
+			Member member) {
 		this.reportReason = reportReason;
 		this.content = content;
 		this.reportDate = reportDate;
 		this.reportType = reportType;
 		this.member = member;
 	}
-
+  
 	// 게시글 신고 객체 생성 메서드
 	public static Report createPostReport(Post post, String reportReason, String content, Member member) {
 		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(),
@@ -109,6 +109,7 @@ public class Report {
 		
 		return report;
 	}
+  
 	// 댓글 신고 객체 생성 메서드
 	public static Report createReplyReport(Reply reply, String reportReason, String content, Member member) {
 		Report report = new Report(ReportReason.valueOf(reportReason), content, LocalDateTime.now(),

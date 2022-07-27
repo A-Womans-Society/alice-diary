@@ -57,7 +57,7 @@
 									<div class="form-outline">
 										<label class="form-label" th:for="id"> <span
 											class="text-danger">*&nbsp;</span>ID
-										</label> <input type="text" th:field="*{id}" th:oninput="checkId();"
+										</label> <input type="text" th:field="*{id}" oninput="checkId();"
 											class="form-control" required autofocus> <span
 											class="id_ok">사용 가능한 아이디입니다.</span> <span class="id_already">누군가
 											이 아이디를 사용하고 있어요.</span> <small th:if="${#fields.hasErrors('id')}"
@@ -136,8 +136,7 @@
 									<div class="form-outline">
 										<label class="form-label" th:for="mobile"><span
 											class="text-danger">*&nbsp;</span>전화번호</label> <input type="text"
-											th:field="*{mobile}" th:oninput="checkId();"
-											class="form-control " placeholder="(-제외)" required> <small
+											th:field="*{mobile}" class="form-control " placeholder="(-제외)" required> <small
 											th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></small>
 
 									</div>
