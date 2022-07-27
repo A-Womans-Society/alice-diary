@@ -4,13 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Calendar;
 
 @Transactional(readOnly = true)
+@Repository
 public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 	@Query(value = "SELECT * FROM Calendar c INNER JOIN Member m ON m.member_num = :num AND c.mem_num = m.member_num WHERE :today BETWEEN c.alarm AND c.start_date ORDER BY c.start_date", nativeQuery = true)
 	List<Calendar> getAlarmEvents(Long num, LocalDate today);
@@ -35,10 +36,10 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 
 	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND start_date >= :start AND content LIKE '%'||:content||'%' ORDER BY start_date", nativeQuery = true)
 	List<Calendar> findByContentStart(Long num, String content, String start);
-	
+
 	@Query(value = "SELECT * FROM Calendar WHERE mem_num = :num AND start_date >= :start AND end_date <= :end AND content LIKE '%'||:content||'%' ORDER BY start_date", nativeQuery = true)
 	List<Calendar> findByAll(Long num, String content, String start, LocalDate end);
-	
+
 	@Query("SELECT c FROM Calendar AS c WHERE mem_num = :num AND c.publicity = true")
 	List<Calendar> findOtherEvents(Long num);
 }

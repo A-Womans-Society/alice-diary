@@ -89,5 +89,3 @@ function regSuccess() {
 		};
 		preview.readAsDataURL(document.getElementById("file").files[0]);
 	};
-
-	

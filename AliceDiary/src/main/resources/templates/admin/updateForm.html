@@ -23,8 +23,6 @@
 			</tr>
 		</table>
 
-
-
 		<div id="fileBox">
 			<p th:each="file : ${files}" th:if="${file.originName != null}">
 				첨부파일: <a id="filewow" th:href="|./download/${file.num}|"

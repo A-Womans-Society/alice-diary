@@ -21,12 +21,12 @@
 			<!--/* 회원 정보 Rendering 영역 */-->
 			<th:block th:each="member : ${member}">
 				<p th:text="|회원번호 : ${member.num}|"></p>
-				<p>프로필 사진
-					<img th:src="@{/upload/profile/}+@{${member.profileImg}}"
-							alt="user" width="45" class="rounded-circle">
+				<p>
+					프로필 사진 <img th:src="@{/upload/profile/}+@{${member.profileImg}}"
+						alt="user" width="45" class="rounded-circle">
 				</p>
 				<p th:text="|아이디 : ${member.id}|"></p>
-<!-- 				<p th:text="|비밀번호 : ${member.password}|"></p> -->
+				<!-- 				<p th:text="|비밀번호 : ${member.password}|"></p> -->
 				<p th:text="|이름 : ${member.name}|"></p>
 				<p th:text="|성별 : ${member.gender}|"></p>
 				<p th:text="|생년월일 : ${member.birth}|"></p>
@@ -48,5 +48,5 @@
 
 		</div>
 	</div>
-s</div>
+</div>
 </html>

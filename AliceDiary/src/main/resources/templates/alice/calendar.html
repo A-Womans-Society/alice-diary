@@ -63,8 +63,7 @@
 													th:each="friend : ${alarm.memberList}"> <a
 													th:href="|./friends/friendInfo/${friend.id}|"><span
 														th:text="${friend.name}" data-toggle="tooltip"
-														data-placement="bottom" title="프로필 보기">
-													</span></a>
+														data-placement="bottom" title="프로필 보기"> </span></a>
 												</small> <span th:text="|(${alarm.startDate})|"> </span>
 											</p>
 										</li>

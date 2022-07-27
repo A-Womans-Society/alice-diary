@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/adminLayout}">
+	layout:decorate="~{layouts/communityLayout}">
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/community/comWriteForm.js}"></script>
+</th:block>
 
 <div layout:fragment="content">
 	<h2 class="text-center m-0 pt-5" style="height: 15%;">글쓰기</h2>
 	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
 		<div class='row mt-3 ml-5 mr-5' style="height: 90%;">
 			<div class="col-12">
-				<form th:action="@{/admin/notice/post}" method="post"
-					th:object="${writeFormDto}" enctype="multipart/form-data"
+				<form th:action="@{|/community/${comNum}/post|}" method="post"
+					id="form" th:object="${writeFormDto}" enctype="multipart/form-data"
 					class="h-100">
 					<table class="table w-100">
 						<tr>
@@ -24,14 +28,15 @@
 						</tr>
 						<tr>
 							<th>파일첨부</th>
-							<td><input type="file" th:field="*{originName}" multiple>
+							<td><input type="file" th:field="*{originName}"
+								onchange="fileCnt(this)" multiple>
 						</tr>
 					</table>
 					<div class="text-center">
-						<input type="submit" class="btn btn-secondary" value="작성">
-						<input type="button" value="취소" th:href="@{/admin/notice}"
-							class="btn">
-
+						<input type="submit" class="btn btn-secondary" value="작성"
+							th:onclick="return check()"> <a
+							th:href="@{|/community/${comNum}/list|}"><input type="button"
+							class="btn" value="취소"></a>
 					</div>
 				</form>
 			</div>

@@ -7,14 +7,15 @@ function replySubmit(postNum, memberId) {
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
-            let result = JSON.parse(httpRequest.response);
+             let result = JSON.parse(httpRequest.response);
             
             let tagArea = document.getElementById('replyList');
             let newReply = document.createElement('ul');
             newReply.setAttribute('id', 'parentRepContentTable'+result.replyNum);
             newReply.setAttribute('class', 'comments pt-2');
-            newReply.innerHTML="<img src='/AliceDiary/upload/profile"+ result.profileImg+"' class='avatar' alt=''>";
-
+                                    
+            newReply.innerHTML="<img src='/AliceDiary/upload/profile/"+ result.profileImg+"' alt='' class='avatar'>";
+            
             let postComments = document.createElement('div');
             postComments.setAttribute('class', 'post-comments');
             let meta = document.createElement('p');
@@ -46,7 +47,7 @@ function replySubmit(postNum, memberId) {
 
                 postComments.appendChild(meta);
                 postComments.appendChild(content);
-        
+            
             let replyBox = document.createElement('li');
             replyBox.setAttribute('id', "replyReplyBox"+result.replyNum);
             replyBox.style.display = 'none';
@@ -111,7 +112,7 @@ function deleteConfirm(num) {
    httpRequest.setRequestHeader(header, token);
    httpRequest.setRequestHeader('Content-type',
          'application/x-www-form-urlencoded');
-   httpRequest.send("num=" + num); // 요게 문제였습니다!!
+   httpRequest.send("num=" + num); 
 }
    
 function showReplyBox(parentReplyBox){
@@ -145,12 +146,7 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
             newReply.setAttribute('id', 'childRepContentTable'+result.replyNum);
                 newReply.setAttribute('class', 'childComments');
               
-                if (result.profileImg == 'default'){
-               newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
-            } else {
-               newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.profileImg+"' class='avatar' alt=''>";
-            }
-         
+               newReply.innerHTML="<img src='/AliceDiary/upload/profile/"+ result.profileImg+"' alt='' class='avatar'>";         
             
                 let postComments = document.createElement('div');
             postComments.setAttribute('class', 'post-comments');
@@ -228,7 +224,7 @@ function deleteChild(childNum) {
    httpRequest.setRequestHeader(header, token);
    httpRequest.setRequestHeader('Content-type',
          'application/x-www-form-urlencoded');
-   httpRequest.send("num=" + childNum); // 요게 문제였습니다!!
+   httpRequest.send("num=" + childNum);
 }
 
 function deleteParent(pNum) {
@@ -256,7 +252,7 @@ function deleteParent(pNum) {
    httpRequest.setRequestHeader(header, token);
    httpRequest.setRequestHeader('Content-type',
          'application/x-www-form-urlencoded');
-   httpRequest.send("num=" + pNum); // 요게 문제였습니다!!
+   httpRequest.send("num=" + pNum); 
 }
 
 function openModalPost(postNum, userId){
@@ -350,18 +346,18 @@ function openModalReply(replyNum, userId){
    httpRequest.setRequestHeader(header, token);
    httpRequest.setRequestHeader('Content-type',
          'application/x-www-form-urlencoded');
-   httpRequest.send("replyNum=" + replyNum+"&userId="+userId); // 요게 문제였습니다!!
+   httpRequest.send("replyNum=" + replyNum+"&userId="+userId); 
    
 }
 
 function replyReport(userId, reportReason, content) {
    console.log(userId);
-   let replyTarget = document.getElementById('replyTarget').value;
-   console.log(replyTarget);
+   let replyNum = document.getElementById('replyTarget').value;
+   console.log(replyNum);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
-   let param = "userId="+userId+"&replyNum="+replyTarget+
+   let param = "userId="+userId+"&replyNum="+replyNum+
    "&reportReason="+document.querySelector('input[name="reportReasons"]:checked').value
    +"&content="+document.getElementById("reportRepContent").value;
    console.log(param);
@@ -372,6 +368,8 @@ function replyReport(userId, reportReason, content) {
                 let result = JSON.parse(httpRequest.response);
             console.log(result);
             document.getElementById("reportRepContent").value = "";
+            var radio = document.querySelector('input[type=radio][name=reportReasons]:checked');
+            radio.checked = false;
               alert('댓글이 신고되었습니다.');
            
             $("#replyReportModal").modal('hide');
@@ -410,8 +408,8 @@ function replyMsg(msgFrom, content) {
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
     
-            document.getElementById("reportRepContent").value = "";
               alert('쪽지를 보냈습니다!');
+            document.getElementById("replyMsgContent").value = "";
            
             $("#replyMsg").modal('hide');
          } else {
@@ -421,7 +419,7 @@ function replyMsg(msgFrom, content) {
    };
 
     //POST로 요청
-    httpRequest.open('POST', "replymsg", true);
+    httpRequest.open('POST', "/AliceDiary/message/replymsg", true);
     httpRequest.setRequestHeader(header,token);
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     httpRequest.send(param);

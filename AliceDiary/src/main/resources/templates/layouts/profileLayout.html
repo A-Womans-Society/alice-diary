@@ -6,7 +6,6 @@
 
 <title>Alice Diary</title>
 
-
 <!-- ajax token -->
 <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
 <meta id="_csrf_header" name="_csrf_header"
@@ -37,7 +36,7 @@
 
 <link id="contextPathHolder"
 	th:data-contextPath="${#httpServletRequest.getContextPath()}" />
-	
+
 <th:block layout:fragment="script"></th:block>
 <th:block layout:fragment="css"></th:block>
 </head>

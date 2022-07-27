@@ -98,11 +98,11 @@
 												</th:block>
 												<th:block
 													th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
-													<a th:href="@{'/admin/community/get?num='+${report.post.num}}">해당
-															게시물 링크</a>
+													<a
+														th:href="@{'/admin/community/get?num='+${report.post.num}}">해당
+														게시물 링크</a>
 												</th:block>
-											</th:block> 
-											<th:block
+											</th:block> <th:block
 												th:if="${#strings.equals(report.reportType, 'REPLY')}">
 												<th:block
 													th:if="${#strings.equals(report.reply.post.postType, 'OPEN')}">
@@ -112,11 +112,11 @@
 												</th:block>
 												<th:block
 													th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">
-														<a
-															th:href="@{'/admin/community/get?num='+${report.reply.post.num}}">해당
-															댓글 링크</a>
-													</th:block>
-												</th:block></td>
+													<a
+														th:href="@{'/admin/community/get?num='+${report.reply.post.num}}">해당
+														댓글 링크</a>
+												</th:block>
+											</th:block></td>
 									</tr>
 								</tbody>
 							</th:block>

@@ -107,13 +107,15 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="text-right" id="btnBox">
 					<th:block>
-						<button type="button" id="delete_confirm" 
-							th:onclick="deleteConfirm([[${postView.num}]])" class="btn">게시물 내리기</button>
+						<button type="button" id="delete_confirm"
+							th:onclick="deleteConfirm([[${postView.num}]])" class="btn">게시물
+							내리기</button>
 					</th:block>
-					<button type="button" onClick="location.href='./list'" class="btn btn-secondary">목록</button>
+					<button type="button" onClick="location.href='./list'"
+						class="btn btn-secondary">목록</button>
 
 
 				</div>
@@ -131,7 +133,8 @@
 										<li class="clearfix">삭제된 댓글입니다.</li>
 									</th:block>
 									<th:block th:unless="${reply.status.name() == 'DEAD'}">
-											<img th:src="@{/upload/profile/}+@{${member.profileImg}}" alt="" class="avatar">
+										<img th:src="@{/upload/profile/}+@{${member.profileImg}}"
+											alt="" class="avatar">
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"
@@ -140,10 +143,9 @@
 												</span> <span> <span th:if="${reply.parentRepNum} == null">
 														<button type="button" class="btn btn-sm"
 															th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
-												</span> <span><button
-															type="button" class="btn btn-sm"
+												</span> <span><button type="button" class="btn btn-sm"
 															th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">내리기</button>
-												</span> 
+												</span>
 												</span>
 											</p>
 											<p style="font-size: small;" class="m-0 pb-2">

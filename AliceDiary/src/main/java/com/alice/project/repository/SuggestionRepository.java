@@ -11,10 +11,9 @@ import com.alice.project.domain.Suggestion;
 
 @Repository
 @Transactional(readOnly = true)
-public interface SuggestionRepository 
-   extends JpaRepository<Suggestion, Long>, QuerydslPredicateExecutor<Suggestion> {
-   
-   Page<Suggestion> findAll(Pageable pageable); // 전체 조회 및 페이징처리
-   
-   Page<Suggestion> findByContentContaining(String keyword, Pageable pageable);
+public interface SuggestionRepository extends JpaRepository<Suggestion, Long>, QuerydslPredicateExecutor<Suggestion> {
+
+	Page<Suggestion> findAll(Pageable pageable); // 전체 조회 및 페이징처리
+
+	Page<Suggestion> findByContentContaining(String keyword, Pageable pageable);
 }

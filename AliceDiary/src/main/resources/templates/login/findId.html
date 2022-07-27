@@ -27,7 +27,6 @@
 <meta id="_csrf_header" name="_csrf_header"
 	th:content="${_csrf.headerName}" />
 
-
 <script th:src="@{/js/login/findId.js}"></script>
 
 </head>
@@ -61,11 +60,9 @@
 							</div>
 							<div class="text-center text-lg-start mt-4 pt-2">
 								<button type="button" class="btn btn-primary"
-									onclick="makeRequest()"
-									>아이디
-									찾기</button>
-								<input type="button" class="btn btn-secondary"
-									value="메인으로 가기" onclick="location.href='/AliceDiary/'" />
+									onclick="makeRequest()">아이디 찾기</button>
+								<input type="button" class="btn btn-secondary" value="메인으로 가기"
+									onclick="location.href='/AliceDiary/'" />
 							</div>
 
 						</div>
@@ -83,8 +80,7 @@
 							</div>
 							<div class="m-3">
 								<button type="button" class="btn btn-secondary">로그인</button>
-								<button type="button" class="btn btn-secondary">비밀번호
-									찾기</button>
+								<button type="button" class="btn btn-secondary">비밀번호 찾기</button>
 							</div>
 						</div>
 					</div>

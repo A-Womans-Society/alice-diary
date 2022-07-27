@@ -66,8 +66,9 @@
 
 						<div class="d-flex justify-content-between align-items-center">
 							<div class="form-group form-check mb-0">
-								<input type="checkbox" class="form-check-input me-2"  id="checkId" name="checkId"/> 
-								<label class="form-check-label" for="checkId">아이디 기억하기</label>
+								<input type="checkbox" class="form-check-input me-2"
+									id="checkId" name="checkId" /> <label class="form-check-label"
+									for="checkId">아이디 기억하기</label>
 							</div>
 							<div>
 								<a th:href="@{/login/findId}" class="text-body">아이디 찾기</a> / <a
@@ -89,13 +90,12 @@
 								아직 회원이 아니신가요? <a th:href="@{/agree}" class="link-danger">회원가입</a>
 							</p>
 
-							<a th:href="@{/oauth2/authorization/google}" >
-								<img th:src="@{./img/google-icon-file.png}" width="80px" height="80px"></a>
-								
-								
-								<a th:href="@{/oauth2/authorization/naver}"
-								>
-								<img th:src="@{./img/naver-icon-file.png}" width="60px" height="60px"></a>
+							<a th:href="@{/oauth2/authorization/google}"> <img
+								th:src="@{./img/google-icon-file.png}" width="80px"
+								height="80px"></a> <a th:href="@{/oauth2/authorization/naver}">
+								<img th:src="@{./img/naver-icon-file.png}" width="60px"
+								height="60px">
+							</a>
 						</div>
 
 					</form>

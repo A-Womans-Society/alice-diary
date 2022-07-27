@@ -20,16 +20,14 @@ public class ProfileService {
 		Member member = memberRepository.findByEmail(email);
 		return member;
 	}
-	
+
 	public Member findById(String id) {
 		Member member = memberRepository.findById(id);
 		return member;
 	}
-	
+
 	public Member findMemById(String id) {
 		Member updateMember = profileRepository.findById(id);
 		return updateMember;
 	}
-	
-
 }

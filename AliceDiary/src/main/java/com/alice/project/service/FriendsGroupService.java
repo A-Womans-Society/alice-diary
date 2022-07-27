@@ -23,5 +23,5 @@ public class FriendsGroupService {
 		FriendsGroup group = friendsGroupRepository.findByNum(groupNum);
 		return group;
 	}
-	
+
 }

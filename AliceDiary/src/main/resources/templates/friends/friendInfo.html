@@ -10,7 +10,8 @@
 <div layout:fragment="content">
 	<form th:action="@{/member/}+${friend.id}" method="post">
 		<div class=" overflow-hidden">
-			<div class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
+			<div
+				class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
 				<div class="col-7 pt-2">
 					<div class="tab-content">
 						<div class="tab-pane fade active show" id="account-general">
@@ -69,7 +70,6 @@
 						<label class="form-label">My Wish List</label> <input type="text"
 							class="form-control mb-1" th:value="${friend.wishlist}"
 							readonly="readonly">
-
 					</div>
 
 				</div>

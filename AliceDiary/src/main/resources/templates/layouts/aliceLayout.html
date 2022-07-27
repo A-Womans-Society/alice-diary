@@ -33,17 +33,14 @@
 <!-- navbar css -->
 <link rel="stylesheet" th:href="@{/css/layout/navbar.css}">
 
-
-
 <th:block layout:fragment="script"></th:block>
 <th:block layout:fragment="css"></th:block>
 </head>
 <body>
-
-		<!-- import header -->
-		<div th:replace="fragments/header::header"></div>
-		<!-- import content -->
-		<div layout:fragment="content" style="height: 92%;"></div>
-		<!--  style="height: 95vh;" -->
+	<!-- import header -->
+	<div th:replace="fragments/header::header"></div>
+	<!-- import content -->
+	<div layout:fragment="content" style="height: 92%;"></div>
+	<!--  style="height: 95vh;" -->
 </body>
 </html>

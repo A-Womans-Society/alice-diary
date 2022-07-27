@@ -138,7 +138,7 @@
 												</span> <span th:if="${#authentication.name} != ${reply.memberId}">
 														<button type="button" class="btn btn-sm"
 															th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">내리기</button>
-												</span> 
+												</span>
 												</span>
 											</p>
 											<p style="font-size: small;" class="m-0 pb-2">
@@ -150,10 +150,10 @@
 											th:id="|replyReplyBox${reply.num}|" style="display: none;">
 											<span> <input type="text" placeholder="답글을 입력해주세요"
 												th:id="|replyReplyContent${reply.num}|">
-											</span> <span>
+										</span> <span>
 												<button type="button"
 													th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button>
-											</span>
+										</span>
 										</li>
 									</th:block>
 								</ul>

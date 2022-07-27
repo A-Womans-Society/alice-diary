@@ -119,8 +119,7 @@
 										<li class="page-item"><a class="page-link"
 											style="color: purple;"
 											th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
-											th:href="@{/admin/member(page=${page-1})}"
-											th:text="${page}"></a></li>
+											th:href="@{/admin/member(page=${page-1})}" th:text="${page}"></a></li>
 
 										<li class="page-item"><a class="page-link"
 											style="background: #e0c6f2; color: purple;"
@@ -130,8 +129,7 @@
 										<li class="page-item"><a class="page-link"
 											style="background: #e0c6f2; color: purple;"
 											th:if="${page == nowPage} and ${type} == null and ${keyword} == null"
-											th:href="@{/admin/member(page=${page-1})}"
-											th:text="${page}"></a></li>
+											th:href="@{/admin/member(page=${page-1})}" th:text="${page}"></a></li>
 
 									</th:block>
 									<li class="page-item"><a class="page-link"

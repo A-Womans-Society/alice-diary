@@ -1,4 +1,3 @@
-
 	function PreviewImage() {
 		var preview = new FileReader();
 		preview.onload = function(e) {
@@ -15,4 +14,3 @@
 			location = "/AliceDiary/member/"+id;
 		}
 	}
-	

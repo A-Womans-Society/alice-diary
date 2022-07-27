@@ -65,11 +65,11 @@ public class CalendarService {
 					AlarmMemberListDto mTmp = new AlarmMemberListDto();
 					Member friend = memberRepository.findByNum(Long.parseLong(id));
 					mTmp.setName(friend.getName());
-					mTmp.setId(friend.getId());					
+					mTmp.setId(friend.getId());
 					aTmp.add(mTmp);
 				}
 				tmp.setMemberList(aTmp);
-			} else {	
+			} else {
 				tmp.setMemberList(null);
 			}
 			result.add(tmp);

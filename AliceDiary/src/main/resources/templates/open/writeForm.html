@@ -3,12 +3,16 @@
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layouts/communityLayout}">
 
+<th:block layout:fragment="script">
+	<script th:src="@{/js/open/writeForm.js}"></script>
+</th:block>
+
 <div layout:fragment="content">
 	<h2 class="text-center m-0 pt-5" style="height: 15%;">글쓰기</h2>
 	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
 		<div class='row mt-3 ml-5 mr-5' style="height: 90%;">
 			<div class="col-12">
-				<form th:action="@{/open/post}" method="post"
+				<form th:action="@{/open/post}" method="post" id="form"
 					th:object="${writeFormDto}" enctype="multipart/form-data"
 					class="h-100">
 					<table class="table w-100">
@@ -24,12 +28,14 @@
 						</tr>
 						<tr>
 							<th>파일첨부</th>
-							<td><input type="file" th:field="*{originName}" multiple>
+							<td><input type="file" th:field="*{originName}"
+								onchange="fileCnt(this)" multiple>
 						</tr>
 					</table>
 					<div class="text-center">
-						<input type="submit" class="btn btn-secondary" value="작성"> <button
-							type="button" onClick="location.href='./list'" class="btn">취소</button>
+						<input type="submit" class="btn btn-secondary" value="작성"
+							th:onclick="return check()">
+						<button type="button" onClick="location.href='./list'" class="btn">취소</button>
 
 					</div>
 				</form>
