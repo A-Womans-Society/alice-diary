@@ -14,12 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alice.project.domain.Calendar;
-import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.service.CalendarService;
 import com.alice.project.service.MemberService;
-import com.alice.project.web.EventAlarmDto;
-import com.alice.project.web.FriendshipDto;
 import com.alice.project.web.SearchEventFormDto;
 import com.alice.project.web.SearchEventsResultDto;
 

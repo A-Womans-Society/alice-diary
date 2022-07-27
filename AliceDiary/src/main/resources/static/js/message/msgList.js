@@ -10,6 +10,8 @@ function deleteMessage(fromId, toId) {
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
+   let detail = document.getElementById('detail').value;
+   
    let param = "fromId=" + fromId + "&toId=" + toId;
    console.log(param);
     httpRequest.onreadystatechange = function(){
@@ -31,7 +33,11 @@ function deleteMessage(fromId, toId) {
       }
    };
 
-    httpRequest.open('POST', "./" + fromId + "/" + toId + "/delete", true);
+    if (detail == 'true') {
+    	httpRequest.open('POST', "../delete", true);
+    } else {
+	    httpRequest.open('POST', "./delete", true);
+    }
     httpRequest.setRequestHeader(header,token);
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
     httpRequest.send(param);
@@ -77,38 +83,4 @@ $("#msgForm").ready(function(){
        
     });
   });
-  
-/* 개별 쪽지함 열기 */
-function openMessagebox(fromId, toId) {
-   if (!confirm('이 쪽지함의 모든 쪽지가 사라집니다! 삭제하시겠습니까?')) {
-      return false;
-   }
-   let token = $("meta[name='_csrf']").attr("content");
-   let header = $("meta[name='_csrf_header']").attr("content");
-   let httpRequest = new XMLHttpRequest();
-   let param = "fromId=" + fromId + "&toId=" + toId;
-   console.log(param);
-    httpRequest.onreadystatechange = function(){
-       if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          if (httpRequest.status === 200) {
-             let result = httpRequest.response;
-             console.log(fromId);
-            console.log(toId);
-            if (result == 0) {
-            alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
-         } else if (result == 1) {
-            alert("쪽지함이 성공적으로 삭제되었습니다!");
-            location.reload();
-            return false;
-            } else {
-               alert('request에 뭔가 문제가 있어요.');
-            }
-         }
-      }
-   };
 
-    httpRequest.open('POST', "./" + fromId + "/delete", true);
-    httpRequest.setRequestHeader(header,token);
-    httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
-    httpRequest.send(param);
-};

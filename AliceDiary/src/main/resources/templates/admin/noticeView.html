@@ -75,7 +75,7 @@
 </th:block>
 
 <div layout:fragment="content">
-	<h3 class="text-center m-0 pt-5" style="height: 15%;">게시글 상세보기</h3>
+	<h3 class="text-center m-0 pt-5" style="height: 15%;">공지사항 상세보기</h3>
 	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
 		<div class='row ml-5 mr-5' style="height: 80%;">
 			<div class="col-6 h-100 border">
@@ -103,27 +103,13 @@
 					</div>
 				</div>
 				<div class="text-right" id="btnBox">
-					<th:block th:if="${#authentication.name} == ${postView.member.id}">
-						<input type="button"
-							th:if="${#authentication.name} != ${postView.member.id}"
-							th:onclick="openModalPost([[${postView.num}]],[[${#authentication.name}]])"
-							th:value="신고" class="btn">
-
-						<button type="button"
-							th:onclick="|location.href='./put?num=${postView.num}'|"
-							class="btn">수정</button>
-
-						<button type="button" id="delete_confirm"
-							th:onclick="deleteConfirm([[${postView.num}]])" class="btn">삭제</button>
-
-					</th:block>
-					<input type="button"
-						th:if="${#authentication.name} != ${postView.member.id}"
-						th:onclick="openModalPost([[${postView.num}]],[[${#authentication.name}]])"
-						value="신고" class="btn btn-danger">
-					<button type="button" onclick="location.href='./list'" class="btn btn-secondary">목록</button>
-
-
+					<button type="button"
+						th:onclick="|location.href='./put?num=${postView.num}'|"
+						class="btn">수정</button>
+					<button type="button" id="delete_confirm"
+						th:onclick="deleteConfirm([[${postView.num}]])" class="btn">삭제</button>
+					<button type="button" onclick="location.href='./list'"
+						class="btn btn-secondary">목록</button>
 				</div>
 			</div>
 			<div class='col-6 h-100 border p-0'>
@@ -139,37 +125,34 @@
 										<li class="clearfix">삭제된 댓글입니다.</li>
 									</th:block>
 									<th:block th:unless="${reply.status.name() == 'DEAD'}">
-										<img th:if="${reply.profileImg.equals('default')}" th:src="@{/upload/Alice.png}" alt="" class="avatar">
-										<img th:unless="${reply.profileImg.equals('default')}" th:src="@{/upload/}+@{${reply.profileImg}}" alt="" class="avatar">
+										<img th:src="@{/upload/profile/}+@{${reply.profileImg}}"
+											alt="" class="avatar">
 										<div class="post-comments">
 											<p class="meta">
-												<span>
-													&nbsp;<span style="color: black;"	th:text="${reply.memberId}"></span>&nbsp;
-													<span th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
+												<span> &nbsp;<span style="color: black;"
+													th:text="${reply.memberId}"></span>&nbsp; <span
+													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
+												</span> <span> <span th:if="${reply.parentRepNum} == null">
+														<button type="button" class="btn btn-sm"
+															th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
+												</span> <span th:if="${#authentication.name} != ${reply.memberId}">
+														<button type="button" class="btn btn-sm"
+															th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">내리기</button>
 												</span> 
-												<span> 
-													<span th:if="${reply.parentRepNum} == null">
-														<button type="button" class="btn btn-sm" th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
-													</span> 
-													<span th:if="${#authentication.name} == ${reply.memberId}">
-														<button	type="button" class="btn btn-sm" th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">삭제</button>
-													</span> 
-													<span th:if="${#authentication.name} != ${reply.memberId}">
-														<button type="button" class="btn btn-sm" th:onclick="openModalReply([[${reply.num}]],[[${#authentication.name}]])">신고</button>
-													</span>
 												</span>
 											</p>
 											<p style="font-size: small;" class="m-0 pb-2">
-												<span style="word-break: break-all;" th:text="${reply.content}"></span>
+												<span style="word-break: break-all;"
+													th:text="${reply.content}"></span>
 											</p>
 										</div>
-
-										<li th:if="${reply.parentRepNum} == null" th:id="|replyReplyBox${reply.num}|" style="display: none;">
-											<span>
-												<input type="text" placeholder="댓글을 입력해주세요" th:id="|replyReplyContent${reply.num}|">
-											</span> 
-											<span>
-												<button	type="button" th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button>
+										<li th:if="${reply.parentRepNum} == null"
+											th:id="|replyReplyBox${reply.num}|" style="display: none;">
+											<span> <input type="text" placeholder="답글을 입력해주세요"
+												th:id="|replyReplyContent${reply.num}|">
+											</span> <span>
+												<button type="button"
+													th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button>
 											</span>
 										</li>
 									</th:block>
@@ -178,7 +161,8 @@
 
 						<div class="card-footer commentBox">
 							<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
-							<button type="button" th:onclick="replySubmit([[${postView.num}]],[[${#authentication.name}]])">등록</button>
+							<button type="button"
+								th:onclick="replySubmit([[${postView.num}]],[[${#authentication.name}]])">등록</button>
 						</div>
 					</div>
 				</div>

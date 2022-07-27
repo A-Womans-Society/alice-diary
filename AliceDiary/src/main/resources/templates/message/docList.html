@@ -50,7 +50,7 @@
 									<th>주고받은 날짜</th>
 								</tr>
 							</thead>
-							<th:block th:if="${#lists.size(mpdtos) == 0}">
+							<th:block th:if="${mpdtos == null || #lists.size(mpdtos) == 0}">
 								<tbody class="text-center">
 									<tr>
 										<td colspan="5">문서파일 목록이 비었습니다!</td>

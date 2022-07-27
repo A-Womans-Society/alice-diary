@@ -145,11 +145,8 @@
 										<li class="clearfix">삭제된 댓글입니다.</li>
 									</th:block>
 									<th:block th:unless="${reply.status.name() == 'DEAD'}">
-										<img th:if="${reply.profileImg.equals('default')}"
-											th:src="@{/upload/Alice.png}" alt="" class="avatar">
-										<img th:unless="${reply.profileImg.equals('default')}"
-											th:src="@{/upload/}+@{${reply.profileImg}}" alt=""
-											class="avatar">
+										<img th:src="@{/upload/profile/}+@{${reply.profileImg}}"
+											alt="" class="avatar">
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"

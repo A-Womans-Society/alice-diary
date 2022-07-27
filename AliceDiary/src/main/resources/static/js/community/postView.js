@@ -7,19 +7,14 @@ function replySubmit(postNum, memberId) {
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
-             let result = JSON.parse(httpRequest.response);
+            let result = JSON.parse(httpRequest.response);
             
             let tagArea = document.getElementById('replyList');
             let newReply = document.createElement('ul');
             newReply.setAttribute('id', 'parentRepContentTable'+result.replyNum);
             newReply.setAttribute('class', 'comments pt-2');
-                                    
-            if (result.profileImg == 'default'){
-               newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
-            } else {
-               newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.profileImg+"' class='avatar' alt=''>";
-            }
-            
+            newReply.innerHTML="<img src='/AliceDiary/upload/profile"+ result.profileImg+"' class='avatar' alt=''>";
+
             let postComments = document.createElement('div');
             postComments.setAttribute('class', 'post-comments');
             let meta = document.createElement('p');
@@ -51,10 +46,7 @@ function replySubmit(postNum, memberId) {
 
                 postComments.appendChild(meta);
                 postComments.appendChild(content);
-
-
-
-            
+        
             let replyBox = document.createElement('li');
             replyBox.setAttribute('id', "replyReplyBox"+result.replyNum);
             replyBox.style.display = 'none';

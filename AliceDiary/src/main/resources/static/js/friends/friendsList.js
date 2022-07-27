@@ -37,7 +37,7 @@ function loadMembers() {
 				if (httpRequest.response.length != 0) {
 					let result = JSON.parse(httpRequest.response);
 
-					let html = "<img src=\"img/image.png\"><p>" + result.id
+					let html = "<img src=\"upload/profile/" + result.profileImg + "\"><p>" + result.id
 							+ " / " + result.mbti + "</p>";
 					document.getElementById("memberInfo").innerHTML = html;
 					document.getElementById("checkSearch").value = true;

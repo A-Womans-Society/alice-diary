@@ -13,13 +13,8 @@ function replySubmit(postNum, memberId) {
             let newReply = document.createElement('ul');
             newReply.setAttribute('id', 'parentRepContentTable'+result.replyNum);
             newReply.setAttribute('class', 'comments pt-2');
-                                    
-            if (result.profileImg == 'default'){
-               newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
-            } else {
-               newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.profileImg+"' class='avatar' alt=''>";
-            }
-            
+            newReply.innerHTML="<img src='/AliceDiary/upload/profile/"+ result.profileImg+"' class='avatar' alt=''>";
+
             let postComments = document.createElement('div');
             postComments.setAttribute('class', 'post-comments');
             let meta = document.createElement('p');
@@ -30,7 +25,7 @@ function replySubmit(postNum, memberId) {
                 
             let span2 = document.createElement('span');
             let btn1 = document.createElement('span');
-            btn1.innerHTML = "<button type='button' class='btn btn-sm' onclick='deleteParent("+result.replyNum+")'>삭제</button>";                  
+            btn1.innerHTML = "<button type='button' class='btn btn-sm' onclick='deleteParent("+result.replyNum+")'>내리기</button>";                  
             let btn2 = document.createElement('span');
             btn2.innerHTML = "<button type='button' class='btn btn-sm' onclick='showReplyBox(replyReplyBox"+result.replyNum+")'>답글</button>";
 
@@ -51,8 +46,6 @@ function replySubmit(postNum, memberId) {
 
                 postComments.appendChild(meta);
                 postComments.appendChild(content);
-
-
 
             
             let replyBox = document.createElement('li');
@@ -81,7 +74,7 @@ function replySubmit(postNum, memberId) {
             tagArea.appendChild(newReply);
             
             document.getElementById('replyContent').value = "";
-           alert('댓글이 달렸습니다!');
+           alert('댓글이 등록되었습니다!');
          } else {
             alert('request에 뭔가 문제가 있어요.');
          }
@@ -119,7 +112,7 @@ function deleteConfirm(num) {
    httpRequest.setRequestHeader(header, token);
    httpRequest.setRequestHeader('Content-type',
          'application/x-www-form-urlencoded');
-   httpRequest.send("num=" + num); // 요게 문제였습니다!!
+   httpRequest.send("num=" + num);
 }
    
 function showReplyBox(parentReplyBox){
@@ -145,32 +138,26 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
-                let result = JSON.parse(httpRequest.response);
+            let result = JSON.parse(httpRequest.response);
 
             let tagArea = parentRepContentTable;
-
             let newReply = document.createElement('ul');
             newReply.setAttribute('id', 'childRepContentTable'+result.replyNum);
-                newReply.setAttribute('class', 'childComments');
+            newReply.setAttribute('class', 'childComments');
               
-                if (result.profileImg == 'default'){
-               newReply.innerHTML="<img src='/AliceDiary/upload/Alice.png' class='avatar' alt=''>";
-            } else {
-               newReply.innerHTML="<img src='/AliceDiary/upload/"+ result.profileImg+"' class='avatar' alt=''>";
-            }
-         
-            
-                let postComments = document.createElement('div');
+            newReply.innerHTML="<img src='/AliceDiary/upload/profile/"+ result.profileImg+"' class='avatar' alt=''>";
+
+            let postComments = document.createElement('div');
             postComments.setAttribute('class', 'post-comments');
             let meta = document.createElement('p');
             meta.setAttribute('class','meta');
 
-                let span1 = document.createElement('span');
+            let span1 = document.createElement('span');
             span1.innerHTML = "&nbsp;<span style='color:black;'>"+ result.id +"</span>&nbsp;<span>"+result.repDate+"</span>";
 
             let span2 = document.createElement('span');
             let btn1 = document.createElement('span');
-            btn1.innerHTML = "<button type='button' class='btn btn-sm' onclick='deleteChild("+result.replyNum+")'>삭제</button>";   
+            btn1.innerHTML = "<button type='button' class='btn btn-sm' onclick='deleteChild("+result.replyNum+")'>내리기</button>";   
                 
                 span2.appendChild(btn1);
 
@@ -264,7 +251,7 @@ function deleteParent(pNum) {
    httpRequest.setRequestHeader(header, token);
    httpRequest.setRequestHeader('Content-type',
          'application/x-www-form-urlencoded');
-   httpRequest.send("num=" + pNum); // 요게 문제였습니다!!
+   httpRequest.send("num=" + pNum);
 }
 
 function openModalPost(postNum, userId){
@@ -358,7 +345,7 @@ function openModalReply(replyNum, userId){
    httpRequest.setRequestHeader(header, token);
    httpRequest.setRequestHeader('Content-type',
          'application/x-www-form-urlencoded');
-   httpRequest.send("replyNum=" + replyNum+"&userId="+userId); // 요게 문제였습니다!!
+   httpRequest.send("replyNum=" + replyNum+"&userId="+userId);
    
 }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layouts/messageLayout}">
 
@@ -33,17 +34,6 @@ input::placeholder {
 </style>
 </th:block>
 
-<th:block layout:fragment="script">
-	<script th:src="@{/js/message/msgList.js}"></script>
-	<!-- bootstrap-select -->
-	<script
-		th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js}">
-		
-	</script>
-	<script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
-</th:block>
-
-
 <div layout:fragment="content">
 	<div class="container-fluid h-100">
 		<div class="row h-100">
@@ -52,53 +42,51 @@ input::placeholder {
 					th:text="${fromId} + '님의 쪽지함'"></h2>
 				<div class="" style="height: 8%;">
 					<div class="d-flex justify-content-center">
-
 						<!--/* 검색 영역 */-->
-
-						<form name="searchForm" id="searchForm" th:object="${msdto}"
-							class="d-flex justify-content-center" th:method="get"
-							style="width: 70%;"
+						<form th:object="${sdto}" class="d-flex justify-content-center"
+							th:method="get" style="width: 70%;"
 							th:action="@{|/messagebox/${fromId}/search?type=${type}&keyword=${keyword}|}">
-							<select id="type" name="type" class="form-control"
-								style="width: 35%;">
+							<select name="type" class="form-control" style="width: 35%;">
 								<option value="">카테고리 선택</option>
 								<option value="id">아이디</option>
 								<option value="content">내용</option>
-							</select> <input type="text" id="keyword" name="keyword"
-								class="form-control" placeholder="키워드를 입력해 주세요."
-								style="width: 50%;" /> <input id="searchBtn" type="submit"
-								class="btn" value="검색">
+							</select> <input type="text" name="keyword" class="form-control"
+								placeholder="검색어를 입력해 주세요." style="width: 50%;" />
+							<button type="submit" class="btn">검색</button>
 						</form>
-
 					</div>
 				</div>
-				<th:block th:if="${#lists.size(mldtos) == 0}">
+				<th:block th:if="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div style="height: 10%;" class="text-right">
 						<button onclick="openModal()" type="button"
 							class="btn btn-primary">쪽지 보내기</button>
 					</div>
 				</th:block>
-				<th:block th:unless="${#lists.size(mldtos) == 0}">
-
+				<th:block th:unless="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div class="text-left pl-5">
 						<button onclick="openModal()" type="button"
 							class="btn btn-primary">쪽지 보내기</button>
 					</div>
 				</th:block>
 
-				<th:block th:if="${#lists.size(mldtos) == 0}">
+				<!--/* 쪽지함 목록 영역 */-->
+				<th:block th:if="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div class="h-25">
-						<!--/* 쪽지함 목록 영역 */-->
-						<div class="container-fluid" th:align="center">쪽지함이 비었습니다!</div>
+						<div class="container-fluid" th:align="center"
+							th:if="${keyword == null}">쪽지함이 비었습니다!</div>
+					</div>
+					<div class="h-25">
+						<div class="container-fluid" th:align="center"
+							th:unless="${keyword == null}">찾으시는 쪽지가 업습니다!</div>
 					</div>
 				</th:block>
-				<th:block th:unless="${#lists.size(mldtos) == 0}">
+				<th:block th:unless="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div class="row justify-content-center" style="height: 68%;">
 						<div class="col-5 pr-0">
 							<div class="messages-box" style="height: 95%;">
 								<th:block th:each="m : ${mldtos}">
 									<div class="list-group-item list-group-item-action rounded-0">
-										<div class="media"
+										<div class="media" style="cursor: pointer;"
 											th:onclick="'location.href=\''+ @{|/messagebox/${m.messageFromId}/${m.messageToId}|} + '\''">
 											<img th:src="@{/upload/profile/}+@{${m.senderProfileImg}}"
 												alt="user" width="50" class="rounded-circle">
@@ -127,20 +115,15 @@ input::placeholder {
 						</div>
 						<!-- 개별 메시지 상세보기 -->
 						<div class="col-6 p-0">
+							<input type="hidden" id="detail"
+								th:value="${mdtos} == null ? 'false' : 'true' ">
 							<div class="card chat-box">
 								<div class="card-body">
 									<th:block th:each="m : ${mdtos}">
 										<div
 											th:attr="class=${(m.user1Num != userNum and m.direction == 0) or (m.user1Num == userNum and m.direction == 1) ? 'media w-75 mb-3' : 'media w-75 ml-auto mb-3'}">
-
-
 											<th:block
 												th:if="${(m.user1Num != userNum and m.direction == 0) or (m.user1Num == userNum and m.direction == 1)}">
-												<!-- 												<th:block -->
-												<!-- 													th:if="${#strings.equals(friendProfile, 'default')}"> -->
-												<!-- 													<img th:src="@{/upload/pdefault.png}" alt="user" width="50" -->
-												<!-- 														class="rounded-circle"> -->
-												<!-- 												</th:block> -->
 												<th:block>
 													<img th:src="@{/upload/profile/}+@{${friendProfile}}"
 														alt="user" width="50" class="rounded-circle">
@@ -160,13 +143,13 @@ input::placeholder {
 								</div>
 							</div>
 							<div class="card-footer">
-								<!-- Typing area -->
+								<!-- 개별 쪽지함 안에서 쪽지보내기 -->
 								<form th:object="${mdto}" method="post"
 									enctype="multipart/form-data"
 									th:action="@{|/messagebox/${fromId}/${toId}|}">
 									<div class="input-group">
 										<div class="input-group-append">
-											<span class="input-group-text iconify w-10 h-10"
+											<span class="input-group-text iconify w-10 h-20"
 												data-icon="fluent:attach-20-filled"> </span>
 										</div>
 										<input type="text" placeholder="내용을 입력하세요"
@@ -212,11 +195,10 @@ input::placeholder {
 							<strong>받는 사람</strong>&nbsp; <select class="selectpicker"
 								data-live-search="true" data-hide-disabled="true"
 								th:field="*{messageToId}">
-								<th:block th:if="${#lists.size(friendsList) == 0}">
+								<th:block th:if="${friendsList == null}">
 									<option value="">친구를 추가해보세요!</option>
 								</th:block>
-
-								<th:block th:unless="${#lists.size(friendsList) == 0}">
+								<th:block th:unless="${friendsList == null}">
 									<option th:each="f : ${friendsList}" th:value="${f.id}"
 										th:text="${f.name + '(' + f.id + ')'}"></option>
 								</th:block>
@@ -246,4 +228,12 @@ input::placeholder {
 		</div>
 	</div>
 </div>
+<th:block layout:fragment="script">
+	<script th:src="@{/js/message/msgList.js}"></script>
+	<script
+		th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js}">
+		
+	</script>
+	<script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+</th:block>
 </html>

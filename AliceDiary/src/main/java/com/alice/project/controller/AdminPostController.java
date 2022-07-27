@@ -149,8 +149,9 @@ public class AdminPostController {
 
 	/* 공지사항 수정 폼 받기 */
 	@GetMapping("/notice/put")
-	public String getUpdate(Long num, Model model, Pageable pageable) {
-		log.info("수정컨트롤러 get");
+	public String getUpdate(Long num, Model model, Pageable pageable,
+			@AuthenticationPrincipal UserDetails user) {
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 
 		Post getUpdate = postService.postView(num);
 
@@ -221,6 +222,8 @@ public class AdminPostController {
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
 		jObj.put("repContent", newReply.getContent());
 		jObj.put("postNum", newReply.getPost().getNum());
+		jObj.put("profileImg", newReply.getMember().getProfileImg());
+
 
 		return jObj;
 	}
@@ -239,6 +242,7 @@ public class AdminPostController {
 		jObj.put("id", newReplyReply.getMember().getId());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
 		jObj.put("repContent", newReplyReply.getContent());
+		jObj.put("profileImg", newReplyReply.getMember().getProfileImg());
 
 		return jObj;
 

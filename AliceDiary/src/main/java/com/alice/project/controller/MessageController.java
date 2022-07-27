@@ -2,6 +2,7 @@ package com.alice.project.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -25,14 +26,13 @@ import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Message;
 import com.alice.project.handler.Alert;
-import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.MessageService;
 import com.alice.project.web.FriendshipDto;
 import com.alice.project.web.MessageDto;
-import com.alice.project.web.MsgListDto;
 import com.alice.project.web.MsgFileDto;
+import com.alice.project.web.MsgListDto;
 import com.alice.project.web.MsgSearchDto;
 import com.alice.project.web.SearchDto;
 
@@ -47,22 +47,24 @@ public class MessageController {
 	private final MessageService messageService;
 	private final MemberService memberService;
 	private final FriendService friendService;
-	private final AttachedFileService attachedFileService;
 	
 	// 쪽지 목록 보기
 	@GetMapping(value = "/messagebox/{id}")
-	public String messageList(@PathVariable("id") String id, Model model, @ModelAttribute MessageDto mdto,
+	public String messageList(@PathVariable("id") String id, Model model, 
+			@ModelAttribute MessageDto mdto,
+			@ModelAttribute SearchDto sdto,
 			MsgSearchDto msdto, @AuthenticationPrincipal UserDetails user) {
-		// log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
-		// String messageFromNum = (String) session.getAttribute("num");
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
-		log.info("사용자 id : " + id);
-		log.info("사용자 num : " + num);
+		String type = sdto.getType();
+		String keyword = sdto.getKeyword();
+		model.addAttribute("type", type);
+		model.addAttribute("keyword", keyword);
+	
 		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromId", id);
 		model.addAttribute("msdto", msdto);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
-
+		
 		// 친구목록 가져오기
 		List<Friend> friendsList = friendService.friendship(num);
 		List<FriendshipDto> friendsDtoList = new ArrayList<>();
@@ -79,14 +81,16 @@ public class MessageController {
 		List<Message> msgList = new ArrayList<>();
 		msgList = messageService.findUserMsg(num);
 		if (msgList.size() == 0) {
+			log.info("설마 여기...?");
 			model.addAttribute("mldtos", msgList);
+			model.addAttribute("fromNum", num);
+			model.addAttribute("mdto", mdto);
 			return "message/msgList";
 		}
 
 		List<MsgListDto> mldtos = new ArrayList<>();
 		Long receiverNum = 0L;
 		for (Message m : msgList) {
-//         receiverNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num(); 
 			if (num == m.getUser1Num()) { // user1Num이 사용자라면 (2, 3만 보여야 함)
 				if (m.getMsgStatus() < 2) { // 0, 1
 					continue;
@@ -99,23 +103,43 @@ public class MessageController {
 				receiverNum = m.getUser1Num();
 			}
 			MsgListDto mldto = new MsgListDto();
+			Member receiver = memberService.findOne(receiverNum);
+			Member sender = memberService.findOne(num);
 			mldto.setUser1Num(m.getUser1Num());
 			mldto.setUser2Num(m.getUser2Num());
 			mldto.setSendDate(m.getSendDate());
 			mldto.setRecentContent(m.getContent());
-			log.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + receiverNum);
-			log.info("" + memberService.findOne(receiverNum).getId());
-			mldto.setMessageToId(memberService.findOne(receiverNum).getId());
-			mldto.setMessageFromId(memberService.findOne(num).getId());
-			mldto.setSenderProfileImg(memberService.findOne(receiverNum).getProfileImg());
+			mldto.setMessageToId(receiver.getId());
+			mldto.setMessageFromId(sender.getId());
+			mldto.setSenderProfileImg(receiver.getProfileImg());
+			log.info("프로필이미지" + mldto.getSenderProfileImg().toString());
 			mldto.setDirection(m.getDirection());
 			mldtos.add(mldto);
 		}
-
+		
 		model.addAttribute("receiverNum", receiverNum);
-		model.addAttribute("mldtos", mldtos);
-		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromNum", num);
+		model.addAttribute("mdto", mdto);
+		
+		if (type != null && keyword != null) {
+			for (Iterator<MsgListDto> it = mldtos.iterator(); it.hasNext();) {
+				MsgListDto mldto = it.next();
+				if (type.equals("id")) {
+					if (!mldto.getMessageToId().contains(keyword)) {
+						it.remove();
+					}
+				} else if (type.equals("content")) {
+					if (!mldto.getRecentContent().contains(keyword)) {
+						it.remove();
+					}
+				}
+			}
+		} else if (type == null || keyword == null) {
+			model.addAttribute("mldtos", mldtos);
+			return "message/msgList";
+		}
+		
+		model.addAttribute("mldtos", mldtos);
 
 		return "message/msgList";
 	}
@@ -226,7 +250,7 @@ public class MessageController {
 		log.info("!!!!!!!!!!!setContent : " + mdto.getOriginName());
 
 		if (!mdto.getOriginName().isEmpty()) { // 첨부파일이 있다면
-			fileAlarm.setContent(originName.getOriginalFilename() + "를 보냅니다!");
+			fileAlarm.setContent("( ﾉ ﾟｰﾟ)ﾉ" + originName.getOriginalFilename() + "를 보냅니다!");
 			fileAlarm.setDirection(mdto.getDirection());
 			fileAlarm.setUser1Num(mdto.getUser1Num());
 			fileAlarm.setUser2Num(mdto.getUser2Num());
@@ -244,11 +268,19 @@ public class MessageController {
 	}
 
 	// 쪽지함 삭제
-	@PostMapping("/messagebox/{fromId}/{toId}/delete")
+//	@PostMapping("/messagebox/{fromId}/{toId}/delete")
+//	@ResponseBody
+//	public String deleteMessageFromBox(@PathVariable String fromId, @PathVariable String toId, Model model) {
+//		messageService.changeMsgStatus(fromId, toId);
+//		model.addAttribute("data", new Alert("쪽지가 성공적으로 삭제되었습니다!", "/AliceDiary/messagebox/" + fromId));
+//		return "1";
+//	}
+	@PostMapping("/messagebox/delete")
 	@ResponseBody
-	public String deleteMessage(@PathVariable String fromId, String toId, Model model) {
+	public String deleteMessageFromList(String fromId, String toId, Model model) {
+		log.info("aaaaaaaaaaaaaaaaaaaaaaa");
 		messageService.changeMsgStatus(fromId, toId);
-		model.addAttribute("data", new Alert("쪽지가 성공적으로 삭제되었습니다!", ""));
+		model.addAttribute("data", new Alert("쪽지가 성공적으로 삭제되었습니다!", "/AliceDiary/messagebox/" + fromId));
 		return "1";
 	}
 
@@ -304,8 +336,6 @@ public class MessageController {
 			Model model, @ModelAttribute MessageDto mdto, MsgSearchDto msdto,
 			@AuthenticationPrincipal UserDetails user) {
 		log.info("들어오니??");
-		// log.info("현재 로그인회원번호 : " + session.getAttribute("num"));
-		// String messageFromNum = (String) session.getAttribute("num");
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
@@ -325,30 +355,27 @@ public class MessageController {
 			}
 			for (Message m : msgList) {
 				if (num == m.getUser1Num()) {
-					if (m.getMsgStatus() < 2) {
-						continue;
-					}
+					if (m.getMsgStatus() < 2) { continue; }
 					receiverNum = m.getUser2Num();
 				} else {
-					if (m.getMsgStatus() % 2 == 0) {
-						continue;
-					}
+					if (m.getMsgStatus() % 2 == 0) { continue; }
 					receiverNum = m.getUser1Num();
 				}
 				MsgListDto mldto = new MsgListDto();
+				Member receiver = memberService.findOne(receiverNum);
+				Member sender = memberService.findOne(num);
 				mldto.setUser1Num(m.getUser1Num());
 				mldto.setUser2Num(m.getUser2Num());
 				mldto.setSendDate(m.getSendDate());
 				mldto.setRecentContent(m.getContent());
-				mldto.setMessageToId(memberService.findOne(receiverNum).getId());
-				mldto.setMessageFromId(memberService.findOne(num).getId());
+				mldto.setMessageToId(receiver.getId());
+				mldto.setMessageFromId(sender.getId());
+				mldto.setSenderProfileImg(receiver.getProfileImg());
 				mldto.setDirection(m.getDirection());
 				if (mldto.getMessageFromId().contains(msdto.getKeyword())
 						|| mldto.getMessageToId().contains(msdto.getKeyword())) {
 					mldtos.add(mldto);
-				} else {
-					continue;
-				}
+				} else { continue; }
 			}
 		} else if (msdto.getType().equals("content")) { // 내용으로 검색
 			for (Message m : msgList) {
@@ -356,23 +383,22 @@ public class MessageController {
 					continue;
 				} else {
 					if (num == m.getUser1Num()) {
-						if (m.getMsgStatus() < 2) {
-							continue;
-						}
+						if (m.getMsgStatus() < 2) { continue; }
 						receiverNum = m.getUser2Num();
 					} else {
-						if (m.getMsgStatus() % 2 == 0) {
-							continue;
-						}
+						if (m.getMsgStatus() % 2 == 0) { continue; }
 						receiverNum = m.getUser1Num();
 					}
 					MsgListDto mldto = new MsgListDto();
+					Member receiver = memberService.findOne(receiverNum);
+					Member sender = memberService.findOne(num);
 					mldto.setUser1Num(m.getUser1Num());
 					mldto.setUser2Num(m.getUser2Num());
 					mldto.setSendDate(m.getSendDate());
 					mldto.setRecentContent(m.getContent());
-					mldto.setMessageToId(memberService.findOne(receiverNum).getId());
-					mldto.setMessageFromId(memberService.findOne(num).getId());
+					mldto.setMessageToId(receiver.getId());
+					mldto.setMessageFromId(sender.getId());
+					mldto.setSenderProfileImg(receiver.getProfileImg());
 					mldto.setDirection(m.getDirection());
 					mldtos.add(mldto);
 				}

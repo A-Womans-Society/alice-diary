@@ -11,14 +11,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Message;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.MessageRepository;
 import com.alice.project.web.MessageDto;
-import com.alice.project.web.MsgListDto;
 import com.alice.project.web.MsgFileDto;
+import com.alice.project.web.MsgListDto;
 import com.alice.project.web.SearchDto;
 
 import lombok.RequiredArgsConstructor;
@@ -127,13 +126,10 @@ public class MessageService {
 		List<Message> msgs = new ArrayList<>();
 		msgs.addAll(msgF);
 		msgs.addAll(msgT);
-//      Collections.sort(msgs);
 		Collections.reverse(msgs);
-
-		for (Message msg : msgs) {
-			log.info("*****************내용 각각 : " + msg.getContent());
-		}
-
+//		for (Message msg : msgs) {
+//			log.info("*****************내용 각각 : " + msg.getContent());
+//		}
 		return msgs;
 
 	}
@@ -186,25 +182,6 @@ public class MessageService {
 		return result;
 	}
 
-	/* 쪽지 검색 */
-//   public Message searchMsgById(String id) { // 아이디 like로 찾기
-//      Long num = findNumById(id);
-//      
-//      List<Message> msgList = messageRepository.searchByUserNum(num);
-//      Long msgStatus = 3L; // 기본 쪽지 상태 (양쪽 모두 안 지운 상태)
-//      Message message = new Message(
-//            mdto.getUser1Num(),
-//            mdto.getUser2Num(),
-//            mdto.getSendDate(),
-//            mdto.getContent(),
-//            msgStatus   
-//            );
-//      
-//      log.info("!!!!!!!!!!!!요기!!!!!! : " + message.toString());
-//      Message result = messageRepository.save(message);
-//      return result;
-//   }   
-
 	public List<MsgListDto> searchMsgByContent(String content, Long num) {
 		List<Message> msgList = messageRepository.searchByContent(content, num);
 		List<MsgListDto> mldtos = new ArrayList<>();
@@ -244,9 +221,7 @@ public class MessageService {
 		List<MsgFileDto> mpdtos = new ArrayList<>();
 
 		List<Message> msglist = messageRepository.findByUserNum(num);
-		if (msglist.isEmpty() || msglist.size() == 0) {
-			return null;
-		}
+		if (msglist == null) { return null; }
 
 		for (Iterator<Message> it = msglist.iterator(); it.hasNext();) {
 			Message m = it.next();
@@ -258,13 +233,17 @@ public class MessageService {
 		for (Message m : msglist) {
 			MsgFileDto mpdto = new MsgFileDto();
 			String originName = m.getFile().getOriginName();
-			if (originName.endsWith(".jpg") || originName.endsWith(".png") || originName.endsWith(".jpeg")) {
-				mpdto.setOriginName(originName);
-				mpdto.setSendDate(m.getSendDate());
-				Long theOtherNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num();
-				mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
-				mpdto.setFileNum(m.getFile().getNum());
-				mpdtos.add(mpdto);
+			if (originName != null) {
+				if (originName.endsWith(".jpg") || originName.endsWith(".png") || originName.endsWith(".jpeg")) {
+					mpdto.setOriginName(originName);
+					mpdto.setSendDate(m.getSendDate());
+					Long theOtherNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num();
+					mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
+					mpdto.setFileNum(m.getFile().getNum());
+					mpdtos.add(mpdto);
+				}				
+			} else {
+				continue;
 			}
 		}
 
@@ -300,9 +279,7 @@ public class MessageService {
 		List<MsgFileDto> mpdtos = new ArrayList<>();
 		List<Message> msglist = messageRepository.findByUserNum(num);
 
-		if (msglist.isEmpty() || msglist.size() == 0) {
-			return null;
-		}
+		if (msglist == null) { return null; }
 
 		for (Iterator<Message> it = msglist.iterator(); it.hasNext();) {
 			Message m = it.next();
@@ -312,17 +289,19 @@ public class MessageService {
 		}
 		for (Message m : msglist) {
 			MsgFileDto mpdto = new MsgFileDto();
-			if (m.getFile() == null) {
+			String originName = m.getFile().getOriginName();
+			if (originName != null) {
+				if (originName.endsWith(".txt") || originName.endsWith(".pdf")
+						|| originName.endsWith(".docx") || originName.endsWith(".hwpx")) {
+					mpdto.setOriginName(m.getFile().getOriginName());
+					mpdto.setSendDate(m.getSendDate());
+					Long theOtherNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num();
+					mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
+					mpdto.setFileNum(m.getFile().getNum());
+					mpdtos.add(mpdto);
+				}			
+			} else {
 				continue;
-			}
-			if (m.getFile().getOriginName().endsWith(".txt") || m.getFile().getOriginName().endsWith(".pdf")
-					|| m.getFile().getOriginName().endsWith(".docx") || m.getFile().getOriginName().endsWith(".hwpx")) {
-				mpdto.setOriginName(m.getFile().getOriginName());
-				mpdto.setSendDate(m.getSendDate());
-				Long theOtherNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num();
-				mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
-				mpdto.setFileNum(m.getFile().getNum());
-				mpdtos.add(mpdto);
 			}
 		}
 		return mpdtos;
