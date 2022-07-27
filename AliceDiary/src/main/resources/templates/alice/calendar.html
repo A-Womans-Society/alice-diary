@@ -26,10 +26,10 @@
 	<script th:src="@{/lib/fullcalendar-5.11.0/main.min.js}"></script>
 
 	<script th:inline="javascript">
-		/*<![CDATA[*/
-		var eventsList = /*[[${list}]]*/;
-		/*]]>*/
-	</script>
+      /*<![CDATA[*/
+      var eventsList = /*[[${list}]]*/;
+      /*]]>*/
+   </script>
 
 	<script th:src="@{/js/calendar/calendar.js}"></script>
 </th:block>
@@ -54,14 +54,17 @@
 							</div>
 							<div style="overflow: overlay; height: 80%;">
 								<th:block th:if="${!alarmList.isEmpty}">
-									<ul>
+									<ul class="pl-4">
 										<li th:each="alarm: ${alarmList}">
-											<p>
-												<strong><span th:text="${alarm.content}"></span></strong> <small>
-													<span th:if="${!#strings.isEmpty(alarm.memberList)}"
-													th:text="|with ${alarm.memberList}|"> </span> <span
-													th:text="|(${alarm.startDate})|"> </span>
-												</small>
+											<p class="mb-1">
+												<strong><span th:text="${alarm.content}"></span></strong> <small
+													th:if="${!#strings.isEmpty(alarm.memberList)}">
+													with </small> <small th:if="${!#strings.isEmpty(alarm.memberList)}"
+													th:each="friend : ${alarm.memberList}"> <a
+													th:href="|./friends/friendInfo/${friend.id}|"><span
+														th:text="${friend.name}" data-toggle="tooltip"
+														data-placement="bottom" title="프로필 보기"> </span></a>
+												</small> <span th:text="|(${alarm.startDate})|"> </span>
 											</p>
 										</li>
 									</ul>
@@ -122,8 +125,10 @@
 									<div class="col-12">
 										<p>
 											<strong>일자</strong>&nbsp;<input id="startDate" type="date"
+												class="form-control d-inline w-25"
 												th:field="*{startDateStr}" readOnly>&nbsp;~&nbsp;<input
-												id="endDate" type="date" th:field="*{endDateStr}">
+												class="form-control d-inline w-25" id="endDate" type="date"
+												th:field="*{endDateStr}">
 										</p>
 									</div>
 								</div>
@@ -131,7 +136,7 @@
 									<div class="col-6">
 										<p>
 											<strong>내용</strong>&nbsp;<input type="text" id="eventContent"
-												th:field="*{content}">
+												class="form-control" th:field="*{content}">
 										</p>
 										<p>
 											<strong>멤버</strong>&nbsp;<select class="selectpicker"
@@ -149,7 +154,7 @@
 
 										<p>
 											<strong>장소</strong>&nbsp;<input type="text" id="location"
-												th:field="*{location}">
+												class="form-control" th:field="*{location}">
 										</p>
 										<div class="d-flex">
 											<strong>색상</strong>&nbsp;
@@ -200,7 +205,8 @@
 												checked="checked"> <label for="private">비공개</label>
 										</p>
 										<p>
-											<strong>알림</strong>&nbsp;<select th:field="*{alarm}">
+											<strong>알림</strong>&nbsp;<select th:field="*{alarm}"
+												class="form-control">
 												<option value="1">1일 전</option>
 												<option value="3">3일 전</option>
 												<option value="7">1주 전</option>
@@ -209,9 +215,10 @@
 												<option value="30">한 달 전</option>
 											</select>
 										</p>
-										<p class="d-flex">
+										<p>
 											<strong>메모</strong>&nbsp;
-											<textarea id="memo" th:field="*{memo}"></textarea>
+											<textarea id="memo" th:field="*{memo}" style="resize: none;"
+												class="form-control"></textarea>
 										</p>
 									</div>
 								</div>
@@ -244,59 +251,75 @@
 								<div class="col-12">
 									<p>
 										<strong>일자&nbsp;</strong><input id="detailStartDate"
-											type="date" readOnly>&nbsp;~&nbsp;<input
-											id="detailEndDate" type="date" readOnly>
+											class="form-control d-inline w-25" type="date" readOnly>&nbsp;~&nbsp;<input
+											class="form-control d-inline w-25" id="detailEndDate"
+											type="date" readOnly>
+									</p>
+									<p>
+										<strong>내용</strong>&nbsp;<input type="text"
+											class="form-control" id="detailContent" readOnly>
 									</p>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-6">
 									<p>
-										<strong>내용</strong>&nbsp;<input type="text" id="detailContent"
-											readOnly>
-									</p>
-									<p>
 										<strong>멤버</strong>&nbsp;<input type="text"
-											id="detailMemberList" readOnly>
+											class="form-control" id="detailMemberList" readOnly>
 									</p>
 
 
 									<p>
 										<strong>장소</strong>&nbsp;<input type="text"
-											id="detailLocation" readonly>
+											class="form-control" id="detailLocation" readonly>
 									</p>
-									<p>
-										<strong>색상</strong>&nbsp;
+									<div class="row">
+										<div class="col-6">
+											<p>
+												<strong>색상</strong>&nbsp;
 
-										<button id="colorbtn"></button>
-									</p>
-
+												<button id="colorbtn"></button>
+											</p>
+										</div>
+										<div class="col-6">
+											<p class="m-0">
+												<strong>공개여부</strong>
+											</p>
+											<p class="pl-3 mb-0">
+												<input type="radio" id="detailPublic"
+													onclick="return(false);"><label>공개</label> <input
+													type="radio" id="detailPrivate" onclick="return(false);"><label>비공개</label>
+											</p>
+										</div>
+									</div>
 								</div>
 								<div class="col-6">
-									<p class="m-0">
-										<strong>공개여부</strong>
-									</p>
-									<p class="pl-3">
-										<input type="radio" id="detailPublic" onclick="return(false);"><label>공개</label>
-										<input type="radio" id="detailPrivate"
-											onclick="return(false);"><label>비공개</label>
-									</p>
 									<p>
 										<strong>알림</strong>&nbsp;<input type="text" id="detailAlarm"
-											readonly>
+											class="form-control" readonly>
 									</p>
-									<p class="d-flex">
+									<p>
 										<strong>메모</strong>&nbsp;
-										<textarea id="detailMemo" readOnly></textarea>
+										<textarea id="detailMemo" style="resize: none;"
+											class="form-control" readOnly></textarea>
 									</p>
 								</div>
 							</div>
+
 						</div>
 						<input type="hidden" id="eventId">
 					</div>
 					<div class="modal-footer">
-						<input type="button" class="btn btn-danger" value="일정 삭제"
-							onclick="deleteEvent()">
+						<div id="deleteEventBtn" style="display: none;">
+							<input type="button" class="btn btn-danger" value="일정 삭제"
+								onclick="deleteEvent()">
+						</div>
+						<div id="sendMsgBtn" style="display: none;">
+							<input type="hidden" id="friendId"> <input type="button"
+								class="btn text-white" style="background: mediumpurple;"
+								value="쪽지 보내기" th:myId="${member.id}"
+								th:onclick="sendMessage(this.getAttribute('myId'))">
+						</div>
 					</div>
 				</div>
 			</div>

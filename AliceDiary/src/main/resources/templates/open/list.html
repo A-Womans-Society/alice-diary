@@ -29,8 +29,8 @@
 					<div class="pt-3 pb-3" style="width: 80%; height: 95%;">
 						<div class='text-right'>
 							<a th:if="${postSearchDto.keyword != null}"
-								th:href="@{/open/list}"><input type="button"
-								class="btn" value="전체목록"></a> <a th:href="@{/open/post}"><input
+								th:href="@{/open/list}"><input type="button" class="btn"
+								value="전체목록"></a> <a th:href="@{/open/post}"><input
 								type="button" class="btn" value="글쓰기"></a>
 
 						</div>
@@ -83,8 +83,7 @@
 										<li class="page-item"><a class="page-link"
 											style="color: purple;"
 											th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
-											th:href="@{/open/list(page=${page-1})}"
-											th:text="${page}"></a></li>
+											th:href="@{/open/list(page=${page-1})}" th:text="${page}"></a></li>
 
 										<li class="page-item"><a class="page-link"
 											style="background: #e0c6f2; color: purple;"
@@ -94,8 +93,7 @@
 										<li class="page-item"><a class="page-link"
 											style="background: #e0c6f2; color: purple;"
 											th:if="${page == nowPage} and ${type} == null and ${keyword} == null"
-											th:href="@{/open/list(page=${page-1})}"
-											th:text="${page}"></a></li>
+											th:href="@{/open/list(page=${page-1})}" th:text="${page}"></a></li>
 
 									</th:block>
 									<li class="page-item"><a class="page-link"

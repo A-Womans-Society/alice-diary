@@ -13,8 +13,9 @@
 		<div class='row mt-3 ml-5 mr-5' style="height: 90%;">
 			<div class="col-12">
 
-				<form th:action="@{|/community/${comNum}/put/${num}}" th:object="${updateDto}"
-					method="post" enctype="multipart/form-data" class="h-100">
+				<form th:action="@{|/community/${comNum}/put/${num}}"
+					th:object="${updateDto}" method="post"
+					enctype="multipart/form-data" class="h-100">
 					<table class="table w-100">
 						<tr>
 							<th>제목</th>
@@ -28,10 +29,10 @@
 						</tr>
 						<tr>
 							<th></th>
-							<th:block th:each="file : ${files}" 
+							<th:block th:each="file : ${files}"
 								th:if="${file.originName != null}">
-								<td><a class="attachedFile" id="filewow" th:href="|./download/${file.num}|"
-									th:text="${file.originName}"></a>
+								<td><a class="attachedFile" id="filewow"
+									th:href="|./download/${file.num}|" th:text="${file.originName}"></a>
 									<button type="button" id="delete_file"
 										th:onclick="deleteFile([[${file.num}]],[[${updateDto.postNum}]],[[${comNum}]])">파일삭제</button>
 								</td>
@@ -39,14 +40,15 @@
 						</tr>
 						<tr>
 							<th>파일첨부</th>
-							<td><input type="file" th:field="*{originName}" onchange="fileCnt(this)" multiple>
+							<td><input type="file" th:field="*{originName}"
+								onchange="fileCnt(this)" multiple>
 						</tr>
 					</table>
 
 					<div class="text-center">
-						<input type="submit" class="btn btn-secondary" value="저장"> <input type="button"
-							onClick="history.go(-1)" value="취소" class="btn"> <input type="hidden"
-							th:field="*{postNum}">
+						<input type="submit" class="btn btn-secondary" value="저장">
+						<input type="button" onClick="history.go(-1)" value="취소"
+							class="btn"> <input type="hidden" th:field="*{postNum}">
 					</div>
 				</form>
 			</div>

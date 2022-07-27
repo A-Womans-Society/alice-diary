@@ -145,13 +145,15 @@
 										<li class="clearfix">삭제된 댓글입니다.</li>
 									</th:block>
 									<th:block th:unless="${reply.status.name() == 'DEAD'}">
-										<img th:src="@{/upload/profile/}+@{${reply.profileImg}}" alt="" class="avatar">
+										<img th:src="@{/upload/profile/}+@{${reply.profileImg}}"
+											alt="" class="avatar">
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"
 													th:text="${reply.memberId}"> </span>&nbsp;<span
 													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
-												</span> <span> <span th:if="${#authentication.name} != ${reply.memberId}"><button
+												</span> <span> <span
+													th:if="${#authentication.name} != ${reply.memberId}"><button
 															th:onclick="openModalMsg([[${reply.memberId}]],[[${#authentication.name}]])">
 															<img th:src="@{/img/replymsg.png}" style="width: 20px;">
 														</button> </span> <span th:if="${reply.parentRepNum} == null">

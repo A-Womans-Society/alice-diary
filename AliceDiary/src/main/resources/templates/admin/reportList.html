@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+   layout:decorate="~{layouts/adminReportLayout}">
+
+<th:block layout:fragment="css">
+</th:block>
+
+<div layout:fragment="content">
+   <div class="container-fluid h-100">
+      <div class="row h-100">
+         <div class="col-12 h-100">
+            <h2 class="text-center m-0 pt-5" style="height: 15%;">신고 목록</h2>
+            <h5 class="text-center m-0 pt-5" style="height: 15%;">회원들의 게시물과
+               댓글에 대한 신고를 확인할 수 있습니다.</h5>
+            <div class="d-flex justify-content-center" style="height: 13%;">
+               <div class="d-flex align-items-center"
+                  style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+                  <div class="w-100 text-center">
+                     <form name="searchForm" id="searchForm"
+                        th:action="@{/admin/reports}" modelAttribute="searchDto"
+                        th:method="get">
+                        <select id="type" name="type">
+                           <option value="">카테고리 선택</option>
+                           <option value="reporterId">신고자</option>
+                           <option value="targetId">신고대상자</option>
+                           <option value="reportReason">신고사유</option>
+                           <option value="content">신고내용</option>
+                           <option value="reportType">신고종류</option>
+                        </select> <input type="text" id="keyword" name="keyword"
+                           placeholder="카테고리 선택 후 검색해주세요." />
+                        <button type="submit">검색</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+            <div class="d-flex justify-content-center" style="height: 72%;">
+               <div class="pt-3 pb-3" style="width: 80%; height: 95%;">
+                  <div class='text-right'>
+                     <a th:if="${searchDto.keyword != null}"
+                        th:href="@{/admin/reports}"><input type="button" class="btn"
+                        value="목록"></a>
+                     <!--                <a th:href="@{/community/post}"><input -->
+                     <!--                type="button" class="btn" value="글쓰기"></a> -->
+
+                  </div>
+                  <!--/* 게시글 영역 */-->
+                  <table class="w-100 table table-striped table-hover">
+                     <thead>
+                        <tr class="text-center">
+                           <th>No.</th>
+                           <th>신고자</th>
+                           <th>신고대상자</th>
+                           <th>신고일자</th>
+                           <th>신고사유</th>
+                           <th>신고내용</th>
+                           <th>신고종류</th>
+                           <th>해당 게시물/댓글</th>
+                        </tr>
+                     </thead>
+                     <th:block th:if="${endPage} == 0">
+                        <tbody class="text-center">
+                           <tr>
+                              <td colspan="5">신고 목록이 비었습니다!</td>
+                           </tr>
+                        </tbody>
+                     </th:block>
+                     <!--/* 게시글 리스트 Rendering 영역 */-->
+                     <th:block th:unless="${endPage == 0}">
+                        <tbody class="text-center">
+                           <tr th:each="report, status: ${reports}">
+                              <td th:text="${size - status.index-(nowPage-1)*reports.size}"></td>
+                              <td><a th:href="@{'/admin/member/'+${report.member.id}}">
+                                    <span th:text="${report.member.id}"></span>
+                              </a></td>
+                              <td th:if="${#strings.equals(report.reportType, 'REPLY')}"><a
+                                 th:href="@{'/admin/member/'+${report.reply.member.id}}">
+                                    <span th:text="${report.reply.member.id}"></span>
+                              </a></td>
+                              <td th:if="${#strings.equals(report.reportType, 'POST')}"><a
+                                 th:href="@{'/admin/member/'+${report.post.member.id}}"> <span
+                                    th:text="${report.post.member.id}"></span>
+                              </a></td>
+                              <td
+                                 th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}"></td>
+                              <td th:text="${report.reportReason}"></td>
+                              <td th:text="${report.content}"></td>
+
+                              <!--                               <td th:text="${#strings.substring(report.content, 0, 5)}"></td> -->
+                              <td th:text="${report.reportType}"></td>
+                              <td><th:block
+                                    th:if="${#strings.equals(report.reportType, 'POST')}">
+                                    <th:block
+                                       th:if="${#strings.equals(report.post.postType, 'OPEN')}">
+                                       <a th:href="@{'/admin/open/get?num='+${report.post.num}}">해당
+                                          게시물 링크</a>
+                                    </th:block>
+                                    <th:block
+                                       th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
+                                       <a
+                                          th:href="@{'/admin/community/get?num='+${report.post.num}}">해당
+                                          게시물 링크</a>
+                                    </th:block>
+                                 </th:block> <th:block
+                                    th:if="${#strings.equals(report.reportType, 'REPLY')}">
+                                    <th:block
+                                       th:if="${#strings.equals(report.reply.post.postType, 'OPEN')}">
+                                       <a
+                                          th:href="@{'/admin/open/get?num='+${report.reply.post.num}}">해당
+                                          댓글 링크</a>
+                                    </th:block>
+                                    <th:block
+                                       th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">
+                                       <a
+                                          th:href="@{'/admin/community/get?num='+${report.reply.post.num}}">해당
+                                          댓글 링크</a>
+                                    </th:block>
+                                 </th:block></td>
+                           </tr>
+                        </tbody>
+                     </th:block>
+                  </table>
+                  <!--/* 페이징처리 영역 */-->
+                  <div class="d-flex justify-content-center">
+                     <nav aria-label="Page navigation example" th:if="${endPage != 0}">
+                        <ul class="pagination pagination-sm">
+                           <li class="page-item"><a class="page-link"
+                              th:href="@{/admin/reports(page=${startPage-1})}"
+                              style="color: purple;" aria-label="Previous"> <span
+                                 aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span>
+                           </a></li>
+                           <th:block
+                              th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                              <li class="page-item"><a class="page-link"
+                                 style="color: purple;"
+                                 th:if="${page != nowPage} and ${type} != null and ${keyword} != null"
+                                 th:href="@{/admin/reports(page=${page-1},type=${type},keyword=${keyword})}"
+                                 th:text="${page}"></a></li>
+                              <li class="page-item"><a class="page-link"
+                                 style="color: purple;"
+                                 th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
+                                 th:href="@{/admin/reports(page=${page-1})}" th:text="${page}"></a></li>
+                              <li class="page-item"><a class="page-link"
+                                 style="background: #e0c6f2; color: purple;"
+                                 th:if="${page == nowPage} and ${type} != null and ${keyword} != null"
+                                 th:href="@{/admin/reports(page=${page-1},type=${type},keyword=${keyword})}"
+                                 th:text="${page}"></a></li>
+                              <li class="page-item"><a class="page-link"
+                                 style="background: #e0c6f2; color: purple;"
+                                 th:if="${page == nowPage} and ${type} == null and ${keyword} == null"
+                                 th:href="@{/admin/reports(page=${page-1})}" th:text="${page}"></a></li>
+                           </th:block>
+                           <li class="page-item"><a class="page-link"
+                              th:href="@{/admin/reports(page=${endPage-1})}"
+                              style="color: purple;" aria-label="Next"> <span
+                                 aria-hidden="true">&raquo;</span> <span class="sr-only">Next</span>
+                           </a></li>
+                        </ul>
+                     </nav>
+                  </div>
+
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<th:block layout:fragment="script">
+   <script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+   <script th:src="@{/js/admin/reportList.js}"></script>
+</th:block>
+</html>

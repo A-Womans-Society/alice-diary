@@ -1,76 +1,153 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/adminLayout}">
+   xmlns:sec="http://thymeleaf.org/extras/spring-security"
+   xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+   layout:decorate="~{layouts/adminLayout}">
 
 <th:block layout:fragment="css">
 </th:block>
-<th:block layout:fragment="script">
-
-	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
-	<script th:src="@{/js/admin/memberList.js}"></script>
-
-</th:block>
 
 <div layout:fragment="content">
-	<!--/* 검색 영역 */-->
-	<div class="input-group" id="adv-search">
-		<select id="searchType" class="form-control" style="width: 100px;">
-			<option value="">전체</option>
-			<option value="num">회원번호</option>
-			<option value="id">아이디</option>
-			<option value="name">이름</option>
-			<option value="mobile">전화번호</option>
-			<option value="reportCnt">신고 누적횟수</option>
-			<option value="status">회원상태</option>
-		</select> <input type="text" id="searchKeyword" class="form-control"
-			placeholder="카테고리 선택 후 검색해주세요." style="width: 300px;" />
-		<button type="button" class="btn btn-primary">검색</button>
-	</div>
+   <div class="container-fluid h-100">
+      <div class="row h-100">
+         <div class="col-12 h-100">
+            <h2 class="text-center m-0 pt-5" style="height: 15%;">회원목록</h2>
+            <h5 class="text-center m-0 pt-5" style="height: 15%;">전체 회원들의
+               상세정보를 볼 수 있습니다.</h5>
+            <div class="d-flex justify-content-center" style="height: 13%;">
+               <div class="d-flex align-items-center"
+                  style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+                  <div class="w-100 text-center">
+                     <form th:action="@{/admin/member}" method="get"
+                        modelAttribute="searchDto">
+                        <select id="type" name="type" onchange="changeSelect()">
+                           <option value="">카테고리 선택</option>
+                           <option value="num">회원번호</option>
+                           <option value="id">아이디</option>
+                           <option value="name">이름</option>
+                           <option value="mobile">전화번호</option>
+                           <option value="reportCnt">신고 누적횟수</option>
+                           <option value="status">회원상태</option>
+                        </select> <input type="text" id="keyword" name="keyword"
+                           placeholder="카테고리 선택 후 검색해주세요." />
+                        <!--          <div id="selectStatus" style="display:none;"> -->
+                        <!--           <select class="form-control" th:field="*{status}"> -->
+                        <!--                   <option th:each="statusValue : ${T(com.alice.project.domain.Status).values()}" -->
+                        <!--                     th:value="${statusValue.name()}" -->
+                        <!--                     th:text="${statusValue.name()}"> -->
+                        <!--                     </option> -->
+                        <!--                 </select> -->
+                        <!--          </div> -->
+                        <button type="submit">검색</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+            <!--/* 게시글 영역 */-->
+            <div class="d-flex justify-content-center" style="height: 72%;">
+               <div class="pt-3 pb-3" style="width: 80%; height: 95%;">
+                  <div class='text-right'>
+                     <a th:if="${searchDto.keyword != null}"
+                        th:href="@{/admin/member}"> <input type="button" class="btn"
+                        value="목록">
+                     </a>
 
-	<!--/* 게시글 영역 */-->
-	<div class="container">
-		<div>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>No.</th>
-						<th>회원번호</th>
-						<th>아이디</th>
-						<th>이름</th>
-						<th>전화번호</th>
-						<th>이메일</th>
-						<th>신고 누적횟수</th>
-						<th>회원상태</th>
-						<th>내보내기</th>
-					</tr>
-				</thead>
-				<!--/* 게시글 리스트 Rendering 영역 */-->
-				<tbody align="center">
-					<tr th:each="member, i: ${members}">
-						<td th:text="${i.count}"></td>
-						<td th:text="${member.num}"></td>
-						<td><a th:href="@{'/admin/member/'+${member.id}}"> <span
-								th:text="${member.id}"></span>
-						</a></td>
-						<td th:text="${member.name}"></td>
-						<td th:text="${member.mobile}"></td>
-						<td th:text="${member.email}"></td>
-						<td th:text="${member.reportCnt}"></td>
-						<td th:text="${member.status}"></td>
-						<td>
-							<button
-								th:if="${member.getStatus().toString().equals('USER_IN')}"
-								th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
-							<button
-								th:unless="${member.getStatus().toString().equals('USER_IN')}"
-								th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button>
-						</td>
-					</tr>
-				</tbody>
+                  </div>
+                  <table class="w-100 table table-striped table-hover">
+                     <thead>
+                        <tr class="text-center">
+                           <th>No.</th>
+                           <th>회원번호</th>
+                           <th>아이디</th>
+                           <th>이름</th>
+                           <th>전화번호</th>
+                           <th>이메일</th>
+                           <th>신고 누적횟수</th>
+                           <th>회원상태</th>
+                           <th>내보내기</th>
+                        </tr>
+                     </thead>
+                     <th:block th:if="${endPage} == 0">
+                        <tbody class="text-center">
+                           <tr>
+                              <td colspan="5">회원목록이 비었습니다!</td>
+                           </tr>
+                        </tbody>
+                     </th:block>
+                     <!--/* 회원목록 Rendering 영역 */-->
+                     <th:block th:unless="${endPage == 0}">
+                        <tbody class="text-center">
+                           <tr th:each="member, stat: ${members}">
+                              <td th:text="${size - stat.index-(nowPage-1)*members.size}"></td>
+                              <td th:text="${member.num}"></td>
+                              <td><a th:href="@{'/admin/member/'+${member.id}}"> <span
+                                    th:text="${member.id}"></span>
+                              </a></td>
+                              <td th:text="${member.name}"></td>
+                              <td th:text="${member.mobile}"></td>
+                              <td th:text="${member.email}"></td>
+                              <td th:text="${member.reportCnt}"></td>
+                              <td th:text="${member.status}"></td>
+                              <td>
+                                 <button th:if="${#strings.equals(member.status, 'USER_IN')}"
+                                    th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
+                                 <button th:if="${#strings.equals(member.status, 'USER_OUT')}"
+                                    th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button>
+                                 <button th:if="${#strings.equals(member.status, 'ADMIN')}"
+                                    type="button">관리자</button>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </th:block>
+                  </table>
+                  <!--/* 페이징처리 영역 */-->
+                  <div class="d-flex justify-content-center">
+                     <nav aria-label="Page navigation example" th:if="${endPage != 0}">
+                        <ul class="pagination pagination-sm">
+                           <li class="page-item"><a class="page-link"
+                              th:href="@{/admin/member(page=${startPage-1})}"
+                              style="color: purple;" aria-label="Previous"> <span
+                                 aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span>
+                           </a></li>
+                           <th:block
+                              th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                              <li class="page-item"><a class="page-link"
+                                 style="color: purple;"
+                                 th:if="${page != nowPage} and ${type} != null and ${keyword} != null"
+                                 th:href="@{/admin/member(page=${page-1},type=${type},keyword=${keyword})}"
+                                 th:text="${page}"></a></li>
+                              <li class="page-item"><a class="page-link"
+                                 style="color: purple;"
+                                 th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
+                                 th:href="@{/admin/member(page=${page-1})}" th:text="${page}"></a></li>
 
-			</table>
-		</div>
-	</div>
-</div>
+                              <li class="page-item"><a class="page-link"
+                                 style="background: #e0c6f2; color: purple;"
+                                 th:if="${page == nowPage} and ${type} != null and ${keyword} != null"
+                                 th:href="@{/admin/member(page=${page-1},type=${type},keyword=${keyword})}"
+                                 th:text="${page}"></a></li>
+                              <li class="page-item"><a class="page-link"
+                                 style="background: #e0c6f2; color: purple;"
+                                 th:if="${page == nowPage} and ${type} == null and ${keyword} == null"
+                                 th:href="@{/admin/member(page=${page-1})}" th:text="${page}"></a></li>
+
+                           </th:block>
+                           <li class="page-item"><a class="page-link"
+                              th:href="@{/admin/member(page=${endPage-1})}"
+                              style="color: purple;" aria-label="Next"> <span
+                                 aria-hidden="true">&raquo;</span> <span class="sr-only">Next</span>
+                           </a></li>
+                        </ul>
+                     </nav>
+                  </div>
+
+               </div>
+            </div>
+         </div>
+         <th:block layout:fragment="script">
+
+            <script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+            <script th:src="@{/js/admin/memberList.js}"></script>
+
+         </th:block>
 </html>

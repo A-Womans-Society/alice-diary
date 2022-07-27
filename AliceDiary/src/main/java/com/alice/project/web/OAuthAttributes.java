@@ -18,44 +18,44 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OAuthAttributes {
 
-	private final PasswordEncoder passwordEncoder;
-	private final CustomOAuth2UserService customOAuth2UserService;
-	private Map<String, Object> attributes;
-	private String nameAttributeKey;
-	private String name;
-	private String email;
-	private String profileImg;
-	private Status status;
+   private final PasswordEncoder passwordEncoder;
+   private final CustomOAuth2UserService customOAuth2UserService;
+   private Map<String, Object> attributes;
+   private String nameAttributeKey;
+   private String name;
+   private String email;
+   private String profileImg;
+   private Status status;
 
-	@Builder
-	public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email,
-			String profileImg) {
-		this.passwordEncoder = null;
-		this.attributes = attributes;
-		this.nameAttributeKey = nameAttributeKey;
-		this.name = name;
-		this.email = email;
-		this.profileImg = profileImg;
-		this.customOAuth2UserService = null;
-	}
+   @Builder
+   public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email,
+         String profileImg) {
+      this.passwordEncoder = null;
+      this.attributes = attributes;
+      this.nameAttributeKey = nameAttributeKey;
+      this.name = name;
+      this.email = email;
+      this.profileImg = profileImg;
+      this.customOAuth2UserService = null;
+   }
 
-	public static OAuthAttributes of(String registrationId, String userNameAttributeName,
-			Map<String, Object> attributes) {
-		return OAuthAttributes.builder().name((String) attributes.get("name")).email((String) attributes.get("email"))
-				.profileImg((String) attributes.get("profileImg")).attributes(attributes)
-				.nameAttributeKey(userNameAttributeName).build();
-	}
+   public static OAuthAttributes of(String registrationId, String userNameAttributeName,
+         Map<String, Object> attributes) {
+      return OAuthAttributes.builder().name((String) attributes.get("name")).email((String) attributes.get("email"))
+            .profileImg((String) attributes.get("profileImg")).attributes(attributes)
+            .nameAttributeKey(userNameAttributeName).build();
+   }
 
-	private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
-		return OAuthAttributes.builder().name((String) attributes.get("name")).email((String) attributes.get("email"))
-				.profileImg((String) attributes.get("profileImg")).attributes(attributes)
-				.nameAttributeKey(userNameAttributeName).build();
-	}
+   private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+      return OAuthAttributes.builder().name((String) attributes.get("name")).email((String) attributes.get("email"))
+            .profileImg((String) attributes.get("profileImg")).attributes(attributes)
+            .nameAttributeKey(userNameAttributeName).build();
+   }
 
-	public Member toEntity() {
-		return Member.builder().id("google_" + name)
+   public Member toEntity() {
+      return Member.builder().id("google_" + name)
 //                .password(passwordEncoder.encode("password"))
-				.birth(LocalDate.of(1900, 01, 01)).email(email).gender(Gender.UNKNOWN).mobile("01000000000").name(name)
-				.profileImg("default.png").regDate(LocalDate.now()).status(Status.USER_IN).build();
-	}
+            .birth(LocalDate.of(1900, 01, 01)).email(email).gender(Gender.UNKNOWN).mobile("01000000000").name(name)
+            .profileImg("default.png").regDate(LocalDate.now()).status(Status.USER_IN).build();
+   }
 }

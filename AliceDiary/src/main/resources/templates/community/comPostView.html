@@ -9,6 +9,7 @@
 	<!-- 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
  -->
 </th:block>
+
 <th:block layout:fragment="css">
 	<style>
 .blog-comment::before, .blog-comment::after, .blog-comment-form::before,
@@ -119,14 +120,16 @@
 							class="btn">수정</button>
 
 						<button type="button" id="delete_confirm"
-							th:onclick="deleteConfirm([[${postView.num}]],[[${comNum}]])" class="btn">삭제</button>
+							th:onclick="deleteConfirm([[${postView.num}]],[[${comNum}]])"
+							class="btn">삭제</button>
 
 					</th:block>
 					<input type="button"
 						th:if="${#authentication.name} != ${postView.member.id}"
 						th:onclick="openModalPost([[${postView.num}]],[[${#authentication.name}]])"
-						value="신고" class="btn btn-danger">
-					<a th:href="@{|/community/${comNum}/list|}"><button type="button" class="btn btn-secondary">목록</button></a>
+						value="신고" class="btn btn-danger"> <a
+						th:href="@{|/community/${comNum}/list|}"><button type="button"
+							class="btn btn-secondary">목록</button></a>
 
 
 				</div>
@@ -144,13 +147,15 @@
 										<li class="clearfix">삭제된 댓글입니다.</li>
 									</th:block>
 									<th:block th:unless="${reply.status.name() == 'DEAD'}">
-										<img th:src="@{|/upload/profile/${reply.profileImg}|}" alt="" class="avatar">
+										<img th:src="@{|/upload/profile/${reply.profileImg}|}" alt=""
+											class="avatar">
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"
 													th:text="${reply.memberId}"> </span>&nbsp;<span
 													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
-												</span> <span> <span th:if="${#authentication.name} != ${reply.memberId}"><button
+												</span> <span> <span
+													th:if="${#authentication.name} != ${reply.memberId}"><button
 															th:onclick="openModalMsg([[${reply.memberId}]],[[${#authentication.name}]])">
 															<img th:src="@{/img/replymsg.png}" style="width: 20px;">
 														</button> </span> <span th:if="${reply.parentRepNum} == null">
@@ -279,7 +284,6 @@
 			<div class="modal-content">
 				<div class="modal-header" style="align-items: baseline;">
 					<h1 class="modal-title">쪽지보내기</h1>
-					<span>나는 쪽지세포야~</span>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -305,8 +309,6 @@
 			</div>
 		</div>
 	</div>
-
-
 
 </div>
 </html>

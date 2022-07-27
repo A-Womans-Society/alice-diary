@@ -1,81 +1,91 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/profileLayout}">
+   xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+   layout:decorate="~{layouts/profileLayout}">
 <th:block layout:fragment="css">
-	<link rel="stylesheet" th:href="@{/css/profile/myProfile.css}" />
+   <link rel="stylesheet" th:href="@{/css/profile/myProfile.css}" />
 </th:block>
 
 <div layout:fragment="content">
-	<form th:action="@{/member/}+${member.id}" method="post">
+   <form th:action="@{/member/}+${member.id}" method="post">
 
-		<div class=" overflow-hidden">
-			<div class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
-				<div class="col-7 pt-2">
-					<div class="tab-content">
-						<div class="tab-pane fade active show" id="account-general">
+      <div class=" overflow-hidden">
+         <div
+            class="row no-gutters row-bordered row-border-light d-flex justify-content-center">
+            <div class="col-7 pt-2">
+               <div class="tab-content">
+                  <div class="tab-pane fade active show" id="account-general">
+                     <div class="row w-100">
+                        <div
+                           class="col-5 d-flex justify-content-center align-items-center"
+                           style="flex-direction: column;">
+                           <img id="profileImage"
+                              th:src="@{/upload/profile/}+@{${member.profileImg}}"
+                              class="w-75" />
+                        </div>
+                        <div class="col-7 pr-0">
+                           <div class="form-group ">
+                              <label class="form-label">ID</label> <input type="text"
+                                 class="form-control mb-1" th:value="${member.id}" readonly>
+                           </div>
+                           <div class="form-group">
 
-							<div class="row w-100">
-								<div th:if="${member.profileImg.equals('default')}"
-									class="col-5 d-flex justify-content-center align-items-center">
-									<img class="w-75" th:src="@{/upload/Alice.png}" />
-								</div>
+                              <label class="form-label">이름</label> <input type="text"
+                                 class="form-control" th:value="${member.name}" readonly>
+                           </div>
+                           <div class="form-group">
 
-								<div th:unless="${member.profileImg.equals('default')}"
-									class="col-5 d-flex justify-content-center align-items-center">
-									<img class="w-75" th:src="@{/upload/}+@{${member.profileImg}}" />
-								</div>
-								<div class="col-7 pr-0">
-									<div class="form-group ">
-										<label class="form-label">ID</label> <input type="text"
-											class="form-control mb-1" th:value="${member.id}" readonly>
-									</div>
-									<div class="form-group">
+                              <label class="form-label">E-mail</label> <input type="text"
+                                 class="form-control mb-1" th:value="${member.email}"
+                                 readonly="readonly">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <hr class="border-light m-0">
 
-										<label class="form-label">이름</label> <input type="text"
-											class="form-control" th:value="${member.name}" readonly>
-									</div>
-									<div class="form-group">
+               <div class="form-group">
+                  <label class="form-label">생년월일</label> <input type="date"
+                     class="form-control mb-1" th:value="${member.birth}"
+                     readonly="readonly">
 
-										<label class="form-label">E-mail</label> <input type="text"
-											class="form-control mb-1" th:value="${member.email}"
-											readonly="readonly">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<hr class="border-light m-0">
+               </div>
+               <div class="form-group">
+                  <label class="form-label">전화번호</label> <input type="text"
+                     class="form-control mb-1" th:value="${member.mobile}"
+                     readonly="readonly">
 
-					<div class="form-group">
-						<label class="form-label">생년월일</label> <input type="date"
-							class="form-control mb-1" th:value="${member.birth}"
-							readonly="readonly">
+               </div>
+               <div class="form-group">
+                  <label class="form-label">MBTI</label> <input type="text"
+                     class="form-control mb-1" th:value="${member.mbti}"
+                     readonly="readonly">
+               </div>
 
-					</div>
-					<div class="form-group">
-						<label class="form-label">전화번호</label> <input type="text"
-							class="form-control mb-1" th:value="${member.mobile}"
-							readonly="readonly">
+               <div class="form-group">
+                  <label class="form-label">My Wish List</label>
+                  <th:block th:if="${#strings.isEmpty(wishList)}">
+                     <input type="text" class="form-control mb-1" value="없음"
+                        readonly="readonly">
+                  </th:block>
+                  <div>
+                     <div th:unless="${#strings.isEmpty(wishList)}"
+                        class="d-inline p-2 mr-1"
+                        style="border-radius: 5px; background: #e1b9ed;"
+                        th:each="wish : ${wishList}"
+                        th:if="${#strings.length(wish) != 0}">
+                        <a class="text-white"
+                           th:href="|https://search.shopping.naver.com/search/all?query=${wish}|">#<span
+                           th:text="${wish}"></span></a>
+                     </div>
+                  </div>
+               </div>
 
-					</div>
-					<div class="form-group">
-						<label class="form-label">MBTI</label> <input type="text"
-							class="form-control mb-1" th:value="${member.mbti}"
-							readonly="readonly">
+            </div>
+         </div>
 
-					</div>
-					<div class="form-group">
-						<label class="form-label">My Wish List</label> <input type="text"
-							class="form-control mb-1" th:value="${member.wishlist}"
-							readonly="readonly">
-
-					</div>
-
-				</div>
-			</div>
-
-		</div>
-	</form>
+      </div>
+   </form>
 </div>
 </html>

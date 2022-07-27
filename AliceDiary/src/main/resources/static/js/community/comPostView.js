@@ -427,5 +427,3 @@ function replyMsg(msgFrom, content) {
     httpRequest.send(param);
 
 }
-
-

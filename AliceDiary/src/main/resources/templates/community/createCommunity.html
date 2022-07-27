@@ -11,7 +11,6 @@
 		th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js}"></script>
 </th:block>
 
-
 <th:block layout:fragment="css">
 	<!-- bootstrap-select -->
 	<link rel="stylesheet"
@@ -19,29 +18,26 @@
 </th:block>
 
 <div layout:fragment="content">
-
-
 	<div class="container-fluid h-100">
 		<div class="row h-100">
 			<div class="col-12 h-100">
 				<h2 class="text-center m-0 pt-5" style="height: 15%;">커뮤니티 생성하기</h2>
-
 
 				<form th:action="@{/community/create}" method="post" id="form"
 					th:object="${ccdto}">
 
 					<select class="selectpicker" data-live-search="true"
 						th:field="*{comMembers}" multiple required>
-						<th:block th:if="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
+						<th:block
+							th:if="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
 							<option value="">친구를 추가해보세요!</option>
 						</th:block>
-						<th:block th:unless="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
+						<th:block
+							th:unless="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
 							<option th:each="f : ${ccdto.friendsList}" th:value="${f.id}"
 								th:text="${f.name}"></option>
 						</th:block>
 					</select>
-
-
 
 					<div>
 						커뮤니티 이름<input type="text" th:field="*{comName}">
@@ -52,7 +48,6 @@
 					</div>
 
 					<input type="submit" th:onclick="return check()" value="커뮤니티 만들기">
-
 				</form>
 
 				<div>
@@ -74,7 +69,6 @@
 			</div>
 		</div>
 	</div>
-
 
 </div>
 </html>

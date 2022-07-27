@@ -30,24 +30,16 @@
                href="/AliceDiary/notice/list"><h5 class="nav-texts">공지사항</h5></a></li>
          </ul>
          <ul class="navbar-nav align-items-center">
+            <li class="nav-item"
+               th:if="${#strings.equals(#authentication.name, 'admin')}"><a
+               class="nav-link text-white" href="/AliceDiary/admin/member">
+                  <h5 class="nav-texts">관리자모드</h5>
+            </a></li>
             <li class="nav-item" data-toggle="tooltip" data-placement="bottom"
                title="내 프로필 보기"
                th:onclick="|location.href='/AliceDiary/member/@{${#authentication.name}}'|">
-
-
-<!--                <th:block th:if="${#strings.equals(member.profileImg, 'default')}"> -->
-<!--                   <img th:src="@{/upload/profile/default.png}" alt="user" width="45" -->
-<!--                      class="rounded-circle"> -->
-<!--                </th:block> <th:block -->
-<!--                   th:unless="${#strings.equals(member.profileImg, 'default')}"> -->
-<!--                   <img th:src="@{/upload/profile/}+@{${member.profileImg}}" -->
-<!--                      alt="user" width="45" class="rounded-circle"> -->
-<!--                </th:block>  -->
-               <th:block>
-                  <img th:src="@{/upload/profile/}+@{${member.profileImg}}"
-                     alt="user" width="45" class="rounded-circle">
-               </th:block>
-
+               <img th:src="@{/upload/profile/}+@{${member.profileImg}}"
+               alt="user" width="45" class="rounded-circle">
             </li>
             <li class="nav-item p-0"><h2 class="nav-texts text-white">/</h2></li>
             <li class="nav-item  p-0"><a class="nav-link text-white"
