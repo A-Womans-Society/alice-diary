@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,10 +22,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Post;
+import com.alice.project.domain.Reply;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.PostService;
 import com.alice.project.service.ReplyService;
+import com.alice.project.service.ReportService;
 import com.alice.project.web.PostSearchDto;
 import com.alice.project.web.ReplyDto;
 import com.alice.project.web.WriteFormDto;
@@ -46,6 +47,8 @@ public class PostController {
 	private final MemberService memberService;
 
 	private final ReplyService replyService;
+
+	private final ReportService reportService;
 
 	// 글쓰기
 	@GetMapping("/open/post")
@@ -183,7 +186,7 @@ public class PostController {
 	@PostMapping("/open/put/filedelete")
 	@ResponseBody
 	public JSONObject oneFileDelete(Long num, Long postNum) {
-		
+
 		postService.deleteOneFile(num);
 
 		JSONObject jObj = new JSONObject();
@@ -199,13 +202,18 @@ public class PostController {
 	@RequestMapping("/open/delete")
 	public String postDelete(Long num) {
 		log.info("컨트롤러 실행 num:" + num);
+		List<Reply> replies = replyService.getReplyByPostNum(num);
 
+		for (Reply r : replies) {
+			reportService.deleteReportWithReply(r.getNum()); // 게시글의 댓글에 대한 신고 삭제
+		}
+
+		reportService.deleteReportWithPost(num); // 게시글에 대한 신고삭제
 		postService.deletePostwithReply(num);
 		postService.deletePostwithFile(num);
 		postService.deletePost(num);
 
 		return "redirect:list";
 	}
-	
 
 }

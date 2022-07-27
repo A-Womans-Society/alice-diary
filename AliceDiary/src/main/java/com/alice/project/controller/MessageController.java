@@ -461,16 +461,20 @@ public class MessageController {
 
 		Long user1Num = 0L;
 		Long user2Num = 0L;
-
+		
 		if (messageFromNum < messageToNum) {
 			user1Num = messageFromNum;
 			user2Num = messageToNum;
+			
+			messageService.replyMsg(Message.createMessage(user1Num, user2Num, content, 0L));
+			
 		} else {
 			user1Num = messageToNum;
 			user2Num = messageFromNum;
+			
+			messageService.replyMsg(Message.createMessage(user1Num, user2Num, content, 1L));
 		}
 
-		messageService.replyMsg(Message.createMessage(user1Num, user2Num, content));
 
 		return true;
 	}

@@ -1,6 +1,7 @@
 package com.alice.project.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -146,6 +147,11 @@ public class PostService {
 	//게시글 번호로 객체 찾기
 	public Post findByNum(Long num) {
 		return postRepository.findByNum(num);
+	}
+	
+	//커뮤니티번호로 게시글 모두 가져오기
+	public List<Post> getPostBycomNum(Long comNum){
+		return postRepository.findBycomNum(comNum);
 	}
 
 }

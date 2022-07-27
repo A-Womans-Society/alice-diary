@@ -117,7 +117,7 @@ public class Reply {
 	// 연관관계 메서드 (양방향관계)
 	public void setPost(Post post) {
 		this.post = post;
-//      post.getReplies().add(this);
+		post.getReplies().add(this);
 	}
 
 	public void setMember(Member member) {
