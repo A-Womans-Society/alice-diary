@@ -17,6 +17,9 @@ import com.alice.project.domain.Gender;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
 import com.alice.project.repository.MemberRepository;
+import com.alice.project.web.GoogleUserInfo;
+import com.alice.project.web.NaverUserInfo;
+import com.alice.project.web.OAuth2UserInfo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
-    private final HttpSession httpSession;
 	private final PasswordEncoder passwordEncoder;
 
     //구글로부터 받은 userRequest 데이터에 대한 후처리가 되는 함수
@@ -34,18 +36,27 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
-
+        
+        OAuth2UserInfo oAuth2UserInfo = null;
         //OAuth2 서비스 id 구분코드
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        //OAuth2 로그인 진행 시 키가 되는 필드 값 (PK) (구글의 기본 코드는 "sub")
+        String provider  = userRequest.getClientRegistration().getRegistrationId();
+
+        if(provider .equals("google")) {
+        	oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        }else if(provider .equals("naver")) {
+        	oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
+        }
+        
+        //OAuth2 로그인 진행 시 키가 되는 필드 값 (PK)
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
                 .getUserInfoEndpoint().getUserNameAttributeName();
-        
-        String id = registrationId + "_" + oAuth2User.getAttribute("sub");
+        String providerId = oAuth2UserInfo.getProviderId();	
+    
+        String id = provider + "_" + providerId;
         String password = passwordEncoder.encode("password");
-        String email = oAuth2User.getAttribute("email");
+        String email = oAuth2UserInfo.getEmail();
         String status = "ROLE_USER_IN";
-        String name = oAuth2User.getAttribute("name");
+        String name = oAuth2UserInfo.getName();
         String profileImg = "default.png";
         
         Member member = memberRepository.findByEmail(email);

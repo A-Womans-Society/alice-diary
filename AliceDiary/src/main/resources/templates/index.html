@@ -89,8 +89,13 @@
 								아직 회원이 아니신가요? <a th:href="@{/agree}" class="link-danger">회원가입</a>
 							</p>
 
-							<a th:href="@{/oauth2/authorization/google}"
-								class="btn btn-success active" role="button">Google Login</a>
+							<a th:href="@{/oauth2/authorization/google}" >
+								<img th:src="@{./img/google-icon-file.png}" width="80px" height="80px"></a>
+								
+								
+								<a th:href="@{/oauth2/authorization/naver}"
+								>
+								<img th:src="@{./img/naver-icon-file.png}" width="60px" height="60px"></a>
 						</div>
 
 					</form>
