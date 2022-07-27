@@ -83,7 +83,7 @@ public class CommunityController {
 		if (hostComs.size() > 0) {
 			return "redirect:./" + hostComs.get(0).getNum() + "/list";
 		} else if (resultList.size() > 0) {
-			return "redirect:./" + resultList.get(0).getNum() + "/list";
+			return "redirect:./" + resultList.get(0).getNum() +  "/list";
 		} else {
 			return "redirect:./create";
 		}

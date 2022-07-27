@@ -51,9 +51,5 @@ public class FriendshipDto {
 	public FriendshipDto() {
 		// TODO Auto-generated constructor stub
 	}
-	
 
-
-	
-	
 }

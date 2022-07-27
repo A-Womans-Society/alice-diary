@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Reply;
-import com.alice.project.service.MemberService;
 import com.alice.project.service.ReplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ public class ReplyController {
 		return jObj;
 
 	}
-	
+
 	// 대댓쓰기
 	@PostMapping("/open/replyreply")
 	@ResponseBody
