@@ -1,7 +1,6 @@
 package com.alice.project.controller;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -54,15 +53,14 @@ public class AdminPostController {
 	@GetMapping("/notice/list")
 	public String showNoticeList(
 			@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable,
-			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, 
-			@AuthenticationPrincipal UserDetails user,
+			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, @AuthenticationPrincipal UserDetails user,
 			Model model, Long num) {
 		Page<Post> notices = null;
 		String type = postSearchDto.getType();
 		String keyword = postSearchDto.getKeyword();
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			notices = postService.notceList(pageable);
 		} else {
 			notices = postService.searchNoticeList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정
@@ -138,10 +136,9 @@ public class AdminPostController {
 
 		Post post = Post.createNotice(writeFormDto, member);
 		Post result = postService.write(post);
-		
+
 		if (!writeFormDto.getOriginName().isEmpty()) {
-			attachedFileService.postFileUpload(writeFormDto.getOriginName(), result, session,
-					user.getUsername());
+			attachedFileService.postFileUpload(writeFormDto.getOriginName(), result, session, user.getUsername());
 		}
 
 		return "redirect:/admin/notice/list";
@@ -149,8 +146,7 @@ public class AdminPostController {
 
 	/* 공지사항 수정 폼 받기 */
 	@GetMapping("/notice/put")
-	public String getUpdate(Long num, Model model, Pageable pageable,
-			@AuthenticationPrincipal UserDetails user) {
+	public String getUpdate(Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
 		Post getUpdate = postService.postView(num);
@@ -166,8 +162,7 @@ public class AdminPostController {
 
 	/* 공지사항 수정 */
 	@PostMapping("/notice/put")
-	public String updatePorc(WriteFormDto updateDto, HttpSession session, 
-			@AuthenticationPrincipal UserDetails user) {
+	public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
 		postService.updatePost(updateDto.getPostNum(), updateDto);
 
@@ -191,7 +186,7 @@ public class AdminPostController {
 
 		JSONObject jObj = new JSONObject();
 
-		List<AttachedFile> files = attachedFileService.newFileView(postNum);
+		List<AttachedFile> files = attachedFileService.fileDeleteAfterList(postNum);
 
 		jObj.put("files", files);
 
@@ -223,7 +218,6 @@ public class AdminPostController {
 		jObj.put("repContent", newReply.getContent());
 		jObj.put("postNum", newReply.getPost().getNum());
 		jObj.put("profileImg", newReply.getMember().getProfileImg());
-
 
 		return jObj;
 	}
@@ -263,8 +257,7 @@ public class AdminPostController {
 	@GetMapping("/open/list")
 	public String showOpenCommunityList(
 			@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable,
-			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, 
-			@AuthenticationPrincipal UserDetails user,
+			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, @AuthenticationPrincipal UserDetails user,
 			Model model, Long num) {
 		Page<Post> opens = null;
 		String type = postSearchDto.getType();
@@ -272,8 +265,8 @@ public class AdminPostController {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", type);
-		
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			opens = postService.openList(pageable);
 		} else {
 			opens = postService.searchList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정
@@ -328,15 +321,15 @@ public class AdminPostController {
 
 		return "/admin/openView";
 	}
-	
+
 	/* 공개게시판 글 내리기 */
 	@RequestMapping("/open/delete")
-	public String deleteOpenPost(Long num) {		
+	public String deleteOpenPost(Long num) {
 		List<Reply> replies = replyService.getReplyByPostNum(num);
 		for (Reply r : replies) {
 			reportService.deleteReportWithReply(r.getNum()); // 게시글의 댓글에 대한 신고 삭제
 		}
-		
+
 		reportService.deleteReportWithPost(num); // 게시글에 대한 신고삭제
 		postService.deletePostwithReply(num); // 게시글의 댓글 삭제
 		postService.deletePostwithFile(num); // 게시글의 첨부파일 삭제
@@ -344,7 +337,7 @@ public class AdminPostController {
 
 		return "redirect:list";
 	}
-	
+
 	/* 공개게시판 댓글쓰기 */
 	@PostMapping("/open/reply")
 	@ResponseBody

@@ -1,23 +1,23 @@
 package com.alice.project.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
 
 @Repository
-public interface MemberRepository
-		extends JpaRepository<Member, Long>, QuerydslPredicateExecutor<Member>, MemberRepositoryCustom {
-	
-	// 소셜 로그인으로 반환되는 값 중에서  email을 통해 이미 생성된 사용자인지 처음 가입한 사용자인지 판단
+public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslPredicateExecutor<Member> {
+
+	// 소셜 로그인으로 반환되는 값 중에서 email을 통해 이미 생성된 사용자인지 처음 가입한 사용자인지 판단
 //	Optional<Member> findByEmail(String email);
 	Member findByEmail(String email);
 
@@ -40,7 +40,7 @@ public interface MemberRepository
 	Member findByNum(Long num);
 
 	boolean existsByEmail(String email);
-	
+
 	@Query(value = "select * FROM Member where email = :email", nativeQuery = true)
 	Member searchByEmailForToken(String email);
 
@@ -67,8 +67,19 @@ public interface MemberRepository
 	Page<Member> findByReportCnt(Long keyword, Pageable pageable);
 
 	Page<Member> findByStatus(Status status, Pageable pageable);
-	
+
 	List<Member> findByIdContaining(String keyword);
 
+	// 멤버 신고수 올리기
+	@Modifying
+	@Transactional
+	@Query(value = "update Member set report_cnt = report_cnt + 1 where member_num = :num", nativeQuery = true)
+	Integer reportCntUp(Long num);
+
+	// 회원번호로 아이디 찾기
+	@Query(value = "select id from Member where member_num = :num", nativeQuery = true)
+	String findIdByNum(Long num);
+
+	Member findAllById(String[] members);
 
 }

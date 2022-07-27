@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional(readOnly = true) // 기본적으로 못바꾸게 해놓고
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ProfileService {
 	private final MemberRepository memberRepository;
 	private final ProfileRepository profileRepository;

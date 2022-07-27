@@ -52,22 +52,22 @@ public class AttachedFile {
 	@JoinColumn(name = "post_num")
 	@JsonBackReference
 	private Post post; // 소속 게시물 객체
-	
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-	@JoinColumn(name="message_num")
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "message_num")
 	@JsonBackReference
 	private Message message; // 소속 메시지 객체
-	
+
 	// 연관관계 메서드 (양방향관계)
 	public void setPost(Post post) {
 		this.post = post;
 		post.getFiles().add(this);
 	}
-	
+
 	public void setMessage(Message message) {
 		this.message = message;
 	}
-	
+
 	@Builder
 	public AttachedFile(String originName, String saveName, String filePath) {
 		this.originName = originName;
@@ -92,4 +92,3 @@ public class AttachedFile {
 	}
 
 }
-

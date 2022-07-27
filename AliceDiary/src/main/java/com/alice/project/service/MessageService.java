@@ -221,7 +221,9 @@ public class MessageService {
 		List<MsgFileDto> mpdtos = new ArrayList<>();
 
 		List<Message> msglist = messageRepository.findByUserNum(num);
-		if (msglist == null) { return null; }
+		if (msglist == null) {
+			return null;
+		}
 
 		for (Iterator<Message> it = msglist.iterator(); it.hasNext();) {
 			Message m = it.next();
@@ -241,7 +243,7 @@ public class MessageService {
 					mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
 					mpdto.setFileNum(m.getFile().getNum());
 					mpdtos.add(mpdto);
-				}				
+				}
 			} else {
 				continue;
 			}
@@ -279,7 +281,9 @@ public class MessageService {
 		List<MsgFileDto> mpdtos = new ArrayList<>();
 		List<Message> msglist = messageRepository.findByUserNum(num);
 
-		if (msglist == null) { return null; }
+		if (msglist == null) {
+			return null;
+		}
 
 		for (Iterator<Message> it = msglist.iterator(); it.hasNext();) {
 			Message m = it.next();
@@ -291,15 +295,15 @@ public class MessageService {
 			MsgFileDto mpdto = new MsgFileDto();
 			String originName = m.getFile().getOriginName();
 			if (originName != null) {
-				if (originName.endsWith(".txt") || originName.endsWith(".pdf")
-						|| originName.endsWith(".docx") || originName.endsWith(".hwpx")) {
+				if (originName.endsWith(".txt") || originName.endsWith(".pdf") || originName.endsWith(".docx")
+						|| originName.endsWith(".hwpx")) {
 					mpdto.setOriginName(m.getFile().getOriginName());
 					mpdto.setSendDate(m.getSendDate());
 					Long theOtherNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num();
 					mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
 					mpdto.setFileNum(m.getFile().getNum());
 					mpdtos.add(mpdto);
-				}			
+				}
 			} else {
 				continue;
 			}
@@ -329,6 +333,18 @@ public class MessageService {
 			}
 		}
 		return resultlist;
+	}
+
+	/* 댓글 쪽지 전송 */
+	@Transactional
+	public Message replyMsg(Message message) {
+		return messageRepository.save(message);
+	}
+
+	/* 커뮤니티 초대장 발송 */
+	@Transactional
+	public Message inviteMsg(Message message) {
+		return messageRepository.save(message);
 	}
 
 }

@@ -51,7 +51,7 @@ public class AttachedFileService {
 			}
 			for (MultipartFile multipartFile : files) {
 				String ofile = multipartFile.getOriginalFilename();
-				String sfile = postSaveFile(multipartFile, savePath, session, id);
+				String sfile = makeSfile(multipartFile, savePath, session, id);
 
 				log.info("service run222222222");
 
@@ -67,7 +67,9 @@ public class AttachedFileService {
 		}
 	}
 
-	public String postSaveFile(MultipartFile file, String savePath, HttpSession session, String id) {
+	// 저장파일 이름만들기
+	@Transactional
+	public String makeSfile(MultipartFile file, String savePath, HttpSession session, String id) {
 
 		String ofile = file.getOriginalFilename();
 		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
@@ -106,12 +108,15 @@ public class AttachedFileService {
 		return sfile;
 	}
 
+	// 파일 다운로드
 	public ResponseEntity<UrlResource> postFileDownload(Long num)
 			throws MalformedURLException, UnsupportedEncodingException {
 
 		Optional<AttachedFile> findFile = attachedFileRepository.findById(num);
 		AttachedFile attachedFile = findFile.orElse(null);
-		if (findFile == null) { return null; }
+		if (findFile == null) {
+			return null;
+		}
 		String sFileName = attachedFile.getSaveName();
 		String oFileName = attachedFile.getOriginName();
 
@@ -126,6 +131,7 @@ public class AttachedFileService {
 
 	}
 
+	// 게시글 상세보기에서 저장된 파일 보여주기
 	public List<AttachedFile> fileView(Post post, Pageable pageable) {
 		log.info("service run fileVIEW");
 		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
@@ -137,26 +143,21 @@ public class AttachedFileService {
 		return attachedFileRepository.findAllByPostNum(post.getNum(), pageable);
 	}
 
-	public List<AttachedFile> newFileView(Long postNum) {
-		log.info("service run newfileVIEW");
+	public AttachedFile getFileByMsgNum(Long msgNum) {
+		return attachedFileRepository.findByMessageNum(msgNum);
+	}
+
+	// 게시글 수정에서 파일 한개 삭제 후 파일리스트 다시 불러오기
+	@Transactional
+	public List<AttachedFile> fileDeleteAfterList(Long postNum) {
 
 		List<AttachedFile> afs = attachedFileRepository.findAllByPostNum(postNum);
-
-		log.info("!!!!!!!!!!!!!!!!!!!!!!asf.size:" + afs.size());
 
 		for (AttachedFile af : afs) {
 			String oriName = af.getOriginName();
 			String saveName = af.getSaveName();
-			log.info("AFS의 oriName!!! af : " + oriName);
-			log.info("AFS의 saveName!!! af : " + saveName);
+
 		}
 		return afs;
 	}
-	
-	public AttachedFile getFileByMsgNum(Long msgNum) {
-		return attachedFileRepository.findByMessageNum(msgNum);
-	}
-	
-	
-
 }

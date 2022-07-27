@@ -1,7 +1,6 @@
 package com.alice.project.domain;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
@@ -23,15 +22,15 @@ public class BaseTimeEntity {
 
 	@LastModifiedDate
 	private LocalDateTime modifiedDate;
-	
-	//해당 엔티티를 저장하기 이전에 실행
+
+	// 해당 엔티티를 저장하기 이전에 실행
 	@PrePersist
 	public void onPrePersist() {
 		this.createdDate = LocalDateTime.now();
 		this.modifiedDate = this.createdDate;
 	}
-	
-	//해당 엔티티를 업데이트 하기 이전에 실행
+
+	// 해당 엔티티를 업데이트 하기 이전에 실행
 	@PreUpdate
 	public void onPreUpdate() {
 		this.modifiedDate = LocalDateTime.now();

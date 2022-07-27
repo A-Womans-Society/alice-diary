@@ -7,10 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -40,10 +40,9 @@ public class ProfileController {
 	private final PasswordEncoder passwordEncoder;
 	private final MemberService memberService;
 
-	// 내 프로필 보기 GET
+	// 내 프로필 보기 GET	
 	@GetMapping(value = "/member/{id}")
-
-	public String myProfile(@PathVariable String id, Model model, @AuthenticationPrincipal PrincipalDetails user) {
+	public String myProfile(@PathVariable String id, Model model, @AuthenticationPrincipal UserDetails user) {
 		Member member = profileService.findById(user.getUsername());
 		List<String> wishList = new ArrayList<String>();
 		log.info("wish list : " + member.getWishlist());
@@ -63,8 +62,7 @@ public class ProfileController {
 
 	// 내 프로필 수정 화면 GET
 	@GetMapping(value = "/member/update/{id}")
-
-	public String updateProfile(@PathVariable String id, Model model, @AuthenticationPrincipal PrincipalDetails user) {
+	public String updateProfile(@PathVariable String id, Model model, @AuthenticationPrincipal UserDetails user) {
 		log.info("내 프로필 수정 GET 진입!!");
 		Member member = profileService.findById(user.getUsername());
 		UserDto dto = new UserDto();
@@ -111,7 +109,7 @@ public class ProfileController {
 
 	// 비밀번호 재설정 Get
 	@GetMapping(value = "/member/{id}/editPwd")
-	public String updatePwd(@PathVariable String id, Model model, String msg, @AuthenticationPrincipal PrincipalDetails user) {
+	public String updatePwd(@PathVariable String id, Model model, String msg, @AuthenticationPrincipal UserDetails user) {
 		log.info("프로필 비밀번호 재설정 GET 진입");
 		Member member = profileService.findById(user.getUsername());
 		model.addAttribute("member", member);

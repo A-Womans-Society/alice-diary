@@ -60,21 +60,21 @@ public class Member extends BaseTimeEntity {
 	private String name; // 회원 이름
 	@Column(nullable = false)
 	private LocalDate birth; // 회원 생일
-	
+
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Gender gender; // 회원 성별 [MALE, FEMALE, UNKNOWN]
-	
-	@Column(unique = true ,nullable = false)
+
+	@Column(unique = true, nullable = false)
 	private String email; // 회원 이메일
 	@Column(nullable = false)
 	private String mobile; // 회원 전화번호
 	private String mbti; // 회원 MBTI
 	private String wishlist; // 회원 위시리스트
-	
+
 	@Column(nullable = false)
 	private LocalDate regDate; // 회원 가입일자
-	
+
 	private String profileImg; // 프로필사진 저장된 파일명(ex. 회원아이디.jpeg)
 	private final Long reportCnt = 0L; // 신고 누적횟수 (default=0)
 
@@ -124,7 +124,7 @@ public class Member extends BaseTimeEntity {
 	public void reg_date() {
 		this.regDate = LocalDate.now();
 	}
-	
+
 	// 필수값만 가진 생성자
 	@Builder
 	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
@@ -287,7 +287,6 @@ public class Member extends BaseTimeEntity {
 		return member;
 	}
 
-
 	@Transactional
 	public static Member updateProfileImg(Member member, UserDto userDto, MemberRepository mr) {
 		member.profileImg = userDto.getSaveName();
@@ -297,10 +296,10 @@ public class Member extends BaseTimeEntity {
 	}
 
 	public static Member updateProfileImg(Member member, UserDto userDto) {
-			member.profileImg = userDto.getSaveName();
-			return member;
+		member.profileImg = userDto.getSaveName();
+		return member;
 	}
-	
+
 	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {
 		member.status = Status.USER_OUT;
@@ -315,21 +314,20 @@ public class Member extends BaseTimeEntity {
 		return member;
 	}
 
-
 	public Member update(String name, String profileImg) {
 		this.name = name;
 		this.profileImg = profileImg;
 		return this;
 	}
-	
-	//소셜 로그인 시 이미 등록된 회원이라면 수정날짜만 업데이트 하고 기존 데이터는 그대로 보존하도록 예외처리
-    public Member updateModifiedDate() {
-    	this.onPreUpdate();
-    	return this;
-    }
-    
-    public String getStatusKey(){
-    	return this.status.getKey();
-    }
+
+	// 소셜 로그인 시 이미 등록된 회원이라면 수정날짜만 업데이트 하고 기존 데이터는 그대로 보존하도록 예외처리
+	public Member updateModifiedDate() {
+		this.onPreUpdate();
+		return this;
+	}
+
+	public String getStatusKey() {
+		return this.status.getKey();
+	}
 
 }

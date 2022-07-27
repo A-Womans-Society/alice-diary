@@ -28,12 +28,12 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
 	List<Reply> findChildByParentNum(Long num);
 
 	Reply findByNum(Long num);
-	
+
 	@Modifying
 	@Transactional
 	@Query(value = "UPDATE REPLY set status = 'DEAD' WHERE reply_num = :num", nativeQuery = true)
 	Integer deleteParentHaveChild(Long num);
-	
+
 	@Query(value = "select post_num from Reply where reply_num = :num", nativeQuery = true)
 	Integer searchPostNumByReplyNum(Long num);
 }

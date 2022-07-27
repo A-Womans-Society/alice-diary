@@ -2,11 +2,10 @@ package com.alice.project.web;
 
 import java.util.Map;
 
-public class GoogleUserInfo implements OAuth2UserInfo{
-	
-	private Map<String, Object> attributes; 
-	 
-	
+public class GoogleUserInfo implements OAuth2UserInfo {
+
+	private Map<String, Object> attributes;
+
 	public GoogleUserInfo(Map<String, Object> attributes) {
 		this.attributes = attributes;
 	}

@@ -10,8 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Post;
+import com.alice.project.domain.Reply;
 import com.alice.project.domain.Report;
 import com.alice.project.repository.MemberRepository;
+import com.alice.project.repository.PostRepository;
+import com.alice.project.repository.ReplyRepository;
 import com.alice.project.repository.ReportRepository;
 import com.alice.project.web.SearchDto;
 
@@ -27,6 +31,8 @@ public class ReportService {
 	private final MemberService ms;
 	private final ReportRepository reportRepository;
 	private final MemberRepository memberRepository;
+	private final ReplyRepository replyRepository;
+	private final PostRepository postRepository;
 
 	// 게시글 신고하기
 	@Transactional
@@ -40,9 +46,19 @@ public class ReportService {
 		return reportRepository.save(report);
 	}
 
-	public List<Report> checkExist(Long targetN, String userId) {
+	// 게시글 신고유무판단
+	public List<Report> postReportcheck(Long postNum, String userId) {
 		Member member = memberRepository.findById(userId);
-		return reportRepository.findPostReportExist(targetN, member.getNum());
+		Post post = postRepository.findByNum(postNum);
+		return reportRepository.findPostReportExist(post, member);
+	}
+
+	// 댓글신고유무판단
+	public List<Report> replyReportcheck(Long replyNum, String userId) {
+		Member member = memberRepository.findById(userId);
+		Reply reply = replyRepository.findByNum(replyNum);
+
+		return reportRepository.findReplyReportExist(reply, member);
 	}
 
 	/* 신고 목록 반환 */
@@ -121,7 +137,7 @@ public class ReportService {
 
 		return reportList;
 	}
-	
+
 	public Page<Report> searchReportByReportType(SearchDto sdto, Pageable pageable) {
 		// String type = sdto.getType();
 		String keyword = sdto.getKeyword();
@@ -130,7 +146,7 @@ public class ReportService {
 		List<Report> list = new ArrayList<>();
 		for (Report report : reportList) {
 			if (report.getReportType().toString().contains(keyword)) {
-				//log.info("!!!!!!!!!!!!!!report.toString()" + report.toString());
+				// log.info("!!!!!!!!!!!!!!report.toString()" + report.toString());
 				list.add(report);
 			}
 		}
@@ -140,11 +156,11 @@ public class ReportService {
 
 		return reportList;
 	}
-	
+
 	public void deleteReportWithReply(Long replyNum) {
 		reportRepository.deleteByReplyNum(replyNum);
 	}
-	
+
 	public void deleteReportWithPost(Long postNum) {
 		reportRepository.deleteByPostNum(postNum);
 	}

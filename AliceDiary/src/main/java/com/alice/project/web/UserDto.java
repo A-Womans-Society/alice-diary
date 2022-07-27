@@ -30,7 +30,7 @@ import lombok.Setter;
 public class UserDto {
 
 	private Long num;
-	
+
 	@NotBlank(message = "아이디는 필수 입력 값입니다.")
 	private String id;
 
@@ -79,12 +79,12 @@ public class UserDto {
 
 	// 이메일 인증 토큰 생성 일자
 	private LocalDateTime emailCheckTokenGeneratedAt;
-	
+
 	private Status status;
-	
+
 	private LocalDate regDate;
-  
-  private String birthStr;
+
+	private String birthStr;
 
 	public UserDto(String id, String password, String confirmPassword, String name, LocalDate birth, Gender gender,
 			String email, String mobile, String mbti, String wishlist, String saveName, MultipartFile profileImg) {

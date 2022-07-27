@@ -8,35 +8,45 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alice.project.domain.Member;
+import com.alice.project.domain.Post;
+import com.alice.project.domain.Reply;
 import com.alice.project.domain.Report;
 
+@Repository
 public interface ReportRepository extends JpaRepository<Report, Long>, QuerydslPredicateExecutor<Report> {
 
-	@Query(value = "SELECT r FROM Report r WHERE target_num = :targetN AND mem_num = :memberId AND report_type = 'POST'")
-	List<Report> findPostReportExist(Long targetN, Long memberId);
+	// 게시글 신고 유무 판단
+	@Query(value = "SELECT r FROM Report r WHERE post_num = :post AND mem_num = :member AND report_type = 'POST'")
+	List<Report> findPostReportExist(Post post, Member member);
+
+	// 댓글 신고 유무 판단
+	@Query(value = "SELECT r FROM Report r WHERE reply_num = :reply AND mem_num = :member AND report_type = 'REPLY'")
+	List<Report> findReplyReportExist(Reply reply, Member member);
 
 	/* 모든 신고목록 반환 */
 	Page<Report> findAll(Pageable pageable);
-	
+
 	/* 모든 신고목록 반환 */
-	@Query(value = "select * from Report order by report_num desc", nativeQuery=true)
+	@Query(value = "select * from Report order by report_num desc", nativeQuery = true)
 	List<Report> searchAll();
-	
+
 	@Query(value = "SELECT * FROM Report WHERE mem_num = :num", nativeQuery = true)
 	Report searchByReporterId(Long num);
 
 	Page<Report> findByContentContaining(String keyword, Pageable pageable);
-	
+
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM Report WHERE reply_num = :replyNum", nativeQuery = true)
 	void deleteByReplyNum(Long replyNum);
-	
+
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM Report WHERE post_num = :postNum", nativeQuery = true)
 	void deleteByPostNum(Long postNum);
-	
+
 }

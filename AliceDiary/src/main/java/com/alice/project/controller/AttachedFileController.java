@@ -33,14 +33,14 @@ public class AttachedFileController {
 
 		return attachedFileService.postFileDownload(num);
 	}
-	
+
 	@GetMapping("/notice/download/{num}")
 	public ResponseEntity<UrlResource> noticefileDownload(@PathVariable("num") Long num)
 			throws MalformedURLException, UnsupportedEncodingException {
 
 		return attachedFileService.postFileDownload(num);
 	}
-	
+
 	/* 쪽지함 첨부파일 다운로드하기 */
 	@GetMapping("/messagebox/pictures/download/{num}")
 	public ResponseEntity<UrlResource> msgPicturefileDownload(@PathVariable("num") Long num)
@@ -48,13 +48,12 @@ public class AttachedFileController {
 
 		return attachedFileService.postFileDownload(num);
 	}
+
 	@GetMapping("/messagebox/docs/download/{num}")
 	public ResponseEntity<UrlResource> msgDocfileDownload(@PathVariable("num") Long num)
 			throws MalformedURLException, UnsupportedEncodingException {
 
 		return attachedFileService.postFileDownload(num);
 	}
-	
-	
 
 }

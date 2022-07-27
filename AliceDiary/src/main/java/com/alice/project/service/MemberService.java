@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -146,7 +145,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findById(String id) {
 		return memberRepository.findById(id);
 	}
-	
+
 	public Member findByEmail(String email) {
 		return memberRepository.findByEmail(email);
 	}
@@ -198,7 +197,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		if (member != null) {
 			log.info("member null아님 ");
 			return new PrincipalDetails(member); //// authentication 객체 안에 PrincipalDetails 이 들어간 것
-		}else {
+		} else {
 			throw new UsernameNotFoundException(id);
 		}
 	}
@@ -289,6 +288,16 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		final int end = Math.min((start + pageable.getPageSize()), list.size());
 		memberList = new PageImpl<>(list.subList(start, end), pageable, list.size());
 		return memberList;
+	}
+
+	// 멤버아이디로 멤버번호 찾기
+	public Long findNumById(String id) {
+		return memberRepository.findMemberNumById(id);
+	}
+
+	// 멤버 신고수 올리기
+	public int reportCntUp(Long num) {
+		return memberRepository.reportCntUp(num);
 	}
 
 }

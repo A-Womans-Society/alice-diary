@@ -128,7 +128,7 @@
 									<div class="form-outline">
 										<label class="form-label" th:for="email"><span
 											class="text-danger">*&nbsp;</span>Email</label> <input type="email"
-											th:field="*{email}" class="form-control " required> <small
+											th:field="*{email}" class="form-control " required> <small class="text-danger"
 											th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
 									</div>
 								</div>

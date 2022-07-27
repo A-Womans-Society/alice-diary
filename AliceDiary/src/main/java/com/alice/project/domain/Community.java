@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,10 +42,12 @@ public class Community {
 	@SequenceGenerator(name = "COM_SEQ_GENERATOR", sequenceName = "SEQ_COMMUNITY_NUM", initialValue = 1, allocationSize = 1)
 	@Column(name = "community_num")
 	private Long num; // 커뮤니티 번호
+
 	@Column(nullable = false)
 	private String name; // 커뮤니티 이름
 	@Column(nullable = false)
 	private String memberList; // 커뮤니티 참여회원 리스트
+
 	@Column(nullable = false)
 	private LocalDate regDate; // 커뮤니티 생성일자
 	private String description; // 커뮤니티 설명
@@ -65,9 +68,18 @@ public class Community {
 	}
 
 	// 커뮤니티 객체 생성 메서드
-	public static Community createCommunity(Member member) {
-		Community community = new Community();
-		community.setMember(member);
+	public static Community createCommunity(String comMembers, String comName, String description, Member member) {
+		Community community = new Community(comName, comMembers, LocalDate.now(), description, member);
 		return community;
+	}
+
+	@Builder
+	public Community(String name, String memberList, LocalDate regDate, String description, Member member) {
+		super();
+		this.name = name;
+		this.memberList = memberList;
+		this.regDate = regDate;
+		this.description = description;
+		this.member = member;
 	}
 }

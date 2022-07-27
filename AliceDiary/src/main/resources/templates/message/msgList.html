@@ -25,7 +25,7 @@
 		<div class="row h-100">
 			<div class="col-12 h-100">
 				<h2 class="text-center m-0 pt-5" style="height: 15%;"
-					th:text="${fromId} + '님의 쪽지함'"></h2>
+					th:text="${member.name} + '님의 쪽지함'"></h2>
 				<div style="height: 8%;">
 					<div class="d-flex justify-content-center">
 						<!--/* 검색 영역 */-->
@@ -80,7 +80,7 @@
 												<div
 													class="d-flex align-items-center justify-content-between mb-1">
 													<a th:href="@{'/member/' + ${m.messageToId}}">
-														<h6 class="mb-0" th:text="${m.messageToId}"></h6>
+														<h6 class="mb-0" th:text="${m.messageToName}"></h6>
 													</a> <small class="small font-weight-bold">
 														<button
 															th:onclick="deleteMessage([[${fromId}]], [[${m.messageToId}]])"
@@ -115,8 +115,10 @@
 							<input type="hidden" id="detail" value='true'>
 							<div class="card-header">
 								<img th:src="@{/upload/profile/}+@{${friendProfile}}" alt="user"
-									width="50" class="rounded-circle"> <span>여기에 친구 이름
-									넣기</span>
+									width="50" class="rounded-circle">
+								<div>
+									<span th:text="${friendName}"> </span>
+								</div>
 							</div>
 							<div class="card chat-box">
 								<div class="card-body">
@@ -194,7 +196,7 @@
 									</th:block>
 									<th:block th:unless="${friendsList == null}">
 										<option th:each="f : ${friendsList}" th:value="${f.id}"
-											th:text="${f.name + '(' + f.id + ')'}"></option>
+											th:text="${f.name}"></option>
 									</th:block>
 								</select>
 								<div>
