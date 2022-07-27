@@ -12,8 +12,7 @@
 			return;
 		}else {
 			alert("수정이 취소되었습니다.");
-			var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
-			location = contextPath + "/AliceDiary/member/"+id;
+			location = "/AliceDiary/member/"+id;
 		}
 	}
 	

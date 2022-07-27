@@ -3,6 +3,7 @@ package com.alice.project.service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
 import com.alice.project.repository.MemberRepository;
@@ -13,10 +14,15 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProfileService {
 	private final MemberRepository memberRepository;
 	private final ProfileRepository profileRepository;
 
+	public Member findByEmail(String email) {
+		Member member = memberRepository.findByEmail(email);
+		return member;
+	}
 	
 	public Member findById(String id) {
 		Member member = memberRepository.findById(id);

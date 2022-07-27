@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alice.project.service.FriendsGroupService;
 import com.alice.project.web.UserDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -41,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EqualsAndHashCode(of = "num")
 @DynamicInsert
-public class Member {
+public class Member extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MEMBER_SEQ_GENERATOR")
@@ -51,7 +50,7 @@ public class Member {
 
 	@Column(unique = true, nullable = false) // 유니크 제약
 	private String id; // 회원 아이디
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String password; // 회원 비밀번호
 	@Column(nullable = false)
 	private String name; // 회원 이름
@@ -121,7 +120,7 @@ public class Member {
 	public void reg_date() {
 		this.regDate = LocalDate.now();
 	}
-
+	
 	// 필수값만 가진 생성자
 	@Builder
 	public Member(String id, String password, String name, LocalDate birth, Gender gender, String email, String mobile,
@@ -288,7 +287,7 @@ public class Member {
 			member.profileImg = userDto.getSaveName();
 			return member;
 	}
-
+	
 	// 회원 내보내기 메서드
 	public static Member changeMemberOut(Member member) {
 		member.status = Status.USER_OUT;
@@ -302,5 +301,22 @@ public class Member {
 		log.info("엔티티 changeMemberIn메서드에서 status바꾸기 : " + member.status);
 		return member;
 	}
+
+	public Member update(String name, String profileImg) {
+		this.name = name;
+		this.profileImg = profileImg;
+		return this;
+	}
+	
+	//소셜 로그인 시 이미 등록된 회원이라면 수정날짜만 업데이트 하고 기존 데이터는 그대로 보존하도록 예외처리
+    public Member updateModifiedDate() {
+    	this.onPreUpdate();
+    	return this;
+    }
+    
+    public String getStatusKey(){
+    	return this.status.getKey();
+    }
+
 
 }

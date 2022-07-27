@@ -24,6 +24,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.alice.project.config.AppProperties;
+import com.alice.project.config.PrincipalDetails;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
 import com.alice.project.repository.MemberRepository;
@@ -145,6 +146,10 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public Member findById(String id) {
 		return memberRepository.findById(id);
 	}
+	
+	public Member findByEmail(String email) {
+		return memberRepository.findByEmail(email);
+	}
 
 //	public Member editPwd(String id, String password) {
 //		return memberRepository.findById(id);
@@ -190,15 +195,12 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException { // 로그인 할 유저의 id를 파라미터로 전달받음
 		Member member = memberRepository.findById(id);
 
-		if (member == null) {
+		if (member != null) {
+			log.info("member null아님 ");
+			return new PrincipalDetails(member); //// authentication 객체 안에 PrincipalDetails 이 들어간 것
+		}else {
 			throw new UsernameNotFoundException(id);
 		}
-		/*
-		 * UserDetail을 구현하고 있는 User 객체 반환 User객체를 생성하기 위해 생성자로 회원의 아이디, 비밀번호, status를
-		 * 파라미터로 넘겨 줌
-		 */
-		return User.builder().username(member.getId()).password(member.getPassword())
-				.roles(member.getStatus().toString()).build();
 	}
 
 	/* 회원 전체 조회 */
