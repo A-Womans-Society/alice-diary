@@ -29,9 +29,15 @@
 								</tr>
 							</thead>
 							<tbody id="communityMembers">
-								<th:block th:each="member : ${comMembers}">
+								<th:block th:if="${comMembers != null}"
+									th:each="member : ${comMembers}">
 									<tr>
 										<td th:text="${member}"></td>
+									</tr>
+								</th:block>
+								<th:block th:unless="${comMembers != null}">
+									<tr>
+										<td>커뮤니티 멤버가 없습니다!😢</td>
 									</tr>
 								</th:block>
 							</tbody>

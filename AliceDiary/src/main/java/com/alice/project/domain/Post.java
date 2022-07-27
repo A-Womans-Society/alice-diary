@@ -41,39 +41,39 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "num")
 @DynamicInsert
 public class Post {
-   @Id
-   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_SEQ_GENERATOR")
-   @SequenceGenerator(name = "POST_SEQ_GENERATOR", sequenceName = "SEQ_POST_NUM", initialValue = 1, allocationSize = 1)
-   @Column(name = "post_num")
-   private Long num; // 게시물번호
-   @Column(nullable = false)
-   private String title; // 게시물 제목
-   @Column(nullable = false)
-   private LocalDateTime postDate; // 게시물 작성일자
-   private LocalDateTime updateDate; // 게시물 수정일자
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POST_SEQ_GENERATOR")
+	@SequenceGenerator(name = "POST_SEQ_GENERATOR", sequenceName = "SEQ_POST_NUM", initialValue = 1, allocationSize = 1)
+	@Column(name = "post_num")
+	private Long num; // 게시물번호
+	@Column(nullable = false)
+	private String title; // 게시물 제목
+	@Column(nullable = false)
+	private LocalDateTime postDate; // 게시물 작성일자
+	private LocalDateTime updateDate; // 게시물 수정일자
 
-   @Column(length = 4000, nullable = false)
-   private String content; // 게시물 내용
-   private Long viewCnt = 0L; // 게시물 조회수 (default=0)
-   
-   @Enumerated(EnumType.STRING)
-   private PostType postType; // 게시물 종류 [NOTICE, OPEN, CUSTOM]
-   
-   @ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-   @JoinColumn(name = "member_num")
-   @JsonBackReference
-   private Member member; // 작성회원 객체
-   
-   /* community가 null일 수 있음 */
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "community_num")
-   @JsonBackReference
-   private Community community; // 소속 커뮤니티 객체
+	@Column(length = 4000, nullable = false)
+	private String content; // 게시물 내용
+	private Long viewCnt = 0L; // 게시물 조회수 (default=0)
 
-   /* replies가 null일 수 있음 */
-   @OneToMany(mappedBy = "post")
-   @JsonManagedReference
-   private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
+	@Enumerated(EnumType.STRING)
+	private PostType postType; // 게시물 종류 [NOTICE, OPEN, CUSTOM]
+
+	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@JoinColumn(name = "member_num")
+	@JsonBackReference
+	private Member member; // 작성회원 객체
+
+	/* community가 null일 수 있음 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "community_num")
+	@JsonBackReference
+	private Community community; // 소속 커뮤니티 객체
+
+	/* replies가 null일 수 있음 */
+	@OneToMany(mappedBy = "post")
+	@JsonManagedReference
+	private List<Reply> replies = new ArrayList<>(); // 게시물 소속 댓글 리스트
 
 	/* files가 null일 수 있음 */
 	@OneToMany(mappedBy = "post")
@@ -137,4 +137,24 @@ public class Post {
 		this.postType = postType;
 		this.member = member;
 	}
+
+	// 커뮤니티 객체 생성 메서드
+	public static Post creatCommunity(WriteFormDto wirteFormDto, Member member, Community community) {
+		Post post = new Post(wirteFormDto.getTitle(), LocalDateTime.now(), wirteFormDto.getContent(), PostType.CUSTOM,
+				member, community);
+
+		return post;
+	}
+
+	public Post(String title, LocalDateTime postDate, String content, PostType postType, Member member,
+			Community community) {
+		super();
+		this.title = title;
+		this.postDate = postDate;
+		this.content = content;
+		this.postType = postType;
+		this.member = member;
+		this.community = community;
+	}
+
 }

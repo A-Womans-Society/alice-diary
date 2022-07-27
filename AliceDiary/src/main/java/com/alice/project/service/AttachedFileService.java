@@ -47,7 +47,7 @@ public class AttachedFileService {
 			} else if (post.getPostType() == PostType.OPEN) {
 				savePath = "C:\\Temp\\upload\\open\\";
 			} else if (post.getPostType() == PostType.CUSTOM) {
-				savePath = "C:\\Temp\\upload\\private\\";
+				savePath = "C:\\Temp\\upload\\community\\";
 			}
 			for (MultipartFile multipartFile : files) {
 				String ofile = multipartFile.getOriginalFilename();

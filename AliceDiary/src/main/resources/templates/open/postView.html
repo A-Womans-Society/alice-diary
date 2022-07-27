@@ -102,7 +102,7 @@
 					<div th:text="${postView.content}"></div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
-							<td>첨부파일: <a th:href="|./download/${file.num}|"
+							<td>첨부파일: <a th:href="|../community/download/${file.num}|"
 								th:text="${file.originName}"></a></td>
 						</div>
 					</div>

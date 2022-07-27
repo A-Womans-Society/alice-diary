@@ -45,7 +45,7 @@ public class Community {
 
 	@Column(nullable = false)
 	private String name; // 커뮤니티 이름
-	@Column(nullable = false)
+	@Column
 	private String memberList; // 커뮤니티 참여회원 리스트
 
 	@Column(nullable = false)
