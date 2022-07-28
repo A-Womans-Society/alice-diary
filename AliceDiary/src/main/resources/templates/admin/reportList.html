@@ -12,19 +12,22 @@
 		<div class="row h-100">
 			<div class="col-12 h-100">
 				<h2 class="text-center m-0 pt-5" style="height: 15%;">신고 목록</h2>
-				<h5 class="text-center m-0 pt-5" style="height: 15%;">회원들의 게시물과
+				<h5 class="text-center m-0 pt-5" style="height: 20%;">회원들의 게시물과
 					댓글에 대한 신고를 확인할 수 있습니다.</h5>
+				<h6 class="text-center m-0 pt-5" style="height: 10%;">신고종류 사전</h6>
+				<p>BAD : 비속어/욕설/불쾌한 표현 LEAK : 개인정보유출 SPAM : 스팸홍보/도배글 ETC : 기타</p>
+
 				<div class="d-flex justify-content-center" style="height: 13%;">
 					<div class="d-flex align-items-center"
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
 						<div class="w-100 text-center">
 							<form name="searchForm" id="searchForm"
-								th:action="@{/admin/reports}" modelAttribute="searchDto"
+								th:action="@{/admin/reports}" th:object="${searchDto}"
 								th:method="get">
 								<select id="type" name="type">
 									<option value="">카테고리 선택</option>
-									<option value="reporterId">신고자</option>
-									<option value="targetId">신고대상자</option>
+									<option value="reporterName">신고자</option>
+									<option value="targetName">신고대상자</option>
 									<option value="reportReason">신고사유</option>
 									<option value="content">신고내용</option>
 									<option value="reportType">신고종류</option>
@@ -41,9 +44,6 @@
 							<a th:if="${searchDto.keyword != null}"
 								th:href="@{/admin/reports}"><input type="button" class="btn"
 								value="목록"></a>
-							<!-- 					<a th:href="@{/community/post}"><input -->
-							<!-- 					type="button" class="btn" value="글쓰기"></a> -->
-
 						</div>
 						<!--/* 게시글 영역 */-->
 						<table class="w-100 table table-striped table-hover">
@@ -54,7 +54,6 @@
 									<th>신고대상자</th>
 									<th>신고일자</th>
 									<th>신고사유</th>
-									<th>신고내용</th>
 									<th>신고종류</th>
 									<th>해당 게시물/댓글</th>
 								</tr>
@@ -62,7 +61,7 @@
 							<th:block th:if="${endPage} == 0">
 								<tbody class="text-center">
 									<tr>
-										<td colspan="5">신고 목록이 비었습니다!</td>
+										<td colspan="7">신고 목록이 비었습니다!</td>
 									</tr>
 								</tbody>
 							</th:block>
@@ -72,22 +71,21 @@
 									<tr th:each="report, status: ${reports}">
 										<td th:text="${size - status.index-(nowPage-1)*reports.size}"></td>
 										<td><a th:href="@{'/admin/member/'+${report.member.id}}">
-												<span th:text="${report.member.id}"></span>
+												<span th:text="${report.member.name}"></span>
 										</a></td>
 										<td th:if="${#strings.equals(report.reportType, 'REPLY')}"><a
 											th:href="@{'/admin/member/'+${report.reply.member.id}}">
-												<span th:text="${report.reply.member.id}"></span>
+												<span th:text="${report.reply.member.name}"></span>
 										</a></td>
 										<td th:if="${#strings.equals(report.reportType, 'POST')}"><a
 											th:href="@{'/admin/member/'+${report.post.member.id}}"> <span
-												th:text="${report.post.member.id}"></span>
+												th:text="${report.post.member.name}"></span>
 										</a></td>
 										<td
 											th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}"></td>
-										<td th:text="${report.reportReason}"></td>
-										<td th:text="${report.content}"></td>
-
-										<!-- 										<td th:text="${#strings.substring(report.content, 0, 5)}"></td> -->
+										<td><a th:href="@{'/admin/reports/'+${report.num}}">
+												<span th:text="${report.reportReason}"></span>
+										</a></td>
 										<td th:text="${report.reportType}"></td>
 										<td><th:block
 												th:if="${#strings.equals(report.reportType, 'POST')}">

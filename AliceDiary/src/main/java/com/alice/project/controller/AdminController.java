@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Member;
-import com.alice.project.domain.Post;
 import com.alice.project.domain.Report;
 import com.alice.project.domain.Suggestion;
 import com.alice.project.service.AttachedFileService;
@@ -48,7 +47,7 @@ public class AdminController {
 	/* 회원 목록 */
 	@GetMapping(value = "/member")
 	public String showMemberList(
-			@PageableDefault(page = 0, size = 10, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(page = 0, size = 5, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
 			@ModelAttribute("searchDto") SearchDto searchDto, 
 			@AuthenticationPrincipal UserDetails user, Model model,
 			Long num) {
@@ -152,10 +151,10 @@ public class AdminController {
 		} else {
 			model.addAttribute("keyword", searchDto.getKeyword());
 			model.addAttribute("type", searchDto.getType());
-			if (type.equals("reporterId") || type.equals("content")) {
+			if (type.equals("reporterName") || type.equals("content")) {
 				reports = reportService.searchReport(searchDto, pageable);
-			} else if (type.equals("targetId")) { // 신고 대상 아이디
-				reports = reportService.searchReportByTargetId(searchDto, pageable);
+			} else if (type.equals("targetName")) { // 신고 대상 닉네임
+				reports = reportService.searchReportByTargetName(searchDto, pageable);
 			} else if (type.equals("reportReason")) {
 				reports = reportService.searchReportByReportReason(searchDto, pageable);
 			} else if (type.equals("reportType")) {
@@ -188,6 +187,19 @@ public class AdminController {
 		model.addAttribute("size", size);
 
 		return "/admin/reportList";
+	}
+	
+	/* 신고 상세보기 */
+	@GetMapping(value = "/reports/{reportNum}")
+	public String viewReport(@PathVariable Long reportNum,
+			Model model, Long num, @AuthenticationPrincipal UserDetails user) {
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Report report = reportService.findReport(reportNum);
+		model.addAttribute("report", report);
+		log.info("신고자 닉네임 : " + report.getMember().getName());
+//		log.info("신고대상자 닉네임 : " + report.getPost().getMember().getName());
+
+		return "/admin/reportView";
 	}
 
 	// 건의관리

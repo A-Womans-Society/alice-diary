@@ -23,12 +23,12 @@
 							<form name="searchForm" id="searchForm"
 								class="d-flex justify-content-center" style="width: 70%;"
 								th:action="@{|/messagebox/pictures/${#authentication.name}|}"
-								modelAttribute="searchForm" th:method="get">
+								th:object="${searchDto}" th:method="get">
 								<select id="type" name="type" class="form-control"
 									style="width: 35%;">
 									<option value="">카테고리 선택</option>
 									<option value="filename">사진파일명</option>
-									<option value="id">상대아이디</option>
+									<option value="name">상대닉네임</option>
 								</select> <input type="text" id="keyword" name="keyword"
 									class="form-control" placeholder="카테고리 선택 후 검색해주세요."
 									style="width: 50%;">
@@ -47,10 +47,11 @@
 						</div>
 						<table class="table table-striped">
 							<thead>
-								<tr>
+								<tr class="text-center">
 									<th>No.</th>
+									<th>사진미리보기</th>
 									<th>사진이름</th>
-									<th>아이디</th>
+									<th>닉네임</th>
 									<th>주고받은 날짜</th>
 								</tr>
 							</thead>
@@ -66,9 +67,13 @@
 								<tbody class="text-center">
 									<tr th:each="m, status: ${mpdtos}">
 										<td th:text="${status.count}" />
+										<td><img id="picThumbnail"
+										th:src="@{/upload/message/}+@{${m.saveName}}"
+										style="width: 35px;" />
+										</td>
 										<td><a th:href="|./download/${m.fileNum}|"
 											th:text="${m.originName}"></a></td>
-										<td th:text="${m.theOtherId}"></td>
+										<td th:text="${m.theOtherName}"></td>
 										<td
 											th:text="${#temporals.format(m.sendDate, 'yyyy-MM-dd HH:mm')}"></td>
 									</tr>

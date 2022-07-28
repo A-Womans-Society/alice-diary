@@ -1,7 +1,5 @@
 package com.alice.project.repository;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.alice.project.domain.Member;

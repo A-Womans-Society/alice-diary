@@ -13,7 +13,7 @@
 
 <div layout:fragment="content">
 
-	<h1 th:text="${member.id} + '님의 회원정보'" align="center"></h1>
+	<h1 th:text="${member.name} + '님의 회원정보'" align="center"></h1>
 
 	<!--/* 회원상세보기 영역 */-->
 	<div class="container">
@@ -41,8 +41,10 @@
 					<button th:if="${member.getStatus().toString().equals('USER_IN')}"
 						th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
 					<button
-						th:unless="${member.getStatus().toString().equals('USER_IN')}"
+						th:if="${member.getStatus().toString().equals('USER_OUT')}"
 						th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button>
+					<button th:if="${member.getStatus().toString().equals('ADMIN')}"
+						type="button">관리자</button>
 				</p>
 			</th:block>
 

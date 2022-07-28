@@ -88,7 +88,7 @@
 					style="flex-direction: column;">
 					<h3 th:text="${postView.title}"></h3>
 					<div class="d-flex justify-content-between">
-						<span th:text="${postView.member.id}"></span><span
+						<span th:text="${postView.member.name}"></span><span
 							th:text="
                      ${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span>
 						<span th:if="${postView.updateDate != null}"
@@ -128,8 +128,6 @@
 						value="신고" class="btn btn-danger">
 					<button type="button" onClick="location.href='./list'"
 						class="btn btn-secondary">목록</button>
-
-
 				</div>
 			</div>
 			<div class='col-6 h-100 border p-0'>
