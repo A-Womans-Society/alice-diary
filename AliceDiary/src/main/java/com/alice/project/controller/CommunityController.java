@@ -119,7 +119,7 @@ public class CommunityController {
 		model.addAttribute("myComList", resultList);
 
 		// 내 친구들 목록 불러오기
-		List<Friend> fList = friendService.friendship(hostMem.getNum());
+		List<Friend> fList = friendService.weAreFriend(hostMem.getNum());
 		CommunityCreateDto ccdto = new CommunityCreateDto();
 		List<AlarmMemberListDto> cTmp = new ArrayList<AlarmMemberListDto>();
 
@@ -194,16 +194,6 @@ public class CommunityController {
 		return "redirect:./" + comNum + "/list";
 	}
 
-	/*
-	 * // 친구 프로필 상세보기
-	 * 
-	 * @GetMapping("/community/friendInfo/{id}") public Member
-	 * friendInfo(@PathVariable("id") String id) { Member member =
-	 * profileService.findById(id); log.info("member=" + member);
-	 * 
-	 * return member; }
-	 */
-
 	// 게시글 리스트 가져오기
 	@GetMapping("community/{comNum}/list")
 	public String list(@PathVariable Long comNum, Model model,
@@ -271,6 +261,7 @@ public class CommunityController {
 		}
 
 		model.addAttribute("comName", communityService.findNameByNum(comNum));
+		model.addAttribute("comDescription", communityService.findDescriptionByNum(comNum));
 		model.addAttribute("list", list);
 		model.addAttribute("comNum", comNum);
 		model.addAttribute("size", size);
@@ -354,7 +345,9 @@ public class CommunityController {
 
 		model.addAttribute("replyList", replyList);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
-		model.addAttribute("comNum", comNum);
+		
+		String comName = communityService.findNameByNum(comNum);
+		model.addAttribute("comName", comName);
 
 		return "community/comPostView";
 	}
@@ -416,7 +409,7 @@ public class CommunityController {
 
 		communityService.resign(comNum, userId);
 
-		return "redirect:./create";
+		return "redirect:./checkExist";
 	}
 
 	// 커뮤니티 관리페이지 - 커뮤니티 정보 가져오기

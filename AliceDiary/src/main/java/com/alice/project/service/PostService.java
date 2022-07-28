@@ -65,9 +65,15 @@ public class PostService {
 			searchList = postRepository.searchContent(postSearchDto.getKeyword(), pageable);
 		} else if (postSearchDto.getType().equals("writer")) {
 			log.info("postSearchDto.getKeyword() :" + postSearchDto.getKeyword());
-			Member member = memberRepository.findMemberById(postSearchDto.getKeyword());
-			if (member != null) {
-				searchList = postRepository.searchWriter(member.getNum(), pageable);
+			Page<Member> members = memberRepository.findMemberByName(postSearchDto.getKeyword(),pageable);
+			if (members != null) {
+				List<Post> tmpList = new ArrayList<>();
+				for(Member m : members) {
+					Page<Post> tmp = null;
+					tmp = postRepository.searchWriter(m.getNum(), pageable);	
+					tmpList.addAll(tmp.getContent());
+				}
+				searchList = new PageImpl<Post>(tmpList, pageable, tmpList.size());
 			} else {
 				searchList = postRepository.searchWriter(0L, pageable);
 			}

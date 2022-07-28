@@ -67,7 +67,7 @@ public class ReplyService {
 				rdto.setEdit(r.getEdit());
 				rdto.setMemberId(r.getMember().getId());
 				rdto.setPostNum(r.getPost().getNum());
-				rdto.setHeart(r.getHeart());
+				rdto.setMemberName(r.getMember().getName());
 				rdto.setStatus(r.getStatus());
 				rdto.setProfileImg(r.getMember().getProfileImg());
 				result.add(rdto);

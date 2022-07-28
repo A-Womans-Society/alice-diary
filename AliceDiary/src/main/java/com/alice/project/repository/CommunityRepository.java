@@ -51,5 +51,8 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
 	@Query(value = "select * from community", nativeQuery = true)
 	List<Community> getAll();
+	
+	@Query(value = "select description from community where community_num = :comNum", nativeQuery = true)
+	String findDescriptionByNum(Long comNum);
 
 }

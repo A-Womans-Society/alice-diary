@@ -28,6 +28,8 @@ public class ReplyDto {
 	private Long heart;
 
 	private String memberId;
+	
+	private String memberName;
 
 	private Long memberNum;
 

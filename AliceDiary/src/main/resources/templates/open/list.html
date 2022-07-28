@@ -57,7 +57,7 @@
 										<td th:text="${size - status.index-(nowPage-1)*list.size}" />
 										<td><a th:text="${post.title}"
 											th:href="@{/open/get(num=${post.num})}"></a></td>
-										<td th:text="${post.member.id}"></td>
+										<td th:text="${post.member.name}"></td>
 										<td
 											th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
 										<td th:text="${post.viewCnt}"></td>

@@ -77,7 +77,8 @@ public class CommunityService {
 		comRepository.descriptionEdit(comNum, manageCom.getDescription());
 
 	}
-
+	
+	@Transactional
 	public void deleteCom(Long comNum) {
 		comRepository.deleteCom(comNum);
 	}
@@ -90,5 +91,10 @@ public class CommunityService {
 	// 전체 커뮤니티 중 번호랑 멤버리스트(string) 칼럼 2개 가져오기
 	public List<Community> getAll() {
 		return comRepository.getAll();
+	}
+	
+	//커뮤니티 번호로 설명 가져오기
+	public String findDescriptionByNum(Long comNum) {
+		return comRepository.findDescriptionByNum(comNum);
 	}
 }

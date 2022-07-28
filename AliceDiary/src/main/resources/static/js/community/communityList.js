@@ -9,7 +9,7 @@ function resign(comNum,userId) {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
          if (httpRequest.status === 200) {
                if(confirm('탈퇴를 취소할 수 없습니다. 해당 커뮤니티를 정말 탈퇴하시겠습니까?') == true){
-                  location.href = "/AliceDiary/community/create";
+                  location.href = "/AliceDiary/community/checkExist";
                } else {
                      return false;         
          }
