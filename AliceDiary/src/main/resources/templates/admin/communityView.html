@@ -9,55 +9,43 @@
 </th:block>
 
 <div layout:fragment="content">
-	<div class="container-fluid h-100">
-		<div class="row h-100">
-			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">
-					#
-					<th:block th:text="${community.name}"></th:block>
-				</h2>
-				<div>
-					<h5 class="text-center m-0 pt-5" style="height: 5%;">
-						<th:block th:text="${community.description}"></th:block>
-					</h5>
-					<h5 class="text-center m-0 pt-5" style="height: 5%;">
-						커뮤니티 생성자 : <a th:text="${community.member.name}"
-							th:href="@{|/admin/member/${community.member.id}|}"></a>
-					</h5>
-					<h5 class="text-center m-0 pt-5" style="height: 5%;">
-						커뮤니티 멤버리스트 : 
-						<th:block th:if="${memberMap != null}"
-							th:each="entry : ${memberMap}">
-								<a th:text="${entry.value}"
-							th:href="@{|/admin/member/${entry.key}|}"></a>
-						</th:block>
-						<th:block th:unless="${memberMap != null}">
-							<tr>
-								<td>커뮤니티 멤버가 없습니다!😢</td>
-							</tr>
-						</th:block>
+	<div style="height: 15%;">
+		<h2 class="text-center m-0 pt-4">
+			#
+			<th:block th:text="${community.name}"></th:block>
+		</h2>
+		<h5 class="text-center" th:text="${community.description}"></h5>
+	</div>
 
-					</h5>
-				</div>
+	<div class="container-fluid" style="height: 85%;">
+		<div class="row h-100">
+			<div class="col-10 h-100">
 				<div class="d-flex justify-content-center" style="height: 13%;">
 					<div class="d-flex align-items-center"
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
-						<div class="w-100 text-center">
+						<div class="w-100 d-flex justify-content-center">
 							<form th:action="@{|/admin/community/${comNum}/list|}"
+								style="width: 70%;" class="d-flex justify-content-center"
 								th:method="get" th:object="${postSearchDto}" name="searchForm"
 								id="searchForm">
-								<select name="type">
+								<select name="type" class="form-control" style="width: 35%;">
 									<option value="title">제목</option>
 									<option value="content">내용</option>
 									<option value="writer">작성자</option>
-								</select> <input type="text" name="keyword" placeholder="검색어를 입력해주세요">
-								<button type="submit">검색</button>
+								</select> <input type="text" name="keyword" style="width: 50%;"
+									class="form-control" placeholder="검색어를 입력해주세요">
+								<button type="submit" class="btn">검색</button>
 							</form>
 						</div>
 					</div>
 				</div>
-				<div class="d-flex justify-content-center" style="height: 72%;">
-					<div class="pt-3 pb-3" style="width: 80%; height: 95%;">
+				<div class="text-right pr-5 pt-2" id="btnBox">
+					<button type="button" id="delete_confirm"
+						th:onclick="deleteConfirm([[${community.num}]])" class="btn">커뮤니티
+						삭제</button>
+				</div>
+				<div class="d-flex justify-content-center" style="height: 70%;">
+					<div class="pb-3 pt-1" style="width: 80%; height: 95%;">
 						<div class='text-right'>
 							<a th:if="${postSearchDto.keyword != null}"
 								th:href="@{|/admin/community/${comNum}/list|}"><input
@@ -134,19 +122,41 @@
 									</a></li>
 								</ul>
 							</nav>
-							<div class="text-right" id="btnBox">
-								<button type="button" id="delete_confirm"
-									th:onclick="deleteConfirm([[${community.num}]])" class="btn">커뮤니티 삭제</button>
-							</div>
+
 						</div>
 
 					</div>
 				</div>
 
 			</div>
+			<div class="col-2 h-100 border-left">
+				<div class="text-center pt-4 pb-2 mb-3"
+					style="height: 25%; border: 2px solid #dccae9; border-radius: 10px;">
+					<h6>
+						<strong>커뮤니티 생성자</strong>
+					</h6>
+					<a th:text="${community.member.name}"
+						th:href="@{|/admin/member/${community.member.id}|}"></a>
 
+				</div>
+				<div class=" pt-4 pb-2"
+					style="height: 65%; border: 2px solid #dccae9; border-radius: 10px;">
+					<h6 class="text-center">
+						<strong>커뮤니티 멤버 리스트</strong>
+					</h6>
+					<ul>
+						<th:block th:if="${memberMap != null}"
+							th:each="entry : ${memberMap}">
+							<li><a th:text="${entry.value}"
+								th:href="@{|/admin/member/${entry.key}|}"></a></li>
+						</th:block>
+						<th:block th:unless="${memberMap != null}">
+							<li>커뮤니티 멤버가 없습니다!😢</li>
+						</th:block>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>
-
 </div>
 </html>

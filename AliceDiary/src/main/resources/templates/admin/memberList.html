@@ -18,10 +18,12 @@
 				<div class="d-flex justify-content-center" style="height: 13%;">
 					<div class="d-flex align-items-center"
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
-						<div class="w-100 text-center">
+						<div class="w-100 d-flex justify-content-center">
 							<form th:action="@{/admin/member}" th:method="get"
+								style="width: 70%;" class="d-flex justify-content-center"
 								name="searchForm" id="searchForm" th:object="${searchDto}">
-								<select id="type" name="type">
+								<select id="type" name="type" class="form-control"
+									style="width: 35%;">
 									<option value="">카테고리 선택</option>
 									<option value="num">회원번호</option>
 									<option value="id">아이디</option>
@@ -30,8 +32,9 @@
 									<option value="reportCnt">신고 누적횟수</option>
 									<option value="status">회원상태</option>
 								</select> <input type="text" id="keyword" name="keyword"
+									style="width: 50%;" class="form-control"
 									placeholder="검색어를 입력해주세요" />
-								<button type="submit">검색</button>
+								<button type="submit" class="btn">검색</button>
 							</form>
 						</div>
 					</div>
@@ -80,11 +83,13 @@
 										<td th:text="${member.status}"></td>
 										<td>
 											<button th:if="${#strings.equals(member.status, 'USER_IN')}"
-												th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
+												th:onclick="deleteMember([[${member.num}]])" type="button"
+												class="btn btn-dark text-white">내보내기</button>
 											<button th:if="${#strings.equals(member.status, 'USER_OUT')}"
-												th:onclick="returnMember([[${member.num}]])" type="button">복구하기</button>
+												th:onclick="returnMember([[${member.num}]])" type="button"
+												class="btn btn-dark text-white">복구하기</button>
 											<button th:if="${#strings.equals(member.status, 'ADMIN')}"
-												type="button">관리자</button>
+												type="button" class="btn btn-dark text-white">관리자</button>
 										</td>
 									</tr>
 								</tbody>

@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 .messages-box, .chat-box {
-	height: 310px;
+	height: 100%;
 	overflow-y: scroll;
 }
 
@@ -28,4 +28,8 @@ input::placeholder {
     width: 1px;
     height: 1px;
     opacity: 0;
+}
+
+.bg-friendMsg {
+	background: #d7d1d9;
 }
