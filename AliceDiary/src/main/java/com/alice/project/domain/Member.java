@@ -277,8 +277,8 @@ public class Member extends BaseTimeEntity {
 		return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
 	}
 
-	public static Member changeMemberOutId(Member member) {
-		member.id = "(알수없음)";
+	public static Member changeMemberOutName(Member member) {
+		member.name = "(알수없음)";
 		return member;
 	}
 

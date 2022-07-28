@@ -108,3 +108,4 @@ $("input:checkbox").click(checkedChange);
 			}
 			return unescape(cookieValue);
 		}
+		

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>404 Error Page</title>
+</head>
+<body>
+	<form th:action="@{/error}" method="post">
+		<center>
+			<img th:src="@{/img/404.png}" style="width: 600px; height: auto;">
+		</center>
+		<input type="submit" value="메인으로 가기">
+	</form>
+</body>
+</html>

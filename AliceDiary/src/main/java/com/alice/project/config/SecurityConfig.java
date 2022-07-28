@@ -52,9 +52,9 @@ public class SecurityConfig {
 
 		http.authorizeRequests()
 				.mvcMatchers("/css/**", "/font/**", "/js/**", "/img/**").permitAll()
-				.mvcMatchers("/","/agree/**", "/register/**", "/login/**", "/check-email-token/**", "/oauth2/**","/**").permitAll()
-				.mvcMatchers("/admin/**").hasRole("ADMIN")
-				.anyRequest().hasAnyRole("ADMIN","USER_IN");
+				.mvcMatchers("/","/agree/**", "/register/**", "/login/**", "/check-email-token/**", "/oauth2/**", "/error/**").permitAll()
+				.mvcMatchers("/admin/**").hasAuthority("ADMIN")
+				.anyRequest().hasAnyAuthority("ADMIN", "USER_IN");
 		
 //      http.exceptionHandling()
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())

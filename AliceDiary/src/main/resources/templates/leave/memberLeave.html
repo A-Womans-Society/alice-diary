@@ -43,15 +43,6 @@
 								class="DOC_TEXT w-75" name="DOC_TEXT"
 								placeholder=" 500자 이내로 작성해주세요." th:onkeyup="count()"></textarea>
 						</div>
-						<div class="d-flex justify-content-center">
-							<div class='d-flex align-items-center' style="width: 60%;">
-								<span class="w-25">비밀번호 입력</span>
-								<div class="w-75">
-									<input class="form-control " type="password"
-										th:field="*{password}" placeholder="현재 비밀번호 입력" required>
-								</div>
-							</div>
-						</div>
 						<div class='text-center pt-3'>
 							<input class="btn btn-secondary" name="check" type="submit"
 								th:onclick="return leaveCheck()" value="확인" /> <input
