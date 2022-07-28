@@ -11,16 +11,17 @@
 	<div class="container-fluid h-100">
 		<div class="row h-100">
 			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">회원목록</h2>
-				<h5 class="text-center m-0 pt-5" style="height: 15%;">전체 회원들의
-					상세정보를 볼 수 있습니다.</h5>
+				<div style="height: 15%;">
+					<h2 class="text-center m-0 pt-4">회원목록</h2>
+					<h5 class="text-center">전체 회원들의 상세정보를 볼 수 있습니다.</h5>
+				</div>
 				<div class="d-flex justify-content-center" style="height: 13%;">
 					<div class="d-flex align-items-center"
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
 						<div class="w-100 text-center">
-							<form th:action="@{/admin/member}" method="get"
-								modelAttribute="searchDto">
-								<select id="type" name="type" onchange="changeSelect()">
+							<form th:action="@{/admin/member}" th:method="get"
+								name="searchForm" id="searchForm" th:object="${searchDto}">
+								<select id="type" name="type">
 									<option value="">카테고리 선택</option>
 									<option value="num">회원번호</option>
 									<option value="id">아이디</option>
@@ -29,15 +30,7 @@
 									<option value="reportCnt">신고 누적횟수</option>
 									<option value="status">회원상태</option>
 								</select> <input type="text" id="keyword" name="keyword"
-									placeholder="카테고리 선택 후 검색해주세요." />
-								<!-- 			<div id="selectStatus" style="display:none;"> -->
-								<!-- 			 <select class="form-control" th:field="*{status}"> -->
-								<!--                   <option th:each="statusValue : ${T(com.alice.project.domain.Status).values()}" -->
-								<!--                     th:value="${statusValue.name()}" -->
-								<!--                     th:text="${statusValue.name()}"> -->
-								<!--                     </option> -->
-								<!--                 </select> -->
-								<!-- 			</div> -->
+									placeholder="검색어를 입력해주세요" />
 								<button type="submit">검색</button>
 							</form>
 						</div>
@@ -49,16 +42,14 @@
 						<div class='text-right'>
 							<a th:if="${searchDto.keyword != null}"
 								th:href="@{/admin/member}"> <input type="button" class="btn"
-								value="목록">
+								value="전체목록">
 							</a>
-
 						</div>
 						<table class="w-100 table table-striped table-hover">
 							<thead>
 								<tr class="text-center">
 									<th>No.</th>
 									<th>회원번호</th>
-									<th>아이디</th>
 									<th>이름</th>
 									<th>전화번호</th>
 									<th>이메일</th>
@@ -70,7 +61,7 @@
 							<th:block th:if="${endPage} == 0">
 								<tbody class="text-center">
 									<tr>
-										<td colspan="5">회원목록이 비었습니다!</td>
+										<td colspan="8">회원목록이 비었습니다!</td>
 									</tr>
 								</tbody>
 							</th:block>
@@ -81,9 +72,8 @@
 										<td th:text="${size - stat.index-(nowPage-1)*members.size}"></td>
 										<td th:text="${member.num}"></td>
 										<td><a th:href="@{'/admin/member/'+${member.id}}"> <span
-												th:text="${member.id}"></span>
+												th:text="${member.name}"></span>
 										</a></td>
-										<td th:text="${member.name}"></td>
 										<td th:text="${member.mobile}"></td>
 										<td th:text="${member.email}"></td>
 										<td th:text="${member.reportCnt}"></td>
@@ -144,10 +134,14 @@
 					</div>
 				</div>
 			</div>
-			<th:block layout:fragment="script">
+		</div>
+	</div>
+</div>
 
-				<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
-				<script th:src="@{/js/admin/memberList.js}"></script>
+<th:block layout:fragment="script">
 
-			</th:block>
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+	<script th:src="@{/js/admin/memberList.js}"></script>
+
+</th:block>
 </html>

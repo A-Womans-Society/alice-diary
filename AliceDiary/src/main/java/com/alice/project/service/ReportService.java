@@ -65,6 +65,11 @@ public class ReportService {
 	public Page<Report> findReports(Pageable pageable) {
 		return reportRepository.findAll(pageable);
 	}
+	
+	/* 신고 객체 하나 반환 */
+	public Report findReport(Long reportNum) {
+		return reportRepository.getReport(reportNum);
+	}
 
 	/* 신고 검색 기능 */
 	public Page<Report> searchReport(SearchDto sdto, Pageable pageable) {
@@ -73,11 +78,13 @@ public class ReportService {
 		String type = sdto.getType();
 		String keyword = sdto.getKeyword();
 		List<Report> reports = new ArrayList<>();
-		if (type.equals("reporterId")) { // 신고자 검색 (신고자 아이디)
-			List<Member> memberlist = memberRepository.findByIdContaining(keyword);
-			for (Member m : memberlist) {
-				Report r = reportRepository.searchByReporterId(m.getNum());
-				reports.add(r);
+		if (type.equals("reporterName")) { // 신고자 검색 (신고자 아이디)
+			List<Member> memberlist = memberRepository.findByNameContaining(keyword);
+			if (memberlist != null) {
+				for (Member m : memberlist) {
+					List<Report> results = reportRepository.searchByReporterId(m.getNum());
+					reports.addAll(results);
+				}				
 			}
 			final int start = (int) pageable.getOffset();
 			final int end = Math.min((start + pageable.getPageSize()), reports.size());
@@ -88,27 +95,26 @@ public class ReportService {
 		return reportList;
 	}
 
-	public Page<Report> searchReportByTargetId(SearchDto sdto, Pageable pageable) {
-		String type = sdto.getType(); // targetId (신고대상자 아이디)
+	public Page<Report> searchReportByTargetName(SearchDto sdto, Pageable pageable) {
+		String type = sdto.getType(); // targetName (신고대상자 닉네임)
 		String keyword = sdto.getKeyword();
 
 		Page<Report> reportList = reportRepository.findAll(pageable);
 		List<Report> list = new ArrayList<>();
 		log.info("reportList.getSize()  : " + reportList.getSize());
-		if (reportList == null || reportList.isEmpty() || reportList.getSize() == 0) {
-			return null;
-		}
-		for (Report report : reportList) {
-			log.info("!!!!!!!!!!!!report.getReply().getId() : " + report.getReply().getMember().getId());
-			if (report.getReportType().toString().equals("POST")) {
-				log.info("!!!!!!!!!!!!!!!!!!postid : " + report.getPost().getMember().getId());
-				if (report.getPost().getMember().getId().contains(keyword)) {
-					list.add(report);
-				}
-			} else if (report.getReportType().toString().equals("REPLY")) {
-				log.info("!!!!!!!!!!!!!!!!!!replyid : " + report.getReply().getMember().getId());
-				if (report.getReply().getMember().getId().contains(keyword)) {
-					list.add(report);
+		if (reportList != null) {
+			for (Report report : reportList) {
+				log.info("!!!!!!!!!!!!report.getReply().getId() : " + report.getReply().getMember().getId());
+				if (report.getReportType().toString().equals("POST")) {
+					log.info("!!!!!!!!!!!!!!!!!!postid : " + report.getPost().getMember().getId());
+					if (report.getPost().getMember().getName().contains(keyword)) {
+						list.add(report);
+					}
+				} else if (report.getReportType().toString().equals("REPLY")) {
+					log.info("!!!!!!!!!!!!!!!!!!replyid : " + report.getReply().getMember().getId());
+					if (report.getReply().getMember().getName().contains(keyword)) {
+						list.add(report);
+					}
 				}
 			}
 		}
@@ -156,11 +162,12 @@ public class ReportService {
 
 		return reportList;
 	}
-
+	
+	@Transactional
 	public void deleteReportWithReply(Long replyNum) {
 		reportRepository.deleteByReplyNum(replyNum);
 	}
-
+	@Transactional
 	public void deleteReportWithPost(Long postNum) {
 		reportRepository.deleteByPostNum(postNum);
 	}

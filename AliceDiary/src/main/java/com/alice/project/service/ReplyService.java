@@ -70,6 +70,7 @@ public class ReplyService {
 				rdto.setHeart(r.getHeart());
 				rdto.setStatus(r.getStatus());
 				rdto.setProfileImg(r.getMember().getProfileImg());
+				rdto.setMemberName(r.getMember().getName());
 				result.add(rdto);
 			}
 		}

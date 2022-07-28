@@ -58,6 +58,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
 	@Query("SELECT m FROM Member AS m WHERE id LIKE '%'||:keyword||'%'")
 	Page<Member> searchById(String keyword, Pageable pageable);
 
+	@Query("SELECT m FROM Member AS m WHERE name LIKE '%'||:keyword||'%'")
+	List<Member> searchByName(String keyword);
+	
 	@Query("SELECT m FROM Member AS m WHERE num LIKE '%'||:keyword||'%'")
 	Page<Member> searchByNum(Long keyword, Pageable pageable);
 
@@ -84,5 +87,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
 	String findIdByNum(Long num);
 
 	Member findAllById(String[] members);
+	
+	List<Member> findByNameContaining(String keyword);
 
 }

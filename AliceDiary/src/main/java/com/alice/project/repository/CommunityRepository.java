@@ -2,6 +2,8 @@ package com.alice.project.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -51,5 +53,18 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
 	@Query(value = "select * from community", nativeQuery = true)
 	List<Community> getAll();
+	
+	/* 관리자모드 커뮤니티 관리 */
+	@Query(value = "select * from community", nativeQuery = true)
+	Page<Community> searchAllCommunities(Pageable pageable);
+	
+	@Query(value = "select * from Community where community_num like '%'||:comNum||'%' order by community_num desc", nativeQuery = true)
+	Page<Community> searchByComNum(Long comNum, Pageable pageable);
+
+	@Query(value = "select * from Community where name like '%'||:name||'%' order by community_num desc", nativeQuery = true)
+	Page<Community> searchByName(String name, Pageable pageable);
+
+	@Query(value = "select * from Community where member_num like '%'||:memberNum||'%' order by community_num desc", nativeQuery = true)
+	Page<Community> searchByCreator(Long memberNum, Pageable pageable);
 
 }
