@@ -3,7 +3,7 @@ function replySubmit(postNum, memberId) {
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
    let param = "memberId="+memberId+"&postNum="+postNum+"&content=" + document.getElementById("replyContent").value;   
-   console.log(postNum);
+
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
@@ -99,7 +99,6 @@ function replySubmit(postNum, memberId) {
 
 
 function deleteConfirm(num) {
-   console.log(num);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
@@ -125,8 +124,6 @@ function deleteConfirm(num) {
 }
    
 function showReplyBox(parentReplyBox){
-   console.log(parentReplyBox);
-
    if(parentReplyBox.style.display=="none") {
       parentReplyBox.style.display = "block";
    } else {
@@ -135,9 +132,6 @@ function showReplyBox(parentReplyBox){
 }
       
 function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyContent, parentRepContentTable) {
-   console.log(postNum);
-   console.log(parentRepNum);
-   console.log(memberId);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
@@ -208,7 +202,6 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
 }
 
 function deleteChild(childNum) {
-   console.log(childNum);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
@@ -216,9 +209,7 @@ function deleteChild(childNum) {
    httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
          if (httpRequest.status === 200) {
-         console.log("childRepContentTable"+childNum);
             let removeTr = document.getElementById("childRepContentTable"+childNum);
-            console.log(removeTr);
             removeTr.parentNode.removeChild(removeTr);
             alert('댓글이 삭제되었습니다!');
 
@@ -237,7 +228,6 @@ function deleteChild(childNum) {
 }
 
 function deleteParent(pNum) {
-   console.log(pNum);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
@@ -294,22 +284,17 @@ function openModalPost(postNum, userId){
 }
 
 function postReport(userId, postNum, reportReason, content) {
-   console.log(postNum);
-   console.log(userId);
-   
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
    let param = "userId="+userId+"&postNum="+postNum+
    "&reportReason="+document.querySelector('input[name="reportReasons"]:checked').value
    +"&content="+document.getElementById("reportContent").value;
-   console.log(param);
    
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
                 let result = JSON.parse(httpRequest.response);
-            console.log(result);
             document.getElementById("reportContent").value = "";
               alert('게시글이 신고되었습니다.');
            
@@ -360,22 +345,18 @@ function openModalReply(replyNum, userId){
 }
 
 function replyReport(userId, reportReason, content) {
-   console.log(userId);
    let replyNum = document.getElementById('replyTarget').value;
-   console.log(replyNum);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
    let param = "userId="+userId+"&replyNum="+replyNum+
    "&reportReason="+document.querySelector('input[name="reportReasons"]:checked').value
    +"&content="+document.getElementById("reportRepContent").value;
-   console.log(param);
    
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
                 let result = JSON.parse(httpRequest.response);
-            console.log(result);
             document.getElementById("reportRepContent").value = "";
             var radio = document.querySelector('input[type=radio][name=reportReasons]:checked');
             radio.checked = false;
@@ -404,14 +385,11 @@ function openModalMsg(msgTo, msgFrom){
 
 function replyMsg(msgFrom, content) {
    let replyMsgTo = document.getElementById('replyMsgTo').value;
-   console.log("msgFrom:"+msgFrom);
-   console.log("replyMsgTo:"+replyMsgTo);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
    let param = "messageFromId="+msgFrom+"&messageToId="+replyMsgTo
    +"&content="+document.getElementById("replyMsgContent").value;
-   console.log(param);
    
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {

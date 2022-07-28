@@ -56,7 +56,7 @@ public class PostController {
 
       model.addAttribute("writeFormDto", new WriteFormDto());
       model.addAttribute("member", memberService.findById(user.getUsername()));
-      return "open/writeForm";
+      return "community/writeForm";
    }
 
    // 글쓰기
@@ -125,7 +125,7 @@ public class PostController {
       log.info("startPage:" + startPage);
       log.info("endPage:" + endPage);
 
-      return "open/list";
+      return "community/list";
    }
 
    // 게시글 상세보기
@@ -148,7 +148,7 @@ public class PostController {
       model.addAttribute("replyList", replyList);
       model.addAttribute("member", memberService.findById(user.getUsername()));
 
-      return "open/postView";
+      return "community/postView";
    }
 
    // get 게시글 수정하기 첨부파일도 수정
@@ -164,7 +164,7 @@ public class PostController {
       model.addAttribute("files", files);
       model.addAttribute("updateDto", updateDto);
       model.addAttribute("member", memberService.findById(user.getUsername()));
-      return "open/updateForm";
+      return "community/updateForm";
    }
 
    // post 게시글 수정하기 첨부파일도 수정

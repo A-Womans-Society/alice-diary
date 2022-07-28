@@ -124,7 +124,7 @@ public class CommunityController {
 		List<AlarmMemberListDto> cTmp = new ArrayList<AlarmMemberListDto>();
 
 		for (Friend f : fList) {
-			Member fInfo = memberService.findByNum(f.getAddeeNum());
+			Member fInfo = memberService.findByNum(f.getMember().getNum());
 			AlarmMemberListDto tmp = new AlarmMemberListDto();
 			tmp.setId(fInfo.getId());
 			tmp.setName(fInfo.getName());
@@ -345,7 +345,7 @@ public class CommunityController {
 
 		model.addAttribute("replyList", replyList);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
-		
+
 		String comName = communityService.findNameByNum(comNum);
 		model.addAttribute("comName", comName);
 

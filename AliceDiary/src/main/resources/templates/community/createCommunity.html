@@ -2,11 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://thymeleaf.org/extras/spring-security"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/communityLayout}">
+	layout:decorate="~{layouts/myCommunityLayout}">
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/createCommunity.js}"></script>
-	<!-- <script th:src="@{https://code.jquery.com/jquery-1.12.4.js}"></script> -->
 	<script
 		th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js}"></script>
 </th:block>
@@ -18,57 +17,39 @@
 </th:block>
 
 <div layout:fragment="content">
-	<div class="container-fluid h-100">
-		<div class="row h-100">
-			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">커뮤니티 생성하기</h2>
 
-				<form th:action="@{/community/create}" method="post" id="form"
-					th:object="${ccdto}">
+	<h2 class="text-center m-0 pt-5" style="height: 15%;">커뮤니티 생성하기</h2>
 
-					<select class="selectpicker" data-live-search="true"
+	<form th:action="@{/community/create}" method="post" id="form"
+		class="h-75 text-center d-flex justify-content-center w-100" th:object="${ccdto}">
+		<div class="w-75">
+			<table class="table w-100">
+				<tr>
+					<th>커뮤니티 이름</th>
+					<td><input type="text" th:field="*{comName}"
+						class="form-control"></td>
+					<th>초대하기</th>
+					<td><select class="selectpicker" data-live-search="true"
 						th:field="*{comMembers}" multiple required>
-						<th:block
-							th:if="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
-							<option value="">나를 추가한 친구가 없어요,,☹</option>
-						</th:block>
-						<th:block
-							th:unless="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
-							<option th:each="f : ${ccdto.friendsList}" th:value="${f.id}"
-								th:text="${f.name}"></option>
-						</th:block>
-					</select>
-
-					<div>
-						커뮤니티 이름<input type="text" th:field="*{comName}">
-					</div>
-					<div>
-						커뮤니티 설명
-						<textarea type="text" th:field="*{description}" cols="10" rows="5"></textarea>
-					</div>
-
-					<input type="submit" th:onclick="return check()" value="커뮤니티 만들기">
-				</form>
-
-				<div>
-					<th:block th:each="hostCom : ${hostComs}"
-						th:if="${#authentication.name} == ${hostCom.member.id}">
-						<ul>
-							<li><a th:href="@{|/community/${hostCom.num}/list|}"
-								th:text="${hostCom.name}"></a></li>
-						</ul>
-					</th:block>
-					<th:block th:each="myCom : ${myComList}">
-						<ul>
-							<li><a th:href="@{|/community/${myCom.num}/list|}"
-								th:text="${myCom.name}"></a></li>
-						</ul>
-					</th:block>
-				</div>
-
-			</div>
+							<th:block
+								th:if="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
+								<option value="">나를 추가한 친구가 없어요,,☹</option>
+							</th:block>
+							<th:block
+								th:unless="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
+								<option th:each="f : ${ccdto.friendsList}" th:value="${f.id}"
+									th:text="${f.name}"></option>
+							</th:block>
+					</select></td>
+				</tr>
+				<tr>
+					<th>커뮤니티 설명</th>
+					<td colspan="4"><textarea type="text"
+							th:field="*{description}" cols="10" rows="5" class="form-control"></textarea></td>
+				</tr>
+			</table>
+			<input type="submit" class="btn btn-secondary" th:onclick="return check()" value="커뮤니티 만들기">
 		</div>
-	</div>
-
+	</form>
 </div>
 </html>
