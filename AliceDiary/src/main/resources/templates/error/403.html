@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<script th:src="@{/js/login/login.js}"></script>
+<script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
+<title>403 Error Page</title>
+</head>
+<body>
+	<form th:action="@{/error}" method="post">
+		<center>
+			<img th:src="@{/img/403.png}" style="width: 600px; height: auto;">
+		</center>
+		<input type="submit" class="btn" value="메인으로 가기">
+	</form>
+</body>
+</html>

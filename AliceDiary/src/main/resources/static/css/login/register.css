@@ -1,11 +1,11 @@
 @charset "UTF-8";
 
-.id_ok {
+#id_ok {
 	color: #6A82FB;
 	display: none;
 }
 
-.id_already {
+#id_already {
 	color: #F67360;
 	display: none;
 }
