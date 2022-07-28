@@ -30,6 +30,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
 	// id중복 체크를 위한 메서드
 	boolean existsById(String id);
 
+	// nickname 중복 체크를 위한 메서드
+	boolean existsByName(String name);
+
 	// id찾기
 	Member findByNameAndMobileAndEmail(String name, String mobile, String email);
 

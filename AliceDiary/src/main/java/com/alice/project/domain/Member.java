@@ -56,7 +56,7 @@ public class Member extends BaseTimeEntity {
 	private String id; // 회원 아이디
 	@Column(nullable = true)
 	private String password; // 회원 비밀번호
-	@Column(nullable = false)
+	@Column(unique = true, nullable = false)
 	private String name; // 회원 이름
 	@Column(nullable = false)
 	private LocalDate birth; // 회원 생일

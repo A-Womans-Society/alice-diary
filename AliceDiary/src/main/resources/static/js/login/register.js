@@ -1,10 +1,43 @@
 function checkId() {
 		var header = $("meta[name='_csrf_header']").attr('content');
 		var token = $("meta[name='_csrf']").attr('content');
-		var input = document.getElementById("id").value; //id값이 "id"인 입력란의 값을 저장
-		console.log(input);
+		var input = document.getElementById("id").value;//id값이 "id"인 입력란의 값을 저장
+		if(input.length > 0) {
+			$.ajax({
+				url : './register/idCheck', //컨트롤러에서 인식할 주소
+				type : 'POST', //POST 방식으로 전달
+				data : {
+					id : input
+				},
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				success : function(data) { //컨트롤러에서 넘어온 check값을 받는다
+					if (data == 0) {
+						$('#id_ok').css("display", "inline-block");
+						$('#id_already').css("display", "none");
+					} else if (data == 1) {
+						$('#id_already').css("display", "inline-block");
+						$('#id_ok').css("display", "none");
+					}
+				},
+				error : function() {
+					alert("에러가 발생했습니다.");
+				}
+			});
+		}else {
+			document.getElementById('id_ok').style.display="none";
+			document.getElementById('id_already').style.display="none";
+		}
+	};
+	
+function checkNickname() {
+	var header = $("meta[name='_csrf_header']").attr('content');
+	var token = $("meta[name='_csrf']").attr('content');
+	var input = document.getElementById("name").value; //id값이 "name"인 입력란의 값을 저장
+	if(input.length > 0) {
 		$.ajax({
-			url : './register/idCheck', //컨트롤러에서 인식할 주소
+			url : './register/nicknameCheck', //컨트롤러에서 인식할 주소
 			type : 'POST', //POST 방식으로 전달
 			data : {
 				id : input
@@ -14,19 +47,23 @@ function checkId() {
 			},
 			success : function(data) { //컨트롤러에서 넘어온 check값을 받는다
 				if (data == 0) {
-					$('.id_ok').css("display", "inline-block");
-					$('.id_already').css("display", "none");
+					$('#nickname_ok').css("display", "inline-block");
+					$('#nickname_already').css("display", "none");
 				} else if (data == 1) {
-					$('.id_already').css("display", "inline-block");
-					$('.id_ok').css("display", "none");
+					$('#nickname_already').css("display", "inline-block");
+					$('#nickname_ok').css("display", "none");
 				}
 			},
 			error : function() {
 				alert("에러가 발생했습니다.");
 			}
 		});
-
-	};
+	}else {
+			document.getElementById('nickname_ok').style.display="none";
+			document.getElementById('nickname_already').style.display="none";
+		}
+};
+	
 function checkPwd() {
 	var password = document.getElementById('password');
 	var confirmPassword = document.getElementById('confirmPassword');
