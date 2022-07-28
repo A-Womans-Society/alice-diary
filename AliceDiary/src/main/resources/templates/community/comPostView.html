@@ -81,7 +81,10 @@
 </th:block>
 
 <div layout:fragment="content">
-	<h3 class="text-center m-0 pt-5" style="height: 15%;">게시글 상세보기</h3>
+	<h3 class="text-center m-0 pt-5" style="height: 15%;">
+		#
+		<th:block th:text="${comName}"></th:block>
+	</h3>
 	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
 		<div class='row ml-5 mr-5' style="height: 80%;">
 			<div class="col-6 h-100 border">
@@ -89,7 +92,12 @@
 					style="flex-direction: column;">
 					<h3 th:text="${postView.title}"></h3>
 					<div class="d-flex justify-content-between">
-						<span th:text="${postView.member.id}"></span><span
+						<span th:text="${postView.member.name}"></span>
+						<button th:if="${#authentication.name} != ${postView.member.id}"
+							th:onclick="openModalMsg([[${postView.member.id}]],[[${postView.member.name}]],[[${#authentication.name}]])">
+							<img th:src="@{/img/replymsg.png}" style="width: 20px;">
+						</button>
+						<span
 							th:text="
                      ${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span>
 						<span th:if="${postView.updateDate != null}"
@@ -152,11 +160,11 @@
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"
-													th:text="${reply.memberId}"> </span>&nbsp;<span
+													th:text="${reply.memberName}"> </span>&nbsp;<span
 													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
 												</span> <span> <span
 													th:if="${#authentication.name} != ${reply.memberId}"><button
-															th:onclick="openModalMsg([[${reply.memberId}]],[[${#authentication.name}]])">
+															th:onclick="openModalMsg([[${reply.memberId}]],[[${reply.memberName}]],[[${#authentication.name}]])">
 															<img th:src="@{/img/replymsg.png}" style="width: 20px;">
 														</button> </span> <span th:if="${reply.parentRepNum} == null">
 														<button type="button" class="btn btn-sm"
@@ -293,7 +301,7 @@
 				<form th:action="@{/open/replymsg}" method="post">
 					<div class="modal-body">
 						<div>
-							받는 사람 : <input type="text" id="replyMsgTo" readonly />
+							받는 사람 : <input type="text" id="replyMsgToName" readonly />
 						</div>
 						<div>
 							내용 :
@@ -304,7 +312,7 @@
 						<button type="button"
 							th:onclick="replyMsg([[${#authentication.name}]])">쪽지보내기</button>
 					</div>
-					<input type="hidden" id="replyMsgTo">
+					<input type="hidden" id="replyMsgToId">
 				</form>
 			</div>
 		</div>

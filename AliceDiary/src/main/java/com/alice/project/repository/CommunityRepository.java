@@ -53,7 +53,10 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
 	@Query(value = "select * from community", nativeQuery = true)
 	List<Community> getAll();
-	
+
+	@Query(value = "select description from community where community_num = :comNum", nativeQuery = true)
+	String findDescriptionByNum(Long comNum);
+
 	/* 관리자모드 커뮤니티 관리 */
 	@Query(value = "select * from community", nativeQuery = true)
 	Page<Community> searchAllCommunities(Pageable pageable);
@@ -66,5 +69,6 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
 	@Query(value = "select * from Community where member_num like '%'||:memberNum||'%' order by community_num desc", nativeQuery = true)
 	Page<Community> searchByCreator(Long memberNum, Pageable pageable);
+
 
 }

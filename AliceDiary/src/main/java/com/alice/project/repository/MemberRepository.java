@@ -54,6 +54,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
 
 	@Query(value = "select * from Member where ID like '%'||:id||'%'", nativeQuery = true)
 	Member findMemberById(String id);
+	
+	@Query(value = "select * from Member where NAME like '%'||:name||'%'", nativeQuery = true)
+	Page<Member> findMemberByName(String name,Pageable pageable);
 
 	@Query("SELECT m FROM Member AS m WHERE id LIKE '%'||:keyword||'%'")
 	Page<Member> searchById(String keyword, Pageable pageable);

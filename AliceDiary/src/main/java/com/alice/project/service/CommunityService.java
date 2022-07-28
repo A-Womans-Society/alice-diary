@@ -98,6 +98,12 @@ public class CommunityService {
 		return comRepository.getAll();
 	}
 	
+
+	//커뮤니티 번호로 설명 가져오기
+	public String findDescriptionByNum(Long comNum) {
+		return comRepository.findDescriptionByNum(comNum);
+	}
+
 	/* 관리자 모드 : 커뮤니티 관리 */
 	// 모든 커뮤니티 가져오기
 	public Page<Community> showCommunityList(Pageable pageable) {
@@ -125,4 +131,5 @@ public class CommunityService {
 		return communities;
 	}
 	
+
 }

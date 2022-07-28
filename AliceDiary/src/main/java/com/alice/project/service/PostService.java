@@ -60,12 +60,28 @@ public class PostService {
 			searchList = postRepository.searchTitle(postSearchDto.getKeyword(), pageable);
 		} else if (postSearchDto.getType().equals("content")) { // 게시물 내용으로 검색
 			searchList = postRepository.searchContent(postSearchDto.getKeyword(), pageable);
-		} else if (postSearchDto.getType().equals("writer")) { // 게시물 작성자 닉네임으로 검색
-			List<Member> memberList = memberRepository.searchByName(postSearchDto.getKeyword());
-			for (Member m : memberList) {
-				if (m != null) {
-					searchList = postRepository.searchWriter(m.getNum(), pageable);
-				}				
+
+		} else if (postSearchDto.getType().equals("writer")) {
+			log.info("postSearchDto.getKeyword() :" + postSearchDto.getKeyword());
+			Page<Member> members = memberRepository.findMemberByName(postSearchDto.getKeyword(),pageable);
+			if (members != null) {
+				List<Post> tmpList = new ArrayList<>();
+				for(Member m : members) {
+					Page<Post> tmp = null;
+					tmp = postRepository.searchWriter(m.getNum(), pageable);	
+					tmpList.addAll(tmp.getContent());
+				}
+				searchList = new PageImpl<Post>(tmpList, pageable, tmpList.size());
+			} else {
+				searchList = postRepository.searchWriter(0L, pageable);
+
+//		} else if (postSearchDto.getType().equals("writer")) { // 게시물 작성자 닉네임으로 검색
+//			List<Member> memberList = memberRepository.searchByName(postSearchDto.getKeyword());
+//			for (Member m : memberList) {
+//				if (m != null) {
+//					searchList = postRepository.searchWriter(m.getNum(), pageable);
+//				}				
+
 			}
 		}
 		return searchList;

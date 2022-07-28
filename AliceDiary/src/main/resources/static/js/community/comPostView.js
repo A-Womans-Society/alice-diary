@@ -23,7 +23,7 @@ function replySubmit(postNum, memberId) {
             meta.setAttribute('class','meta');
                                                          
             let span1 = document.createElement('span');
-            span1.innerHTML = "&nbsp;<span style='color:black;'>"+ result.id +"</span>&nbsp;<span>"+result.repDate+"</span>";
+            span1.innerHTML = "&nbsp;<span style='color:black;'>"+ result.name +"</span>&nbsp;<span>"+result.repDate+"</span>";
                 
             let span2 = document.createElement('span');
             let btn1 = document.createElement('span');
@@ -156,7 +156,7 @@ function replyReply(postNum, parentRepNum, memberId, replyReplyBox, replyReplyCo
             meta.setAttribute('class','meta');
 
                 let span1 = document.createElement('span');
-            span1.innerHTML = "&nbsp;<span style='color:black;'>"+ result.id +"</span>&nbsp;<span>"+result.repDate+"</span>";
+            span1.innerHTML = "&nbsp;<span style='color:black;'>"+ result.name +"</span>&nbsp;<span>"+result.repDate+"</span>";
 
             let span2 = document.createElement('span');
             let btn1 = document.createElement('span');
@@ -389,20 +389,22 @@ function replyReport(userId, reportReason, content) {
 
 }
 
-function openModalMsg(msgTo, msgFrom){
-   document.getElementById('replyMsgTo').value = msgTo;
+function openModalMsg(msgToId, msgToName, msgFrom){
+    document.getElementById('replyMsgToId').value = msgToId;
+   document.getElementById('replyMsgToName').value = msgToName;
+   
    $('#replyMsg').modal('show');   
          
 };
 
 function replyMsg(msgFrom, content) {
-   let replyMsgTo = document.getElementById('replyMsgTo').value;
+    let replyMsgToId = document.getElementById('replyMsgToId').value;
    console.log("msgFrom:"+msgFrom);
-   console.log("replyMsgTo:"+replyMsgTo);
+   console.log("replyMsgToId:"+replyMsgToId);
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
-   let param = "messageFromId="+msgFrom+"&messageToId="+replyMsgTo
+   let param = "messageFromId="+msgFrom+"&messageToId="+replyMsgToId
    +"&content="+document.getElementById("replyMsgContent").value;
    console.log(param);
    

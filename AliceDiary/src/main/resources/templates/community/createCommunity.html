@@ -30,7 +30,7 @@
 						th:field="*{comMembers}" multiple required>
 						<th:block
 							th:if="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
-							<option value="">친구를 추가해보세요!</option>
+							<option value="">나를 추가한 친구가 없어요,,☹</option>
 						</th:block>
 						<th:block
 							th:unless="${ccdto.friendsList == null || #lists.size(ccdto.friendsList) == 0}">
