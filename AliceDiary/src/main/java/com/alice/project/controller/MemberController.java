@@ -49,7 +49,6 @@ public class MemberController {
 	// 회원가입 GetMapping
 	@GetMapping(value = "/register")
 	public String memberForm(Model model) {
-		log.info("GET 나옴");
 		model.addAttribute("memberDto", new UserDto());
 		return "login/registerForm";
 	}
@@ -58,8 +57,6 @@ public class MemberController {
 	@PostMapping(value = "/register")
 	public String memberForm(@ModelAttribute("memberDto") @Valid UserDto userDto, BindingResult bindingResult,
 			Model model) {
-		log.info("POST 나옴");
-		log.info("userDto.getProfileImg() = " + userDto.getProfileImg());
 		if (bindingResult.hasErrors()) {
 			log.info("에러 발생!");
 			return "login/registerForm";
@@ -81,7 +78,6 @@ public class MemberController {
 			model.addAttribute("error", "wrong.token");
 			return view;
 		}
-		log.info("token : " + token);
 		memberService.completeSignUp(member);
 		return view;
 	}
@@ -108,16 +104,21 @@ public class MemberController {
 	@PostMapping("/register/idCheck")
 	@ResponseBody
 	public String checkIdDuplication(String id) {
-		log.info("userIdCheck 진입");
 		String check = String.valueOf(memberService.checkIdDuplicate(id));
-		log.info("check== " + check);
+		return check;
+	}
+	
+	// nickname 중복체크 PostMapping
+	@PostMapping("/register/nicknameCheck")
+	@ResponseBody
+	public String checkNicknameDuplication(String id) {
+		String check = String.valueOf(memberService.checkNicknameDuplication(id));
 		return check;
 	}
 
 	// Id찾기 Get
 	@GetMapping(value = "/login/findId")
 	public String findId() {
-		log.info("findId GET진입");
 		return "login/findId";
 	}
 
@@ -125,11 +126,6 @@ public class MemberController {
 	@PostMapping(value = "/login/findId")
 	@ResponseBody
 	public Member findId(String name, String mobile, String email) {
-		log.info("findId POST진입");
-		log.info("findId POST진입" + name);
-		log.info("findId POST진입" + mobile);
-		log.info("findId POST진입" + email);
-
 		Member member = memberService.findId(name, mobile, email);
 		return (member == null) ? null : member;
 	}
@@ -137,7 +133,6 @@ public class MemberController {
 	// 비밀번호 찾기 Get
 	@GetMapping(value = "/login/findPwd")
 	public String findPwd(Model model) {
-		log.info("비밀번호 찾기 GET 진입");
 		model.addAttribute("userDto", new UserDto());
 		return "login/findPwd";
 	}
@@ -145,7 +140,6 @@ public class MemberController {
 	// 비밀번호 찾기 Post
 	@PostMapping(value = "/login/findPwd")
 	public String findPwd(UserDto userDto, RedirectAttributes re, Model model) {
-		log.info("비밀번호 찾기 POST 진입");
 		Member member = memberService.findPwd(userDto.getId(), userDto.getName(), userDto.getMobile());
 		if (member != null) {
 			re.addFlashAttribute("member", member);
@@ -160,8 +154,6 @@ public class MemberController {
 	// 비밀번호 재설정 Get
 	@GetMapping(value = "/login/updatePwd")
 	public String updatePwd(Member member, Model model) {
-		log.info("비밀번호 재설정 GET 진입");
-		log.info("Member name === " + member.getName());
 		UserDto userDto = new UserDto();
 		Long num = member.getNum();
 		model.addAttribute("userDto", userDto);
@@ -172,13 +164,10 @@ public class MemberController {
 	// 비밀번호 재설정 Post
 	@PostMapping(value = "/login/savePwd")
 	public String updatePwd(UserDto userDto, Long num) {
-		log.info("비밀번호 재설정 POST 진입");
 		Member member = memberService.findByNum(num);
-		log.info("비밀번호 재설정 전 Member Password : " + member.getPassword());
 		UserDto uDto = new UserDto(member, userDto.getPassword());
 		member = Member.createMember(num, uDto, passwordEncoder);
 		member = memberService.updateMember(member);
-		log.info("비밀번호 재설정 후 Member Password : " + member.getPassword());
 
 		return "redirect:/";
 	}

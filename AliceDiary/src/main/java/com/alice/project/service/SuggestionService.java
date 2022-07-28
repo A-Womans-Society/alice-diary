@@ -53,6 +53,17 @@ public class SuggestionService {
 			suggestionList = new PageImpl<>(list.subList(start, end), pageable, list.size());
 		} else if (type.equals("content")) {
 			suggestionList = suggestionRepository.findByContentContaining(keyword, pageable);
+		} else if (type.equals("name")) {
+			suggestionList = suggestionRepository.findAll(pageable);
+			List<Suggestion> list = new ArrayList<>();
+			for (Suggestion s : suggestionList) {
+				if (s.getMember().getName().contains(keyword)) {
+					list.add(s);
+				}
+			}
+			final int start = (int) pageable.getOffset();
+			final int end = Math.min((start + pageable.getPageSize()), list.size());
+			suggestionList = new PageImpl<>(list.subList(start, end), pageable, list.size());
 		}
 		return suggestionList;
 	}

@@ -1,7 +1,9 @@
 package com.alice.project.controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,15 +18,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.AttachedFile;
+import com.alice.project.domain.Community;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Post;
 import com.alice.project.domain.Reply;
 import com.alice.project.service.AttachedFileService;
+import com.alice.project.service.CommunityService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.PostService;
 import com.alice.project.service.ReplyService;
@@ -47,12 +52,13 @@ public class AdminPostController {
 	private final AttachedFileService attachedFileService;
 	private final MemberService memberService;
 	private final ReportService reportService;
+	private final CommunityService communityService;
 
 	// 공지사항 관리
 	/* 공지사항 목록 */
 	@GetMapping("/notice/list")
 	public String showNoticeList(
-			@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable,
 			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, @AuthenticationPrincipal UserDetails user,
 			Model model, Long num) {
 		Page<Post> notices = null;
@@ -214,6 +220,7 @@ public class AdminPostController {
 
 		jObj.put("replyNum", newReply.getNum());
 		jObj.put("id", newReply.getMember().getId());
+		jObj.put("name", newReply.getMember().getName());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
 		jObj.put("repContent", newReply.getContent());
 		jObj.put("postNum", newReply.getPost().getNum());
@@ -234,6 +241,7 @@ public class AdminPostController {
 		jObj.put("replyNum", newReplyReply.getNum());
 		jObj.put("parentRepNum", newReplyReply.getParentRepNum());
 		jObj.put("id", newReplyReply.getMember().getId());
+		jObj.put("name", newReplyReply.getMember().getName());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
 		jObj.put("repContent", newReplyReply.getContent());
 		jObj.put("profileImg", newReplyReply.getMember().getProfileImg());
@@ -256,7 +264,7 @@ public class AdminPostController {
 	/* 공개 게시판 목록 */
 	@GetMapping("/open/list")
 	public String showOpenCommunityList(
-			@PageableDefault(page = 0, size = 10, direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable,
 			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, @AuthenticationPrincipal UserDetails user,
 			Model model, Long num) {
 		Page<Post> opens = null;
@@ -267,7 +275,7 @@ public class AdminPostController {
 		model.addAttribute("type", type);
 
 		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
-			opens = postService.openList(pageable);
+			opens = postService.list(pageable);
 		} else {
 			opens = postService.searchList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정
 		}
@@ -349,6 +357,7 @@ public class AdminPostController {
 
 		jObj.put("replyNum", newReply.getNum());
 		jObj.put("id", newReply.getMember().getId());
+		jObj.put("name", newReply.getMember().getName());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
 		jObj.put("repContent", newReply.getContent());
 		jObj.put("postNum", newReply.getPost().getNum());
@@ -369,6 +378,7 @@ public class AdminPostController {
 		jObj.put("replyNum", newReplyReply.getNum());
 		jObj.put("parentRepNu", newReplyReply.getParentRepNum());
 		jObj.put("id", newReplyReply.getMember().getId());
+		jObj.put("name", newReplyReply.getMember().getName());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
 		jObj.put("repContent", newReplyReply.getContent());
 		jObj.put("profileImg", newReplyReply.getMember().getProfileImg());
@@ -386,5 +396,153 @@ public class AdminPostController {
 
 		return "redirect:list";
 	}
+	
+	/* 커뮤니티 목록 보기 */
+	@GetMapping("/community/list")
+	public String showCommunityList(
+			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable,
+			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, @AuthenticationPrincipal UserDetails user,
+			Model model, Long num) {
+		Page<Community> communities = null;
+		String type = postSearchDto.getType();
+		String keyword = postSearchDto.getKeyword();
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("type", type);
 
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
+			communities = communityService.showCommunityList(pageable);
+		} else {
+			communities = communityService.searchCommunityList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정
+		}
+
+		Long size = communities.getTotalElements();
+		int nowPage = communities.getPageable().getPageNumber() + 1;
+		int startPage = Math.max(nowPage - 2, 1);
+		int endPage = 0;
+		if (startPage == 1) {
+			if (communities.getTotalPages() < 5) {
+				endPage = communities.getTotalPages();
+			} else {
+				endPage = 5;
+			}
+		} else {
+			endPage = Math.min(nowPage + 2, communities.getTotalPages());
+		}
+
+		if (endPage == communities.getTotalPages() && (endPage - startPage) < 5) {
+			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
+		}
+
+		model.addAttribute("list", communities);
+		model.addAttribute("nowPage", nowPage);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+		model.addAttribute("size", size);
+
+		return "/admin/communityList";
+	}
+	
+	/* 커뮤니티 상세정보 보기 */
+	// 게시글 리스트 가져오기
+	@GetMapping("community/{comNum}/list")
+	public String list(@PathVariable Long comNum, Model model,
+			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, 
+			@AuthenticationPrincipal UserDetails user,
+			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
+
+		Community community = communityService.findByNum(comNum);
+		String comName = community.getName();
+		String comDescription = community.getDescription();
+		String creatorName = community.getMember().getName();
+		String creatorId = community.getMember().getId();
+		String memberListToStr = community.getMemberList();
+		
+		model.addAttribute("community", community);
+//		model.addAttribute("comName", comName);
+//		model.addAttribute("comDescription", comDescription);
+//		model.addAttribute("creatorName", creatorName);
+//		model.addAttribute("creatorId", creatorId);
+		
+		String[] memIdList = null;
+		if (memberListToStr != null) {
+			memIdList = memberListToStr.split(",");
+		}
+//		List<String> memNameList = new ArrayList<>();
+		Map<String, String> memberMap = new HashMap<String, String>();
+		for (String id : memIdList) {
+			memberMap.put(id, memberService.findById(id).getName());
+		}		
+		model.addAttribute("memberMap", memberMap);
+
+		String keyword = postSearchDto.getKeyword();
+		Long size = 0L;
+		Page<Post> list = null;
+
+		if (keyword == null) {
+			list = postService.comList(comNum, pageable);
+			size = list.getTotalElements();
+		} else {
+			list = postService.comSearchList(comNum, postSearchDto, pageable);
+			size = list.getTotalElements();
+		}
+
+		int nowPage = list.getPageable().getPageNumber() + 1;
+		int startPage = Math.max(nowPage - 2, 1);
+		int endPage = 0;
+		if (startPage == 1) {
+			if (list.getTotalPages() < 5) {
+				endPage = list.getTotalPages();
+			} else {
+				endPage = 5;
+			}
+		} else {
+			endPage = Math.min(nowPage + 2, list.getTotalPages());
+		}
+
+		if (endPage == list.getTotalPages() && (endPage - startPage) < 5) {
+			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
+		}
+
+		model.addAttribute("list", list);
+		model.addAttribute("size", size);
+		log.info("size : " + size);
+		model.addAttribute("nowPage", nowPage);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+		model.addAttribute("keyword", keyword);
+
+		model.addAttribute("type", postSearchDto.getType());
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+
+		log.info("nowPage:" + nowPage);
+		log.info("startPage:" + startPage);
+		log.info("endPage:" + endPage);
+
+		return "admin/communityView";
+	}
+	
+	// 커뮤니티 삭제하기
+	@PostMapping("/community/delete")
+	@ResponseBody
+	public String comDelete(Long comNum) {
+		log.info("삭제컨트롤러도착" + comNum);
+		List<Post> posts = postService.getPostBycomNum(comNum);
+
+		for (Post p : posts) {
+			List<Reply> replies = replyService.getReplyByPostNum(p.getNum());
+			for (Reply r : replies) {
+				reportService.deleteReportWithReply(r.getNum());
+			}
+			reportService.deleteReportWithPost(p.getNum());
+			postService.deletePostwithFile(p.getNum());
+			postService.deletePostwithReply(p.getNum());
+			postService.deletePost(p.getNum());
+		}
+
+		communityService.deleteCom(comNum);
+
+		return "redirect:/AliceDiary/admin/community/list";
+
+	}
 }

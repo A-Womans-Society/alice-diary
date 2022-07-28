@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/adminReportLayout}">
+
+<th:block layout:fragment="css">
+</th:block>
+
+<div layout:fragment="content">
+	<div class="container-fluid h-100">
+		<div class="row h-100">
+			<div class="col-12 h-100">
+				<h2 class="text-center m-0 pt-5" style="height: 15%;">신고 내용</h2>
+				<h5 class="text-center m-0 pt-5" style="height: 20%;">회원들의 게시물과
+					댓글에 대한 신고를 확인할 수 있습니다.</h5>
+
+				<!--/* 회원상세보기 영역 */-->
+				<div class="container">
+					<div>
+						<!--/* 회원 정보 Rendering 영역 */-->
+						<th:block th:each="r : ${report}">
+							<p th:text="|신고번호 : ${r.num}|"></p>
+							<p>
+								신고자 닉네임 : <a th:href="@{'/admin/member/'+${report.member.id}}">
+									<span th:text="${report.member.name}"></span>
+								</a>
+							</p>
+							<p>
+								신고대상자 닉네임 :
+								<th:block th:if="${#strings.equals(report.reportType, 'REPLY')}">
+									<a th:href="@{'/admin/member/'+${report.reply.member.id}}">
+										<span th:text="${report.reply.member.name}"></span>
+									</a>
+								</th:block>
+								<th:block th:if="${#strings.equals(report.reportType, 'POST')}">
+									<a th:href="@{'/admin/member/'+${report.post.member.id}}">
+										<span th:text="${report.post.member.name}"></span>
+									</a>
+								</th:block>
+							</p>
+							<p
+								th:text="|신고일자 : ${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}|"></p>
+							<p th:text="|신고사유 : ${report.reportReason}|"></p>
+							<p th:text="|신고내용 : ${report.content}|"></p>
+							<p th:text="|신고종류 : ${report.reportType}|"></p>
+							<p>
+								<th:block th:if="${#strings.equals(report.reportType, 'POST')}">
+									<th:block
+										th:if="${#strings.equals(report.post.postType, 'OPEN')}">
+										<a th:href="@{'/admin/open/get?num='+${report.post.num}}">해당
+											게시물 링크</a>
+									</th:block>
+									<th:block
+										th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
+										<a th:href="@{'/admin/community/get?num='+${report.post.num}}">해당
+											게시물 링크</a>
+									</th:block>
+								</th:block>
+								<th:block th:if="${#strings.equals(report.reportType, 'REPLY')}">
+									<th:block
+										th:if="${#strings.equals(report.reply.post.postType, 'OPEN')}">
+										<a
+											th:href="@{'/admin/open/get?num='+${report.reply.post.num}}">해당
+											댓글 링크</a>
+									</th:block>
+									<th:block
+										th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">
+										<a
+											th:href="@{'/admin/community/get?num='+${report.reply.post.num}}">해당
+											댓글 링크</a>
+									</th:block>
+								</th:block>
+							</p>
+						</th:block>
+					</div>
+				</div>
+			</div>
+			<div class='text-right'>
+				<a th:href="@{/admin/reports}"><input type="button" class="btn"
+					value="목록"></a>
+			</div>
+
+		</div>
+	</div>
+</div>
+<th:block layout:fragment="script">
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+	<script th:src="@{/js/admin/reportList.js}"></script>
+</th:block>
+</html>

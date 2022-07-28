@@ -1,11 +1,9 @@
 package com.alice.project.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,15 +52,15 @@ public class PostService {
 		return postRepository.findAllCustomPost(comNum, pageable);
 	}
 
-	// 공개게시판 검색해서 리스트 불러오기
+	// 공개게시판 검색해서 리스트 불러오기 (닉네임으로 검색 수정했어요!)
 	public Page<Post> searchList(PostSearchDto postSearchDto, Pageable pageable) {
-
-		log.info("서비스 로그 postSearchDto :" + postSearchDto.toString());
 		Page<Post> searchList = null;
-		if (postSearchDto.getType().equals("title")) {
+		
+		if (postSearchDto.getType().equals("title")) { // 게시물 제목으로 검색
 			searchList = postRepository.searchTitle(postSearchDto.getKeyword(), pageable);
-		} else if (postSearchDto.getType().equals("content")) {
+		} else if (postSearchDto.getType().equals("content")) { // 게시물 내용으로 검색
 			searchList = postRepository.searchContent(postSearchDto.getKeyword(), pageable);
+
 		} else if (postSearchDto.getType().equals("writer")) {
 			log.info("postSearchDto.getKeyword() :" + postSearchDto.getKeyword());
 			Page<Member> members = memberRepository.findMemberByName(postSearchDto.getKeyword(),pageable);
@@ -76,6 +74,14 @@ public class PostService {
 				searchList = new PageImpl<Post>(tmpList, pageable, tmpList.size());
 			} else {
 				searchList = postRepository.searchWriter(0L, pageable);
+
+//		} else if (postSearchDto.getType().equals("writer")) { // 게시물 작성자 닉네임으로 검색
+//			List<Member> memberList = memberRepository.searchByName(postSearchDto.getKeyword());
+//			for (Member m : memberList) {
+//				if (m != null) {
+//					searchList = postRepository.searchWriter(m.getNum(), pageable);
+//				}				
+
 			}
 		}
 		return searchList;
@@ -174,24 +180,12 @@ public class PostService {
 
 	/* 공지사항 검색 */
 	public Page<Post> searchNoticeList(PostSearchDto postSearchDto, Pageable pageable) {
-
-		log.info("서비스 로그 postSearchDto :" + postSearchDto.toString());
 		Page<Post> searchList = null;
+		
 		if (postSearchDto.getType().equals("title")) {
-			searchList = postRepository.searchTitle(postSearchDto.getKeyword(), pageable);
+			searchList = postRepository.searchNoticeTitle(postSearchDto.getKeyword(), pageable);
 		} else if (postSearchDto.getType().equals("content")) {
-			searchList = postRepository.searchContent(postSearchDto.getKeyword(), pageable);
-		}
-		List<Post> list = new ArrayList<>();
-		if (!searchList.isEmpty()) {
-			for (Post p : searchList) {
-				if (p.getPostType().toString().equals("NOTICE")) {
-					list.add(p);
-				}
-			}
-			final int start = (int) pageable.getOffset();
-			final int end = Math.min((start + pageable.getPageSize()), list.size());
-			searchList = new PageImpl<>(list.subList(start, end), pageable, list.size());
+			searchList = postRepository.searchNoticeContent(postSearchDto.getKeyword(), pageable);
 		}
 
 		return searchList;

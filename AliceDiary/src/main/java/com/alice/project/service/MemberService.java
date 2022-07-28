@@ -157,13 +157,22 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 	// id 중복테스트
 	public int checkIdDuplicate(String id) {
 		boolean check = memberRepository.existsById(id);
-		log.info("check : " + check);
 		if (check) {
 			return 1; // 아이디 중복이면 1
 		} else if (id.equals("default")) {
 			return 1;
 		} else {
 			return 0; // 사용 가능 아이디면 0
+		}
+	}
+	
+	// nickname 중복테스트
+	public int checkNicknameDuplication(String name) {
+		boolean check = memberRepository.existsByName(name);
+		if (check) {
+			return 1; // 닉네임 중복이면 1
+		}else {
+			return 0; // 사용 가능 닉네임이면 0
 		}
 	}
 

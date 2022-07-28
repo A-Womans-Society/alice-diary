@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +15,7 @@ import com.alice.project.domain.Member;
 import com.alice.project.repository.CommunityRepository;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.web.CommunityCreateDto;
+import com.alice.project.web.PostSearchDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +49,7 @@ public class CommunityService {
 	}
 
 	// 커뮤니티 탈퇴하기
+	@Transactional
 	public void resign(Long comNum, String memId) {
 		String memberList = comRepository.findMemListByNum(comNum);
 		StringBuffer memList = new StringBuffer();
@@ -93,8 +98,38 @@ public class CommunityService {
 		return comRepository.getAll();
 	}
 	
+
 	//커뮤니티 번호로 설명 가져오기
 	public String findDescriptionByNum(Long comNum) {
 		return comRepository.findDescriptionByNum(comNum);
 	}
+
+	/* 관리자 모드 : 커뮤니티 관리 */
+	// 모든 커뮤니티 가져오기
+	public Page<Community> showCommunityList(Pageable pageable) {
+		return comRepository.searchAllCommunities(pageable);
+	}
+	// 커뮤니티 검색
+	public Page<Community> searchCommunityList(PostSearchDto postSearchDto, Pageable pageable) {
+		String type = postSearchDto.getType();
+		String keyword = postSearchDto.getKeyword();
+		Page<Community> communities = null;
+		List<Community> comsForCreatorSearching = new ArrayList<>();
+		if (type.equals("comNum")) {
+			communities = comRepository.searchByComNum(Long.parseLong(keyword), pageable);
+		} else if (type.equals("name")) {
+			communities = comRepository.searchByName(keyword, pageable);
+		} else if (type.equals("creator")) {
+			List<Member> members = memberRepository.findByNameContaining(keyword);
+			for (Member m : members) {
+				comsForCreatorSearching.addAll(comRepository.findByMember(m));
+			}
+			final int start = (int) pageable.getOffset();
+			final int end = Math.min((start + pageable.getPageSize()), comsForCreatorSearching.size());
+			communities = new PageImpl<>(comsForCreatorSearching.subList(start, end), pageable, comsForCreatorSearching.size());
+		}
+		return communities;
+	}
+	
+
 }

@@ -56,18 +56,22 @@
 											class="text-danger">*&nbsp;</span>ID
 										</label> <input type="text" th:field="*{id}" oninput="checkId();"
 											class="form-control" required autofocus> <span
-											class="id_ok">사용 가능한 아이디입니다.</span> <span class="id_already">누군가
-											이 아이디를 사용하고 있어요.</span> <small th:if="${#fields.hasErrors('id')}"
-											th:errors="*{id}"></small>
+											id="id_ok"><small>사용 가능한 아이디입니다.</small></span> <span
+											id="id_already"><small>누군가 이 아이디를 사용하고 있어요.</small></span>
+										<small th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></small>
 									</div>
 								</div>
 								<div class="col-md-6 mb-4">
 									<div class="form-outline">
 										<label class="form-label" th:for="name"> <span
-											class="text-danger">*&nbsp;</span>이름
-										</label> <input type="text" th:field="*{name}" class="form-control"
-											required /> <small th:if="${#fields.hasErrors('name')}"
-											th:errors="*{name}"></small>
+											class="text-danger">*&nbsp;</span>닉네임
+										</label> <input type="text" th:field="*{name}"
+											oninput="checkNickname();" class="form-control" required />
+										<span id="nickname_ok" style="display: none;"><small
+											class="text-primary">사용 가능한 닉네임 입니다.</small></span> <span
+											id="nickname_already" style="display: none;"><small
+											class="text-danger">누군가 이 닉네임을 사용하고 있어요.</small></span> <small
+											th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
 									</div>
 								</div>
 							</div>

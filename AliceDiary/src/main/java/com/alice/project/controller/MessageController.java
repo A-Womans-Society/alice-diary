@@ -435,7 +435,6 @@ public class MessageController {
 	// 사진 파일 모아보기
 	@GetMapping(value = "/messagebox/pictures/{id}")
 	public String showPictureList(@PathVariable("id") String id,
-			@PageableDefault(page = 0, size = 10, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
 			@ModelAttribute("searchDto") SearchDto searchDto, @AuthenticationPrincipal UserDetails user, Model model,
 			@ModelAttribute MsgFileDto mpdto, Long num) {
 		String type = searchDto.getType();
@@ -473,7 +472,6 @@ public class MessageController {
 	// 문서 파일 모아보기
 	@GetMapping(value = "/messagebox/docs/{id}")
 	public String showDocList(@PathVariable("id") String id,
-			@PageableDefault(page = 0, size = 10, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
 			@ModelAttribute("searchDto") SearchDto searchDto, @AuthenticationPrincipal UserDetails user, Model model,
 			@ModelAttribute MsgFileDto mpdto, Long num) {
 		String type = searchDto.getType();

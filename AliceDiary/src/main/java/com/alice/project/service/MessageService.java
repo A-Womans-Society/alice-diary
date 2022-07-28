@@ -234,12 +234,15 @@ public class MessageService {
 		for (Message m : msglist) {
 			MsgFileDto mpdto = new MsgFileDto();
 			String originName = m.getFile().getOriginName();
+			String saveNmae = m.getFile().getSaveName();
 			if (originName != null) {
 				if (originName.endsWith(".jpg") || originName.endsWith(".png") || originName.endsWith(".jpeg")) {
 					mpdto.setOriginName(originName);
+					mpdto.setSaveName(saveNmae);
 					mpdto.setSendDate(m.getSendDate());
 					Long theOtherNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num();
 					mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
+					mpdto.setTheOtherName(ms.findByNum(theOtherNum).getName());
 					mpdto.setFileNum(m.getFile().getNum());
 					mpdtos.add(mpdto);
 				}
@@ -266,8 +269,8 @@ public class MessageService {
 				if (mpdto.getOriginName().contains(keyword)) {
 					resultlist.add(mpdto);
 				}
-			} else if (type.equals("id")) {
-				if (mpdto.getTheOtherId().contains(keyword)) {
+			} else if (type.equals("name")) {
+				if (mpdto.getTheOtherName().contains(keyword)) {
 					resultlist.add(mpdto);
 				}
 			}
@@ -293,14 +296,17 @@ public class MessageService {
 		for (Message m : msglist) {
 			MsgFileDto mpdto = new MsgFileDto();
 			String originName = m.getFile().getOriginName();
+			String saveNmae = m.getFile().getSaveName();
 			if (originName != null) {
 				if (originName.endsWith(".txt") || originName.endsWith(".pdf") || originName.endsWith(".docx")
 						|| originName.endsWith(".hwpx")) {
-					mpdto.setOriginName(m.getFile().getOriginName());
+					mpdto.setOriginName(originName);
+					mpdto.setSaveName(saveNmae);
 					mpdto.setSendDate(m.getSendDate());
 					Long theOtherNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num();
 					mpdto.setTheOtherId(ms.findByNum(theOtherNum).getId());
 					mpdto.setFileNum(m.getFile().getNum());
+					mpdto.setTheOtherName(ms.findByNum(theOtherNum).getName());
 					mpdtos.add(mpdto);
 				}
 			} else {
@@ -325,8 +331,8 @@ public class MessageService {
 				if (mfdto.getOriginName().contains(keyword)) {
 					resultlist.add(mfdto);
 				}
-			} else if (type.equals("id")) {
-				if (mfdto.getTheOtherId().contains(keyword)) {
+			} else if (type.equals("name")) {
+				if (mfdto.getTheOtherName().contains(keyword)) {
 					resultlist.add(mfdto);
 				}
 			}

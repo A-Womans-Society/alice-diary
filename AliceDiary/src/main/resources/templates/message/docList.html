@@ -23,16 +23,16 @@
 							<form name="searchForm" id="searchForm"
 								class="d-flex justify-content-center" style="width: 70%;"
 								th:action="@{|/messagebox/docs/${#authentication.name}|}"
-								modelAttribute="searchForm" th:method="get">
+								th:object="${searchDto}" th:method="get">
 								<select id="type" name="type" class="form-control"
 									style="width: 35%;">
 									<option value="">카테고리 선택</option>
 									<option value="filename">문서파일명</option>
-									<option value="id">상대아이디</option>
+									<option value="name">상대닉네임</option>
 								</select> <input type="text" id="keyword" name="keyword"
 									class="form-control" placeholder="카테고리 선택 후 검색해주세요."
 									style="width: 50%;">
-								<button type="submit">검색</button>
+								<button type="submit" class="btn">검색</button>
 							</form>
 						</div>
 					</div>
@@ -47,7 +47,7 @@
 						</div>
 						<table class="table table-striped">
 							<thead>
-								<tr>
+								<tr class="text-center">
 									<th>No.</th>
 									<th>파일이름</th>
 									<th>아이디</th>
@@ -56,7 +56,7 @@
 							</thead>
 							<th:block th:if="${mpdtos == null || #lists.size(mpdtos) == 0}">
 								<tbody class="text-center">
-									<tr>
+									<tr class="text-center">
 										<td colspan="5">문서파일 목록이 비었습니다</td>
 									</tr>
 								</tbody>
@@ -68,8 +68,8 @@
 										<td th:text="${status.count}" />
 										<td><a th:href="|./download/${m.fileNum}|"
 											th:text="${m.originName}"></a></td>
-										<td th:text="${m.theOtherId}"></td>
-										<td
+										<td th:text="${m.theOtherName}"></td>
+										<tds
 											th:text="${#temporals.format(m.sendDate, 'yyyy-MM-dd HH:mm')}"></td>
 									</tr>
 								</tbody>
