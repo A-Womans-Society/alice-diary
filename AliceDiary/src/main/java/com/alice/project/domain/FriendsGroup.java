@@ -39,6 +39,7 @@ public class FriendsGroup {
 	@Column(nullable = false)
 	private Long groupCreatorNum; // 그룹생성 회원번호
 
+	
 	// 기본 그룹 생성자
 	@Builder
 	public FriendsGroup(String groupName) {

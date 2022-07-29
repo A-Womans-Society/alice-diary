@@ -1,13 +1,13 @@
 package com.alice.project.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.FriendsGroup;
@@ -28,7 +28,7 @@ public class FriendsGroupController {
 	private final MemberService memberService;
 	private final FriendsGroupService friendsGroupService;
 
-	// 그룹명등록
+	// 그룹명 등록
 	@PostMapping("/friends/addGroup")
 	@ResponseBody
 	public boolean addGroup(String groupName, @AuthenticationPrincipal UserDetails user, Model model) {
@@ -43,16 +43,11 @@ public class FriendsGroupController {
 	// 그룹명 목록확인
 	@GetMapping("/friends/groupList")
 	public String friendsGrouplist(Model model, @AuthenticationPrincipal UserDetails user) {
-		// String groupName = friendsGroupService.getGroupName(groupNum);
+		Member member = memberService.findById(user.getUsername());
 
-		model.addAttribute("grouplist", friendsGroupService.friendsGrouplist());
+		List<FriendsGroup> friendGroups = friendsGroupService.findAllByAdder(member.getNum());
+		model.addAttribute("grouplist", friendGroups);
 		return "friends/friendsGrouplist";
 	}
-
-	// 그룹 변경
-	public String updateGroup(String groupName, @AuthenticationPrincipal UserDetails user) {
-		return "redirect:/friends";
-	}
-	
 	
 }

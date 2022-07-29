@@ -18,7 +18,7 @@
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
 						<div class="w-100 text-center">
 							<input type="text" id="searchFriend" class="w-50"
-								name="searchFriend" placeholder="친구 검색(아이디/이름)">
+								name="searchFriend" placeholder="친구 닉네임으로 검색하세요">
 							<button type="button" class="btn btn-primary mb-2"
 								th:onclick="loadFriends()">검색</button>
 						</div>
@@ -41,6 +41,7 @@
 									<th>성별</th>
 									<th>이메일</th>
 									<th>그룹</th>
+									<th>친구관리</th>
 								</tr>
 							</thead>
 							<tbody id="friendsBody">
@@ -55,12 +56,14 @@
 										<td th:text="${status.count}"></td>
 										<td th:text="${friend.id}"></td>
 										<td><a th:text="${friend.name}"
-											th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"></a></td>
+											th:href="@{/member/{id}(id=${friend.id})}"></a></td>
 										<td th:text="${friend.mobile}"></td>
 										<td th:text="${friend.birth}"></td>
 										<td th:text="${friend.gender}"></td>
 										<td th:text="${friend.email}"></td>
 										<td th:text="${friend.groupName}"></td>
+										<td><a th:text="친구관리"
+											th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"></a></td>
 									</tr>
 								</th:block>
 							</tbody>
@@ -70,15 +73,15 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- Modal -->
 	<div class="modal" tabindex="-1" role="dialog" id="addFriend">
 		<div class="modal-dialog modal-dialog-centered modal-lg"
 			role="document">
 			<div class="modal-content">
 				<div class="modal-header" style="align-items: baseline;">
-					<h1 class="modal-title">친구 추가</h1>&nbsp;
-					<span>ID로 추가</span>
+					<h1 class="modal-title">친구 추가</h1>
+					&nbsp; <span>닉네임으로 추가</span>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -88,8 +91,9 @@
 				<form th:action="@{/friends/add}" method="post">
 					<div class="modal-body">
 						<div>
-							ID <input type="text" id="searchId" name="searchId"> <input
-								type="button" class="btn" value="검색" onclick="loadMembers()">
+							닉네임 <input type="text" id="searchName" name="searchName">
+							<input type="button" class="btn" value="검색"
+								onclick="loadMembers()">
 						</div>
 						<div id="memberInfo"></div>
 					</div>

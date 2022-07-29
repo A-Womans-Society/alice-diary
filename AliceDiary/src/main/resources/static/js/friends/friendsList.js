@@ -6,7 +6,7 @@ document.addEventListener('keydown', function(event) {
 }, true);
 
 function openModal() {
-	document.getElementById("searchId").innerText = "";
+	document.getElementById("searchName").innerText = "";
 	document.getElementById("memberInfo").innerHTML = "";
 	$("#addFriend").modal();
 };
@@ -27,28 +27,29 @@ function loadMembers() {
 	let token = $("meta[name='_csrf']").attr("content");
 	let header = $("meta[name='_csrf_header']").attr("content");
 	let httpRequest = new XMLHttpRequest();
-	let id = document.getElementById("searchId").value;
+	let name = document.getElementById("searchName").value;
 		
 	httpRequest.onreadystatechange = function() {
 		if (httpRequest.readyState === XMLHttpRequest.DONE) {
 			if (httpRequest.status === 200) {
-				console.log(httpRequest.response.length);
-				console.log(httpRequest.response);
 				if (httpRequest.response.length != 0) {
 					let result = JSON.parse(httpRequest.response);
-
-					if (result.profileImg == 'default'){
-                        let html = "<img src='/AliceDiary/upload/Alice.png'><p>" + result.id
-                                + " / " + result.mbti + "</p>";
+					let mbti = result.mbti;
+					if (mbti === null) {
+						mbti = "비밀-★";
+						let html = "<img src='/AliceDiary/upload/profile/"+result.profileImg+"' id='picture'><p>" + result.name
+                                + " / " + mbti + "</p>";
+						document.getElementById("memberInfo").innerHTML = html;
+                        document.getElementById("checkSearch").value = true;
+                        document.getElementById("picture").style.width="100px";
                         
-                        document.getElementById("memberInfo").innerHTML = html;
-                        document.getElementById("checkSearch").value = true;
 					} else {
-                        let html = "<img src='/AliceDiary/upload/"+result.profileImg+"'><p>" + result.id
-                                + " / " + result.mbti + "</p>";
+                        let html = "<img src='/AliceDiary/upload/profile/"+result.profileImg+"' id='picture'><p>" + result.name
+                                + " / " + mbti + "</p>";
                         document.getElementById("memberInfo").innerHTML = html;
                         document.getElementById("checkSearch").value = true;
-					
+                        document.getElementById("picture").style.width="100px";
+                        
                     }					
 				} else {
 					document.getElementById("memberInfo").innerText = "일치하는 회원이 없습니다.";
@@ -65,7 +66,7 @@ function loadMembers() {
 	httpRequest.setRequestHeader(header, token);
 	httpRequest.setRequestHeader('Content-type',
 			'application/x-www-form-urlencoded');
-	httpRequest.send("id=" + id);
+	httpRequest.send("name=" + name);
 };
 
 // 대소문자 구분 없이 검색하는 방법

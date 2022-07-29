@@ -3,7 +3,9 @@ package com.alice.project.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.alice.project.controller.FriendsController;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.FriendsGroup;
 import com.alice.project.domain.Member;
@@ -12,28 +14,35 @@ import com.alice.project.repository.FriendsGroupRepository;
 import com.alice.project.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FriendService {
 
 	private final FriendRepository friendRepository;
 	private final MemberRepository memberRepository;
 	private final FriendsGroupRepository fgRepository;
+	private final MemberService ms;
 
 	// 새로운 친구추가 서비스(추가하는 멤버회원 번호, 추가되는 멤버회원의 아이디)
-	@SuppressWarnings("unused")
-	public boolean addFriendship(Member member, String searchId) {
-		Member f = memberRepository.findById(searchId);
-		// 만약 그룹 이름이 없으면 기본으로 그룹 생성
-		String friendsGroup = "기본그룹";
-		if (friendsGroup == null) {
-			fgRepository.save(new FriendsGroup(friendsGroup, member.getNum()));
+	@Transactional
+	public boolean addFriendship(Member member, String addeeName) {
+		Member addee = memberRepository.findByName(addeeName);
+		Long adderNum = member.getNum();
+		String groupName = "기본그룹";
+
+		FriendsGroup defaultGroup = fgRepository.searchByCreatorAndGroupName(adderNum, groupName);
+		if (defaultGroup == null) { // 기본 그룹이 없으면 만들기
+			fgRepository.save(new FriendsGroup(groupName, adderNum));
 		}
-		List<Friend> check = friendRepository.checkAlreadyFriend(member.getNum(), f.getNum());
+
+		List<Friend> check = friendRepository.checkAlreadyFriend(adderNum, addee.getNum());
 		Long groupNum = 1L; // 기본그룹에 추가
 		if (check.size() <= 0) {
-			Friend friend = new Friend(member, f.getNum(), groupNum);
+			Friend friend = new Friend(member, addee.getNum(), groupNum);
 			friendRepository.save(friend);
 			return true;
 		} else {
@@ -42,6 +51,7 @@ public class FriendService {
 	}
 
 	// friendService에서 멤버에 있는 num으로 프렌드 객체를 만들기
+	@Transactional
 	public Friend groupNum(Long adderNum, Long addeeNum) {
 		return friendRepository.findGroupByAddeeAdderNum(adderNum, addeeNum);
 	}
@@ -67,8 +77,8 @@ public class FriendService {
 	}
 
 	// 친구 상세보기(등록된 친구 번호 조회)
-	public Friend friendInfo(Long addeeNum) {
-		return friendRepository.getById(addeeNum);
+	public List<Friend> friendInfo(Long addeeNum) {
+		return friendRepository.findByAddeeNum(addeeNum);
 	}
 
 	public boolean searchExist(Long adderNum, Long addeeNum) {
@@ -81,7 +91,23 @@ public class FriendService {
 	}
 
 	// 친구 삭제하기
+	@Transactional
 	public void deleteFriend(Long adderNum, Long addeeNum) {
-		friendRepository.deleteById(addeeNum);
+		Member adder = ms.findByNum(adderNum);
+		Friend friend = friendRepository.findGroupByAddeeAdderNum(adderNum, addeeNum);
+		friendRepository.delete(friend);
+		// friendRepository.deleteFriend(adderNum, addeeNum);
 	}
+	
+
+	// 친구 소속 그룹 변경
+	@Transactional
+	public Friend changeGroup(Long friendNum, Long addeeNum, Long groupNum, Member member) {
+		
+		Friend friend = new Friend(friendNum, member, addeeNum, groupNum);
+		return friendRepository.save(friend);
+	}
+	
+	
+
 }

@@ -68,10 +68,19 @@ public class Friend {
 	@Builder
 	public Friend(Member member, Long addeeNum, Long groupNum) {
 //      this.adderNum = setMember(member);
-		setMember(member);
+		this.member = member;
 		this.addeeNum = addeeNum;
 		this.groupNum = groupNum;
 	}
+	@Builder
+	public Friend(Long friendNum, Member member, Long addeeNum, Long groupNum) {
+		this.num = friendNum;
+		this.member = member;
+		this.addeeNum = addeeNum;
+		this.groupNum = groupNum;
+	}
+	
+
 	// 친구 객체 생성 메서드
 //   public static Friend createFriend(FriendsGroup group, Member member) {
 //      Friend friend = new Friend();

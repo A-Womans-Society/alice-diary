@@ -44,12 +44,5 @@ public class FriendshipDto {
 	
 	public FriendshipDto() {
 		// TODO Auto-generated constructor stub
-	}
-	
-//	@Override
-//	public int compareTo(FriendshipDto f) {
-//		return this.getId().compareTo(f.getId());
-//	}
-	
-	
+	}	
 }
