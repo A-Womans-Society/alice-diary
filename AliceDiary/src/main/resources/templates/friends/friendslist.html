@@ -9,66 +9,59 @@
 </th:block>
 
 <div layout:fragment="content">
-	<div class="container-fluid h-100">
-		<div class="row h-100">
-			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">친구 목록</h2>
-				<div class="d-flex justify-content-center" style="height: 13%;">
-					<div class="d-flex align-items-center"
-						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
-						<div class="w-100 text-center">
-							<input type="text" id="searchFriend" class="w-50"
-								name="searchFriend" placeholder="친구 닉네임으로 검색하세요">
-							<button type="button" class="btn btn-primary mb-2"
-								th:onclick="loadFriends()">검색</button>
-						</div>
-					</div>
-				</div>
-
-				<div class="d-flex justify-content-center" style="height: 72%;">
-
-					<div class="pt-3 pb-3"
-						style="width: 80%; overflow: auto; height: 95%;">
-						<table class="w-100 table table-striped table-hover">
-							<thead>
-
-								<tr class="text-center">
-									<th>NO</th>
-									<th>닉네임</th>
-									<th>전화번호</th>
-									<th>생년월일</th>
-									<th>성별</th>
-									<th>이메일</th>
-									<th>그룹</th>
-									<th>친구관리</th>
-								</tr>
-							</thead>
-							<tbody id="friendsBody">
-								<th:block th:if="${#lists.isEmpty(friendList)}">
-									<tr>
-										<td colspan="9" class="text-center">친구를 추가해주세요.</td>
-									</tr>
-								</th:block>
-								<th:block th:unless="${#lists.isEmpty(friendList)}"
-									th:each="friend, status : ${friendList}">
-									<tr>
-										<td th:text="${status.count}"></td>
-										<td><a th:text="${friend.name}"
-											th:href="@{/member/{id}(id=${friend.id})}"></a></td>
-										<td th:text="${friend.mobile}"></td>
-										<td th:text="${friend.birth}"></td>
-										<td th:text="${friend.gender}"></td>
-										<td th:text="${friend.email}"></td>
-										<td th:text="${friend.groupName}"></td>
-										<td><a th:text="친구관리"
-											th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"></a></td>
-									</tr>
-								</th:block>
-							</tbody>
-						</table>
-					</div>
-				</div>
+	<h2 class="text-center m-0 pt-5" style="height: 15%;">친구 목록</h2>
+	<div class="d-flex justify-content-center" style="height: 13%;">
+		<div class="d-flex align-items-center justify-content-center"
+			style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+			<div class="w-75 d-flex justify-content-center">
+				<input type="text" id="searchFriend" class="form-control"
+					name="searchFriend" placeholder="친구 닉네임으로 검색하세요">
+				<button type="button" class="btn" th:onclick="loadFriends()">검색</button>
 			</div>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-center" style="height: 72%;">
+
+		<div class="pt-3 pb-3"
+			style="width: 90%; overflow: auto; height: 95%;">
+			<table class="w-100 table table-striped table-hover">
+				<thead>
+
+					<tr class="text-center">
+						<th>NO</th>
+						<th>닉네임</th>
+						<th>전화번호</th>
+						<th>생년월일</th>
+						<th>성별</th>
+						<th>이메일</th>
+						<th>그룹</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="friendsBody">
+					<th:block th:if="${#lists.isEmpty(friendList)}">
+						<tr>
+							<td colspan="9" class="text-center">친구를 추가해주세요.</td>
+						</tr>
+					</th:block>
+					<th:block th:unless="${#lists.isEmpty(friendList)}"
+						th:each="friend, status : ${friendList}">
+						<tr>
+							<td th:text="${status.count}"></td>
+							<td th:text="${friend.name}"></td>
+							<td th:text="${friend.mobile}"></td>
+							<td th:text="${friend.birth}"></td>
+							<td th:text="${friend.gender}"></td>
+							<td th:text="${friend.email}"></td>
+							<td th:text="${friend.groupName}"></td>
+							<td><a
+								th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"><input
+									type="button" th:value="정보" class="btn btn-dark"></a></td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
@@ -88,16 +81,38 @@
 
 				<form th:action="@{/friends/add}" method="post">
 					<div class="modal-body">
-						<div>
-							<input type="hidden" id="userName" name="userName"
-								th:value="${member.name}"> 닉네임 <input type="text"
-								id="searchName" name="searchName"> <input type="button"
+						<input type="hidden" id="userName" name="userName"
+							th:value="${member.name}">
+						<div
+							class="w-100 d-flex align-items-center justify-content-center">
+							닉네임 &nbsp;<input type="text" id="searchName" name="searchName"
+								class="form-control w-25"> <input type="button"
 								class="btn" value="검색" onclick="loadMembers()">
 						</div>
-						<div id="memberInfo"></div>
+						<div id="memberInfo" style="height: 250px;">
+							<div class="row h-100">
+								<div
+									class="col-6 h-100 d-flex justify-content-center align-items-center">
+
+								</div>
+								<div
+									class="col-6 d-flex justify-content-center align-items-center">
+									<table class="table">
+										<tr>
+											<th>닉네임</th>
+											<td id="nameBox"></td>
+										</tr>
+										<tr>
+											<th>MBTI</th>
+											<td id="mbtiBox"></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btnbtn-dark" value="친구 추가"
+						<input type="submit" class="btn btn-dark" value="친구 추가"
 							th:onclick="return addOk()">
 					</div>
 					<input type="hidden" id="checkSearch" value="false">
@@ -105,6 +120,5 @@
 			</div>
 		</div>
 	</div>
-
 </div>
 </html>

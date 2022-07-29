@@ -40,7 +40,8 @@
 	</div>
 	<!--/* 게시글 영역 */-->
 	<div class="d-flex justify-content-center" style="height: 70%;">
-		<div class="pt-3 pb-3" style="width: 80%; height: 95%;">
+		<div class="pt-3 pb-3"
+			style="width: 80%; overflow: auto; height: 95%;">
 			<div class='text-right'>
 				<a th:if="${searchDto.keyword != null}"
 					th:href="@{|/messagebox/pictures/${#authentication.name}|}"><input

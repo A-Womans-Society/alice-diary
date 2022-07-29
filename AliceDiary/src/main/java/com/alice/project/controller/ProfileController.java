@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alice.project.config.PrincipalDetails;
 import com.alice.project.domain.Member;
+import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.ProfileService;
 import com.alice.project.web.UserDto;
@@ -39,25 +40,54 @@ public class ProfileController {
 	private final ProfileService profileService;
 	private final PasswordEncoder passwordEncoder;
 	private final MemberService memberService;
+	private final FriendService friendService;
 
-	// 내 프로필 보기 GET	
+	// 내 프로필 보기 GET
 	@GetMapping(value = "/member/{id}")
 	public String myProfile(@PathVariable String id, Model model, @AuthenticationPrincipal UserDetails user) {
 		Member member = profileService.findById(user.getUsername());
-		List<String> wishList = new ArrayList<String>();
-		log.info("wish list : " + member.getWishlist());
-		// wish list 존재
-		if (member.getWishlist() != null) {
-			String wish = member.getWishlist().replaceAll(",", " ");
-			String[] wishs = wish.split(" ");
-			for (String s : wishs) {
-				wishList.add(s);
+		// 내 프로필 보기
+		if (user.getUsername() == id) {
+			// wish list 존재
+			List<String> wishList = new ArrayList<String>();
+			if (member.getWishlist() != null) {
+				String wish = member.getWishlist().replaceAll(",", " ");
+				String[] wishs = wish.split(" ");
+				for (String s : wishs) {
+					wishList.add(s);
+				}
 			}
-		}
 
-		model.addAttribute("member", member);
-		model.addAttribute("wishList", wishList);
-		return "profile/myProfile";
+			model.addAttribute("person", null);
+			model.addAttribute("member", member);
+			model.addAttribute("wishList", wishList);
+			return "profile/myProfile";
+		} else {
+			// 친구인지 확인
+			Boolean alreadyFriend = friendService.iAmFriend(member.getNum(), id);
+			// 서로 친구
+			if (alreadyFriend) {
+				// 친구 프로필로 이동
+				return "redirect:/friends/friendInfo/" + id;
+			} else {
+				// 외부 프로필로 이동
+				Member person = memberService.findById(id);
+				// wish list 존재
+				List<String> wishList = new ArrayList<String>();
+				if (person.getWishlist() != null) {
+					String wish = person.getWishlist().replaceAll(",", " ");
+					String[] wishs = wish.split(" ");
+					for (String s : wishs) {
+						wishList.add(s);
+					}
+				}
+				model.addAttribute("member", member);
+				model.addAttribute("person", person);
+				model.addAttribute("wishList", wishList);
+				return "profile/myProfile";
+			}
+
+		}
 	}
 
 	// 내 프로필 수정 화면 GET
@@ -91,7 +121,7 @@ public class ProfileController {
 
 			try {
 
-				userDto.getProfileImg().transferTo(new File(savePath+saveName));
+				userDto.getProfileImg().transferTo(new File(savePath + saveName));
 				userDto.setSaveName(saveName);
 				log.info(("userDto.saveName = " + userDto.getSaveName()));
 				memberService.processUpdateMember(num, userDto, true);
@@ -109,7 +139,8 @@ public class ProfileController {
 
 	// 비밀번호 재설정 Get
 	@GetMapping(value = "/member/{id}/editPwd")
-	public String updatePwd(@PathVariable String id, Model model, String msg, @AuthenticationPrincipal UserDetails user) {
+	public String updatePwd(@PathVariable String id, Model model, String msg,
+			@AuthenticationPrincipal UserDetails user) {
 		log.info("프로필 비밀번호 재설정 GET 진입");
 		Member member = profileService.findById(user.getUsername());
 		model.addAttribute("member", member);

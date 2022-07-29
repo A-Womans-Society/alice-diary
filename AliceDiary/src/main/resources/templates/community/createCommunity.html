@@ -21,8 +21,9 @@
 	<h2 class="text-center m-0 pt-5" style="height: 15%;">커뮤니티 생성하기</h2>
 
 	<form th:action="@{/community/create}" method="post" id="form"
-		class="h-75 text-center d-flex justify-content-center w-100" th:object="${ccdto}">
-		<div class="w-75">
+		class="h-75 text-center d-flex justify-content-center w-100"
+		th:object="${ccdto}">
+		<div class="w-75 pt-3">
 			<table class="table w-100">
 				<tr>
 					<th>커뮤니티 이름</th>
@@ -45,10 +46,11 @@
 				<tr>
 					<th>커뮤니티 설명</th>
 					<td colspan="4"><textarea type="text"
-							th:field="*{description}" cols="10" rows="5" class="form-control"></textarea></td>
+							th:field="*{description}" cols="10" rows="9" style="resize: none;" class="form-control"></textarea></td>
 				</tr>
 			</table>
-			<input type="submit" class="btn btn-secondary" th:onclick="return check()" value="커뮤니티 만들기">
+			<input type="submit" class="btn btn-secondary"
+				th:onclick="return check()" value="커뮤니티 만들기">
 		</div>
 	</form>
 </div>

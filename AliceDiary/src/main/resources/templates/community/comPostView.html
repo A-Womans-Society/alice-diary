@@ -2,82 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://thymeleaf.org/extras/spring-security"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/communityLayout}">
+	layout:decorate="~{layouts/myCommunityLayout}">
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/comPostView.js}"></script>
-	<!--    <script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
- -->
 </th:block>
 
 <th:block layout:fragment="css">
-	<style>
-.blog-comment::before, .blog-comment::after, .blog-comment-form::before,
-	.blog-comment-form::after {
-	content: "";
-	display: table;
-	clear: both;
-}
-
-.blog-comment ul {
-	list-style-type: none;
-	padding: 0;
-}
-
-.blog-comment ul.comments {
-	border-top: 1px solid;
-	margin: 0;
-}
-
-.blog-comment img {
-	opacity: 1;
-	filter: Alpha(opacity = 100);
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	-o-border-radius: 4px;
-	border-radius: 4px;
-}
-
-.blog-comment img.avatar {
-	position: relative;
-	float: left;
-	margin-left: 0;
-	margin-top: 0;
-	width: 40px;
-	height: 40px;
-}
-
-.blog-comment .meta {
-	font-size: 13px;
-	color: #aaaaaa;
-	padding-bottom: 8px;
-	margin-bottom: 10px !important;
-	border-bottom: 1px solid #eee;
-	display: flex;
-	justify-content: space-between;
-	align-items: end;
-}
-
-.blog-comment ul.childComments {
-	list-style-type: none;
-	padding: 0;
-	margin-left: 50px;
-	margin-bottom: 0;
-}
-
-.blog-comment-form {
-	padding-left: 15%;
-	padding-right: 15%;
-	padding-top: 40px;
-}
-
-.blog-comment h3, .blog-comment-form h3 {
-	margin-bottom: 40px;
-	font-size: 26px;
-	line-height: 30px;
-	font-weight: 800;
-}
-</style>
+	<link th:href="@{/css/community/postView.css}" rel="stylesheet" />
 </th:block>
 
 <div layout:fragment="content">
@@ -93,21 +25,25 @@
 					<h3 th:text="${postView.title}"></h3>
 					<div class="d-flex justify-content-between">
 						<span th:text="${postView.member.name}"></span>
-						<button type="button" class="btn btn-sm"
-							th:if="${#authentication.name} != ${postView.member.id}"
-							th:onclick="openModalMsg([[${postView.member.id}]],[[${postView.member.name}]],[[${#authentication.name}]])">쪽지</button>
-						<span
-							th:text="
-                     ${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span>
-						<span th:if="${postView.updateDate != null}"
-							style="color: grey; font-size: 15px;"
-							th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></span>
+						<p>
+							<button type="button" class="btn btn-sm"
+								th:if="${#authentication.name} != ${postView.member.id}"
+								th:onclick="openModalMsg([[${postView.member.id}]],[[${postView.member.name}]],[[${#authentication.name}]])">쪽지</button>
+							<span
+								th:text="
+                     ${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span><br />
+							<span th:if="${postView.updateDate != null}"
+								style="color: grey; font-size: 15px;"
+								th:text="'(수정일자:'+${#temporals.format(postView.updateDate, 'yyyy-MM-dd HH:mm')}+')'"></span>
+						</p>
 					</div>
 				</div>
 				<div
 					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
 					style="flex-direction: column; height: 60%;">
-					<div style="overflow-y: scroll; height: 90%;"><pre style="font-family:alice;" th:text="${postView.content}"></pre></div>
+					<div style="overflow-y: scroll; height: 90%;">
+						<pre style="font-family: alice;" th:text="${postView.content}"></pre>
+					</div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
 							첨부파일: <a th:href="|../../download/${file.num}|"
@@ -184,21 +120,27 @@
 										</div>
 
 										<li th:if="${reply.parentRepNum} == null"
-											th:id="|replyReplyBox${reply.num}|" style="display: none;"><span><input
-												type="text" placeholder="댓글을 입력해주세요"
-												th:id="|replyReplyContent${reply.num}|"></span> <span><button
-													type="button"
-													th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], 
+											th:id="|replyReplyBox${reply.num}|" style="display: none;"><div
+												class="d-flex">
+												<span><input
+													class="form-control rounded-0 border-2 bg-light"
+													type="text" placeholder="댓글을 입력해주세요"
+													th:id="|replyReplyContent${reply.num}|"></span> <span><button
+														type="button" class="btn "
+														th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], 
                      replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button></span>
-										</li>
+											</div></li>
 
 									</th:block>
 								</ul>
 						</div>
 
-						<div class="card-footer commentBox">
-							<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
-							<button type="button"
+						<div class="card-footer commentBox d-flex">
+							<input type="text" placeholder="댓글을 입력해주세요" id="replyContent"
+								class="form-control rounded-0 border-2 bg-light"
+								style="width: 85%;" required>
+							<button type="button" class="btn btn-secondary"
+								style="width: 15%;"
 								th:onclick="replySubmit([[${postView.num}]],[[${#authentication.name}]])">등록</button>
 						</div>
 					</div>
@@ -213,8 +155,7 @@
 			role="document">
 			<div class="modal-content">
 				<div class="modal-header" style="align-items: baseline;">
-					<h1 class="modal-title">신고하기</h1>
-					<span>신고는 취소할 수 없습니다. 정말 신고하시겠습니까?</span>
+					<h1 class="modal-title">게시글 신고하기</h1>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -222,22 +163,37 @@
 				</div>
 
 				<form th:action="@{/open/reportpost}" method="post">
-					<div class="modal-body">
-						<div>
-							<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
-							표현 <input type="radio" name="reportReasons" id="LEAK"
-								value="LEAK" />개인정보유출 <input type="radio" name="reportReasons"
-								id="SPAM" value="SPAM" />스팸홍보/도배글 <input type="radio"
-								name="reportReasons" id="ETC" value="ETC" />기타
+					<div class="row modal-body" style="height: 235px;">
+						<div class="col-5 pl-5">
+							<h5 class="text-center">
+								<strong>신고 항목 선택</strong>
+							</h5>
+							<p>
+								<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
+								표현
+							</p>
+							<p>
+								<input type="radio" name="reportReasons" id="LEAK" value="LEAK" />개인정보유출
+							</p>
+							<p>
+								<input type="radio" name="reportReasons" id="SPAM" value="SPAM" />스팸홍보/도배글
+							</p>
+							<p>
+								<input type="radio" name="reportReasons" id="ETC" value="ETC" />기타
+							</p>
 						</div>
-						<div>
-							<input type="text" id="reportContent"
-								placeholder="신고 내용을 신중히 작성해주세요" size="90">
+						<div class="col-7">
+							<p class="text-center m-0">
+								<span class="text-danger">신고 내용을 신중히 작성해주세요</span>
+							</p>
+							<input type="text" id="reportContent" placeholder="신고 내용을 작성해주세요"
+								style="width: 100%; height: 80%;" required>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<input type="hidden" name="postNum" th:value="${postView.num}">
-						<button type="button"
+						<p class="m-0">신고는 취소할 수 없습니다. 정말 신고하시겠습니까?</p>
+						<button type="button" class="btn btn-danger"
 							th:onclick="postReport([[${#authentication.name}]],[[${postView.num}]])">신고하기</button>
 					</div>
 				</form>
@@ -251,9 +207,8 @@
 		<div class="modal-dialog modal-dialog-centered modal-lg"
 			role="document">
 			<div class="modal-content">
-				<div class="modal-header" style="align-items: baseline;">
-					<h1 class="modal-title">신고하기</h1>
-					<span>신고는 취소할 수 없습니다. 정말 신고하시겠습니까?</span>
+				<div class="modal-header">
+					<h1 class="modal-title">댓글 신고하기</h1>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -261,21 +216,37 @@
 				</div>
 
 				<form th:action="@{/open/reportreply}" method="post">
-					<div class="modal-body">
-						<div>
-							<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
-							표현 <input type="radio" name="reportReasons" id="LEAK"
-								value="LEAK" />개인정보유출 <input type="radio" name="reportReasons"
-								id="SPAM" value="SPAM" />스팸홍보/도배글 <input type="radio"
-								name="reportReasons" id="ETC" value="ETC" />기타
+					<div class="row modal-body" style="height: 235px;">
+						<div class="col-5 pl-5">
+							<h5 class="text-center">
+								<strong>신고 항목 선택</strong>
+							</h5>
+							<p>
+								<input type="radio" name="reportReasons" id="BAD" value="BAD" />비속어/욕설/불쾌한
+								표현
+							</p>
+							<p>
+								<input type="radio" name="reportReasons" id="LEAK" value="LEAK" />개인정보유출
+							</p>
+							<p>
+								<input type="radio" name="reportReasons" id="SPAM" value="SPAM" />스팸홍보/도배글
+							</p>
+							<p>
+								<input type="radio" name="reportReasons" id="ETC" value="ETC" />기타
+							</p>
 						</div>
-						<div>
+						<div class="col-7">
+							<p class="text-center m-0">
+								<span class="text-danger">신고 내용을 신중히 작성해주세요</span>
+							</p>
 							<input type="text" id="reportRepContent"
-								placeholder="신고 내용을 신중히 작성해주세요" size="90">
+								placeholder="신고 내용을 작성해주세요" style="width: 100%; height: 80%;"
+								required>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button"
+						<p class="m-0">신고는 취소할 수 없습니다. 정말 신고하시겠습니까?</p>
+						<button type="button" class="btn btn-danger"
 							th:onclick="replyReport([[${#authentication.name}]])">신고하기</button>
 					</div>
 					<input type="hidden" id="replyTarget">
@@ -284,13 +255,13 @@
 		</div>
 	</div>
 
-	<!-- 댓글메세지 Modal -->
+	<!-- 쪽지  Modal -->
 	<div class="modal" tabindex="-1" role="dialog" id="replyMsg">
 		<div class="modal-dialog modal-dialog-centered modal-lg"
 			role="document">
 			<div class="modal-content">
-				<div class="modal-header" style="align-items: baseline;">
-					<h1 class="modal-title">쪽지보내기</h1>
+				<div class="modal-header">
+					<h3 class="modal-title">쪽지 보내기✉️</h3>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -299,16 +270,21 @@
 
 				<form th:action="@{/open/replymsg}" method="post">
 					<div class="modal-body">
-						<div>
-							받는 사람 : <input type="text" id="replyMsgToName" readonly />
+						<div class="d-flex">
+							<strong>받는 사람</strong>&nbsp;&nbsp;<input type="text"
+								id="replyMsgToName" class="form-control" style="width: 50%;"
+								readonly />
 						</div>
 						<div>
-							내용 :
-							<textarea type="text" id="replyMsgContent" cols="50" rows="3"></textarea>
+							<strong>쪽지 내용</strong>
+							<textarea type="text" class="form-control" id="replyMsgContent"
+								rows="10" required></textarea>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button"
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary"
 							th:onclick="replyMsg([[${#authentication.name}]])">쪽지보내기</button>
 					</div>
 					<input type="hidden" id="replyMsgToId">

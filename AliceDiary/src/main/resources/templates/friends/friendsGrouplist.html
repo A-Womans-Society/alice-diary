@@ -3,60 +3,54 @@
 	xmlns:sec="http://thymeleaf.org/extras/spring-security"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorate="~{layouts/friendsLayout}">
-	
+
 <th:block layout:fragment="script">
 	<script th:src="@{/js/friends/friendsGroup.js}"></script>
 	<script th:src="@{/js/friends/friendsList.js}"></script>
 </th:block>
 
 <div layout:fragment="content">
-	<div class="container-fluid h-100">
-		<div class="row h-100">
-			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">그룹 목록</h2>
-				<div class="d-flex justify-content-center" style="height: 13%;">
-					<div class="d-flex align-items-center"
-						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
-						<div class="w-100 text-center">
+	<h2 class="text-center m-0 pt-5" style="height: 15%;">그룹 목록</h2>
+	<div class="d-flex justify-content-center" style="height: 13%;">
+		<div class="d-flex align-items-center"
+			style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+			<div class="w-100 text-center d-flex justify-content-center align-items-center">
 
-							<input type="text" id="newGroup" name="newGroup" class="w-50"
-								placeholder="그룹을 등록하세요." required>
-							<button type="button" class="btn btn-primary mb-2"
-								th:onclick="addGroup()">그룹 추가</button>
-							<!-- 							<input type="hidden" id="checkGroup" value="false"> -->
-						</div>
-					</div>
-				</div>
-
-
-				<div class="d-flex justify-content-center" style="height: 72%;">
-					<div class="pt-3 pb-3"
-						style="width: 80%; overflow: auto; height: 95%;">
-						<table class="w-100 table table-striped table-hover">
-							<thead>
-								<tr class="text-center">
-									<th>NO</th>
-									<th>그룹명</th>
-								</tr>
-							</thead>
-							<tbody id="friendsGroupBody">
-								<th:block th:if="${#lists.isEmpty(grouplist)}">
-									<tr>
-										<td colspan="9" class="text-center">그룹을 등록하세요.</td>
-									</tr>
-								</th:block>
-								<th:block th:unless="${#lists.isEmpty(grouplist)}"
-									th:each="friendGroup, status : ${grouplist}">
-									<tr class="text-center">
-										<td th:text="${status.count}"></td>
-										<td th:text="${friendGroup.groupName}"></td>
-									</tr>
-								</th:block>
-							</tbody>
-						</table>
-					</div>
-				</div>
+				<input type="text" id="newGroup" name="newGroup" class="form-control w-50"
+					placeholder="그룹을 등록하세요." required>
+				<button type="button" class="btn"
+					th:onclick="addGroup()">그룹 추가</button>
+				<!-- 							<input type="hidden" id="checkGroup" value="false"> -->
 			</div>
+		</div>
+	</div>
+
+
+	<div class="d-flex justify-content-center" style="height: 72%;">
+		<div class="pt-3 pb-3"
+			style="width: 80%; overflow: auto; height: 95%;">
+			<table class="w-100 table table-striped table-hover">
+				<thead>
+					<tr class="text-center">
+						<th>NO</th>
+						<th>그룹명</th>
+					</tr>
+				</thead>
+				<tbody id="friendsGroupBody">
+					<th:block th:if="${#lists.isEmpty(grouplist)}">
+						<tr>
+							<td colspan="9" class="text-center">그룹을 등록하세요.</td>
+						</tr>
+					</th:block>
+					<th:block th:unless="${#lists.isEmpty(grouplist)}"
+						th:each="friendGroup, status : ${grouplist}">
+						<tr class="text-center">
+							<td th:text="${status.count}"></td>
+							<td th:text="${friendGroup.groupName}"></td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<!-- Modal -->
@@ -77,10 +71,10 @@
 					<div class="modal-body">
 						<div>
 							<input type="hidden" id="userName" name="userName"
-								th:value="${member.name}"> 닉네임 <input type="text" id="searchName" name="searchName">
-							<input type="button" class="btn" value="검색"
-								onclick="loadMembers()">
-							
+								th:value="${member.name}"> 닉네임 <input type="text"
+								id="searchName" name="searchName"> <input type="button"
+								class="btn" value="검색" onclick="loadMembers()">
+
 						</div>
 						<div id="memberInfo"></div>
 					</div>

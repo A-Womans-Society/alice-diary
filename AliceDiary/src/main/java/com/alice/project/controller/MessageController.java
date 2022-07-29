@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -79,7 +76,6 @@ public class MessageController {
 		List<Message> msgList = new ArrayList<>();
 		msgList = messageService.findUserMsg(num);
 		if (msgList.size() == 0) {
-			log.info("설마 여기...?");
 			model.addAttribute("mldtos", msgList);
 			model.addAttribute("fromNum", num);
 			model.addAttribute("mdto", mdto);
@@ -159,10 +155,6 @@ public class MessageController {
 		model.addAttribute("fromId", fromId);
 		model.addAttribute("mdtos", msgList);
 
-//      String toId = messageService.findIdByNum(toNum);
-//      String userNum = session.getAttribute("userNum").toString();
-		// 세션에서 사용자번호 받아서 넣기
-//      model.addAttribute("userNum", 3); // ***테스트용으로 하드코딩한 것
 		model.addAttribute("userNum", fromNum);
 		model.addAttribute("toNum", toNum);
 		model.addAttribute("toId", toId);
@@ -223,9 +215,7 @@ public class MessageController {
 		model.addAttribute("receiverNum", receiverNum);
 		model.addAttribute("mldtos", mldtos);
 		model.addAttribute("fromNum", fromNum);
-		// 친구 member 객체 / profileImg 정보 & 내 이미지 정보
-		// model.addAttribute("friendImg", )
-
+		
 		return "message/msgList";
 	}
 
@@ -268,22 +258,12 @@ public class MessageController {
 		log.info("mdto" + mdto.toString());
 
 		log.info("result.toString() : " + resultMsg.toString());
-		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + id));
-		return "message/alert";
+		return "redirect:./" + id;
 	}
 
-	// 쪽지함 삭제
-//	@PostMapping("/messagebox/{fromId}/{toId}/delete")
-//	@ResponseBody
-//	public String deleteMessageFromBox(@PathVariable String fromId, @PathVariable String toId, Model model) {
-//		messageService.changeMsgStatus(fromId, toId);
-//		model.addAttribute("data", new Alert("쪽지가 성공적으로 삭제되었습니다!", "/AliceDiary/messagebox/" + fromId));
-//		return "1";
-//	}
 	@PostMapping("/messagebox/delete")
 	@ResponseBody
 	public String deleteMessageFromList(String fromId, String toId, Model model) {
-		log.info("aaaaaaaaaaaaaaaaaaaaaaa");
 		messageService.changeMsgStatus(fromId, toId);
 		model.addAttribute("data", new Alert("쪽지가 성공적으로 삭제되었습니다!", "/AliceDiary/messagebox/" + fromId));
 		return "1";
@@ -328,8 +308,7 @@ public class MessageController {
 		}
 		log.info("mdto" + mdto.toString());
 		log.info("result.toString() : " + result.toString());
-		model.addAttribute("data", new Alert("메시지가 성공적으로 전송되었습니다!", "./" + toId));
-		return "message/alert";
+		return "redirect:./" + toId;
 	}
 
 	// 쪽지 검색하기
@@ -338,7 +317,6 @@ public class MessageController {
 			@RequestParam(value = "type", required = true) String type, @PathVariable String id, String content,
 			Model model, @ModelAttribute MessageDto mdto, MsgSearchDto msdto,
 			@AuthenticationPrincipal UserDetails user) {
-		log.info("들어오니??");
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
@@ -434,9 +412,8 @@ public class MessageController {
 
 	// 사진 파일 모아보기
 	@GetMapping(value = "/messagebox/pictures/{id}")
-	public String showPictureList(@PathVariable("id") String id,
-			@ModelAttribute("searchDto") SearchDto searchDto, @AuthenticationPrincipal UserDetails user, Model model,
-			@ModelAttribute MsgFileDto mpdto, Long num) {
+	public String showPictureList(@PathVariable("id") String id, @ModelAttribute("searchDto") SearchDto searchDto,
+			@AuthenticationPrincipal UserDetails user, Model model, @ModelAttribute MsgFileDto mpdto, Long num) {
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 		model.addAttribute("keyword", keyword);
@@ -471,9 +448,8 @@ public class MessageController {
 
 	// 문서 파일 모아보기
 	@GetMapping(value = "/messagebox/docs/{id}")
-	public String showDocList(@PathVariable("id") String id,
-			@ModelAttribute("searchDto") SearchDto searchDto, @AuthenticationPrincipal UserDetails user, Model model,
-			@ModelAttribute MsgFileDto mpdto, Long num) {
+	public String showDocList(@PathVariable("id") String id, @ModelAttribute("searchDto") SearchDto searchDto,
+			@AuthenticationPrincipal UserDetails user, Model model, @ModelAttribute MsgFileDto mpdto, Long num) {
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 		model.addAttribute("keyword", keyword);

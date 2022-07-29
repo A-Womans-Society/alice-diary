@@ -19,25 +19,37 @@
 								<div
 									class="col-5 d-flex justify-content-center align-items-center"
 									style="flex-direction: column;">
-									<img id="profileImage"
+									<img id="profileImage" th:if="${person == null}"
 										th:src="@{/upload/profile/}+@{${member.profileImg}}"
+										class="w-75" /><img id="profileImage"
+										th:unless="${person == null}"
+										th:src="@{/upload/profile/}+@{${person.profileImg}}"
 										class="w-75" />
 								</div>
 								<div class="col-7 pr-0">
 									<div class="form-group ">
 										<label class="form-label">ID</label> <input type="text"
-											class="form-control mb-1" th:value="${member.id}" readonly>
+											th:if="${person == null}" class="form-control mb-1"
+											th:value="${member.id}" readonly> <input type="text"
+											th:unless="${person == null}" class="form-control mb-1"
+											th:value="${person.id}" readonly>
 									</div>
 									<div class="form-group">
 
 										<label class="form-label">닉네임</label> <input type="text"
-											class="form-control" th:value="${member.name}" readonly>
+											th:if="${person == null}" class="form-control"
+											th:value="${person.name}" readonly><input
+											th:unless="${person == null}" type="text"
+											class="form-control" th:value="${person.name}" readonly>
 									</div>
 									<div class="form-group">
 
 										<label class="form-label">E-mail</label> <input type="text"
-											class="form-control mb-1" th:value="${member.email}"
-											readonly="readonly">
+											th:if="${person == null}" class="form-control mb-1"
+											th:value="${member.email}" readonly><input
+											type="text" class="form-control mb-1"
+											th:unless="${person == null}" th:value="${person.email}"
+											readonly>
 									</div>
 								</div>
 							</div>
@@ -47,20 +59,26 @@
 
 					<div class="form-group">
 						<label class="form-label">생년월일</label> <input type="date"
-							class="form-control mb-1" th:value="${member.birth}"
-							readonly="readonly">
+							th:if="${person == null}" class="form-control mb-1"
+							th:value="${member.birth}" readonly><input
+							th:unless="${person == null}" type="date"
+							class="form-control mb-1" th:value="${person.birth}" readonly>
 
 					</div>
 					<div class="form-group">
 						<label class="form-label">전화번호</label> <input type="text"
-							class="form-control mb-1" th:value="${member.mobile}"
-							readonly="readonly">
+							th:if="${person == null}" class="form-control mb-1"
+							th:value="${member.mobile}" readonly><input
+							th:unless="${person == null}" type="text"
+							class="form-control mb-1" th:value="${person.mobile}" readonly>
 
 					</div>
 					<div class="form-group">
 						<label class="form-label">MBTI</label> <input type="text"
-							class="form-control mb-1" th:value="${member.mbti}"
-							readonly="readonly">
+							th:if="${person == null}" class="form-control mb-1"
+							th:value="${member.mbti}" readonly><input type="text"
+							th:unless="${person == null}" class="form-control mb-1"
+							th:value="${person.mbti}" readonly>
 					</div>
 
 					<div class="form-group">

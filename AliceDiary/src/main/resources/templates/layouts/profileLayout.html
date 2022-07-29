@@ -43,12 +43,21 @@
 	<!-- import header -->
 	<div th:replace="fragments/header::header"></div>
 	<div style="height: 92%;" class="container-fluid">
-		<div class="row h-100">
-			<!-- import sidebar -->
-			<div th:replace="fragments/profileSidebar::sidebar" class="col-3"></div>
-			<!-- import content -->
-			<div layout:fragment="content" class="col-9"></div>
-		</div>
+		<th:block th:if="${person == null}">
+			<div class="row h-100">
+				<!-- import sidebar -->
+				<div th:replace="fragments/profileSidebar::sidebar" class="col-3"></div>
+				<!-- import content -->
+				<div layout:fragment="content" class="col-9"></div>
+			</div>
+		</th:block>
+		<th:block th:unlexx="${person == null}">
+			<div class="row h-100 justify-content-center">
+				<!-- import content -->
+				<div layout:fragment="content" class="col-10"></div>
+			</div>
+		</th:block>
+	</div>
 	</div>
 </body>
 </html>

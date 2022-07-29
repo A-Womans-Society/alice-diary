@@ -2,81 +2,52 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://thymeleaf.org/extras/spring-security"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/communityLayout}">
+	layout:decorate="~{layouts/myCommunityLayout}">
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/manageCommunity.js}"></script>
-	<!-- <script th:src="@{https://code.jquery.com/jquery-1.12.4.js}"></script> -->
 </th:block>
 
 <div layout:fragment="content">
-	<div class="container-fluid h-100">
-		<div class="row h-100">
-			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">
-					커뮤니티 관리 #
-					<th:block th:text="${manageCom.comName}"></th:block>
-				</h2>
+	<h2 class="text-center m-0 pt-5" style="height: 15%;">
+		커뮤니티 관리 <span class="text-primary"># </span><span class="text-primary"
+			th:text="${manageCom.comName}"></span>
+	</h2>
 
-				<form th:action="@{|/community/${comNum}/manage|}" method="post"
-					id="form" th:object="${manageCom}">
-					<div>
-						<table>
-							<thead>
-								<h3>우리 커뮤니티 회원</h3>
-								<tr>
-									<th>ID</th>
-								</tr>
-							</thead>
-							<tbody id="communityMembers">
-								<th:block th:if="${comMembers != null}"
-									th:each="member : ${comMembers}">
-									<tr>
-										<td th:text="${member}"></td>
-									</tr>
-								</th:block>
-								<th:block th:unless="${comMembers != null}">
-									<tr>
-										<td>커뮤니티 멤버가 없습니다!😢</td>
-									</tr>
-								</th:block>
-							</tbody>
-						</table>
-					</div>
+	<form th:action="@{|/community/${comNum}/manage|}" method="post"
+		class="h-75 text-center d-flex justify-content-center w-100" id="form"
+		th:object="${manageCom}">
+		<div class="w-75 pt-3">
+			<table class="table w-100">
+				<tr>
+					<th>커뮤니티 이름</th>
+					<td><input type="text" th:field="*{comName}"
+						class="form-control"></td>
+					<th>우리 커뮤니티 회원</th>
+				</tr>
+				<tr>
+					<th>커뮤니티 설명</th>
+					<td><textarea type="text" th:field="*{description}" cols="10"
+							rows="9" class="form-control" style="resize: none;"></textarea></td>
+					<th:block th:if="${comMembers != null}">
+						<td>
+							<ul>
+								<li th:each="member : ${comMembers}" th:text="${member}"></li>
+							</ul>
+						</td>
 
-					<div>
-						커뮤니티 이름<input type="text" th:field="*{comName}"> 커뮤니티 설명
-						<textarea type="text" th:field="*{description}" cols="10" rows="5"></textarea>
-					</div>
-
-					<input type="submit" th:onclick="return check()" class="btn"
-						value="저장">
-					<button th:onclick="deleteCommunity([[${comNum}]])" class="btn">삭제</button>
-					<input type="button" onClick="history.go(-1)" value="취소"
-						class="btn">
-				</form>
-
-				<div>
-					<input type="button" onclick="location.href='../create'"
-						value="커뮤니티 추가하기">
-					<th:block th:each="hostCom : ${hostComs}"
-						th:if="${#authentication.name} == ${hostCom.member.id}">
-						<ul>
-							<li><a th:href="@{|/community/${hostCom.num}/list|}"
-								th:text="${hostCom.name}"></a></li>
-						</ul>
 					</th:block>
-					<th:block th:each="myCom : ${myComList}">
-						<ul>
-							<li><a th:href="@{|/community/${myCom.num}/list|}"
-								th:text="${myCom.name}"></a></li>
-						</ul>
+					<th:block th:unless="${comMembers != null}">
+						<td>커뮤니티 멤버가 없습니다!😢</td>
 					</th:block>
-				</div>
+				</tr>
+			</table>
 
-			</div>
+			<input type="submit" th:onclick="return check()" class="btn"
+				value="저장">
+			<button th:onclick="deleteCommunity([[${comNum}]])" class="btn">삭제</button>
+			<input type="button" onClick="history.go(-1)" value="취소" class="btn">
 		</div>
-	</div>
-
+	</form>
 </div>
 </html>

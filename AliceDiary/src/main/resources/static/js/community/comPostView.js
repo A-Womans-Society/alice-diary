@@ -52,22 +52,32 @@ function replySubmit(postNum, memberId) {
             let replyBox = document.createElement('li');
             replyBox.setAttribute('id', "replyReplyBox"+result.replyNum);
             replyBox.style.display = 'none';
-
+            
+			let divBox = document.createElement('div');
+			divBox.style.display = 'flex';
+            
             let replyBoxtd1 = document.createElement('span');
             let replyBoxInput = document.createElement('input');
             replyBoxInput.placeholder = "댓글을 입력해주세요";
             replyBoxInput.setAttribute('id', 'replyReplyContent'+result.replyNum);
+            replyBoxInput.setAttribute('class', 'form-control rounded-0 border-2 bg-light');
+
+            replyBoxtd1.appendChild(replyBoxInput);
 
             let replyBoxtd2 = document.createElement('span');
             let replyBtn = document.createElement('button');
             replyBtn.setAttribute('onclick', "replyReply("+result.postNum+","+result.replyNum+", \""+result.id+"\", replyReplyBox" +
                      result.replyNum+", replyReplyContent"+result.replyNum+", parentRepContentTable"+result.replyNum+")");
             replyBtn.innerText="등록";
-            replyBoxtd2.appendChild(replyBtn);
-            replyBoxtd1.appendChild(replyBoxInput);
+            replyBtn.setAttribute('class', 'btn');
             
-            replyBox.appendChild(replyBoxtd1);
-            replyBox.appendChild(replyBoxtd2);
+            replyBoxtd2.appendChild(replyBtn);
+            
+            
+	        divBox.appendChild(replyBoxtd1);
+            divBox.appendChild(replyBoxtd2);
+            
+            replyBox.appendChild(divBox);
             
             newReply.appendChild(postComments);
                 newReply.appendChild(replyBox);

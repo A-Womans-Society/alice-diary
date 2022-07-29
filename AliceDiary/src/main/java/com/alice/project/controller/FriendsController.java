@@ -44,9 +44,9 @@ public class FriendsController {
 		Member m = memberService.findById(user.getUsername());
 		log.info("member : " + m.getId());
 		log.info("member : " + searchName);
-		
+
 		friendService.addFriendship(m, searchName);
-		
+
 		return "redirect:/friends";
 	}
 
@@ -55,8 +55,12 @@ public class FriendsController {
 	@ResponseBody
 	public Member searchMember(String name, @AuthenticationPrincipal UserDetails user) {
 		log.info("member name : " + name);
+
 		Member member = memberService.findByName(name);
-		if (member == null || member.getStatus().equals(Status.USER_OUT) ) {
+		if (member == null || member.equals("") || member.getStatus().equals(Status.ADMIN)
+				|| member.getStatus().equals(Status.USER_OUT))
+
+		{
 			return Member.createMember(); // name이 "noFriend"인 사람
 		}
 		log.info("member.getnum : " + member.getNum());
@@ -67,7 +71,7 @@ public class FriendsController {
 	@GetMapping("/friends")
 	public String friendshiplist(Model model, HttpSession session, @AuthenticationPrincipal UserDetails user) {
 		Long adderNum = memberService.findById(user.getUsername()).getNum();
-		
+
 		List<Friend> friendList = friendService.friendship(adderNum);
 		List<FriendshipDto> friendship = new ArrayList<>();
 
@@ -109,6 +113,17 @@ public class FriendsController {
 		Member friend = profileService.findById(id);
 		Member member = memberService.findById(user.getUsername());
 		log.info("member=" + member);
+
+		List<String> wishList = new ArrayList<String>();
+		if (friend.getWishlist() != null) {
+			String wish = friend.getWishlist().replaceAll(",", " ");
+			String[] wishs = wish.split(" ");
+			for (String s : wishs) {
+				wishList.add(s);
+			}
+		}
+
+		model.addAttribute("wishList", wishList);
 		model.addAttribute("friend", friend);
 		model.addAttribute("member", member);
 		model.addAttribute("myFriendGroup", friendsGroupService.findAllByAdder(member.getNum()));

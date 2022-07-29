@@ -5,8 +5,8 @@ document.addEventListener('keydown', function(event) {
  }, true);
  
  function openModal() {
-    document.getElementById("searchName").innerText = "";
-    document.getElementById("memberInfo").innerHTML = "";
+    document.getElementById("searchName").value = "";
+    document.getElementById("memberInfo").innerHTML = "<div class='d-flex justify-content-center align-items-center h-100'>친구를 검색하세요.</div>";
     document.getElementById("userName").innerText = "";
     $("#addFriend").modal();
  };
@@ -53,30 +53,45 @@ document.addEventListener('keydown', function(event) {
                      console.log(result.status);
                      let mbti = result.mbti;
                      let target = result.name;
-                     console.log(mbti);
-                     console.log(target);
                      if (target === 'noFriend') {
-                     	document.getElementById("memberInfo").innerText = "일치하는 회원이 없습니다.";
+                     	document.getElementById("memberInfo").innerText = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
                     	document.getElementById("checkSearch").value = false;
                      } else {
-	                     if (mbti === null) {
+                     	
+                     	let row = document.createElement('div');
+						row.setAttribute('class', 'row h-100');
+						
+						let col1 = document.createElement('div');
+						col1.setAttribute('class', 'col-6 h-100 d-flex justify-content-center align-items-center');
+						col1.innerHTML = "<img src='/AliceDiary/upload/profile/" + result.profileImg + "' class='w-75 h-75'>";
+                     	document.getElementById("checkSearch").value = true;
+                         			 
+                     	let col2 = document.createElement('div');
+                     	col2.setAttribute('class', 'col-6 d-flex justify-content-center align-items-center');
+                     	
+                     	let table = document.createElement('table');
+                     	table.setAttribute('class', 'table');
+                         	
+                     	if (mbti === null) {
 	                         mbti = "비밀-★";
-	                         let html = "<img src='/AliceDiary/upload/profile/" + result.profileImg + "' id='picture'><p>" + result.name
-	                             + " / " + mbti + "</p>";
-	                         document.getElementById("memberInfo").innerHTML = html;
-	                         document.getElementById("checkSearch").value = true;
-	                         document.getElementById("picture").style.width = "100px";
-	 
+
+                         	table.innerHTML = "<tr><th>닉네임</th><td>"+target+"</td></tr><tr><th>MBTI</th><td>"+mbti+"</td></tr>";
+                        
 	                     } else {
-	                         let html = "<img src='/AliceDiary/upload/profile/" + result.profileImg + "' id='picture'><p>" + result.name
-	                             + " / " + mbti + "</p>";
-	                         document.getElementById("memberInfo").innerHTML = html;
-	                         document.getElementById("checkSearch").value = true;
-	                         document.getElementById("picture").style.width = "100px";
-                     	 }
+                      	
+	                     	table.innerHTML = "<tr><th>닉네임</th><td>"+target+"</td></tr><tr><th>MBTI</th><td>"+mbti+"</td></tr>";
+                         }
+                         col2.appendChild(table);
+                         
+                         row.appendChild(col1);
+                         row.appendChild(col2);
+                         
+                         document.getElementById("memberInfo").innerHTML = "";
+                         document.getElementById("memberInfo").appendChild(row);
+                         
                     }
                  } else {
-                     document.getElementById("memberInfo").innerText = "일치하는 회원이 없습니다.";
+                     document.getElementById("memberInfo").innerText = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
                      document.getElementById("checkSearch").value = false;
                  }
              } else {

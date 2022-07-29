@@ -113,4 +113,15 @@ public class FriendService {
 		return friendRepository.weAreFriend(adderNum);
 	}
 
+	public Boolean iAmFriend(Long adderNum, String fId) {
+		List<Friend> fList = weAreFriend(adderNum);
+		Member member = ms.findById(fId);
+		for (Friend f : fList) {
+			if (member.getNum() == f.getMember().getNum()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

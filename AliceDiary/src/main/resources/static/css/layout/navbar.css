@@ -11,7 +11,7 @@ html, body {
 	font-family: 'alice';
 }
 
-li>a:hover {
+li>.nav-a-hover:hover {
 	background: #371b58;
 }
 

@@ -23,11 +23,7 @@ function leaveCancle() {
 }
 
 function leaveCheck() {
-	if (document.getElementById("password").value.length == 0){
-		alert("비밀번호를 입력해주세요.");
-		return false;
-	}
-	if(!confirm("회원 탈퇴 후 재가입이 불가능합니다. 탈퇴하시겠습니까?")) {
+	if(!confirm("회원 탈퇴 후 동일한 이메일로 재가입이 불가능합니다.\n탈퇴하시겠습니까?")) {
 		return false;
 	}else {
 		alert("회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");

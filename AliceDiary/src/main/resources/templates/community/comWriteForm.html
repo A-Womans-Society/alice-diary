@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorate="~{layouts/communityLayout}">
+	layout:decorate="~{layouts/myCommunityLayout}">
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/community/comWriteForm.js}"></script>
@@ -23,8 +23,8 @@
 						</tr>
 						<tr>
 							<th>내용</th>
-							<td><textarea th:field="*{content}" class="form-control"
-									rows="10"></textarea></td>
+							<td><textarea style="resize: none;" th:field="*{content}"
+									class="form-control" rows="10"></textarea></td>
 						</tr>
 						<tr>
 							<th>파일첨부</th>
