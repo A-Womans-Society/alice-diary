@@ -93,10 +93,9 @@
 					<h3 th:text="${postView.title}"></h3>
 					<div class="d-flex justify-content-between">
 						<span th:text="${postView.member.name}"></span>
-						<button th:if="${#authentication.name} != ${postView.member.id}"
-							th:onclick="openModalMsg([[${postView.member.id}]],[[${postView.member.name}]],[[${#authentication.name}]])">
-							<img th:src="@{/img/replymsg.png}" style="width: 20px;">
-						</button>
+						<button type="button" class="btn btn-sm"
+							th:if="${#authentication.name} != ${postView.member.id}"
+							th:onclick="openModalMsg([[${postView.member.id}]],[[${postView.member.name}]],[[${#authentication.name}]])">쪽지</button>
 						<span
 							th:text="
                      ${#temporals.format(postView.postDate, 'yyyy-MM-dd HH:mm')}"></span>
@@ -108,11 +107,11 @@
 				<div
 					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
 					style="flex-direction: column; height: 60%;">
-					<div th:text="${postView.content}"></div>
+					<div><pre style="font-family:alice;" th:text="${postView.content}"></pre></div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
-							<td>첨부파일: <a th:href="|../../download/${file.num}|"
-								th:text="${file.originName}"></a></td>
+							첨부파일: <a th:href="|../../download/${file.num}|"
+								th:text="${file.originName}"></a>
 						</div>
 					</div>
 				</div>
@@ -164,9 +163,9 @@
 													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
 												</span> <span> <span
 													th:if="${#authentication.name} != ${reply.memberId}"><button
-															th:onclick="openModalMsg([[${reply.memberId}]],[[${reply.memberName}]],[[${#authentication.name}]])">
-															<img th:src="@{/img/replymsg.png}" style="width: 20px;">
-														</button> </span> <span th:if="${reply.parentRepNum} == null">
+															type="button" class="btn btn-sm"
+															th:onclick="openModalMsg([[${reply.memberId}]],[[${reply.memberName}]],[[${#authentication.name}]])">쪽지</button></span>
+													<span th:if="${reply.parentRepNum} == null">
 														<button type="button" class="btn btn-sm"
 															th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
 												</span> <span th:if="${#authentication.name} == ${reply.memberId}"><button

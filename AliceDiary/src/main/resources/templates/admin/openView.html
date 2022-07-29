@@ -31,11 +31,11 @@
 				<div
 					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
 					style="flex-direction: column; height: 60%;">
-					<div th:text="${postView.content}"></div>
+					<div><pre style="font-family:alice;" th:text="${postView.content}"></pre></div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
-							<td>첨부파일: <a th:href="|./download/${file.num}|"
-								th:text="${file.originName}"></a></td>
+							첨부파일: <a th:href="|./download/${file.num}|"
+								th:text="${file.originName}"></a>
 						</div>
 					</div>
 				</div>
