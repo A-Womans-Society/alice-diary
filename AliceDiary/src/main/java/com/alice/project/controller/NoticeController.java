@@ -125,6 +125,7 @@ public class NoticeController {
 
 		jObj.put("replyNum", newReply.getNum());
 		jObj.put("id", newReply.getMember().getId());
+		jObj.put("name", newReply.getMember().getName());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReply.getRepDate()));
 		jObj.put("repContent", newReply.getContent());
 		jObj.put("postNum", newReply.getPost().getNum());
@@ -145,6 +146,7 @@ public class NoticeController {
 		jObj.put("replyNum", newReplyReply.getNum());
 		jObj.put("parentRepNum", newReplyReply.getParentRepNum());
 		jObj.put("id", newReplyReply.getMember().getId());
+		jObj.put("name", newReplyReply.getMember().getName());
 		jObj.put("repDate", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(newReplyReply.getRepDate()));
 		jObj.put("repContent", newReplyReply.getContent());
 		jObj.put("profileImg", newReplyReply.getMember().getProfileImg());

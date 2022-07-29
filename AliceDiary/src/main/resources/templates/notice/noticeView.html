@@ -95,7 +95,7 @@
 				<div
 					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
 					style="flex-direction: column; height: 60%;">
-					<div><pre style="font-family:alice;"th:text="${postView.content}"></pre></div>
+					<div style="overflow-y: scroll; height: 90%;"><pre style="font-family:alice;"th:text="${postView.content}"></pre></div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
 							첨부파일: <a th:href="|./download/${file.num}|"
@@ -127,7 +127,7 @@
 										<div class="post-comments">
 											<p class="meta">
 												<span>&nbsp;<span style="color: black;"
-													th:text="${reply.memberId}"></span>&nbsp;<span
+													th:text="${reply.memberName}"></span>&nbsp;<span
 													th:text="${#temporals.format(reply.repDate, 'yyyy-MM-dd HH:mm')}"></span>
 												</span> <span> <span th:if="${reply.parentRepNum} == null">
 														<button type="button" class="btn btn-sm"
