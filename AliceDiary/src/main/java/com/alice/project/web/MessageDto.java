@@ -3,7 +3,6 @@ package com.alice.project.web;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.alice.project.domain.Message;
 import com.alice.project.service.MessageService;
@@ -14,54 +13,57 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @ToString
-public class MessageDto implements Comparable<MessageDto>{ 
-	
-	@Autowired private MessageService ms;
+public class MessageDto implements Comparable<MessageDto> {
 
-	private Long messageFromNum; // 보내는 사람 번호
-	private Long messageToNum; // 받는사람 번호
+	@Autowired
+	private MessageService ms;
+
+	private Long user1Num; // 보내는 사람 번호
+	private Long user2Num; // 받는사람 번호
 	private LocalDateTime sendDate; // 발송일자
-	private String content; // 가장 최근 메시지
+	private String content; // 메시지
 	private String messageFromId; // 보내는 사람 아이디
 	private String messageToId; // 받는 사람 아이디
-	private MultipartFile originName; // 파일 이름
+	private Long direction;
+	// private MultipartFile originName; // 파일 이름
 
 	@Builder
-	public MessageDto(Long messageFromNum, Long messageToNum, 
-			LocalDateTime sendDate, String content,
-			String messageFromId, String messageToId) {
-		this.messageFromNum = messageFromNum;
-		this.messageToNum = messageToNum;
+	public MessageDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String content, String messageFromId,
+			String messageToId, Long direction) {
+		this.user1Num = user1Num;
+		this.user2Num = user2Num;
 		this.sendDate = sendDate;
 		this.content = content;
 		this.messageFromId = messageFromId;
 		this.messageToId = messageToId;
+		this.direction = direction;
 	}
-	
-	public MessageDto(Long messageFromNum, Long messageToNum, 
-			LocalDateTime sendDate, String content) {
-		this.messageFromNum = messageFromNum;
-		this.messageToNum = messageToNum;
+
+	public MessageDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String content, Long direction) {
+		this.user1Num = user1Num;
+		this.user2Num = user2Num;
 		this.sendDate = sendDate;
 		this.content = content;
-		this.messageFromId = ms.findIdByNum(messageFromNum);
-		this.messageToId = ms.findIdByNum(messageToNum);
-	}	
+		this.messageFromId = ms.findIdByNum(user1Num);
+		this.messageToId = ms.findIdByNum(user2Num);
+		this.direction = direction;
+
+	}
 
 	public MessageDto(Message message, MessageService ms) {
-		this.messageFromNum = message.getMessageFromNum();
-		this.messageToNum = message.getMessageToNum();
+		this.user1Num = message.getUser1Num();
+		this.user2Num = message.getUser2Num();
 		this.sendDate = message.getSendDate();
 		this.content = message.getContent();
-		this.messageFromId = ms.findIdByNum(this.getMessageFromNum());
-		this.messageToId = ms.findIdByNum(this.getMessageToNum());
 	}
 
 	@Override
 	public int compareTo(MessageDto o) {
 		return this.getSendDate().compareTo(o.getSendDate());
 	}
+
 }

@@ -5,6 +5,7 @@
 	layout:decorate="~{layouts/friendsLayout}">
 
 <th:block layout:fragment="script">
+	<script th:src="@{/js/friends/friendsGroup.js}"></script>
 	<script th:src="@{/js/friends/friendsList.js}"></script>
 </th:block>
 
@@ -12,58 +13,43 @@
 	<div class="container-fluid h-100">
 		<div class="row h-100">
 			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">친구 목록</h2>
+				<h2 class="text-center m-0 pt-5" style="height: 15%;">그룹 목록</h2>
 				<div class="d-flex justify-content-center" style="height: 13%;">
 					<div class="d-flex align-items-center"
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
 						<div class="w-100 text-center">
-							<input type="text" id="searchFriend" class="w-50"
-								name="searchFriend" placeholder="친구 닉네임으로 검색하세요">
+
+							<input type="text" id="newGroup" name="newGroup" class="w-50"
+								placeholder="그룹을 등록하세요.">
 							<button type="button" class="btn btn-primary mb-2"
-								th:onclick="loadFriends()">검색</button>
+								th:onclick="addGroup()">그룹 추가</button>
+							<input type="hidden" id="checkGroup" value="false">
 						</div>
 					</div>
 				</div>
 
-				<div class="d-flex justify-content-center" style="height: 72%;">
 
+				<div class="d-flex justify-content-center" style="height: 72%;">
 					<div class="pt-3 pb-3"
 						style="width: 80%; overflow: auto; height: 95%;">
 						<table class="w-100 table table-striped table-hover">
 							<thead>
-
 								<tr class="text-center">
 									<th>NO</th>
-									<th>ID</th>
-									<th>이름</th>
-									<th>전화번호</th>
-									<th>생년월일</th>
-									<th>성별</th>
-									<th>이메일</th>
-									<th>그룹</th>
-									<th>친구관리</th>
+									<th>그룹명</th>
 								</tr>
 							</thead>
-							<tbody id="friendsBody">
-								<th:block th:if="${#lists.isEmpty(friendList)}">
+							<tbody id="friendsGroupBody">
+								<th:block th:if="${#lists.isEmpty(grouplist)}">
 									<tr>
-										<td colspan="9" class="text-center">친구를 추가해주세요.</td>
+										<td colspan="9" class="text-center">그룹을 등록하세요.</td>
 									</tr>
 								</th:block>
-								<th:block th:unless="${#lists.isEmpty(friendList)}"
-									th:each="friend, status : ${friendList}">
-									<tr>
+								<th:block th:unless="${#lists.isEmpty(grouplist)}"
+									th:each="friendGroup, status : ${grouplist}">
+									<tr class="text-center">
 										<td th:text="${status.count}"></td>
-										<td th:text="${friend.id}"></td>
-										<td><a th:text="${friend.name}"
-											th:href="@{/member/{id}(id=${friend.id})}"></a></td>
-										<td th:text="${friend.mobile}"></td>
-										<td th:text="${friend.birth}"></td>
-										<td th:text="${friend.gender}"></td>
-										<td th:text="${friend.email}"></td>
-										<td th:text="${friend.groupName}"></td>
-										<td><a th:text="친구관리"
-											th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"></a></td>
+										<td th:text="${friendGroup.groupName}"></td>
 									</tr>
 								</th:block>
 							</tbody>
@@ -73,7 +59,6 @@
 			</div>
 		</div>
 	</div>
-
 	<!-- Modal -->
 	<div class="modal" tabindex="-1" role="dialog" id="addFriend">
 		<div class="modal-dialog modal-dialog-centered modal-lg"
@@ -81,7 +66,7 @@
 			<div class="modal-content">
 				<div class="modal-header" style="align-items: baseline;">
 					<h1 class="modal-title">친구 추가</h1>
-					&nbsp; <span>닉네임으로 추가</span>
+					&nbsp; <span>ID로 추가</span>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -91,9 +76,8 @@
 				<form th:action="@{/friends/add}" method="post">
 					<div class="modal-body">
 						<div>
-							닉네임 <input type="text" id="searchName" name="searchName">
-							<input type="button" class="btn" value="검색"
-								onclick="loadMembers()">
+							ID <input type="text" id="searchId" name="searchId"> <input
+								type="button" class="btn" value="검색" onclick="loadMembers()">
 						</div>
 						<div id="memberInfo"></div>
 					</div>

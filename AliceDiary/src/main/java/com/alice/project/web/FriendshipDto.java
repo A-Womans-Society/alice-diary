@@ -8,7 +8,9 @@ import com.alice.project.domain.Gender;
 import com.alice.project.service.MemberService;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 @Getter
 @Setter
 // 추가된 친구 목록 보여줄 조회 페이지에 전달할 dto
@@ -24,9 +26,9 @@ public class FriendshipDto {
 	private Gender gender; // 회원 성별
 	private String email; // 회원 이메일
 	
-	
 	private String groupName; // 회원 그룹 이름(기본그룹으로 default)
 
+	
 	public FriendshipDto(Long num, String id, String name, String mobile, LocalDate birth, Gender gender, String email,
 			String groupName) {
 		super();
@@ -42,10 +44,5 @@ public class FriendshipDto {
 	
 	public FriendshipDto() {
 		// TODO Auto-generated constructor stub
-	}
-	
-
-
-	
-	
+	}	
 }
