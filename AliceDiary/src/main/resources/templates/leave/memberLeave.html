@@ -6,17 +6,7 @@
 <th:block layout:fragment="script">
 	<script th:src="@{https://code.jquery.com/jquery-3.4.1.min.js}"></script>
 	<script th:src="@{/js/leave/memberLeave.js}"></script>
-	<script th:inline="javascript">
-	/*<![CDATA[*/
-	var msg = /*[[${msg}]]*/;
-	console.log(msg);
-	if(msg) {
-		alert(msg);
-	}
-	/*]]>*/
-	</script>
 </th:block>
-
 
 <div layout:fragment="content">
 

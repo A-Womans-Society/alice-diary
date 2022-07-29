@@ -16,21 +16,11 @@ public class MemberDto {
 	private String mbti; // 회원 MBTI
 	private String wishlist; // 회원 위시리스트
 	private String profileImg; // 프로필사진 저장된 파일명(ex. 회원아이디.jpeg)
-	
+
 	public Member toEntity() { // 필요한 엔티티는 이런식으로 추가
-		Member member = Member.builder()
-				.id(id)
-				.password(password)
-				.name(name)
-				.birth(birth)
-				.gender(gender)
-				.email(email)
-				.mobile(mobile)
-				.mbti(mbti)
-				.wishlist(wishlist)
-				.profileImg(profileImg)
-				.build();
+		Member member = Member.builder().id(id).password(password).name(name).birth(birth).gender(gender).email(email)
+				.mobile(mobile).mbti(mbti).wishlist(wishlist).profileImg(profileImg).build();
 		return member;
 	}
-	
+
 }

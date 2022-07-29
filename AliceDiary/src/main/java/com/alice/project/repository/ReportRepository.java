@@ -34,7 +34,7 @@ public interface ReportRepository extends JpaRepository<Report, Long>, QuerydslP
 	/* 모든 신고목록 반환 */
 	@Query(value = "select * from Report order by report_num desc", nativeQuery = true)
 	List<Report> searchAll();
-	
+
 	/* 신고 객체 하나 반환 */
 	@Query(value = "select * from Report where report_num = :reportNum", nativeQuery = true)
 	Report getReport(Long reportNum);

@@ -13,7 +13,6 @@ function checkPwd() {
 		}
 	}
 	
-
 function editPwd() {
 	if(document.getElementById("newPwd").value != document.getElementById("confirmNewPwd").value) {
 		alert("새로운 비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
@@ -22,4 +21,3 @@ function editPwd() {
 		return true;
 	}
 }
-	

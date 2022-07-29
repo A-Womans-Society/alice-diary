@@ -103,7 +103,9 @@
 				<div
 					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
 					style="flex-direction: column; height: 60%;">
-					<div style="overflow-y: scroll; height: 90%;"><pre style="font-family:alice;" th:text="${postView.content}"></pre></div>
+					<div style="overflow-y: scroll; height: 90%;">
+						<pre style="font-family: alice;" th:text="${postView.content}"></pre>
+					</div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
 							첨부파일: <a th:href="|../community/download/${file.num}|"
@@ -315,8 +317,5 @@
 			</div>
 		</div>
 	</div>
-
-
-
 </div>
 </html>

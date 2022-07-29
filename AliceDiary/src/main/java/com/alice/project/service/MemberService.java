@@ -165,13 +165,13 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 			return 0; // 사용 가능 아이디면 0
 		}
 	}
-	
+
 	// nickname 중복테스트
 	public int checkNicknameDuplication(String name) {
 		boolean check = memberRepository.existsByName(name);
 		if (check) {
 			return 1; // 닉네임 중복이면 1
-		}else {
+		} else {
 			return 0; // 사용 가능 닉네임이면 0
 		}
 	}
@@ -204,7 +204,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		Member member = memberRepository.findById(id);
 
 		if (member != null) {
-			log.info("member null아님 ");
 			return new PrincipalDetails(member); //// authentication 객체 안에 PrincipalDetails 이 들어간 것
 		} else {
 			throw new UsernameNotFoundException(id);
@@ -232,29 +231,23 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 
 	/* 개별 회원 삭제 */
 	public int deleteOne(Long memberNum) {
-		log.info("여기까지는 오나??????????????");
 		Member member = memberRepository.findByNum(memberNum);
-		log.info("!!!!!!!!!!deleteOne 실행하고 원래:" + member.getNum());
 		Member resultMember = memberRepository.save(Member.changeMemberOut(member));
 		em.flush();
 		if (!resultMember.getStatus().equals(Status.USER_OUT)) {
 			return 0; // 탈퇴회원 처리가 안 됐으면 0 반환
 		}
-		log.info("deleteOne 실행하고 나서 resultMember.getStatus():" + resultMember.getStatus());
 		return 1; // 탈퇴회원 처리가 됐으면 1 반환
 	}
 
 	/* 개별 회원 복구 */
 	public int returnOne(Long memberNum) {
-		log.info("여기까지는 오나??????????????");
 		Member member = memberRepository.findByNum(memberNum);
-		log.info("!!!!!!!!!!returnOne 실행하고 원래:" + member.getNum());
 		Member resultMember = memberRepository.save(Member.changeMemberIn(member));
 		em.flush();
 		if (!resultMember.getStatus().equals(Status.USER_IN)) {
 			return 0; // 탈퇴회원 처리가 안 됐으면 0 반환
 		}
-		log.info("returnOne 실행하고 나서 resultMember.getStatus():" + resultMember.getStatus());
 		return 1; // 탈퇴회원 처리가 됐으면 1 반환
 	}
 
@@ -264,10 +257,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 
 	/* 회원 검색 기능 */
 	public Page<Member> searchMember(String type, String keyword, Pageable pageable) {
-//      List<Sort.Order> sorts = new ArrayList<>();
-//        sorts.add(Sort.Order.desc("num"));
-//        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-
 		Page<Member> memberList = null;
 		if (type.equals("num")) {
 			memberList = memberRepository.searchByNum(Long.parseLong(keyword), pageable);

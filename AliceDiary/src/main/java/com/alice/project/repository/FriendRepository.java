@@ -2,16 +2,18 @@ package com.alice.project.repository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Friend;
 
 @Repository
-public interface FriendRepository extends JpaRepository<Friend, Long> {
+@Transactional(readOnly = true)
+public interface FriendRepository extends JpaRepository<Friend, Long>, QuerydslPredicateExecutor<Friend> {
+	
 	@Query("SELECT m FROM Friend AS m WHERE adder_num = :adderNum")
 	List<Friend> findByAdderNum(Long adderNum);
 
@@ -26,4 +28,17 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 	@Query(value = "SELECT * FROM Friend WHERE addee_num = :num AND adder_num IN (SELECT addee_num\r\n"
 			+ "FROM Friend WHERE adder_num = :num)", nativeQuery = true)
 	List<Friend> weAreFriend(Long num);
+
+	@Transactional
+	@Query(value = "SELECT addee_num From Friend Where friend_num = :friendNum", nativeQuery = true)
+	Long searchAddeeNumByFriendNum(Long friendNum);
+
+	Long findFriendByAddeeNum(Long addeeNum);
+
+	@Query("SELECT m FROM Friend AS m WHERE addee_num = :addeeNum")
+	List<Friend> findByAddeeNum(Long addeeNum);
+
+	@Query("SELECT m FROM Friend AS m WHERE friend_num = :num")
+	Long findByFriendNum(Long num);
+
 }

@@ -11,7 +11,6 @@ function count() {
 	});
 }
 
-
 function leaveCancle() {
 	if(!confirm("회원 탈퇴를 취소하시겠습니까?")) {
 				return;

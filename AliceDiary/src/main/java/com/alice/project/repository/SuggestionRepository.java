@@ -16,6 +16,5 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, Long>, Q
 	Page<Suggestion> findAll(Pageable pageable); // 전체 조회 및 페이징처리
 
 	Page<Suggestion> findByContentContaining(String keyword, Pageable pageable);
-	
-	
+
 }

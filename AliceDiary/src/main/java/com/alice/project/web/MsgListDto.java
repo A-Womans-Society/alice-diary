@@ -25,8 +25,7 @@ public class MsgListDto {
 	private String senderProfileImg; // 보내는 사람 프로필 사진
 
 	@Builder
-	public MsgListDto(Long user1Num, Long user2Num, LocalDateTime sendDate, 
-			String recentContent, String messageFromId,
+	public MsgListDto(Long user1Num, Long user2Num, LocalDateTime sendDate, String recentContent, String messageFromId,
 			String messageToId, Long direction, String senderProfileImg, String messageFromName, String messageToName) {
 		this.user1Num = user1Num;
 		this.user2Num = user2Num;

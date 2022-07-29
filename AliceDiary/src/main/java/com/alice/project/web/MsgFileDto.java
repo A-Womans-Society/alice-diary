@@ -20,8 +20,8 @@ public class MsgFileDto {
 	private Long fileNum;
 	private LocalDateTime sendDate;
 
-	public MsgFileDto(String theOtherId, String originName, String saveName, Long fileNum, 
-			LocalDateTime sendDate, String theOtherName) {
+	public MsgFileDto(String theOtherId, String originName, String saveName, Long fileNum, LocalDateTime sendDate,
+			String theOtherName) {
 		this.theOtherId = theOtherId;
 		this.originName = originName;
 		this.saveName = saveName;

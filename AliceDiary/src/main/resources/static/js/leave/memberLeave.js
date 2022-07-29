@@ -11,14 +11,12 @@ function count() {
 	});
 }
 
-
 function leaveCancle() {
 	if(!confirm("회원 탈퇴를 취소하시겠습니까?")) {
 				return;
 	}else {
 		alert("회원 탈퇴가 취소되었습니다.");
 		var id = document.getElementById("memID").value;
-		console.log(id);
 		var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
 			location = contextPath + "/member/" + id;
 	}

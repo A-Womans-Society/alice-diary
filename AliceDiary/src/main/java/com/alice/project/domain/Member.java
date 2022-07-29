@@ -142,10 +142,12 @@ public class Member extends BaseTimeEntity {
 	}
 
 	public static Member createMember() {
-		Member member = new Member("noFriend");
-
+		Member member = new Member("noFriend", "noFriend", "noFriend", LocalDate.now(), 
+				Gender.FEMALE, "noFriend@tester.com", "noFriend",
+				LocalDate.now(), Status.USER_IN);
 		return member;
 	}
+	
 
 //	public Member(Long groupNum, FriendsGroupService fgs) {
 //		this.groups.add(fgs.getGroupByNum(groupNum));

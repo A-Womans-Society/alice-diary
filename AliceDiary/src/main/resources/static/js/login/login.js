@@ -103,9 +103,7 @@ $("input:checkbox").click(checkedChange);
 				var end = cookieData.indexOf(';', start);
 				if (end == -1) // 쿠키 값의 마지막 위치 인덱스 번호 설정 
 					end = cookieData.length;
-	                console.log("end위치  : " + end);
 				cookieValue = cookieData.substring(start, end);
 			}
 			return unescape(cookieValue);
 		}
-		

@@ -27,7 +27,6 @@ public class WriteFormDto {
 
 	private List<MultipartFile> originName;
 	
-
 	@Builder
 	public WriteFormDto(Long postNum, String title, String content) {
 		super();

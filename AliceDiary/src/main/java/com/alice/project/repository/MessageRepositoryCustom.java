@@ -13,8 +13,6 @@ public interface MessageRepositoryCustom {
 
 	Message deleteMsgByNum(Long messageFromNum, Long messageToNum);
 
-//   Message findRecentMsgByFromNum(Long messageFromNum);
-
 	/* 보낸 회원 번호로 메시지리스트 반환 */
 	List<Message> findByMessageFromNum(Long messageFromNum);
 

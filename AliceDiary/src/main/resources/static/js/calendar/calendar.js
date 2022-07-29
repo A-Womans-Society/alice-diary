@@ -130,6 +130,5 @@ function checkNull(){
 
 function sendMessage(sender){
 	friendId = document.getElementById("friendId").value;
-	console.log(friendId);
 	location.href='./messagebox/'+sender+"/"+friendId;
 }

@@ -65,7 +65,7 @@ public class ReportService {
 	public Page<Report> findReports(Pageable pageable) {
 		return reportRepository.findAll(pageable);
 	}
-	
+
 	/* 신고 객체 하나 반환 */
 	public Report findReport(Long reportNum) {
 		return reportRepository.getReport(reportNum);
@@ -84,7 +84,7 @@ public class ReportService {
 				for (Member m : memberlist) {
 					List<Report> results = reportRepository.searchByReporterId(m.getNum());
 					reports.addAll(results);
-				}				
+				}
 			}
 			final int start = (int) pageable.getOffset();
 			final int end = Math.min((start + pageable.getPageSize()), reports.size());
@@ -127,7 +127,6 @@ public class ReportService {
 	}
 
 	public Page<Report> searchReportByReportReason(SearchDto sdto, Pageable pageable) {
-		// String type = sdto.getType();
 		String keyword = sdto.getKeyword();
 
 		Page<Report> reportList = reportRepository.findAll(pageable);
@@ -145,14 +144,12 @@ public class ReportService {
 	}
 
 	public Page<Report> searchReportByReportType(SearchDto sdto, Pageable pageable) {
-		// String type = sdto.getType();
 		String keyword = sdto.getKeyword();
 
 		Page<Report> reportList = reportRepository.findAll(pageable);
 		List<Report> list = new ArrayList<>();
 		for (Report report : reportList) {
 			if (report.getReportType().toString().contains(keyword)) {
-				// log.info("!!!!!!!!!!!!!!report.toString()" + report.toString());
 				list.add(report);
 			}
 		}
@@ -162,11 +159,12 @@ public class ReportService {
 
 		return reportList;
 	}
-	
+
 	@Transactional
 	public void deleteReportWithReply(Long replyNum) {
 		reportRepository.deleteByReplyNum(replyNum);
 	}
+
 	@Transactional
 	public void deleteReportWithPost(Long postNum) {
 		reportRepository.deleteByPostNum(postNum);

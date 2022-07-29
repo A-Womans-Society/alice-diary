@@ -13,13 +13,10 @@ function deleteMessage(fromId, toId) {
    let detail = document.getElementById('detail').value;
    
    let param = "fromId=" + fromId + "&toId=" + toId;
-   console.log(param);
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
              let result = httpRequest.response;
-             console.log(fromId);
-            console.log(toId);
             if (result == 0) {
             alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
          } else if (result == 1) {
@@ -73,13 +70,9 @@ $("#msgForm").ready(function(){
     }
     $("#writeBtn").on("click", function(){ // 쪽지 보내기 클릭 시
       if (formCheck()) {
-         console.log(formCheck());
-         console.log("뭐지");
-      let form = $("#msgForm");
-         //form.attr("action", "");
+         let form = $("#msgForm");
          form.attr("method", "post");
-        form.submit();
-    }
-       
+         form.submit();
+      }
     });
   });

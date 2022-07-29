@@ -50,8 +50,8 @@
 				</th:block>
 				<th:block th:unless="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div class="text-left pl-5">
-						<button onclick="openModal()" type="button"
-							class="btn">쪽지 보내기</button>
+						<button onclick="openModal()" type="button" class="btn">쪽지
+							보내기</button>
 					</div>
 				</th:block>
 
@@ -102,7 +102,7 @@
 						<!-- 개별 메시지 상세보기 -->
 						<div
 							class="col-6 p-0 d-flex justify-content-center align-items-center"
-							style="height: 95%; background: #f1ccff	;"
+							style="height: 95%; background: #f1ccff;"
 							th:if="${mdtos == null}">
 
 							<div class="text-center">
@@ -118,7 +118,7 @@
 									width="50" class="rounded-circle"> <span
 									th:text="${friendName}"></span>
 							</div>
-							<div class="card chat-box"  style="height: 66%;">
+							<div class="card chat-box" style="height: 66%;">
 								<div class="card-body">
 									<th:block th:each="m : ${mdtos}">
 										<div
@@ -126,8 +126,7 @@
 											<div class="media-body">
 												<div
 													th:attr="class=${(m.user1Num != userNum and m.direction == 0) or (m.user1Num == userNum and m.direction == 1) ? 'bg-friendMsg rounded py-2 px-3 mb-2' : 'bg-purple rounded text-right py-2 px-3 mb-2'}">
-													<p class="text-small mb-0"
-														th:text="${m.content}"></p>
+													<p class="text-small mb-0" th:text="${m.content}"></p>
 												</div>
 												<p class="small text-muted mb-0"
 													th:text="${#temporals.format(m.sendDate, 'yyyy-MM-dd HH:mm')}"></p>
@@ -136,7 +135,7 @@
 									</th:block>
 								</div>
 							</div>
-							<div class="card-footer"  style="height: 18%;">
+							<div class="card-footer" style="height: 18%;">
 								<!-- 개별 쪽지함 안에서 쪽지보내기 -->
 								<form th:object="${mdto}" method="post"
 									enctype="multipart/form-data"
