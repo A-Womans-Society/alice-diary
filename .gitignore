@@ -27,3 +27,6 @@ AliceDiary/bin/
 
 # social login file
 application-oauth.properties
+
+# oracle wallet
+AliceDiary/src/main/resources/Wallet/
