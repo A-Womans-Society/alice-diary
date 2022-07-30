@@ -36,7 +36,7 @@ public class MessageService {
 	private final MessageRepository messageRepository;
 	private final MemberRepository memberRepository;
 	private final HttpSession httpSession;
-	private final ApplicationEventPublisher eventPublisher;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 
 	public List<Message> findUserMsg(Long userNum) {
 		HashMap<Long, Message> map = new HashMap<>();
@@ -130,28 +130,17 @@ public class MessageService {
 		msgs.addAll(msgF);
 		msgs.addAll(msgT);
 		Collections.reverse(msgs);
-//		for (Message msg : msgs) {
-//			log.info("*****************내용 각각 : " + msg.getContent());
-//		}
 		return msgs;
 	}
 
 	// 사용자측에서 삭제하지 않은 메시지만 가져오기
 	public List<Message> findLiveMsgs(Long mfn, Long mtn) {
 		List<Message> msgF = messageRepository.findLiveMsgs(mfn, mtn);
-		// List<Message> msgT = messageRepository.findLiveMsgs(mtn, mfn);
 		List<Message> msgs = new ArrayList<>();
 		msgs.addAll(msgF);
-		// msgs.addAll(msgT);
 		Collections.sort(msgs);
-//      Collections.reverse(msgs);
-
-		for (Message msg : msgs) {
-			log.info("*****************내용 각각 : " + msg.getContent());
-		}
 
 		return msgs;
-
 	}
 
 	/* f번이 t번과의 쪽지함 삭제(관계상태0으로 업데이트) */
@@ -185,8 +174,8 @@ public class MessageService {
 		log.info("!!!!!!!!!!!!요기!!!!!! : " + message.toString());
 		Message result = messageRepository.save(message);
 		
-		result.setMember(ms.findByNum(receiverNum)); // 쪽지에 받는 회원객체 넣어주기
-		eventPublisher.publishEvent(new MessageCreatedEvent(result)); // 새로운 메시지 알림보내기
+		result.setMember(ms.findByNum(receiverNum)); // 쪽지에 '받는' 회원객체 넣어주기
+		eventPublisher.publishEvent(new MessageCreatedEvent(result)); // for notification
 		return result;
 	}
 
@@ -352,6 +341,16 @@ public class MessageService {
 	/* 댓글 쪽지 전송 */
 	@Transactional
 	public Message replyMsg(Message message) {
+		Long dir = message.getDirection();
+		Long receiverNum = 0L;
+		if (dir == 0) {
+			receiverNum = message.getUser2Num();
+		} else if (dir == 1) {
+			receiverNum = message.getUser1Num();
+		}
+		Message result = messageRepository.save(message);
+		result.setMember(ms.findByNum(receiverNum)); // 쪽지에 '받는' 회원객체 넣어주기
+		eventPublisher.publishEvent(new MessageCreatedEvent(result)); // for notification
 		return messageRepository.save(message);
 	}
 

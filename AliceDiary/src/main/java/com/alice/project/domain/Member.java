@@ -82,7 +82,12 @@ public class Member extends BaseTimeEntity {
 	private String emailCheckToken; // 이메일 인증 토큰
 	private LocalDateTime emailCheckTokenGeneratedAt; // 이메일 인증 토큰 생성 일자
 
-	private boolean messageCreated = true; // 쪽지 받았는지 여부
+	// 알림 관련 필드들
+	private boolean messageCreated = true; // 쪽지 알림 여부
+	private boolean aliceCreated = true; // 앨리스 알림 여부
+	private boolean friendAdded = true; // 친구 알림 여부
+	private boolean communityInvited = true; // 커뮤니티 초대 알림 여부
+	private boolean replyCreated = true; // 댓글 알림 여부
 	
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]

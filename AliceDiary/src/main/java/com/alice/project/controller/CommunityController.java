@@ -166,6 +166,7 @@ public class CommunityController {
 		Community com = Community.createCommunity(dto.getComMembers(), dto.getComName(), dto.getDescription(), member);
 
 		communityService.create(com);
+		
 
 		// 초대장 쪽지발송
 		Long messageFromNum = member.getNum();

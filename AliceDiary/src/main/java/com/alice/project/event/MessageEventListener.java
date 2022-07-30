@@ -54,26 +54,6 @@ public class MessageEventListener {
 			createNotification(message, member, senderName + "으로부터 쪽지가 도착했습니다!", NotificationType.MESSAGE);
 		}
 	}
-	// @EventListener
-	// public void handleStudyUpdateEvent(StudyUpdateEvent studyUpdateEvent) {
-	// Study study =
-	// studyRepository.findStudyWithManagersAndMemebersById(studyUpdateEvent.getStudy().getId());
-	// Set<Account> accounts = new HashSet<>();
-	// accounts.addAll(study.getManagers());
-	// accounts.addAll(study.getMembers());
-
-	// accounts.forEach(account -> {
-	// if (account.isStudyUpdatedByEmail()) {
-	// sendStudyCreatedEmail(study, account, studyUpdateEvent.getMessage(),
-	// "스터디올래, '" + study.getTitle() + "' 스터디에 새소식이 있습니다.");
-	// }
-
-	// if (account.isStudyUpdatedByWeb()) {
-	// createNotification(study, account, studyUpdateEvent.getMessage(),
-	// NotificationType.STUDY_UPDATED);
-	// }
-	// });
-	// }
 
 	private void createNotification(Message message, Member member, String comment, NotificationType notificationType) {
 		Notification notification = new Notification();
@@ -95,24 +75,5 @@ public class MessageEventListener {
 		notification.setNotificationType(notificationType);
 		notificationRepository.save(notification);
 	}
-
-	// private void sendMessageCreatedEmail(Study study, Account account, String
-	// contextMessage, String emailSubject) {
-	// Context context = new Context();
-	// context.setVariable("nickname", member.getNickname());
-	// context.setVariable("link", "/study/" + message.getEncodedPath());
-	// context.setVariable("linkName", message.getTitle());
-	// context.setVariable("message", contextMessage);
-	// context.setVariable("host", appProperties.getHost());
-	// String message = templateEngine.process("mail/simple-link", context);
-
-	// EmailMessage emailMessage = EmailMessage.builder()
-	// .subject(emailSubject)
-	// .to(account.getEmail())
-	// .message(message)
-	// .build();
-
-	// emailService.sendEmail(emailMessage);
-	// }
 
 }

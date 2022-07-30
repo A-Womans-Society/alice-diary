@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Post;
 import com.alice.project.domain.Reply;
 import com.alice.project.domain.ReplyStatus;
+import com.alice.project.event.ReplyCreatedEvent;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.PostRepository;
 import com.alice.project.repository.ReplyRepository;
@@ -29,6 +31,8 @@ public class ReplyService {
 	private final MemberRepository memberRepository;
 
 	private final PostRepository postRepository;
+	
+	private final ApplicationEventPublisher eventPublisher;
 
 	// 아이디로 회원번호 찾기
 	public Long getMemNumById(String memberId) {
@@ -44,8 +48,11 @@ public class ReplyService {
 
 		Reply writedReply = new Reply(content, LocalDateTime.now(), Boolean.FALSE, postRepository.findByNum(postNum),
 				memberRepository.findById(memberId), ReplyStatus.ALIVE);
-
-		return replyRepository.save(writedReply);
+		
+		Reply reply = replyRepository.save(writedReply);
+		this.eventPublisher.publishEvent(new ReplyCreatedEvent(reply)); // 알림 보내기
+		
+		return reply;
 	}
 
 	// 댓글 불러오기
@@ -84,8 +91,10 @@ public class ReplyService {
 
 		Reply writedReplyReply = new Reply(content, LocalDateTime.now(), Boolean.FALSE, parentRepNum,
 				postRepository.findByNum(postNum), memberRepository.findById(memberId), ReplyStatus.ALIVE);
-
-		return replyRepository.save(writedReplyReply);
+		
+		Reply rereply = replyRepository.save(writedReplyReply);
+		this.eventPublisher.publishEvent(new ReplyCreatedEvent(rereply)); // 알림 보내기
+		return rereply;
 	}
 
 	// 댓글 삭제하기

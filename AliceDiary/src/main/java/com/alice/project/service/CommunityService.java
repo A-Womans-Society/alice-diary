@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Community;
 import com.alice.project.domain.Member;
+import com.alice.project.event.CommunityInvitedEvent;
 import com.alice.project.repository.CommunityRepository;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.web.CommunityCreateDto;
@@ -26,11 +28,17 @@ public class CommunityService {
 
 	private final CommunityRepository comRepository;
 	private final MemberRepository memberRepository;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 
 	// 커뮤니티 생성하기
 	@Transactional
 	public Community create(Community com) {
-		return comRepository.save(com);
+		Community community = comRepository.save(com);
+		
+		// for notification
+		this.eventPublisher.publishEvent(new CommunityInvitedEvent(community));
+
+		return community;
 	}
 
 	// 번호로 객체찾기

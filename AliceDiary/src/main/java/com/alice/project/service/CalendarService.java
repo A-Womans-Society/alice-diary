@@ -4,11 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Member;
+import com.alice.project.event.AliceCreatedEvent;
 import com.alice.project.repository.CalendarRepository;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.web.AlarmMemberListDto;
@@ -24,11 +26,18 @@ public class CalendarService {
 
 	private final CalendarRepository calendarRepository;
 	private final MemberRepository memberRepository;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 
 	@Transactional
-	public void addEvent(CalendarFormDto dto, Member m) {
+	public Calendar addEvent(CalendarFormDto dto, Member m) {
 		Calendar cal = Calendar.createCalendar(dto, m);
-		calendarRepository.save(cal);
+		
+		// for notification
+		Calendar result = calendarRepository.save(cal);
+		result.setMember(m);
+		this.eventPublisher.publishEvent(new AliceCreatedEvent(result));
+		
+		return cal;
 	}
 
 	public List<Calendar> eventsList(Long num) {
