@@ -1,5 +1,6 @@
 package com.alice.project.controller;
 
+import org.modelmapper.internal.util.Members;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -48,8 +49,7 @@ public class AdminController {
 	@GetMapping(value = "/member")
 	public String showMemberList(
 			@PageableDefault(page = 0, size = 5, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
-			@ModelAttribute("searchDto") SearchDto searchDto, 
-			@AuthenticationPrincipal UserDetails user, Model model,
+			@ModelAttribute("searchDto") SearchDto searchDto, @AuthenticationPrincipal UserDetails user, Model model,
 			Long num) {
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
@@ -57,7 +57,7 @@ public class AdminController {
 
 		Page<Member> members = null;
 
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			members = memberService.getMemberList(pageable);
 		} else {
 			if (type.equals("status")) {
@@ -98,11 +98,11 @@ public class AdminController {
 
 	/* 회원 정보 상세보기 */
 	@GetMapping(value = "/member/{id}")
-	public String showMemberOne(@PathVariable("id") String id, Model model,
-			@AuthenticationPrincipal UserDetails user) {
-		Member member = memberService.findById(id);
+	public String showMemberOne(@PathVariable("id") String id, Model model, @AuthenticationPrincipal UserDetails user) {
+		Member userInfo = memberService.findById(id);
 //      Member member = memberService.findOne(num);
-		model.addAttribute("member", member);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+		model.addAttribute("person", userInfo);
 		return "/admin/memberDetail";
 	}
 
@@ -133,7 +133,7 @@ public class AdminController {
 			@AuthenticationPrincipal UserDetails user) {
 		Page<Report> reports = reportService.findReports(pageable);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
-		
+
 //		for (Report r : reports) {
 //			//log.info("r.getReply() : " + r.getReply().toString());
 //			r.get
@@ -142,11 +142,11 @@ public class AdminController {
 //			Post post = replyService.getPostByReplyNum(replyNum);
 //			r.getReply().setPost(post);
 //		}
-		
+
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			reports = reportService.findReports(pageable);
 		} else {
 			model.addAttribute("keyword", searchDto.getKeyword());
@@ -188,11 +188,11 @@ public class AdminController {
 
 		return "/admin/reportList";
 	}
-	
+
 	/* 신고 상세보기 */
 	@GetMapping(value = "/reports/{reportNum}")
-	public String viewReport(@PathVariable Long reportNum,
-			Model model, Long num, @AuthenticationPrincipal UserDetails user) {
+	public String viewReport(@PathVariable Long reportNum, Model model, Long num,
+			@AuthenticationPrincipal UserDetails user) {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		Report report = reportService.findReport(reportNum);
 		model.addAttribute("report", report);
@@ -213,8 +213,8 @@ public class AdminController {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
-		
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			suggestions = suggestionService.getSuggestionList(pageable);
 		} else {
 			model.addAttribute("keyword", keyword);

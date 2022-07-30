@@ -14,13 +14,13 @@
 	<div class="d-flex justify-content-center" style="height: 13%;">
 		<div class="d-flex align-items-center"
 			style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
-			<div class="w-100 text-center d-flex justify-content-center align-items-center">
+			<div
+				class="w-100 text-center d-flex justify-content-center align-items-center">
 
-				<input type="text" id="newGroup" name="newGroup" class="form-control w-50"
-					placeholder="그룹을 등록하세요." required>
-				<button type="button" class="btn"
-					th:onclick="addGroup()">그룹 추가</button>
-				<!-- 							<input type="hidden" id="checkGroup" value="false"> -->
+				<input type="text" id="newGroup" name="newGroup"
+					class="form-control w-50" placeholder="그룹을 등록하세요." required>
+				<button type="button" class="btn" th:onclick="addGroup()">그룹
+					추가</button>
 			</div>
 		</div>
 	</div>
@@ -69,17 +69,18 @@
 
 				<form th:action="@{/friends/add}" method="post">
 					<div class="modal-body">
-						<div>
-							<input type="hidden" id="userName" name="userName"
-								th:value="${member.name}"> 닉네임 <input type="text"
-								id="searchName" name="searchName"> <input type="button"
+						<input type="hidden" id="userName" name="userName"
+							th:value="${member.name}">
+						<div
+							class="w-100 d-flex align-items-center justify-content-center">
+							닉네임 &nbsp; <input type="text" id="searchName" name="searchName"
+								class="form-control w-25"> <input type="button"
 								class="btn" value="검색" onclick="loadMembers()">
-
 						</div>
-						<div id="memberInfo"></div>
+						<div id="memberInfo" style="height: 250px;"></div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btnbtn-dark" value="친구 추가"
+						<input type="submit" class="btn btn-dark" value="친구 추가"
 							th:onclick="return addOk()">
 					</div>
 					<input type="hidden" id="checkSearch" value="false">

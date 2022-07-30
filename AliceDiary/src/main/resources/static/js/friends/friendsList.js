@@ -54,7 +54,7 @@ document.addEventListener('keydown', function(event) {
                      let mbti = result.mbti;
                      let target = result.name;
                      if (target === 'noFriend') {
-                     	document.getElementById("memberInfo").innerText = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
+                     	document.getElementById("memberInfo").innerHTML = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
                     	document.getElementById("checkSearch").value = false;
                      } else {
                      	
@@ -91,7 +91,7 @@ document.addEventListener('keydown', function(event) {
                          
                     }
                  } else {
-                     document.getElementById("memberInfo").innerText = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
+                     document.getElementById("memberInfo").innerHTML = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
                      document.getElementById("checkSearch").value = false;
                  }
              } else {

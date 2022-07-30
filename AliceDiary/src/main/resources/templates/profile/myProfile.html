@@ -38,7 +38,7 @@
 
 										<label class="form-label">닉네임</label> <input type="text"
 											th:if="${person == null}" class="form-control"
-											th:value="${person.name}" readonly><input
+											th:value="${member.name}" readonly><input
 											th:unless="${person == null}" type="text"
 											class="form-control" th:value="${person.name}" readonly>
 									</div>

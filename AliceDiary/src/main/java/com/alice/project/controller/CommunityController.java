@@ -330,6 +330,27 @@ public class CommunityController {
 	public String postView(@PathVariable Long comNum, Model model, @PathVariable Long num, Pageable pageable,
 			HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
+		// 내가 방장인 커뮤니티 목록불러오기
+		Member hostMem = memberService.findById(user.getUsername());
+		List<Community> hostComs = communityService.findByMember(hostMem);
+		model.addAttribute("hostComs", hostComs);
+
+		// 내가 소속회원인 커뮤니티 목록 불러오기
+		List<Community> memberComs = communityService.getAll();
+		List<Community> resultList = new ArrayList<>();
+		if (memberComs.size() != 0) {
+			for (Community c : memberComs) {
+				String memberList = c.getMemberList();
+				if (memberList != null) {
+					Boolean result = memberList.contains(user.getUsername());
+					if (result) {
+						resultList.add(c);
+					}
+				}
+			}
+		}
+		model.addAttribute("myComList", resultList);
+
 		log.info("num :" + num);
 		log.info("user.getUsername() :" + user.getUsername());
 		Post viewPost = postService.postView(num);
@@ -362,7 +383,10 @@ public class CommunityController {
 
 		WriteFormDto updateDto = new WriteFormDto(num, getUpdate.getTitle(), getUpdate.getContent());
 		List<AttachedFile> files = attachedFileService.fileView(getUpdate, pageable);
-
+		
+		String comName = communityService.findNameByNum(comNum);
+		model.addAttribute("comName", comName);
+		
 		model.addAttribute("files", files);
 		model.addAttribute("updateDto", updateDto);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
@@ -439,9 +463,12 @@ public class CommunityController {
 
 		Community community = communityService.findByNum(comNum);
 		String memberList = community.getMemberList();
-		String[] members = null;
+		List<String> members = new ArrayList<String>();
 		if (memberList != null) {
-			members = memberList.split(",");
+			String[] mList = memberList.split(",");
+			for (String m : mList) {
+				members.add(memberService.findById(m).getName());
+			}
 		}
 		model.addAttribute("comMembers", members);
 

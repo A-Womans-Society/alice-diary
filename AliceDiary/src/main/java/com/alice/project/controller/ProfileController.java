@@ -47,7 +47,7 @@ public class ProfileController {
 	public String myProfile(@PathVariable String id, Model model, @AuthenticationPrincipal UserDetails user) {
 		Member member = profileService.findById(user.getUsername());
 		// 내 프로필 보기
-		if (user.getUsername() == id) {
+		if (member.getId().equals(id)) {
 			// wish list 존재
 			List<String> wishList = new ArrayList<String>();
 			if (member.getWishlist() != null) {

@@ -67,8 +67,11 @@
 							class="btn">삭제</button>
 
 					</th:block>
+					<button type="button" id="delete_confirm"
+						th:if="${#strings.equals(#authentication.name, 'admin')}"
+						th:onclick="deleteConfirm([[${postView.num}]])" class="btn">내리기</button>
 					<input type="button"
-						th:if="${#authentication.name} != ${postView.member.id}"
+						th:if="${#authentication.name != postView.member.id && !#strings.equals(#authentication.name, 'admin')}"
 						th:onclick="openModalPost([[${postView.num}]],[[${#authentication.name}]])"
 						value="신고" class="btn btn-danger"> <a
 						th:href="@{|/community/${comNum}/list|}"><button type="button"
@@ -104,10 +107,10 @@
 													<span th:if="${reply.parentRepNum} == null">
 														<button type="button" class="btn btn-sm"
 															th:onclick="|showReplyBox(replyReplyBox${reply.num})|">답글</button>
-												</span> <span th:if="${#authentication.name} == ${reply.memberId}"><button
+												</span> <span th:if="${#authentication.name == reply.memberId || #strings.equals(#authentication.name, 'admin')}"><button
 															type="button" class="btn btn-sm"
 															th:onclick="${reply.parentRepNum} == null ? |deleteParent(${reply.num})| : |deleteChild(${reply.num})| ">삭제</button>
-												</span> <span th:if="${#authentication.name} != ${reply.memberId}">
+												</span> <span th:if="${#authentication.name != reply.memberId && !#strings.equals(#authentication.name, 'admin')}">
 														<button type="button" class="btn btn-sm"
 															th:onclick="openModalReply([[${reply.num}]],[[${#authentication.name}]])">신고</button>
 												</span>
