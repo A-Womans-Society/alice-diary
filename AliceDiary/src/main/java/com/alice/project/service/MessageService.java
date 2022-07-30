@@ -8,11 +8,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Message;
+import com.alice.project.event.MessageCreatedEvent;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.MessageRepository;
 import com.alice.project.web.MessageDto;
@@ -34,6 +36,7 @@ public class MessageService {
 	private final MessageRepository messageRepository;
 	private final MemberRepository memberRepository;
 	private final HttpSession httpSession;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public List<Message> findUserMsg(Long userNum) {
 		HashMap<Long, Message> map = new HashMap<>();
@@ -167,17 +170,23 @@ public class MessageService {
 
 		Message message = new Message(mdto.getUser1Num(), mdto.getUser2Num(), mdto.getSendDate(), mdto.getContent(),
 				msgStatus, mdto.getDirection());
-		String id = "";
+		String senderId = "";
+		Long receiverNum = 0L;
 		if (mdto.getDirection() == 0) {
-			id = ms.findByNum(mdto.getUser1Num()).getId();
+			senderId = ms.findByNum(mdto.getUser1Num()).getId(); // 보내는 사람 아이디
+			receiverNum = mdto.getUser2Num();
 		} else if (mdto.getDirection() == 1) {
-			id = ms.findByNum(mdto.getUser2Num()).getId();
+			senderId = ms.findByNum(mdto.getUser2Num()).getId(); // 보내는 사람 아이디
+			receiverNum = mdto.getUser2Num();
 		}
 		if (mdto.getOriginName() != null) {
-			afs.saveMsgFile(mdto.getOriginName(), message, httpSession, id);
+			afs.saveMsgFile(mdto.getOriginName(), message, httpSession, senderId);
 		}
 		log.info("!!!!!!!!!!!!요기!!!!!! : " + message.toString());
 		Message result = messageRepository.save(message);
+		
+		result.setMember(ms.findByNum(receiverNum)); // 쪽지에 받는 회원객체 넣어주기
+		eventPublisher.publishEvent(new MessageCreatedEvent(result)); // 새로운 메시지 알림보내기
 		return result;
 	}
 

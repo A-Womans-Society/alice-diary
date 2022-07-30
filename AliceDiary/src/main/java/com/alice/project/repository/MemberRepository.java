@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Message;
 import com.alice.project.domain.Status;
 
 @Repository
@@ -92,5 +93,5 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
 	Member findAllById(String[] members);
 	
 	List<Member> findByNameContaining(String keyword);
-
+	
 }

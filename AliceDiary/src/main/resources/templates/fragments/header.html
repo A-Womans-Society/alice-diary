@@ -30,9 +30,17 @@
 					href="/AliceDiary/notice/list"><h5 class="nav-texts">공지사항</h5></a></li>
 			</ul>
 			<ul class="navbar-nav align-items-center">
+				<li class="nav-item" sec:authorize="isAuthenticated()"><a
+					class="nav-link" th:href="@{/notifications}"> <i
+						th:if="${!hasNotification}" class="fa fa-bell-o"
+						aria-hidden="true"></i> <span class="text-info"
+						th:if="${hasNotification}"><i class="fa fa-bell"
+							aria-hidden="true"></i></span>
+				</a></li>
 				<li class="nav-item"
 					th:if="${#strings.equals(#authentication.name, 'admin')}"><a
-					class="nav-link text-white nav-a-hover"  href="/AliceDiary/admin/member">
+					class="nav-link text-white nav-a-hover"
+					href="/AliceDiary/admin/member">
 						<h5 class="nav-texts">관리자모드</h5>
 				</a></li>
 				<li class="nav-item" data-toggle="tooltip" data-placement="bottom"
@@ -42,8 +50,9 @@
 					alt="user" width="45" class="rounded-circle">
 				</li>
 				<li class="nav-item p-0"><h2 class="nav-texts text-white">/</h2></li>
-				<li class="nav-item  p-0"><a class="nav-link text-white nav-a-hover"
-					href="/AliceDiary/logout"><h5 class="nav-texts">로그아웃</h5></a></li>
+				<li class="nav-item  p-0"><a
+					class="nav-link text-white nav-a-hover" href="/AliceDiary/logout"><h5
+							class="nav-texts">로그아웃</h5></a></li>
 			</ul>
 		</div>
 	</nav>

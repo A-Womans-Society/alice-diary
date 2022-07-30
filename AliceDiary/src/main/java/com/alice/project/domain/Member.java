@@ -82,6 +82,8 @@ public class Member extends BaseTimeEntity {
 	private String emailCheckToken; // 이메일 인증 토큰
 	private LocalDateTime emailCheckTokenGeneratedAt; // 이메일 인증 토큰 생성 일자
 
+	private boolean messageCreated = true; // 쪽지 받았는지 여부
+	
 	@Enumerated(EnumType.STRING)
 	private Status status; // 사용자 상태 [USER_IN, USER_OUT, ADMIN]
 
@@ -109,8 +111,9 @@ public class Member extends BaseTimeEntity {
 	@JsonManagedReference
 	private List<Community> communities = new ArrayList<>(); // 사용자가 만든 커뮤니티 리스트
 
-//	@OneToMany(mappedBy="member")
-//	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
+	@OneToMany(mappedBy = "member") // 내가 받은 쪽지들 (notification 위해 살림)
+	@JsonManagedReference
+	private List<Message> messages = new ArrayList<>(); // 사용자가 보낸 쪽지 리스트
 
 //	@OneToMany(mappedBy = "member")
 //	@JsonManagedReference

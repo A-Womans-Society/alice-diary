@@ -14,13 +14,14 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class MainController {
+
 	private final HttpSession httpSession;
 
 	// main 페이지로
 	@GetMapping(value = "/")
 	public String main(@RequestParam(value = "error", required = false) String error,
 			@RequestParam(value = "exception", required = false) String exception, Model model) {
-		Member member =  (Member) httpSession.getAttribute("member");
+		Member member = (Member) httpSession.getAttribute("member");
 		model.addAttribute("error", error);
 		model.addAttribute("exception", exception);
 
