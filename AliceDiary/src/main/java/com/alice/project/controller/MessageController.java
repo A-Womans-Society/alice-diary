@@ -330,7 +330,7 @@ public class MessageController {
 		List<MsgListDto> mldtos = new ArrayList<>();
 		Long receiverNum = 0L;
 		msgList = messageService.findUserMsg(num);
-		if (msdto.getType().equals("id")) { // id로 검색할 경우
+		if (msdto.getType().equals("name")) { // id로 검색할 경우
 			if (msgList == null) {
 				return "message/msgList";
 			}
@@ -359,8 +359,8 @@ public class MessageController {
 				mldto.setMessageFromName(sender.getName());
 				mldto.setMessageToName(receiver.getName());
 				mldto.setDirection(m.getDirection());
-				if (mldto.getMessageFromId().contains(msdto.getKeyword())
-						|| mldto.getMessageToId().contains(msdto.getKeyword())) {
+				if (mldto.getMessageFromName().contains(msdto.getKeyword())
+						|| mldto.getMessageToName().contains(msdto.getKeyword())) {
 					mldtos.add(mldto);
 				} else {
 					continue;

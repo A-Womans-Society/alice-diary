@@ -30,7 +30,7 @@ public interface FriendsGroupRepository extends JpaRepository<FriendsGroup, Long
 	Long findByGroupCreatorNum(Long groupCreatorNum);
 
 	// adderNum이 등록한 그룹 목록
-	@Query(value = "select * from Friends_group where group_creator_num = :memNum", nativeQuery = true)
+	@Query(value = "select * from Friends_group where group_creator_num = :memNum order by group_num", nativeQuery = true)
 	List<FriendsGroup> findAllByAdder(Long memNum);
 
 }

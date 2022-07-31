@@ -58,7 +58,8 @@
 						<tr th:each="post, status: ${list}">
 							<td th:text="${size - status.index-(nowPage-1)*list.size}" />
 							<td><a th:text="${post.title}"
-								th:href="@{/open/get(num=${post.num})}"></a></td>
+								th:href="@{/open/get(num=${post.num})}"></a>							
+								<span th:if="${countReply[status.index] != 0}" th:text="|(${countReply[status.index]})|"></span></td>
 							<td th:text="${post.member.name}"></td>
 							<td
 								th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>

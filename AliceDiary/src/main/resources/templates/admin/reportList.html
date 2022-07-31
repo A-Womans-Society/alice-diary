@@ -14,8 +14,8 @@
 
 <div layout:fragment="content">
 
-	<div style="height: 15%;">
-		<h2 class="text-center m-0 pt-3">신고 목록</h2>
+	<div style="height: 17%;">
+		<h2 class="text-center m-0 pt-5">신고 목록</h2>
 		<h6 class="text-center">
 			[신고종류 사전] <span class="text-danger">BAD : 비속어/욕설/불쾌한 표현, LEAK
 				: 개인정보유출, SPAM : 스팸홍보/도배글, ETC : 기타</span>
@@ -46,7 +46,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="d-flex justify-content-center" style="height: 72%;">
+	<div class="d-flex justify-content-center" style="height: 70%;">
 		<div class="pt-3 pb-3" style="width: 80%; height: 95%;">
 			<div class='text-right'>
 				<a th:if="${searchDto.keyword != null}" th:href="@{/admin/reports}"><input
@@ -103,7 +103,7 @@
 									</th:block>
 									<th:block
 										th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
-										<a th:href="@{|/community/${report.reply.post.community.num}/get/${report.post.num}|}">해당
+										<a th:href="@{|/community/${report.post.community.num}/get/${report.post.num}|}">해당
 											게시물 링크</a>
 									</th:block>
 								</th:block> <th:block
