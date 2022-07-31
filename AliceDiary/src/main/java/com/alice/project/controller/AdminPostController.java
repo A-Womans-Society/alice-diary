@@ -465,15 +465,16 @@ public class AdminPostController {
 //		model.addAttribute("creatorId", creatorId);
 		
 		String[] memIdList = null;
-		if (memberListToStr != null) {
+		if (memberListToStr != null && !memberListToStr.isEmpty()) {
 			memIdList = memberListToStr.split(",");
-		}
 //		List<String> memNameList = new ArrayList<>();
-		Map<String, String> memberMap = new HashMap<String, String>();
-		for (String id : memIdList) {
-			memberMap.put(id, memberService.findById(id).getName());
-		}		
-		model.addAttribute("memberMap", memberMap);
+			Map<String, String> memberMap = new HashMap<String, String>();
+			for (String id : memIdList) {
+				memberMap.put(id, memberService.findById(id).getName());
+			}
+			model.addAttribute("memberMap", memberMap);
+		}
+		
 
 		String keyword = postSearchDto.getKeyword();
 		Long size = 0L;

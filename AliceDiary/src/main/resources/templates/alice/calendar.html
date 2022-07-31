@@ -40,37 +40,67 @@
 				<div id='calendar'></div>
 			</div>
 			<div class="col-3 h-100">
-				<div class="row" style="height: 60%;">
+				<div class="row" style="height: 65%;">
 					<div class="col-12 h-100 pt-3 pl-3 pr-3">
 						<div class="h-100 p-3"
 							style="border: 2px solid #dccae9; border-radius: 50px;">
-							<div id="alarmTitle" class="pt-3 text-center" style="height: 18%">
-								<strong style="font-size: larger;">앨리스가 알려드려요</strong> <span
-									class="badge badge-primary badge-pill" style="background-color: #f32c2c;"
-									th:text="${#lists.size(alarmList)}"></span>
+							<div class="h-50">
+								<div id="alarmTitle" class="pt-3 pb-2 text-center">
+									<strong style="font-size: larger;">다가오는 일정</strong> <span
+										class="badge badge-primary badge-pill"
+										style="background-color: #f32c2c;"
+										th:text="${#lists.size(alarmList)}"></span>
+								</div>
+								<div style="overflow: overlay; height: 70%;">
+									<th:block th:if="${!alarmList.isEmpty}">
+										<ul class="pl-3 pr-3">
+											<li th:each="alarm: ${alarmList}">
+												<p class="mb-1">
+													<small><strong><span
+															th:text="${alarm.content}"></span></strong> </small><small
+														th:if="${!#strings.isEmpty(alarm.memberList)}">
+														with </small> <small
+														th:if="${!#strings.isEmpty(alarm.memberList)}"
+														th:each="friend : ${alarm.memberList}"> <a
+														th:href="|./friends/friendInfo/${friend.id}|"><span
+															th:text="${friend.name}" data-toggle="tooltip"
+															data-placement="bottom" title="프로필 보기"> </span></a>
+													</small><small><span th:text="|(${alarm.startDate})|"> </span></small>
+												</p>
+											</li>
+										</ul>
+									</th:block>
+								</div>
 							</div>
-							<div style="overflow: overlay; height: 80%;">
-								<th:block th:if="${!alarmList.isEmpty}">
-									<ul class="pl-4">
-										<li th:each="alarm: ${alarmList}">
-											<p class="mb-1">
-												<strong><span th:text="${alarm.content}"></span></strong> <small
-													th:if="${!#strings.isEmpty(alarm.memberList)}">
-													with </small> <small th:if="${!#strings.isEmpty(alarm.memberList)}"
-													th:each="friend : ${alarm.memberList}"> <a
-													th:href="|./friends/friendInfo/${friend.id}|"><span
-														th:text="${friend.name}" data-toggle="tooltip"
-														data-placement="bottom" title="프로필 보기"> </span></a>
-												</small> <span th:text="|(${alarm.startDate})|"> </span>
-											</p>
-										</li>
-									</ul>
-								</th:block>
+							<div class="h-50 border-top">
+								<div id="alarmTitle" class="pt-3 pb-2 text-center">
+									<strong style="font-size: larger;">친구가 당신을 찾아요</strong> <span
+										class="badge badge-primary badge-pill"
+										style="background-color: #f32c2c;"
+										th:text="${#lists.size(fAlarmList)}"></span>
+								</div>
+								<div style="overflow: overlay; height: 70%;">
+									<th:block th:if="${!fAlarmList.isEmpty}">
+										<ul class="pl-3 pr-3">
+											<li th:each="alarm: ${fAlarmList}">
+												<p class="mb-1">
+													<small><strong><span
+															th:text="${alarm.content}"></span></strong></small> <small> with </small>
+													<small> <a
+														th:href="|./friends/friendInfo/${alarm.fId}|"><span
+															th:text="${alarm.fName}" data-toggle="tooltip"
+															data-placement="bottom" title="프로필 보기"> </span></a>
+													</small> <small><span th:text="|(${alarm.startDate})|"> </span></small>
+												</p>
+											</li>
+										</ul>
+									</th:block>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="row" style="height: 40%;">
+				<div class="row" style="height: 35%;">
 					<div class="h-100 p-3 col-12">
 						<div class="h-100 p-3"
 							style="border: 2px solid #dccae9; border-radius: 50px;">
@@ -85,7 +115,7 @@
 										style="width: 45%;">&nbsp;~&nbsp;<input
 										th:field="*{endDateStr}" type="date" style="width: 45%;">
 								</div>
-								<p class="pt-3">
+								<p class="pt-3 mb-1">
 									<label>내용 :&nbsp;</label><input th:field="*{content}"
 										placeholder="내용을 입력하세요.">
 								</p>

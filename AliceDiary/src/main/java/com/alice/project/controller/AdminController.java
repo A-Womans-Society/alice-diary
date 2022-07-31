@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Report;
+import com.alice.project.domain.ReportType;
 import com.alice.project.domain.Suggestion;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.MemberService;
@@ -128,7 +129,7 @@ public class AdminController {
 	/* 신고 목록 */
 	@GetMapping(value = "/reports")
 	public String showReportList(
-			@PageableDefault(page = 0, size = 10, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
+			@PageableDefault(page = 0, size = 5, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
 			@ModelAttribute("searchDto") SearchDto searchDto, Model model, Long num,
 			@AuthenticationPrincipal UserDetails user) {
 		Page<Report> reports = reportService.findReports(pageable);
@@ -195,9 +196,11 @@ public class AdminController {
 			@AuthenticationPrincipal UserDetails user) {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		Report report = reportService.findReport(reportNum);
+		model.addAttribute("reporter", report.getMember());
+		model.addAttribute("target", (report.getReportType() == ReportType.POST) ? report.getPost().getMember()
+				: report.getReply().getMember());
 		model.addAttribute("report", report);
 		log.info("신고자 닉네임 : " + report.getMember().getName());
-//		log.info("신고대상자 닉네임 : " + report.getPost().getMember().getName());
 
 		return "/admin/reportView";
 	}

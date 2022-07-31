@@ -85,11 +85,11 @@
 											<button th:if="${#strings.equals(member.status, 'USER_IN')}"
 												th:onclick="deleteMember([[${member.num}]])" type="button"
 												class="btn btn-dark text-white">내보내기</button>
-											<button th:if="${#strings.equals(member.status, 'USER_OUT')}"
-												th:onclick="returnMember([[${member.num}]])" type="button"
-												class="btn btn-dark text-white">복구하기</button>
+											<button th:if="${#strings.equals(member.status, 'USER_OUT') || member.status == null}"
+												type="button"
+												class="btn btn-danger text-white">탈퇴</button> <!-- th:onclick="returnMember([[${member.num}]])" -->
 											<button th:if="${#strings.equals(member.status, 'ADMIN')}"
-												type="button" class="btn btn-dark text-white">관리자</button>
+												type="button" class="btn btn-info text-white">관리자</button>
 										</td>
 									</tr>
 								</tbody>
