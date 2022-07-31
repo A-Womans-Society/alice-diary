@@ -1,5 +1,6 @@
 package com.alice.project.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -40,180 +41,194 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PostController {
 
-   private final PostService postService;
+	private final PostService postService;
 
-   private final AttachedFileService attachedFileService;
+	private final AttachedFileService attachedFileService;
 
-   private final MemberService memberService;
+	private final MemberService memberService;
 
-   private final ReplyService replyService;
+	private final ReplyService replyService;
 
-   private final ReportService reportService;
+	private final ReportService reportService;
 
-   // 글쓰기
-   @GetMapping("/open/post")
-   public String writeform(Model model, @AuthenticationPrincipal UserDetails user) {
+	// 글쓰기
+	@GetMapping("/open/post")
+	public String writeform(Model model, @AuthenticationPrincipal UserDetails user) {
 
-      model.addAttribute("writeFormDto", new WriteFormDto());
-      model.addAttribute("member", memberService.findById(user.getUsername()));
-      return "community/writeForm";
-   }
+		model.addAttribute("writeFormDto", new WriteFormDto());
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+		return "community/writeForm";
+	}
 
-   // 글쓰기
-   @PostMapping("/open/post")
-   public String writeSubmit(WriteFormDto writeFormDto, HttpSession session,
-         @AuthenticationPrincipal UserDetails user) {
+	// 글쓰기
+	@PostMapping("/open/post")
+	public String writeSubmit(WriteFormDto writeFormDto, HttpSession session,
+			@AuthenticationPrincipal UserDetails user) {
 
-      Member member = memberService.findById(user.getUsername());
+		Member member = memberService.findById(user.getUsername());
 
-      Post post = Post.createPost(writeFormDto, member);
-      Post writedPost = postService.write(post);
+		Post post = Post.createPost(writeFormDto, member);
+		Post writedPost = postService.write(post);
 
-      attachedFileService.postFileUpload(writeFormDto.getOriginName(), writedPost, session, user.getUsername());
+		attachedFileService.postFileUpload(writeFormDto.getOriginName(), writedPost, session, user.getUsername());
 
-      return "redirect:./list";
-   }
+		return "redirect:./list";
+	}
 
-   // 게시글 리스트 가져오기
-   @GetMapping("/open/list")
-   public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
-         @AuthenticationPrincipal UserDetails user,
-         @PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
+	// 게시글 리스트 가져오기
+	@GetMapping("/open/list")
+	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
+			@AuthenticationPrincipal UserDetails user,
+			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
 
-      log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
+		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 
-      String keyword = postSearchDto.getKeyword();
-      Long size = 0L;
-      Page<Post> list = null;
+		String keyword = postSearchDto.getKeyword();
+		Long size = 0L;
+		Page<Post> list = null;
+		List<Long> countReply = new ArrayList<Long>();
 
-      if (keyword == null) {
-         list = postService.list(pageable);
-         size = list.getTotalElements();
-      } else {
-         list = postService.searchList(postSearchDto, pageable);
-         size = list.getTotalElements();
-      }
+		if (keyword == null) {
+			list = postService.list(pageable);
+			size = list.getTotalElements();
+			for (Post p : list) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
 
-      int nowPage = list.getPageable().getPageNumber() + 1;
-      int startPage = Math.max(nowPage - 2, 1);
-      int endPage = 0;
-      if (startPage == 1) {
-         if (list.getTotalPages() < 5) {
-            endPage = list.getTotalPages();
-         } else {
-            endPage = 5;
-         }
-      } else {
-         endPage = Math.min(nowPage + 2, list.getTotalPages());
-      }
+		} else {
+			list = postService.searchList(postSearchDto, pageable);
+			size = list.getTotalElements();
+			for (Post p : list) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
 
-      if (endPage == list.getTotalPages() && (endPage - startPage) < 5) {
-         startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
-      }
+		}
 
-      model.addAttribute("list", list);
-      model.addAttribute("size", size);
-      log.info("size : " + size);
-      model.addAttribute("nowPage", nowPage);
-      model.addAttribute("startPage", startPage);
-      model.addAttribute("endPage", endPage);
-      model.addAttribute("keyword", keyword);
-      model.addAttribute("type", postSearchDto.getType());
-      model.addAttribute("member", memberService.findById(user.getUsername()));
+		int nowPage = list.getPageable().getPageNumber() + 1;
+		int startPage = Math.max(nowPage - 2, 1);
+		int endPage = 0;
+		if (startPage == 1) {
+			if (list.getTotalPages() < 5) {
+				endPage = list.getTotalPages();
+			} else {
+				endPage = 5;
+			}
+		} else {
+			endPage = Math.min(nowPage + 2, list.getTotalPages());
+		}
 
-      log.info("nowPage:" + nowPage);
-      log.info("startPage:" + startPage);
-      log.info("endPage:" + endPage);
+		if (endPage == list.getTotalPages() && (endPage - startPage) < 5) {
+			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
+		}
 
-      return "community/list";
-   }
+		model.addAttribute("countReply", countReply);
+		model.addAttribute("list", list);
+		model.addAttribute("size", size);
+		log.info("size : " + size);
+		model.addAttribute("nowPage", nowPage);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("type", postSearchDto.getType());
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 
-   // 게시글 상세보기
-   @GetMapping("/open/get")
-   public String postView(Model model, Long num, Pageable pageable, HttpSession session,
-         @AuthenticationPrincipal UserDetails user) {
+		log.info("nowPage:" + nowPage);
+		log.info("startPage:" + startPage);
+		log.info("endPage:" + endPage);
 
-      log.info("num :" + num);
-      Post viewPost = postService.postView(num);
+		return "community/list";
+	}
 
-      postService.viewCntUp(num);
+	// 게시글 상세보기
+	@GetMapping("/open/get")
+	public String postView(Model model, Long num, Pageable pageable, HttpSession session,
+			@AuthenticationPrincipal UserDetails user) {
 
-      model.addAttribute("postView", viewPost);
+		log.info("num :" + num);
+		Post viewPost = postService.postView(num);
 
-      List<AttachedFile> files = attachedFileService.fileView(viewPost, pageable);
-      model.addAttribute("files", files);
+		postService.viewCntUp(num);
 
-      List<ReplyDto> replyList = replyService.replyList(num);
+		model.addAttribute("postView", viewPost);
 
-      model.addAttribute("replyList", replyList);
-      model.addAttribute("member", memberService.findById(user.getUsername()));
+		List<AttachedFile> files = attachedFileService.fileView(viewPost, pageable);
+		model.addAttribute("files", files);
 
-      return "community/postView";
-   }
+		List<ReplyDto> replyList = replyService.replyList(num);
 
-   // get 게시글 수정하기 첨부파일도 수정
-   @GetMapping("/open/put")
-   public String getUpdate(Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
-      log.info("수정컨트롤러 get");
+		model.addAttribute("replyList", replyList);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 
-      Post getUpdate = postService.postView(num);
+		return "community/postView";
+	}
 
-      WriteFormDto updateDto = new WriteFormDto(num, getUpdate.getTitle(), getUpdate.getContent());
-      List<AttachedFile> files = attachedFileService.fileView(getUpdate, pageable);
+	// get 게시글 수정하기 첨부파일도 수정
+	@GetMapping("/open/put")
+	public String getUpdate(Long num, Model model, Pageable pageable, @AuthenticationPrincipal UserDetails user) {
+		log.info("수정컨트롤러 get");
 
-      model.addAttribute("files", files);
-      model.addAttribute("updateDto", updateDto);
-      model.addAttribute("member", memberService.findById(user.getUsername()));
-      return "community/updateForm";
-   }
+		Post getUpdate = postService.postView(num);
 
-   // post 게시글 수정하기 첨부파일도 수정
-   @PostMapping("/open/put")
-   public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
+		WriteFormDto updateDto = new WriteFormDto(num, getUpdate.getTitle(), getUpdate.getContent());
+		List<AttachedFile> files = attachedFileService.fileView(getUpdate, pageable);
 
-      String postNum = Long.toString(updateDto.getPostNum());
+		model.addAttribute("files", files);
+		model.addAttribute("updateDto", updateDto);
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+		return "community/updateForm";
+	}
 
-      postService.updatePost(updateDto.getPostNum(), updateDto);
+	// post 게시글 수정하기 첨부파일도 수정
+	@PostMapping("/open/put")
+	public String updatePorc(WriteFormDto updateDto, HttpSession session, @AuthenticationPrincipal UserDetails user) {
 
-      Post updatedPost = postService.findOne(updateDto.getPostNum());
+		String postNum = Long.toString(updateDto.getPostNum());
 
-      attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
+		postService.updatePost(updateDto.getPostNum(), updateDto);
 
-      return "redirect:/open/get?num=" + postNum;
-   }
+		Post updatedPost = postService.findOne(updateDto.getPostNum());
 
-   // 게시글 수정에서 파일하나 삭제하기
-   @PostMapping("/open/put/filedelete")
-   @ResponseBody
-   public JSONObject oneFileDelete(Long num, Long postNum) {
+		attachedFileService.postFileUpload(updateDto.getOriginName(), updatedPost, session, user.getUsername());
 
-      postService.deleteOneFile(num);
+		return "redirect:/open/get?num=" + postNum;
+	}
 
-      JSONObject jObj = new JSONObject();
+	// 게시글 수정에서 파일하나 삭제하기
+	@PostMapping("/open/put/filedelete")
+	@ResponseBody
+	public JSONObject oneFileDelete(Long num, Long postNum) {
 
-      List<AttachedFile> files = attachedFileService.fileDeleteAfterList(postNum);
+		postService.deleteOneFile(num);
 
-      jObj.put("files", files);
+		JSONObject jObj = new JSONObject();
 
-      return jObj;
-   }
+		List<AttachedFile> files = attachedFileService.fileDeleteAfterList(postNum);
 
-   // 공개게시글 삭제하기
-   @RequestMapping("/open/delete")
-   public String postDelete(Long num) {
-      log.info("컨트롤러 실행 num:" + num);
-      List<Reply> replies = replyService.getReplyByPostNum(num);
+		jObj.put("files", files);
 
-      for (Reply r : replies) {
-         reportService.deleteReportWithReply(r.getNum()); // 게시글의 댓글에 대한 신고 삭제
-      }
+		return jObj;
+	}
 
-      reportService.deleteReportWithPost(num); // 게시글에 대한 신고삭제
-      postService.deletePostwithReply(num);
-      postService.deletePostwithFile(num);
-      postService.deletePost(num);
+	// 공개게시글 삭제하기
+	@RequestMapping("/open/delete")
+	public String postDelete(Long num) {
+		log.info("컨트롤러 실행 num:" + num);
+		List<Reply> replies = replyService.getReplyByPostNum(num);
 
-      return "redirect:list";
-   }
+		for (Reply r : replies) {
+			reportService.deleteReportWithReply(r.getNum()); // 게시글의 댓글에 대한 신고 삭제
+		}
+
+		reportService.deleteReportWithPost(num); // 게시글에 대한 신고삭제
+		postService.deletePostwithReply(num);
+		postService.deletePostwithFile(num);
+		postService.deletePost(num);
+
+		return "redirect:list";
+	}
 
 }

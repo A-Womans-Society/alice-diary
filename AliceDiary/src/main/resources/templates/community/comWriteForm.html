@@ -8,7 +8,10 @@
 </th:block>
 
 <div layout:fragment="content">
-	<h2 class="text-center m-0 pt-5" style="height: 15%;">글쓰기</h2>
+	<h2 class="text-center m-0 pt-5" style="height: 15%;">
+		글쓰기<span class="text-primary"> #</span> <span class="text-primary"
+			th:text="${comName}"></span>
+	</h2>
 	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
 		<div class='row mt-3 ml-5 mr-5' style="height: 90%;">
 			<div class="col-12">

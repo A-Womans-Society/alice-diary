@@ -234,13 +234,26 @@ public class CommunityController {
 		String keyword = postSearchDto.getKeyword();
 		Long size = 0L;
 		Page<Post> list = null;
+		List<Long> countReply = new ArrayList<Long>();
 
 		if (keyword == null) {
 			list = postService.comList(comNum, pageable);
 			size = list.getTotalElements();
+			for (Post p : list) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
+
 		} else {
 			list = postService.comSearchList(comNum, postSearchDto, pageable);
 			size = list.getTotalElements();
+			for (Post p : list) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
+
 		}
 
 		int nowPage = list.getPageable().getPageNumber() + 1;
@@ -260,6 +273,8 @@ public class CommunityController {
 			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
 		}
 
+		log.info(countReply.toString());
+		model.addAttribute("countReply", countReply);
 		model.addAttribute("comName", communityService.findNameByNum(comNum));
 		model.addAttribute("comDescription", communityService.findDescriptionByNum(comNum));
 		model.addAttribute("list", list);
@@ -285,6 +300,28 @@ public class CommunityController {
 	@GetMapping("community/{comNum}/post")
 	public String writeform(@PathVariable Long comNum, Model model, @AuthenticationPrincipal UserDetails user) {
 
+		// 내가 방장인 커뮤니티 목록불러오기
+		Member hostMem = memberService.findById(user.getUsername());
+		List<Community> hostComs = communityService.findByMember(hostMem);
+		model.addAttribute("hostComs", hostComs);
+
+		// 내가 소속회원인 커뮤니티 목록 불러오기
+		List<Community> memberComs = communityService.getAll();
+		List<Community> resultList = new ArrayList<>();
+		if (memberComs.size() != 0) {
+			for (Community c : memberComs) {
+				String memberList = c.getMemberList();
+				if (memberList != null) {
+					Boolean result = memberList.contains(user.getUsername());
+					if (result) {
+						resultList.add(c);
+					}
+				}
+			}
+		}
+		model.addAttribute("myComList", resultList);
+
+		model.addAttribute("comName", communityService.findNameByNum(comNum));
 		model.addAttribute("writeFormDto", new WriteFormDto());
 		model.addAttribute("comNum", comNum);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
@@ -379,14 +416,35 @@ public class CommunityController {
 			@AuthenticationPrincipal UserDetails user) {
 		log.info("수정컨트롤러 get");
 
+		// 내가 방장인 커뮤니티 목록불러오기
+		Member hostMem = memberService.findById(user.getUsername());
+		List<Community> hostComs = communityService.findByMember(hostMem);
+		model.addAttribute("hostComs", hostComs);
+
+		// 내가 소속회원인 커뮤니티 목록 불러오기
+		List<Community> memberComs = communityService.getAll();
+		List<Community> resultList = new ArrayList<>();
+		if (memberComs.size() != 0) {
+			for (Community c : memberComs) {
+				String memberList = c.getMemberList();
+				if (memberList != null) {
+					Boolean result = memberList.contains(user.getUsername());
+					if (result) {
+						resultList.add(c);
+					}
+				}
+			}
+		}
+		model.addAttribute("myComList", resultList);
+
 		Post getUpdate = postService.postView(num);
 
 		WriteFormDto updateDto = new WriteFormDto(num, getUpdate.getTitle(), getUpdate.getContent());
 		List<AttachedFile> files = attachedFileService.fileView(getUpdate, pageable);
-		
+
 		String comName = communityService.findNameByNum(comNum);
 		model.addAttribute("comName", comName);
-		
+
 		model.addAttribute("files", files);
 		model.addAttribute("updateDto", updateDto);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
@@ -429,11 +487,11 @@ public class CommunityController {
 
 	// 커뮤니티 탈퇴하기
 	@RequestMapping("/community/resign")
-	public String resign(Long comNum, String userId) {
-
+	@ResponseBody
+	public boolean resign(Long comNum, String userId) {
 		communityService.resign(comNum, userId);
 
-		return "redirect:./checkExist";
+		return true;
 	}
 
 	// 커뮤니티 관리페이지 - 커뮤니티 정보 가져오기

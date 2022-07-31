@@ -29,7 +29,7 @@
 					<th>커뮤니티 설명</th>
 					<td><textarea type="text" th:field="*{description}" cols="10"
 							rows="9" class="form-control" style="resize: none;"></textarea></td>
-					<th:block th:if="${comMembers != null}">
+					<th:block th:if="${comMembers.size() != 0}">
 						<td>
 							<ul>
 								<li th:each="member : ${comMembers}" th:text="${member}"></li>
@@ -37,7 +37,7 @@
 						</td>
 
 					</th:block>
-					<th:block th:unless="${comMembers != null}">
+					<th:block th:unless="${comMembers.size() != 0}">
 						<td>커뮤니티 멤버가 없습니다!😢</td>
 					</th:block>
 				</tr>
