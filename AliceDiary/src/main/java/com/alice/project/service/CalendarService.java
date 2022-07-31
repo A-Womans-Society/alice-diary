@@ -18,10 +18,12 @@ import com.alice.project.web.CalendarFormDto;
 import com.alice.project.web.EventAlarmDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class CalendarService {
 
 	private final CalendarRepository calendarRepository;
@@ -32,11 +34,9 @@ public class CalendarService {
 	public Calendar addEvent(CalendarFormDto dto, Member m) {
 		Calendar cal = Calendar.createCalendar(dto, m);
 		
-		// for notification
 		Calendar result = calendarRepository.save(cal);
-		result.setMember(m);
+		result.setMember(m); // for notification
 		this.eventPublisher.publishEvent(new AliceCreatedEvent(result));
-		
 		return cal;
 	}
 

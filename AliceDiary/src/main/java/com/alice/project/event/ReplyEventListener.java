@@ -2,19 +2,15 @@ package com.alice.project.event;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.TemplateEngine;
 
-import com.alice.project.config.AppProperties;
-import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Notification;
 import com.alice.project.domain.NotificationType;
+import com.alice.project.domain.PostType;
 import com.alice.project.domain.Reply;
-import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.NotificationRepository;
 import com.alice.project.repository.ReplyRepository;
 
@@ -22,37 +18,39 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Async
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class ReplyEventListener {
+public class ReplyEventListener implements ApplicationListener<ReplyCreatedEvent> {
 
 	private final ReplyRepository replyRepository;
-	private final MemberRepository memberRepository;
-	private final TemplateEngine templateEngine;
-	private final AppProperties appProperties;
 	private final NotificationRepository notificationRepository;
-
-	@EventListener
-	public void handleReplyCreatedEvent(ReplyCreatedEvent replyCreatedEvent) {
-		Reply reply = replyRepository.findByNum(replyCreatedEvent.getReply().getNum());
-		Member member = reply.getPost().getMember();
-		if (member.isReplyCreated()) {
-			createNotification(reply, member, "내 글에 새로운 댓글이 달렸습니다.", NotificationType.REPLY);
-		}
-	}
 
 	private void createNotification(Reply reply, Member member, String comment, NotificationType notificationType) {
 		Notification notification = new Notification();
-		notification.setTitle("새로운 댓글 알림");
-		notification.setLink("/AliceDiary/open/list"); // 일단 공개게시판으로 해놓자...
+		notification.setTitle("커뮤니티 탭에서 확인하세요.");
+		PostType pt = reply.getPost().getPostType();
+		if (pt.equals(PostType.OPEN)) {
+			notification.setLink("/open/list"); // 공개게시판 댓글일 경우
+		} else if (pt.equals(PostType.CUSTOM)) {
+			notification.setLink("/community/" + reply.getPost().getCommunity().getNum() + "/list"); // 개별 커뮤니티 댓글일 경우			
+		}
 		notification.setChecked(false);
 		notification.setCreatedDateTime(LocalDateTime.now());
-		notification.setComment(comment);
+		notification.setWording(comment);
 		notification.setMember(member);
 		notification.setNotificationType(notificationType);
 		notificationRepository.save(notification);
+	}
+
+	@Override
+	public void onApplicationEvent(ReplyCreatedEvent event) {
+		Reply reply = replyRepository.findByNum(event.getReply().getNum());
+		Member replier = reply.getMember();
+		Member member = reply.getPost().getMember();
+		if (member.isReplyCreated()) {
+			createNotification(reply, member, replier.getName() + "님이 내 글에 댓글을 달았습니다.", NotificationType.REPLY);
+		}
 	}
 
 }

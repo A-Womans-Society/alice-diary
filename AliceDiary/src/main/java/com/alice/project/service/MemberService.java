@@ -110,7 +110,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		List<SimpleGrantedAuthority> authorities = MemberAccount.createAuthor();
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				new MemberAccount(member, authorities), member.getPassword());
-
 		log.info("token getName: " + token.getName());
 		log.info("token getAuthorities: " + token.getAuthorities());
 
@@ -199,6 +198,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		return memberRepository.save(member);
 	}
 
+	@Transactional
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException { // 로그인 할 유저의 id를 파라미터로 전달받음
 		Member member = memberRepository.findById(id);

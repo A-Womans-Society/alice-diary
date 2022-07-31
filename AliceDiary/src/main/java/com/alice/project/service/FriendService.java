@@ -51,8 +51,9 @@ public class FriendService {
 			
 			// for notification
 			Friend result = friendRepository.save(friend);
-			//friend.setMember(member);
+			friend.setMember(member);
 			this.eventPublisher.publishEvent(new FriendAddEvent(result));
+			log.info("friendService 퍼블리쉬 때려~");
 			
 			return true; // 추기되면 true
 		} else {

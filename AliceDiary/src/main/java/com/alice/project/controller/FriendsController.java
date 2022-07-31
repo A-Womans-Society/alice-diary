@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.FriendsGroupService;
 import com.alice.project.service.MemberService;
@@ -37,6 +38,8 @@ public class FriendsController {
 	private final MemberService memberService;
 	private final FriendsGroupService friendsGroupService;
 	private final ProfileService profileService;
+	private final NotificationRepository notificationRepository;
+
 
 	// 친구 추가(회원 name으로 id검색)
 	@PostMapping("/friends/add")
@@ -83,8 +86,11 @@ public class FriendsController {
 
 			friendship.add(dto);
 		}
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		model.addAttribute("friendList", friendship);
+        long count = notificationRepository.countByMemberAndChecked(mb, false);
+        model.addAttribute("hasNotification", count > 0);
 		return "friends/friendslist";
 	}
 

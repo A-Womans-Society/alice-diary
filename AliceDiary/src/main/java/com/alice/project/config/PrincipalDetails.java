@@ -7,11 +7,20 @@ import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Component;
 
 import com.alice.project.domain.Member;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Component
+@Getter @Setter
+@NoArgsConstructor
 public class PrincipalDetails implements UserDetails, OAuth2User{
 
+	private static final long serialVersionUID = 1L;
 	private Member member;
 	private Map<String, Object> attributes;
 	
@@ -25,7 +34,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User{
 		this.member = member;
 		this.attributes = attributes;
 	}
-
 
 	//해당 Member의 권한을 리턴하는 곳
 	@Override

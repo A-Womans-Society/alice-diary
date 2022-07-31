@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Member;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.CalendarService;
 import com.alice.project.service.MemberService;
 import com.alice.project.web.SearchEventFormDto;
@@ -30,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchController {
 	private final CalendarService calendarService;
 	private final MemberService memberService;
+	private final NotificationRepository notificationRepository;
+
 
 	@GetMapping("/search")
 	public String searchEvent(Model model, @AuthenticationPrincipal UserDetails user) {
@@ -58,6 +61,8 @@ public class SearchController {
 		model.addAttribute("resultEvents", resultDto);
 		model.addAttribute("dto", new SearchEventFormDto());
 		model.addAttribute("member", member);
+        long count = notificationRepository.countByMemberAndChecked(member, false);
+        model.addAttribute("hasNotification", count > 0);
 		return "alice/searchEvent";
 	}
 

@@ -10,6 +10,7 @@ import com.alice.project.domain.Notification;
 
 @Transactional(readOnly = true)
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
+	
 	long countByMemberAndChecked(Member member, boolean checked);
 
 	@Transactional
@@ -17,4 +18,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
 	@Transactional
 	void deleteByMemberAndChecked(Member member, boolean checked);
+	
 }

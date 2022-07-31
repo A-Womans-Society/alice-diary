@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.CalendarService;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
@@ -41,6 +42,7 @@ public class AliceController {
 	private final CalendarService calendarService;
 	private final MemberService memberService;
 	private final FriendService friendService;
+	private final NotificationRepository notificationRepository;
 
 	@GetMapping("/alice")
 	public String calendar(Model model, @AuthenticationPrincipal UserDetails user) {
@@ -115,6 +117,8 @@ public class AliceController {
 		model.addAttribute("CalForm", dto);
 		model.addAttribute("today", today);
 		model.addAttribute("member", member);
+        long count = notificationRepository.countByMemberAndChecked(member, false);
+        model.addAttribute("hasNotification", count > 0);
 		return "alice/calendar";
 	}
 

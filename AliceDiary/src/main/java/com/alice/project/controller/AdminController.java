@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Report;
 import com.alice.project.domain.Suggestion;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.PostService;
@@ -42,22 +43,23 @@ public class AdminController {
 	private final SuggestionService suggestionService;
 	private final PostService postService;
 	private final AttachedFileService attachedFileService;
+	private final NotificationRepository notificationRepository;
 
 	// 회원관리
 	/* 회원 목록 */
 	@GetMapping(value = "/member")
 	public String showMemberList(
 			@PageableDefault(page = 0, size = 5, sort = "num", direction = Sort.Direction.DESC) Pageable pageable,
-			@ModelAttribute("searchDto") SearchDto searchDto, 
-			@AuthenticationPrincipal UserDetails user, Model model,
+			@ModelAttribute("searchDto") SearchDto searchDto, @AuthenticationPrincipal UserDetails user, Model model,
 			Long num) {
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 
 		Page<Member> members = null;
 
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			members = memberService.getMemberList(pageable);
 		} else {
 			if (type.equals("status")) {
@@ -92,14 +94,14 @@ public class AdminController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
-
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 		return "/admin/memberList";
 	}
 
 	/* 회원 정보 상세보기 */
 	@GetMapping(value = "/member/{id}")
-	public String showMemberOne(@PathVariable("id") String id, Model model,
-			@AuthenticationPrincipal UserDetails user) {
+	public String showMemberOne(@PathVariable("id") String id, Model model, @AuthenticationPrincipal UserDetails user) {
 		Member member = memberService.findById(id);
 //      Member member = memberService.findOne(num);
 		model.addAttribute("member", member);
@@ -132,21 +134,12 @@ public class AdminController {
 			@ModelAttribute("searchDto") SearchDto searchDto, Model model, Long num,
 			@AuthenticationPrincipal UserDetails user) {
 		Page<Report> reports = reportService.findReports(pageable);
-		model.addAttribute("member", memberService.findById(user.getUsername()));
-		
-//		for (Report r : reports) {
-//			//log.info("r.getReply() : " + r.getReply().toString());
-//			r.get
-//			r.setReply(null)
-//			Long replyNum = r.getReply().getNum();
-//			Post post = replyService.getPostByReplyNum(replyNum);
-//			r.getReply().setPost(post);
-//		}
-		
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			reports = reportService.findReports(pageable);
 		} else {
 			model.addAttribute("keyword", searchDto.getKeyword());
@@ -186,13 +179,16 @@ public class AdminController {
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
 
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
+
 		return "/admin/reportList";
 	}
-	
+
 	/* 신고 상세보기 */
 	@GetMapping(value = "/reports/{reportNum}")
-	public String viewReport(@PathVariable Long reportNum,
-			Model model, Long num, @AuthenticationPrincipal UserDetails user) {
+	public String viewReport(@PathVariable Long reportNum, Model model, Long num,
+			@AuthenticationPrincipal UserDetails user) {
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		Report report = reportService.findReport(reportNum);
 		model.addAttribute("report", report);
@@ -210,11 +206,12 @@ public class AdminController {
 			@ModelAttribute("searchDto") SearchDto searchDto, Model model, Long num,
 			@AuthenticationPrincipal UserDetails user) {
 		Page<Suggestion> suggestions = null;
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
-		
-		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
+
+		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			suggestions = suggestionService.getSuggestionList(pageable);
 		} else {
 			model.addAttribute("keyword", keyword);
@@ -245,6 +242,8 @@ public class AdminController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 
 		return "/admin/suggestionList";
 	}

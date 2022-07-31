@@ -1,6 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<body class="bg-light">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/notificationLayout}">
+
+<th:block layout:fragment="css">
+	<!-- bootstrap-select -->
+	<!-- 	<link rel="stylesheet" -->
+	<!-- 		th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css}"> -->
+</th:block>
+
+<div layout:fragment="content">
 	<div class="container">
 		<div class="row py-5 text-center">
 			<div class="col-3">
@@ -17,25 +27,25 @@
 				</ul>
 
 				<ul class="list-group mt-4">
-					<a th:if="${newMessageNotifications.size() > 0}"
-						class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-						새로운 쪽지 알림 <span th:text="${newMessageNotifications.size()}">3</span>
-					</a>
 					<a th:if="${newCalendarNotifications.size() > 0}"
 						class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-						새로운 앨리스 알림 <span th:text="${newCalendarNotifications.size()}">0</span>
+						💜새로운 앨리스 알림 <span th:text="${newCalendarNotifications.size()}">0</span>
 					</a>
 					<a th:if="${newFriendNotifications.size() > 0}"
 						class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-						친구 추가 알림 <span th:text="${newFriendNotifications.size()}">0</span>
+						💙친구 추가 알림 <span th:text="${newFriendNotifications.size()}">0</span>
+					</a>
+					<a th:if="${newMessageNotifications.size() > 0}"
+						class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+						❤️새로운 쪽지 알림 <span th:text="${newMessageNotifications.size()}">3</span>
 					</a>
 					<a th:if="${newCommunityNotifications.size() > 0}"
 						class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-						커뮤니티 초대 알림 <span th:text="${newCommunityNotifications.size()}">0</span>
+						🧡커뮤니티 초대 알림 <span th:text="${newCommunityNotifications.size()}">0</span>
 					</a>
 					<a th:if="${newReplyNotifications.size() > 0}"
 						class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-						새로운 댓글 알림 <span th:text="${newReplyNotifications.size()}">0</span>
+						💚새로운 댓글 알림 <span th:text="${newReplyNotifications.size()}">0</span>
 					</a>
 				</ul>
 
@@ -43,7 +53,7 @@
 					<form th:action="@{/notifications}" th:method="delete">
 						<button type="submit" class="btn btn-block btn-outline-warning"
 							aria-describedby="deleteHelp">읽은 알림 삭제</button>
-						<small id="deleteHelp">삭제하지 않아도 한달이 지난 알림은 사라집니다.</small>
+						<small id="deleteHelp">삭제하지 않아도 <br/>한달이 지난 알림은 사라집니다.</small>
 					</form>
 				</ul>
 			</div>
@@ -52,42 +62,76 @@
 					<div class="card-header">알림 메시지가 없습니다.</div>
 				</div>
 
-				<div class="card" th:if="${newStudyNotifications.size() > 0}">
-					<div class="card-header">새로운 쪽지가 도착했습니다.</div>
-					<div
-						th:replace="notifyFragments.html :: notification-list (notifications=${newMessageNotifications})"></div>
-				</div>
 
 				<div class="card mt-4"
-					th:if="${eventEnrollmentNotifications.size() > 0}">
-					<div class="card-header">새로운 앨리스 알림이 추가되었습니다.</div>
-					<div
-						th:replace="notifyFragments.html :: notification-list (notifications=${newCalendarNotifications})"></div>
+					th:if="${newCalendarNotifications.size() > 0}">
+					<div class="card-header">💜새로운 앨리스 알림💜</div>
+					<a th:href="@{${noti.link}}" th:each="noti: ${newCalendarNotifications}"
+						class="list-group-item list-group-item-action">
+						<div class="d-flex w-100 justify-content-between">
+							<small class="text-muted" th:text="${noti.title}">Notification
+								title</small> <small class="fromNow text-muted"
+								th:text="${#temporals.format(noti.createdDateTime, 'yyyy-MM-dd HH:mm')}">3 days ago</small>
+						</div>
+						<p th:text="${noti.wording}" class="text-left mb-0 mt-1">wording</p>
+					</a>
 				</div>
 
-				<div class="card mt-4"
-					th:if="${newFriendNotifications.size() > 0}">
-					<div class="card-header">누군가 나를 친구로 추가했습니다.</div>
-					<div
-						th:replace="notifyFragments.html :: notification-list (notifications=${newFriendNotifications})"></div>
+				<div class="card mt-4" th:if="${newFriendNotifications.size() > 0}">
+					<div class="card-header">💙친구 추가 알림💙</div>
+					<a th:href="@{${noti.link}}" th:each="noti: ${newFriendNotifications}"
+						class="list-group-item list-group-item-action">
+						<div class="d-flex w-100 justify-content-between">
+							<small class="text-muted" th:text="${noti.title}">Notification
+								title</small> <small class="fromNow text-muted"
+								th:text="${#temporals.format(noti.createdDateTime, 'yyyy-MM-dd HH:mm')}">3 days ago</small>
+						</div>
+						<p th:text="${noti.wording}" class="text-left mb-0 mt-1">wording</p>
+					</a>
 				</div>
 
+				<div class="card" th:if="${newMessageNotifications.size() > 0}">
+					<div class="card-header">❤️새로운 쪽지 알림❤️</div>
+					<a th:href="@{${noti.link}}" th:each="noti: ${newMessageNotifications}"
+						class="list-group-item list-group-item-action">
+						<div class="d-flex w-100 justify-content-between">
+							<small class="text-muted" th:text="${noti.title}">Notification
+								title</small> <small class="fromNow text-muted"
+								th:text="${#temporals.format(noti.createdDateTime, 'yyyy-MM-dd HH:mm')}">3 days ago</small>
+						</div>
+						<p th:text="${noti.wording}" class="text-left mb-0 mt-1">wording</p>
+					</a>
+				</div>
+				
 				<div class="card mt-4"
 					th:if="${newCommunityNotifications.size() > 0}">
-					<div class="card-header">새로운 커뮤니티에 초대되었습니다.</div>
-					<div
-						th:replace="notifyFragments.html :: notification-list (notifications=${newCommunityNotifications})"></div>
+					<div class="card-header">🧡커뮤니티 초대 알림🧡</div>
+					<a th:href="@{${noti.link}}" th:each="noti: ${newCommunityNotifications}"
+						class="list-group-item list-group-item-action">
+						<div class="d-flex w-100 justify-content-between">
+							<small class="text-muted" th:text="${noti.title}">Notification
+								title</small> <small class="fromNow text-muted"
+								th:text="${#temporals.format(noti.createdDateTime, 'yyyy-MM-dd HH:mm')}">3 days ago</small>
+						</div>
+						<p th:text="${noti.wording}" class="text-left mb-0 mt-1">wording</p>
+					</a>
 				</div>
 
-				<div class="card mt-4"
-					th:if="${newReplyNotifications.size() > 0}">
-					<div class="card-header">내 글에 새로운 댓글이 달렸습니다.</div>
-					<div
-						th:replace="notifyFragments.html :: notification-list (notifications=${newReplyNotifications})"></div>
+				<div class="card mt-4" th:if="${newReplyNotifications.size() > 0}">
+					<div class="card-header">💚새로운 댓글 알림💚</div>
+					<a th:href="@{${noti.link}}" th:each="noti: ${newReplyNotifications}"
+						class="list-group-item list-group-item-action">
+						<div class="d-flex w-100 justify-content-between">
+							<small class="text-muted" th:text="${noti.title}">Notification
+								title</small> <small class="fromNow text-muted"
+								th:text="${#temporals.format(noti.createdDateTime, 'yyyy-MM-dd HH:mm')}">3 days ago</small>
+						</div>
+						<p th:text="${noti.wording}" class="text-left mb-0 mt-1">wording</p>
+					</a>
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
-</body>
+</div>
 </html>

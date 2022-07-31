@@ -2,13 +2,10 @@ package com.alice.project.event;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.TemplateEngine;
 
-import com.alice.project.config.AppProperties;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Notification;
@@ -21,35 +18,36 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Async
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class FriendEventListener {
+public class FriendEventListener implements ApplicationListener<FriendAddEvent> {
 
 	private final FriendRepository friendRepository;
 	private final MemberRepository memberRepository;
 	private final NotificationRepository notificationRepository;
 
-	@EventListener
-	public void handleFriendAddEvent(FriendAddEvent friendAddEvent) {
-		Friend friend = friendRepository.searchByFriendNum(friendAddEvent.getFriend().getNum());
-		Member member = memberRepository.findByNum(friend.getAddeeNum());
-		if (member.isFriendAdded()) {
-			createNotification(friend, member, "누군가 나를 친구로 추가했습니다.", NotificationType.FRIEND);
-		}
-	}
-
-	private void createNotification(Friend friend, Member member, String comment, NotificationType notificationType) {
+	private void createNotification(Friend friend, Member member, String wording, NotificationType notificationType) {
 		Notification notification = new Notification();
-		notification.setTitle("새로운 친구 추가 알림");
-		notification.setLink("/AliceDiary/friend/");
+		notification.setTitle("친구 목록 탭에서 확인해주세요.");
+		notification.setLink("/friends");
 		notification.setChecked(false);
 		notification.setCreatedDateTime(LocalDateTime.now());
-		notification.setComment(comment);
+		notification.setWording(wording);
 		notification.setMember(member);
 		notification.setNotificationType(notificationType);
 		notificationRepository.save(notification);
+		log.info("noti save~");
+	}
+
+	@Override
+	public void onApplicationEvent(FriendAddEvent event) {
+		Friend friend = friendRepository.searchByFriendNum(event.getFriend().getNum());
+		Member addee = memberRepository.findByNum(friend.getAddeeNum());
+		Member adder = memberRepository.findByNum(friend.getMember().getNum());
+		if (addee.isFriendAdded()) {
+			createNotification(friend, addee, adder.getName() + "님이 나를 친구로 추가했습니다!", NotificationType.FRIEND);
+		}		
 	}
 
 }

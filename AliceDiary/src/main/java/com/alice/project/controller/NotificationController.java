@@ -3,6 +3,8 @@ package com.alice.project.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,24 +14,33 @@ import com.alice.project.config.CurrentMember;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Notification;
 import com.alice.project.repository.NotificationRepository;
+import com.alice.project.service.MemberService;
 import com.alice.project.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.var;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
 	private final NotificationRepository repository;
 
 	private final NotificationService service;
+	private final MemberService memberService;
+
 
 	@GetMapping("/notifications")
-	public String getNotifications(@CurrentMember Member member, Model model) {
+	public String getNotifications(@AuthenticationPrincipal UserDetails user, Model model) {
+		log.info("user.getUsername = " + user.getUsername());
+		Member member = memberService.findById(user.getUsername());
+		log.info("member = " + member);
 		List<Notification> notifications = repository.findByMemberAndCheckedOrderByCreatedDateTimeDesc(member, false);
 		long numberOfChecked = repository.countByMemberAndChecked(member, true);
 		putCategorizedNotifications(model, notifications, numberOfChecked, notifications.size());
 		model.addAttribute("isNew", true);
+		model.addAttribute("member", member);
 		service.markAsRead(notifications);
 		return "notification/list";
 	}
@@ -40,6 +51,7 @@ public class NotificationController {
 		long numberOfNotChecked = repository.countByMemberAndChecked(member, false);
 		putCategorizedNotifications(model, notifications, notifications.size(), numberOfNotChecked);
 		model.addAttribute("isNew", false);
+		model.addAttribute("member", member);
 		return "notification/list";
 	}
 

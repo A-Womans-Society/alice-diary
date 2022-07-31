@@ -1,15 +1,25 @@
 package com.alice.project.event;
 
+import org.springframework.context.ApplicationEvent;
+
 import com.alice.project.domain.Community;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
-@RequiredArgsConstructor
-public class CommunityInvitedEvent {
+@Slf4j
+public class CommunityInvitedEvent extends ApplicationEvent {
 
-    private final Community community;
+	private static final long serialVersionUID = 1L;
+	private Community community;
+
+	public CommunityInvitedEvent(Community c) {
+    	super(c);
+		this.community = c;
+		log.info("CommunityInvitedEvent 생성자");
+		log.info("c.getMember()" + c.getMember().getName());
+	}
 
 }
 

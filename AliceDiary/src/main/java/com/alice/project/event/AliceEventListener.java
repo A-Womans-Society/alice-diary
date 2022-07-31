@@ -2,13 +2,10 @@ package com.alice.project.event;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.TemplateEngine;
 
-import com.alice.project.config.AppProperties;
 import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Notification;
@@ -21,37 +18,51 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Async
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class AliceEventListener {
+public class AliceEventListener implements ApplicationListener<AliceCreatedEvent> {
 
 	private final CalendarRepository calendarRepository;
-	private final MemberRepository memberRepository;
-	private final TemplateEngine templateEngine;
-	private final AppProperties appProperties;
 	private final NotificationRepository notificationRepository;
+	private final MemberRepository memberRepository;
 
-	@EventListener
-	public void handleAliceCreatedEvent(AliceCreatedEvent aliceCreatedEvent) {
-		Calendar calendar = calendarRepository.findByNum(aliceCreatedEvent.getCalendar().getNum());
-		Member member = calendar.getMember();
-		if (member.isAliceCreated()) {
-			createNotification(calendar, member, "새로운 앨리스 알림입니다!", NotificationType.ALICE);
-		}
-	}
-
-	private void createNotification(Calendar calendar, Member member, String comment, NotificationType notificationType) {
+	private void createNotification(Calendar calendar, Member member, String wording,
+			NotificationType notificationType) {
 		Notification notification = new Notification();
-		notification.setTitle("새로운 앨리스 알림입니다!");
+		notification.setTitle("앨리스 탭에서 확인해주세요.");
 		notification.setLink("/alice/");
+		notification.setWording(wording);
 		notification.setChecked(false);
-		notification.setCreatedDateTime(LocalDateTime.now());
-		notification.setComment(comment);
 		notification.setMember(member);
+		notification.setCreatedDateTime(LocalDateTime.now());
 		notification.setNotificationType(notificationType);
 		notificationRepository.save(notification);
+	}
+
+	@Override
+	public void onApplicationEvent(AliceCreatedEvent aliceCreatedEvent) {
+		log.info("!" + aliceCreatedEvent.getCalendar().getContent());
+		Calendar calendar = calendarRepository.findByNum(aliceCreatedEvent.getCalendar().getNum());
+		log.info("aliceCreatedEvent.getCalendar() : " + aliceCreatedEvent.getCalendar().toString());
+		String memberList = calendar.getMemberList();
+		String[] memList = null;
+		if (memberList != null) {
+			memList = memberList.split(",");
+		}
+
+		Member member = calendar.getMember();
+		log.info("member" + member.getName());
+		if (member.isAliceCreated()) {
+			if (memList != null && memList.length != 0) {
+				for (String memNum : memList) {
+					log.info("memNum : " + memNum);
+					Member party = memberRepository.findByNum(Long.parseLong(memNum));
+					createNotification(calendar, party, party.getName() + "님이 참여하게 된 일정이 생겼습니다!", NotificationType.ALICE);
+				}
+			}
+			createNotification(calendar, member, "내 캘린더에 새로운 일정이 추가됐습니다!", NotificationType.ALICE);
+		}
 	}
 
 }
