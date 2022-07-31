@@ -2,7 +2,7 @@
 
 @font-face {
 	font-family: 'alice';
-	src: url('/font/Cafe24SsurroundAir.ttf') format('truetype');
+	src: url('../../font/Cafe24SsurroundAir.ttf') format('truetype');
 }
 
 html, body {

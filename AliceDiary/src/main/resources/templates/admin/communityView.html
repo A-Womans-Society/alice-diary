@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/adminCommunityLayout}">
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/admin/communityView.js}"></script>
+</th:block>
+
+<div layout:fragment="content">
+	<div style="height: 15%;">
+		<h2 class="text-center m-0 pt-4">
+			#
+			<th:block th:text="${community.name}"></th:block>
+		</h2>
+		<h5 class="text-center" th:text="${community.description}"></h5>
+	</div>
+
+	<div class="container-fluid" style="height: 85%;">
+		<div class="row h-100">
+			<div class="col-10 h-100">
+				<div class="d-flex justify-content-center" style="height: 13%;">
+					<div class="d-flex align-items-center"
+						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+						<div class="w-100 d-flex justify-content-center">
+							<form th:action="@{|/admin/community/${comNum}/list|}"
+								style="width: 70%;" class="d-flex justify-content-center"
+								th:method="get" th:object="${postSearchDto}" name="searchForm"
+								id="searchForm">
+								<select name="type" class="form-control" style="width: 35%;">
+									<option value="title">제목</option>
+									<option value="content">내용</option>
+									<option value="writer">작성자</option>
+								</select> <input type="text" name="keyword" style="width: 50%;"
+									class="form-control" placeholder="검색어를 입력해주세요">
+								<button type="submit" class="btn">검색</button>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="text-right pr-5 pt-2" id="btnBox">
+					<button type="button" id="delete_confirm"
+						th:onclick="deleteConfirm([[${community.num}]])" class="btn">커뮤니티
+						삭제</button>
+				</div>
+				<div class="d-flex justify-content-center" style="height: 70%;">
+					<div class="pb-3 pt-1" style="width: 80%; height: 95%;">
+						<div class='text-right'>
+							<a th:if="${postSearchDto.keyword != null}"
+								th:href="@{|/admin/community/${comNum}/list|}"><input
+								type="button" class="btn" value="전체목록"></a>
+						</div>
+						<table class="w-100 table table-striped table-hover">
+							<thead>
+								<tr class="text-center">
+									<th>No.</th>
+									<th>제목</th>
+									<th>작성자</th>
+									<th>작성일</th>
+									<th>조회수</th>
+								</tr>
+							</thead>
+							<th:block th:if="${endPage} == 0">
+								<tbody class="text-center">
+									<tr>
+										<td colspan="5">커뮤니티 게시글이 없습니다</td>
+									</tr>
+								</tbody>
+							</th:block>
+							<th:block th:unless="${endPage == 0}">
+								<tbody class="text-center">
+									<tr th:each="post, status: ${list}">
+										<td th:text="${size - status.index-(nowPage-1)*list.size}" />
+										<td><a th:text="${post.title}"
+											th:href="@{|/community/${comNum}/get/${post.num}|}"></a></td>
+										<td th:text="${post.member.name}"></td>
+										<td
+											th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
+										<td th:text="${post.viewCnt}"></td>
+									</tr>
+								</tbody>
+							</th:block>
+						</table>
+						<div class="d-flex justify-content-center">
+							<nav aria-label="Page navigation example" th:if="${endPage != 0}">
+								<ul class="pagination pagination-sm">
+									<li class="page-item"><a class="page-link"
+										th:href="@{|/admin/community/${comNum}/list?(page=${startPage-1})|}"
+										style="color: purple;" aria-label="Previous"> <span
+											aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span>
+									</a></li>
+									<th:block
+										th:each="page : ${#numbers.sequence(startPage, endPage)}">
+										<li class="page-item"><a class="page-link"
+											style="color: purple;"
+											th:if="${page != nowPage} and ${type} != null and ${keyword} != null"
+											th:href="@{|/admin/community/${comNum}/list?(page=${page-1},type=${type},keyword=${keyword})|}"
+											th:text="${page}"></a></li>
+										<li class="page-item"><a class="page-link"
+											style="color: purple;"
+											th:if="${page != nowPage} and ${type} == null and ${keyword} == null"
+											th:href="@{|/admin/community/${comNum}/list?(page=${page-1})|}"
+											th:text="${page}"></a></li>
+
+										<li class="page-item"><a class="page-link"
+											style="background: #e0c6f2; color: purple;"
+											th:if="${page == nowPage} and ${type} != null and ${keyword} != null"
+											th:href="@{|/admin/community/${comNum}/list?(page=${page-1},type=${type},keyword=${keyword})|}"
+											th:text="${page}"></a></li>
+										<li class="page-item"><a class="page-link"
+											style="background: #e0c6f2; color: purple;"
+											th:if="${page == nowPage} and ${type} == null and ${keyword} == null"
+											th:href="@{|/admin/community/${comNum}/list?(page=${page-1})|}"
+											th:text="${page}"></a></li>
+
+									</th:block>
+									<li class="page-item"><a class="page-link"
+										th:href="@{|/admin/community/${comNum}/list?(page=${endPage-1})|}"
+										style="color: purple;" aria-label="Next"> <span
+											aria-hidden="true">&raquo;</span> <span class="sr-only">Next</span>
+									</a></li>
+								</ul>
+							</nav>
+
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+			<div class="col-2 h-100 border-left">
+				<div class="text-center pt-4 pb-2 mb-3"
+					style="height: 25%; border: 2px solid #dccae9; border-radius: 10px;">
+					<h6>
+						<strong>커뮤니티 생성자</strong>
+					</h6>
+					<a th:text="${community.member.name}"
+						th:href="@{|/admin/member/${community.member.id}|}"></a>
+
+				</div>
+				<div class=" pt-4 pb-2"
+					style="height: 65%; border: 2px solid #dccae9; border-radius: 10px;">
+					<h6 class="text-center">
+						<strong>커뮤니티 멤버 리스트</strong>
+					</h6>
+					<ul>
+						<th:block th:if="${memberMap != null}"
+							th:each="entry : ${memberMap}">
+							<li><a th:text="${entry.value}"
+								th:href="@{|/admin/member/${entry.key}|}"></a></li>
+						</th:block>
+						<th:block th:unless="${memberMap != null}">
+							<li>커뮤니티 멤버가 없습니다!😢</li>
+						</th:block>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/messageLayout}">
+
+<th:block layout:fragment="css">
+</th:block>
+
+<th:block layout:fragment="script">
+	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
+</th:block>
+
+<div layout:fragment="content">
+	<div style="height: 15%;">
+		<h2 class="text-center m-0 pt-4">사진 모아보기</h2>
+		<h5 class="text-center">주고받은 사진파일들을 모아보는 곳입니다.</h5>
+	</div>
+	<!--/* 검색 영역 */-->
+	<div class="d-flex justify-content-center" style="height: 13%;">
+		<div class="d-flex align-items-center"
+			style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+			<div class="w-100 d-flex justify-content-center">
+				<form name="searchForm" id="searchForm"
+					class="d-flex justify-content-center" style="width: 70%;"
+					th:action="@{|/messagebox/pictures/${#authentication.name}|}"
+					th:object="${searchDto}" th:method="get">
+					<select id="type" name="type" class="form-control"
+						style="width: 35%;">
+						<option value="">카테고리 선택</option>
+						<option value="filename">사진파일명</option>
+						<option value="name">상대닉네임</option>
+					</select> <input type="text" id="keyword" name="keyword"
+						class="form-control" placeholder="카테고리 선택 후 검색해주세요."
+						style="width: 50%;">
+					<button type="submit" class="btn">검색</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--/* 게시글 영역 */-->
+	<div class="d-flex justify-content-center" style="height: 70%;">
+		<div class="pt-3 pb-3"
+			style="width: 80%; overflow: auto; height: 95%;">
+			<div class='text-right'>
+				<a th:if="${searchDto.keyword != null}"
+					th:href="@{|/messagebox/pictures/${#authentication.name}|}"><input
+					type="button" class="btn" value="목록"></a>
+			</div>
+			<table class="table table-striped">
+				<thead>
+					<tr class="text-center">
+						<th>No.</th>
+						<th>사진미리보기</th>
+						<th>사진이름</th>
+						<th>닉네임</th>
+						<th>주고받은 날짜</th>
+					</tr>
+				</thead>
+				<th:block th:if="${mpdtos == null || #lists.size(mpdtos) == 0}">
+					<tbody class="text-center">
+						<tr>
+							<td colspan="5">사진파일 목록이 비었습니다</td>
+						</tr>
+					</tbody>
+				</th:block>
+				<!--/* 게시글 리스트 Rendering 영역 */-->
+				<th:block th:unless="${endPage == 0}">
+					<tbody class="text-center">
+						<tr th:each="m, status: ${mpdtos}">
+							<td th:text="${status.count}" />
+							<td><img id="picThumbnail"
+								th:src="@{/upload/message/}+@{${m.saveName}}"
+								style="width: 35px;" /></td>
+							<td><a th:href="|./download/${m.fileNum}|"
+								th:text="${m.originName}"></a></td>
+							<td th:text="${m.theOtherName}"></td>
+							<td
+								th:text="${#temporals.format(m.sendDate, 'yyyy-MM-dd HH:mm')}"></td>
+						</tr>
+					</tbody>
+				</th:block>
+			</table>
+		</div>
+	</div>
+</div>
+</html>

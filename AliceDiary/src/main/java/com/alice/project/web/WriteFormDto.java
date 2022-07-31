@@ -26,13 +26,14 @@ public class WriteFormDto {
 	private LocalDateTime updateDate;
 
 	private List<MultipartFile> originName;
-
+	
 	@Builder
 	public WriteFormDto(Long postNum, String title, String content) {
 		super();
 		this.postNum = postNum;
 		this.title = title;
 		this.content = content;
+	
 	}
 
 	@Builder

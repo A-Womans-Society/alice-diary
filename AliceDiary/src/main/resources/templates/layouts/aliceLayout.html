@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security">
+
 <head>
 <meta charset="UTF-8">
+
+<!-- favicon -->
+<link rel="icon" th:href="@{/img/favicon.ico}" />
+
 <title>Alice Diary</title>
 
 <!-- ajax token -->
@@ -35,11 +41,10 @@
 <th:block layout:fragment="css"></th:block>
 </head>
 <body>
-
 	<!-- import header -->
 	<div th:replace="fragments/header::header"></div>
 	<!-- import content -->
-	<div layout:fragment="content" style="height: 90%;"></div>
+	<div layout:fragment="content" style="height: 92%;"></div>
 	<!--  style="height: 95vh;" -->
 </body>
 </html>

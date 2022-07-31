@@ -4,45 +4,54 @@
 	layout:decorate="~{layouts/communityLayout}">
 
 <th:block layout:fragment="script">
-	<script th:src="@{/js/community/updateForm.js}"></script>
+	<script th:src="@{/js/open/updateForm.js}"></script>
 </th:block>
+
 <div layout:fragment="content">
-	<h2>글 수정하기</h2>
+	<h2 class="text-center m-0 pt-4" style="height: 10%;">글 수정하기</h2>
+	<div class="container-fluid pl-5 pr-5" style="height: 85%;">
+		<div class='row mt-3 ml-5 mr-5' style="height: 90%;">
+			<div class="col-12">
 
-	<form th:action="@{/community/put}" th:object="${updateDto}"
-		method="post" enctype="multipart/form-data">
-		<table border="1">
-			<tr>
-				<td>제목</td>
-				<td><input type="text" name="title" th:field="*{title}"></td>
-			</tr>
-			<tr>
-				<td>내용</td>
-				<td><textarea name="content" cols="50" rows="25"
-						th:field="*{content}"></textarea></td>
-			</tr>
-		</table>
+				<form th:action="@{/open/put}" th:object="${updateDto}"
+					method="post" enctype="multipart/form-data" class="h-100">
+					<table class="table w-100">
+						<tr>
+							<th>제목</th>
+							<td colspan="3"><input type="text" class="form-control"
+								th:field="*{title}"></td>
+						</tr>
+						<tr>
+							<th>내용</th>
+							<td colspan="3"><textarea style="resize: none;"
+									th:field="*{content}" class="form-control" rows="9"></textarea></td>
+						</tr>
+						<tr>
+							<th></th>
+							<th:block th:each="file : ${files}"
+								th:if="${file.originName != null}">
+								<td><a class="attachedFile" id="filewow"
+									th:href="|./download/${file.num}|" th:text="${file.originName}"></a>
+									<button type="button" id="delete_file"
+										th:onclick="deleteFile([[${file.num}]],[[${updateDto.postNum}]])">파일삭제</button>
+								</td>
+							</th:block>
+						</tr>
+						<tr>
+							<th>파일첨부</th>
+							<td><input type="file" th:field="*{originName}"
+								onchange="fileCnt(this)" multiple>
+						</tr>
+					</table>
 
-
-
-		<div id="fileBox">
-			<p th:each="file : ${files}" th:if="${file.originName != null}">
-				첨부파일: <a id="filewow" th:href="|community/download/${file.num}|"
-					th:text="${file.originName}"></a>
-				<button type="button" id="delete_file"
-					th:onclick="deleteFile([[${file.num}]],[[${updateDto.postNum}]])">파일삭제</button>
-			</p>
-
+					<div class="text-center">
+						<input type="submit" class="btn btn-secondary" value="저장">
+						<input type="button" onClick="history.go(-1)" value="취소"
+							class="btn"> <input type="hidden" th:field="*{postNum}">
+					</div>
+				</form>
+			</div>
 		</div>
-
-		<div>
-			파일첨부<input type="file" th:field="*{originName}" multiple />
-		</div>
-		<div>
-			<input type="submit" value="수정"> <input type="button"
-				onClick="history.go(-1)" value="취소"> <input type="hidden"
-				th:field="*{postNum}">
-		</div>
-	</form>
+	</div>
 </div>
 </html>

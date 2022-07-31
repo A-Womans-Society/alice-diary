@@ -1,33 +1,32 @@
 package com.alice.project.config;
 
-import java.util.Arrays;
+import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.alice.project.service.MemberService;
+import com.alice.project.service.CustomOAuth2UserService;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@Slf4j
 public class SecurityConfig {
 	
-	@Autowired
-	MemberService memberService;
+	
+	private final AuthenticationFailureHandler customFailureHandler;
+	private final DataSource dataSource; // jpa이라 자동으로 등록되어 있음
+	private final CustomOAuth2UserService customOAuth2UserService;
 
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.formLogin()
@@ -37,29 +36,42 @@ public class SecurityConfig {
 				.defaultSuccessUrl("/alice")
 				.usernameParameter("userid")
 				.passwordParameter("password")
-				.failureUrl("/login/error")
-				.and()
-				.logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/");
-//        http.csrf().disable();
+				.failureHandler(customFailureHandler)
+				
+			.and()
+			.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					 .logoutSuccessUrl("/")
+					 .deleteCookies("JSESSIONID")
+					 
+			.and()
+			.oauth2Login()//OAuth2 로그인 기능에 대한 여러 설정의 진입점
+			.defaultSuccessUrl("/member/update/{#authentication.name}")
+			.userInfoEndpoint() //OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정들을 담당
+			.userService(customOAuth2UserService);
+		
 
 		http.authorizeRequests()
-				.mvcMatchers("/css/**", "/js/**", "/img/**").permitAll()
-				.mvcMatchers("/", "/login/**").permitAll()
-				.mvcMatchers("/alice/**", "/message/**", "/profile/**").permitAll()
-				.mvcMatchers("/admin/**").hasRole("ADMIN");
+				.mvcMatchers("/css/**", "/font/**", "/js/**", "/img/**").permitAll()
+				.mvcMatchers("/","/agree/**", "/register/**", "/login/**", "/check-email-token/**", "/oauth2/**", "/error/**").permitAll()
+				.mvcMatchers("/admin/**").hasAuthority("ADMIN")
+				.anyRequest().hasAnyAuthority("ADMIN", "USER_IN");
 		
-//        http.exceptionHandling()
+//      http.exceptionHandling()
 //                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 //        ;
-
+		
 		return http.build();
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 
+
+	@Bean
+    public PersistentTokenRepository tokenRepository() {
+        // JDBC 기반의 tokenRepository 구현체
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource); // dataSource 주입
+        return jdbcTokenRepository;
+    }
+	
+	
 }

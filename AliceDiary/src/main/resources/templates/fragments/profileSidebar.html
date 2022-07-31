@@ -2,17 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
 
-<div th:fragment="sidebar">
+<div th:fragment="sidebar" class="col-2">
 	<div id="wrapper" class="toggled">
 		<!-- Sidebar -->
 		<div id="sidebar-wrapper">
 			<ul class="sidebar-nav">
-				<li class="border-top border-bottom"><a href="#">정보 수정</a></li>
-				<li class="border-top border-bottom"><a href="#">비밀번호 변경</a></li>
-				<li class="border-top border-bottom"><a href="#">회원 탈퇴</a></li>
+				<li class="border-top border-bottom"><a
+					th:href="'/AliceDiary/member/update/' + ${#authentication.name}">정보
+						수정</a></li>
+				<li class="border-top border-bottom"><a
+					th:href="'/AliceDiary/member/' + ${#authentication.name} + '/editPwd'">비밀번호
+						변경</a></li>
+				<li class="border-top border-bottom"><a
+					th:href="'/AliceDiary/member/' + ${#authentication.name} + '/leave'">회원
+						탈퇴</a></li>
 			</ul>
 		</div>
-		<!-- /#sidebar-wrapper -->
 	</div>
 </div>
 </html>

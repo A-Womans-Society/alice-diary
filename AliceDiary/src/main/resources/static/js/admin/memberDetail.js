@@ -10,7 +10,6 @@ function deleteMember(num) {
 		type : 'delete',
 		url : "./" + num
 	}).done(function(result) {
-		console.log(result);
 		if (result == 0) {
 			alert("회원 내보내기에 실패했습니다! 다시 시도해주세요😥");
 		} else if (result == 1) {
@@ -29,12 +28,10 @@ function returnMember(num) {
 	if (!confirm('정말 이 회원상태를 복구하시겠습니까?')) {
 		return false;
 	}
-	console.log(num);
 	$.ajax({
 		type: 'patch',
 		url: './member/'+num
 	}).done(function(result) {
-		console.log(result);
 		if (result == 0) {
 			alert("회원 복구처리에 실패했습니다! 다시 시도해주세요😥");
 		} else if (result == 1) {

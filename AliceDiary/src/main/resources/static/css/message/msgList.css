@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+.messages-box, .chat-box {
+	height: 100%;
+	overflow-y: scroll;
+}
+
+.text-small {
+	font-size: 0.9rem;
+}
+
+.rounded-lg {
+	border-radius: 0.5rem;
+}
+
+input::placeholder {
+	font-size: 0.9rem;
+	color: #999;
+}
+
+.bg-purple {
+	background: #cab1ef;
+}
+
+.account-settings-fileinput {
+    position: absolute;
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.bg-friendMsg {
+	background: #d7d1d9;
+}

@@ -1,26 +1,25 @@
 package com.alice.project.controller;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alice.project.config.CurrentMember;
 import com.alice.project.domain.Member;
-import com.alice.project.repository.ProfileRepository;
+import com.alice.project.repository.MemberRepository;
 import com.alice.project.service.MemberService;
 import com.alice.project.web.UserDto;
+import com.alice.project.web.UserDtoValidator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
-
 	private final PasswordEncoder passwordEncoder;
+	private final UserDtoValidator userDtoValidator;
+	private final MemberRepository memberRepository;
+
+	// 먼저 Validator로 인증해주는 메서드
+	@InitBinder("memberDto")
+	public void initBinder(WebDataBinder webDataBinder) {
+		webDataBinder.addValidators(userDtoValidator);
+	}
 
 	// 약관동의GetMapping
 	@GetMapping(value = "/agree")
@@ -43,66 +49,76 @@ public class MemberController {
 	// 회원가입 GetMapping
 	@GetMapping(value = "/register")
 	public String memberForm(Model model) {
-		log.info("GET 나옴");
 		model.addAttribute("memberDto", new UserDto());
 		return "login/registerForm";
 	}
 
 	// 회원가입 PostMapping 가입 성공 후 로그인 페이지로 이동
 	@PostMapping(value = "/register")
-	public String memberForm(@ModelAttribute("memberDto") @Valid UserDto memberDto, BindingResult bindingResult, HttpSession session) {
-		log.info("POST 나옴");
-		log.info("!!!!!!!!!!!!!!!!!!!!!!!!1memberDto의 name " + memberDto.getName());
+	public String memberForm(@ModelAttribute("memberDto") @Valid UserDto userDto, BindingResult bindingResult,
+			Model model) {
 		if (bindingResult.hasErrors()) {
 			log.info("에러 발생!");
 			return "login/registerForm";
 		}
-		//if (!memberDto.getProfileImg().getOriginalFilename().equals("")) { // 프로필 사진이 있으면
-//			String originName = memberDto.getProfileImg().getOriginalFilename();
-//			String saveName = memberDto.getId() + "." + originName.split("\\.")[1];
-//			String savePath = session.getServletContext().getRealPath("c:\\Temp\\upload");
-//
-//			try {
-//				memberDto.getProfileImg().transferTo(new File(savePath, saveName));
-//				memberDto.setSaveName(saveName);
-//
-//				Member member = Member.createMember(memberDto, passwordEncoder);
-//				memberService.saveMember(member);
-//
-//			} catch (IllegalStateException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-		//} else { // 프로필 사진이 없으면
-			Member member = Member.createMember(memberDto, passwordEncoder);
-			log.info("member의 Name== "+ member.getName());
-			memberService.saveMember(member);
-//		}
-
+		memberService.processNewMember(userDto);
 		return "redirect:/";
 	}
 
+	@GetMapping("/check-email-token")
+	public String checkEmailToken(String token, String email, Model model) {
+		Member member = memberRepository.searchByEmailForToken(email);
+		String view = "login/checked-email";
+		if (member == null) {
+			model.addAttribute("error", "wrong.email");
+			return view;
+		}
+
+		if (!member.isValidToken(token)) {
+			model.addAttribute("error", "wrong.token");
+			return view;
+		}
+		memberService.completeSignUp(member);
+		return view;
+	}
+
+	@GetMapping("/check-email")
+	public String checkEmail(@CurrentMember Member member, Model model) {
+		model.addAttribute("email", member.getEmail());
+		return "login/check-email";
+	}
+
+	@GetMapping("/resend-confirm-email")
+	public String resendConfirmEmail(@CurrentMember Member member, Model model) {
+		if (!member.canSendConfirmEmail()) {
+			model.addAttribute("error", "인증 이메일은 1시간에 한번만 전송할 수 있습니다.");
+			model.addAttribute("email", member.getEmail());
+			return "login/check-email";
+		}
+
+		memberService.sendSignUpConfirmEmail(member);
+		return "redirect:/";
+	}
+	
 	// ID 중복체크 PostMapping
 	@PostMapping("/register/idCheck")
 	@ResponseBody
-	public int checkIdDuplication(@RequestParam(value = "id") String id) {
-		log.info("userIdCheck 진입");
-		int check = memberService.checkIdDuplicate(id);
+	public String checkIdDuplication(String id) {
+		String check = String.valueOf(memberService.checkIdDuplicate(id));
 		return check;
 	}
-
-	// 로그인에러 GetMapping
-	@GetMapping(value = "/login/error")
-	public String loginError(Model model) {
-		model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
-		return "redirect:/";
+	
+	// nickname 중복체크 PostMapping
+	@PostMapping("/register/nicknameCheck")
+	@ResponseBody
+	public String checkNicknameDuplication(String id) {
+		String check = String.valueOf(memberService.checkNicknameDuplication(id));
+		return check;
 	}
 
 	// Id찾기 Get
 	@GetMapping(value = "/login/findId")
 	public String findId() {
-		log.info("findId GET진입");
 		return "login/findId";
 	}
 
@@ -110,7 +126,6 @@ public class MemberController {
 	@PostMapping(value = "/login/findId")
 	@ResponseBody
 	public Member findId(String name, String mobile, String email) {
-		log.info("findId POST진입");
 		Member member = memberService.findId(name, mobile, email);
 		return (member == null) ? null : member;
 	}
@@ -118,7 +133,6 @@ public class MemberController {
 	// 비밀번호 찾기 Get
 	@GetMapping(value = "/login/findPwd")
 	public String findPwd(Model model) {
-		log.info("비밀번호 찾기 GET 진입");
 		model.addAttribute("userDto", new UserDto());
 		return "login/findPwd";
 	}
@@ -126,7 +140,6 @@ public class MemberController {
 	// 비밀번호 찾기 Post
 	@PostMapping(value = "/login/findPwd")
 	public String findPwd(UserDto userDto, RedirectAttributes re, Model model) {
-		log.info("비밀번호 찾기 POST 진입");
 		Member member = memberService.findPwd(userDto.getId(), userDto.getName(), userDto.getMobile());
 		if (member != null) {
 			re.addFlashAttribute("member", member);
@@ -134,46 +147,29 @@ public class MemberController {
 		} else {
 			model.addAttribute("msg", "존재하지 않는 유저입니다.");
 			return "/login/findPwd";
-					
+
 		}
 	}
 
 	// 비밀번호 재설정 Get
 	@GetMapping(value = "/login/updatePwd")
-	public String updatePwd(@ModelAttribute(value="memberDto") Member m, Model model) {
-		log.info("비밀번호 재설정 GET 진입");
-		log.info("Member m === " + m);
-		UserDto mdto = new UserDto(m);
-		Long num = m.getNum();
-		model.addAttribute("memberDto", mdto);
+	public String updatePwd(Member member, Model model) {
+		UserDto userDto = new UserDto();
+		Long num = member.getNum();
+		model.addAttribute("userDto", userDto);
 		model.addAttribute("num", num);
 		return "login/updatePwd";
 	}
 
 	// 비밀번호 재설정 Post
 	@PostMapping(value = "/login/savePwd")
-	public String updatePwd(UserDto memberDto, @RequestParam("num") Long num) {
-		log.info("비밀번호 재설정 POST 진입");
+	public String updatePwd(UserDto userDto, Long num) {
 		Member member = memberService.findByNum(num);
-		log.info("비밀번호 재설정 전 Member : " + member);
-		UserDto userDto = new UserDto(member, memberDto.getPassword());
-		member = Member.createMember(num, userDto, passwordEncoder);
+		UserDto uDto = new UserDto(member, userDto.getPassword());
+		member = Member.createMember(num, uDto, passwordEncoder);
 		member = memberService.updateMember(member);
-		log.info("비밀번호 재설정 후 Member : " + member);
 
 		return "redirect:/";
 	}
-
-	/*
-	 * //Email 인증
-	 * 
-	 * @PostMapping("/register/emailCheck")
-	 * 
-	 * @ResponseBody public void checkEmailKey(String email) throws Exception {
-	 * logger.info("EmailCheck 진입"); logger.info("전달받은 email:"+email);
-	 * memberService.sendSimpleMessage(email); logger.info("email 보냄!");
-	 * 
-	 * }
-	 */
-
+	
 }

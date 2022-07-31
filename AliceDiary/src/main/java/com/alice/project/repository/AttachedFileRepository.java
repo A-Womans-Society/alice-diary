@@ -18,21 +18,16 @@ public interface AttachedFileRepository extends JpaRepository<AttachedFile, Long
 
 	AttachedFile findByNum(Long num);
 
-	
 	@Modifying
 	@Transactional
-	@Query(value="delete from Attached_File where post_num = :num", nativeQuery=true)
+	@Query(value = "delete from Attached_File where post_num = :num", nativeQuery = true)
 	Integer deletePostwithFile(Long num);
-	
-	@Modifying
-	@Query(value="delete from Attached_File where file_num = :num", nativeQuery=true)
-	Integer deleteOneFile(Long num);
-	
-	/*
-	 * @Query(value="select origin_name from Attached_File where file_num = :num",
-	 * nativeQuery=true) String findOriginNameByNum(Long num);
-	 */
-	
-	List<AttachedFile> findAllByPostNum(Long postNum);
-}
 
+	@Modifying
+	@Query(value = "delete from Attached_File where file_num = :num", nativeQuery = true)
+	Integer deleteOneFile(Long num);
+
+	List<AttachedFile> findAllByPostNum(Long postNum);
+
+	AttachedFile findByMessageNum(Long msgNum);
+}

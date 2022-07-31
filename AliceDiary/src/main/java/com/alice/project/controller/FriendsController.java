@@ -10,14 +10,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
+import com.alice.project.domain.Status;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.FriendsGroupService;
 import com.alice.project.service.MemberService;
+import com.alice.project.service.ProfileService;
+import com.alice.project.web.FriendsDto;
 import com.alice.project.web.FriendshipDto;
 
 import lombok.RequiredArgsConstructor;
@@ -31,29 +36,40 @@ public class FriendsController {
 	private final FriendService friendService;
 	private final MemberService memberService;
 	private final FriendsGroupService friendsGroupService;
+	private final ProfileService profileService;
 
-	// 친구 추가(회원 id검색)
+	// 친구 추가(회원 name으로 id검색)
 	@PostMapping("/friends/add")
-	public String addFriend(String searchId, @AuthenticationPrincipal UserDetails user) {
-//		Member m = memberService.findByName(user.getUsername() + ",");
+	public String addFriend(String searchName, @AuthenticationPrincipal UserDetails user) {
 		Member m = memberService.findById(user.getUsername());
 		log.info("member : " + m.getId());
-		log.info("member : " + searchId);
-		friendService.addFriendship(m, searchId);
+		log.info("member : " + searchName);
+
+		friendService.addFriendship(m, searchName);
+
 		return "redirect:/friends";
 	}
 
 	// 친구 검색해서 추가
 	@PostMapping("/friends/searchMember")
 	@ResponseBody
-	public Member searchMember(String id) {
-		return friendService.searchMember(id);
+	public Member searchMember(String name, @AuthenticationPrincipal UserDetails user) {
+		log.info("member name : " + name);
+
+		Member member = memberService.findByName(name);
+		if (member == null || member.equals("") || member.getStatus().equals(Status.ADMIN)
+				|| member.getStatus().equals(Status.USER_OUT))
+
+		{
+			return Member.createMember(); // name이 "noFriend"인 사람
+		}
+		log.info("member.getnum : " + member.getNum());
+		return member;
 	}
 
 	// 추가된 친구 목록 조회
 	@GetMapping("/friends")
 	public String friendshiplist(Model model, HttpSession session, @AuthenticationPrincipal UserDetails user) {
-		// String userNum = session.getAttribute("userNum");
 		Long adderNum = memberService.findById(user.getUsername()).getNum();
 
 		List<Friend> friendList = friendService.friendship(adderNum);
@@ -61,12 +77,17 @@ public class FriendsController {
 
 		for (Friend f : friendList) {
 			Member m = memberService.findByNum(f.getAddeeNum());
+			log.info("status : " + m.getStatus());
+			if (m.getStatus() == Status.USER_OUT) {
+				continue;
+			}
 			String groupName = friendsGroupService.getGroupName(f.getGroupNum());
 			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(), m.getMobile(), m.getBirth(),
 					m.getGender(), m.getEmail(), groupName);
 
 			friendship.add(dto);
 		}
+		model.addAttribute("member", memberService.findById(user.getUsername()));
 		model.addAttribute("friendList", friendship);
 		return "friends/friendslist";
 	}
@@ -87,7 +108,65 @@ public class FriendsController {
 					sf.getGender(), sf.getEmail(), groupName);
 			searchFriendList.add(dto);
 		}
-
 		return searchFriendList;
+	}
+
+	// 친구 프로필 상세보기
+	@GetMapping("/friends/friendInfo/{id}")
+	public String friendInfo(Model model, @PathVariable("id") String id, @AuthenticationPrincipal UserDetails user) {
+		Member friend = profileService.findById(id);
+		Member member = memberService.findById(user.getUsername());
+		log.info("member=" + member);
+
+		List<String> wishList = new ArrayList<String>();
+		if (friend.getWishlist() != null) {
+			String wish = friend.getWishlist().replaceAll(",", " ");
+			String[] wishs = wish.split(" ");
+			for (String s : wishs) {
+				wishList.add(s);
+			}
+		}
+
+		model.addAttribute("wishList", wishList);
+		model.addAttribute("friend", friend);
+		model.addAttribute("member", member);
+		model.addAttribute("myFriendGroup", friendsGroupService.findAllByAdder(member.getNum()));
+		model.addAttribute("friendsDto", new FriendsDto());
+		model.addAttribute("member", memberService.findById(user.getUsername()));
+
+		log.info("그룹 목록 확인: " + friendsGroupService.findAllByAdder(member.getNum()));
+		return "friends/friendInfo";
+	}
+
+	// 친구 삭제하기
+	@PostMapping("friends/deleteFriend")
+	@ResponseBody
+	public void deleteFriend(@AuthenticationPrincipal UserDetails user, String addeeId) {
+		log.info("여기오니?");
+		Member member = memberService.findById(user.getUsername());
+		Long adderNum = member.getNum();
+
+		Long addeeNum = memberService.findNumById(addeeId);
+		log.info("addeeNum : " + addeeNum);
+		friendService.deleteFriend(adderNum, addeeNum);
+
+	}
+
+	// 친구의 소속 그룹 변경
+	@PostMapping("/friends/changeGroup")
+	public String changeGroup(@AuthenticationPrincipal UserDetails user,
+			@ModelAttribute("friendsDto") FriendsDto friendsDto) {
+		log.info("들어왔음??");
+		Member member = memberService.findById(user.getUsername());
+		Long addeeNum = friendsDto.getAddeeNum();
+		Friend friend = friendService.groupNum(member.getNum(), addeeNum);
+		Long friendNum = friend.getNum();
+		Long groupNum = friendsDto.getGroupNum();
+		log.info("addeeNum" + addeeNum);
+		log.info("groupNum" + groupNum);
+		log.info("friendNum" + friendNum);
+		friendService.changeGroup(friendNum, addeeNum, groupNum, member);
+
+		return "redirect:/friends";
 	}
 }

@@ -9,37 +9,61 @@
 </th:block>
 
 <div layout:fragment="content">
-	<input type="text" id="searchFriend" name="searchFriend"
-		placeholder="친구 검색(아이디/이름)">
-	<button type="button" class="btn btn-primary mb-2"
-		th:onclick="loadFriends()">검색</button>
-	<button id="openModal" onclick="openModal()">친구 추가</button>
-	<table border="1" id="friendsTable">
-		<thead>
-			<tr>
-				<td>NO</td>
-				<td>ID</td>
-				<td>이름</td>
-				<td>전화번호</td>
-				<td>생년월일</td>
-				<td>성별</td>
-				<td>이메일</td>
-				<td>그룹</td>
-			</tr>
-		</thead>
-		<tbody id="friendsBody">
-			<tr th:each="friend, status : ${friendList}">
-				<td th:text="${status.index}"></td>
-				<td th:text="${friend.id}"></td>
-				<td th:text="${friend.name}"></td>
-				<td th:text="${friend.mobile}"></td>
-				<td th:text="${friend.birth}"></td>
-				<td th:text="${friend.gender}"></td>
-				<td th:text="${friend.email}"></td>
-				<td th:text="${friend.groupName}"></td>
-			</tr>
-		</tbody>
-	</table>
+	<h2 class="text-center m-0 pt-5" style="height: 15%;">친구 목록</h2>
+	<div class="d-flex justify-content-center" style="height: 13%;">
+		<div class="d-flex align-items-center justify-content-center"
+			style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+			<div class="w-75 d-flex justify-content-center">
+				<input type="text" id="searchFriend" class="form-control"
+					name="searchFriend" placeholder="친구 닉네임으로 검색하세요">
+				<button type="button" class="btn" th:onclick="loadFriends()">검색</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-center" style="height: 72%;">
+
+		<div class="pt-3 pb-3"
+			style="width: 90%; overflow: auto; height: 95%;">
+			<table class="w-100 table table-striped table-hover">
+				<thead>
+
+					<tr class="text-center">
+						<th>NO</th>
+						<th>닉네임</th>
+						<th>전화번호</th>
+						<th>생년월일</th>
+						<th>성별</th>
+						<th>이메일</th>
+						<th>그룹</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="friendsBody">
+					<th:block th:if="${#lists.isEmpty(friendList)}">
+						<tr>
+							<td colspan="9" class="text-center">친구를 추가해주세요.</td>
+						</tr>
+					</th:block>
+					<th:block th:unless="${#lists.isEmpty(friendList)}"
+						th:each="friend, status : ${friendList}">
+						<tr>
+							<td th:text="${status.count}"></td>
+							<td th:text="${friend.name}"></td>
+							<td th:text="${friend.mobile}"></td>
+							<td th:text="${friend.birth}"></td>
+							<td th:text="${friend.gender}"></td>
+							<td th:text="${friend.email}"></td>
+							<td th:text="${friend.groupName}"></td>
+							<td><a
+								th:href="@{/friends/friendInfo/{id}(id=${friend.id})}"><input
+									type="button" th:value="정보" class="btn btn-dark"></a></td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
 	<!-- Modal -->
 	<div class="modal" tabindex="-1" role="dialog" id="addFriend">
@@ -48,7 +72,7 @@
 			<div class="modal-content">
 				<div class="modal-header" style="align-items: baseline;">
 					<h1 class="modal-title">친구 추가</h1>
-					<span>ID로 추가</span>
+					&nbsp; <span>닉네임으로 추가</span>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -57,15 +81,41 @@
 
 				<form th:action="@{/friends/add}" method="post">
 					<div class="modal-body">
-						<div>
-							ID <input type="text" id="searchId" name="searchId"> <input
-								type="button" class="btn" value="검색" onclick="loadMembers()">
+						<input type="hidden" id="userName" name="userName"
+							th:value="${member.name}">
+						<div
+							class="w-100 d-flex align-items-center justify-content-center">
+							닉네임 &nbsp;<input type="text" id="searchName" name="searchName"
+								class="form-control w-25"> <input type="button"
+								class="btn" value="검색" onclick="loadMembers()">
 						</div>
-						<div id="memberInfo"></div>
+						<div id="memberInfo" style="height: 250px;">
+							<div class="row h-100">
+								<div
+									class="col-6 h-100 d-flex justify-content-center align-items-center">
+
+								</div>
+								<div
+									class="col-6 d-flex justify-content-center align-items-center">
+									<table class="table">
+										<tr>
+											<th>닉네임</th>
+											<td id="nameBox"></td>
+										</tr>
+										<tr>
+											<th>MBTI</th>
+											<td id="mbtiBox"></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btnbtn-dark" value="친구 추가">
+						<input type="submit" class="btn btn-dark" value="친구 추가"
+							th:onclick="return addOk()">
 					</div>
+					<input type="hidden" id="checkSearch" value="false">
 				</form>
 			</div>
 		</div>

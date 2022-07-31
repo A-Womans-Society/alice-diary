@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorate="~{layouts/aliceLayout}">
+
+<th:block layout:fragment="css">
+</th:block>
+
+<div layout:fragment="content">
+	<div class="container-fluid h-100">
+		<div class="row h-100">
+			<div class="col-12 h-100">
+				<h2 class="text-center m-0 pt-5" style="height: 15%;">일정 검색</h2>
+				<div class="d-flex justify-content-center" style="height: 13%;">
+					<div
+						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
+						<form th:action="@{/alice/search}" th:object="${dto}"
+							method="POST" class="row h-100 align-items-center">
+							<div class="col-5 text-center">
+								기간 : <input th:field="*{startDateStr}" type="date">&nbsp;~&nbsp;<input
+									th:field="*{endDateStr}" type="date">
+							</div>
+							<div class="col-5 text-center">
+								<label>내용 :&nbsp;</label><input th:field="*{content}"
+									placeholder="내용을 입력하세요.">
+							</div>
+							<div class="col-2 text-center">
+								<input type="submit" class="btn" value="일정 찾기">
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="d-flex justify-content-center" style="height: 72%;">
+
+					<div class="pt-3 pb-3"
+						style="width: 80%; overflow: auto; height: 95%;">
+						<table class="w-100 table table-striped table-hover">
+							<tr class="text-center">
+								<th style="width: 20%">기간</th>
+								<th style="width: 20%">내용</th>
+								<th style="width: 15%">멤버</th>
+								<th style="width: 10%">장소</th>
+								<th style="width: 15%">메모</th>
+								<th style="width: 8%">공개 여부</th>
+							</tr>
+							<th:block th:if="${#lists.isEmpty(resultEvents)}">
+								<tr>
+									<td colspan="7" class="text-center">일치하는 일정이 없습니다.
+								</tr>
+							</th:block>
+							<th:block th:unless="${#lists.isEmpty(resultEvents)}"
+								th:each="event:${resultEvents}">
+								<tr>
+									<td class="text-center"
+										th:text="|${event.startDate} ~ ${event.endDate}"|></td>
+									<td class="text-center" th:text="${event.content}"></td>
+									<td class="text-center" th:text="${event.memberList}"></td>
+									<td class="text-center" th:text="${event.location}"></td>
+									<td class="text-center" th:text="${event.memo}"></td>
+									<td class="text-center" th:if="${event.publicity == true}"
+										th:text="공개"></td>
+									<td class="text-center" th:unless="${event.publicity == true}"
+										th:text="비공개"></td>
+								</tr>
+							</th:block>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</html>

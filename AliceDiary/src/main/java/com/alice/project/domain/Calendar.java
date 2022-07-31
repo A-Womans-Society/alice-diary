@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -15,10 +14,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.alice.project.web.CalendarFormDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import groovy.transform.builder.Builder;
-
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -28,6 +28,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
+@EqualsAndHashCode(of = "num")
 public class Calendar {
 
 	@Id
@@ -47,6 +48,7 @@ public class Calendar {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mem_num")
+	@JsonBackReference
 	private Member member; // 일정 생성 회원 객체
 
 	// 연관관계 메서드 (양방향관계)
@@ -78,9 +80,17 @@ public class Calendar {
 		this.alarm = alarm;
 	}
 
+	// 일정 객체 생성 메서드
+	public static Calendar createCalendar(CalendarFormDto dto, Member member) {
+		Calendar calendar = new Calendar(dto.getMemberList(), dto.getStartDate(), dto.getEndDate(), dto.getContent(),
+				dto.getMemo(), dto.getLocation(), dto.getColor(), dto.getPublicity(), dto.getAlarmDate(), member);
+
+		return calendar;
+	}
+
 	@Builder
 	public Calendar(String memberList, LocalDate startDate, LocalDate endDate, String content, String memo,
-			String location, String color, Boolean publicity, LocalDate alarm) {
+			String location, String color, Boolean publicity, LocalDate alarm, Member member) {
 		super();
 		this.memberList = memberList;
 		this.startDate = startDate;
@@ -91,13 +101,6 @@ public class Calendar {
 		this.color = color;
 		this.publicity = publicity;
 		this.alarm = alarm;
-	}
-
-	// 일정 객체 생성 메서드
-	public static Calendar createCalendar(CalendarFormDto dto) {
-		Calendar calendar = new Calendar(dto.getMemberList(), dto.getStartDate(), dto.getEndDate(), dto.getContent(),
-				dto.getMemo(), dto.getLocation(), dto.getColor(), dto.getPublicity(), dto.getAlarmDate());
-
-		return calendar;
+		this.member = member;
 	}
 }
