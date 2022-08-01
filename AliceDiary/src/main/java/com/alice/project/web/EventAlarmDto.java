@@ -14,4 +14,6 @@ public class EventAlarmDto {
 	private String content;
 	private List<AlarmMemberListDto> memberList;
 	private LocalDate startDate;
+	private String fName;
+	private String fId;
 }

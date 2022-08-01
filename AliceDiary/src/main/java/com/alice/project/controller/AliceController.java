@@ -92,9 +92,11 @@ public class AliceController {
 		}
 		obj.put("items", jArray);
 
-		// alarm list
+		// my alarm list
 		LocalDate today = LocalDate.now();
-		List<EventAlarmDto> alarmList = calendarService.alarm(member.getNum(), today);
+		List<EventAlarmDto> alarmList = calendarService.myAlarm(member.getNum(), today);
+		// friend alarm list
+		List<EventAlarmDto> fAlarmList = calendarService.friendAlarm(member.getNum(), today);
 
 		// friends list
 		List<Friend> friendsList = friendService.friendship(member.getNum());
@@ -109,6 +111,7 @@ public class AliceController {
 
 		model.addAttribute("dto", new SearchEventFormDto());
 		model.addAttribute("alarmList", alarmList);
+		model.addAttribute("fAlarmList", fAlarmList);
 		model.addAttribute("list", obj.toString());
 		model.addAttribute("friendsList", friendsDtoList);
 		CalendarFormDto dto = new CalendarFormDto();
@@ -148,7 +151,7 @@ public class AliceController {
 			jObj.put("title", event.getContent());
 			jObj.put("mine", true);
 		} else {
-			jObj.put("title", member.getName() + " 💬 " + event.getContent());
+			jObj.put("title", event.getMember().getName() + " 💬 " + event.getContent());
 			jObj.put("friendId", event.getMember().getId());
 			jObj.put("mine", false);
 		}

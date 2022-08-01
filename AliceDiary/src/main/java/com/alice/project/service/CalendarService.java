@@ -7,11 +7,15 @@ import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.ArrayUtils;
 
+import com.alice.project.controller.AliceController;
 import com.alice.project.domain.Calendar;
+import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.event.AliceCreatedEvent;
 import com.alice.project.repository.CalendarRepository;
+import com.alice.project.repository.FriendRepository;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.web.AlarmMemberListDto;
 import com.alice.project.web.CalendarFormDto;
@@ -29,6 +33,7 @@ public class CalendarService {
 	private final CalendarRepository calendarRepository;
 	private final MemberRepository memberRepository;
 	private final ApplicationEventPublisher eventPublisher; // for notification
+	private final FriendRepository friendRepository;
 
 	@Transactional
 	public Calendar addEvent(CalendarFormDto dto, Member m) {
@@ -59,7 +64,7 @@ public class CalendarService {
 		calendarRepository.deleteById(id);
 	}
 
-	public List<EventAlarmDto> alarm(Long num, LocalDate today) {
+	public List<EventAlarmDto> myAlarm(Long num, LocalDate today) {
 		List<Calendar> calList = calendarRepository.getAlarmEvents(num, today);
 		List<EventAlarmDto> result = new ArrayList<EventAlarmDto>();
 		for (Calendar c : calList) {
@@ -83,6 +88,34 @@ public class CalendarService {
 			}
 			result.add(tmp);
 		}
+		return result;
+	}
+
+	public List<EventAlarmDto> friendAlarm(Long num, LocalDate today) {
+		// 친구 목록 가져옴
+		Member me = memberRepository.findByNum(num);
+		List<Friend> fList = friendRepository.weAreFriend(me.getNum());
+		List<EventAlarmDto> result = new ArrayList<EventAlarmDto>();
+
+		// 친구들의 일정 중 내가 포함된 일정 찾기
+		for (Friend f : fList) {
+			Member friend = memberRepository.findByNum(f.getMember().getNum());
+			List<Calendar> calList = calendarRepository.findFriendEvents(friend.getNum(), today, today.plusDays(7));
+			if (calList != null) {
+				for (Calendar c : calList) {
+					if (c.getMemberList().length() != 0
+							&& ArrayUtils.contains(c.getMemberList().split(","), "" + me.getNum())) {
+						EventAlarmDto tmp = new EventAlarmDto();
+						tmp.setContent(c.getContent());
+						tmp.setStartDate(c.getStartDate());
+						tmp.setFId(friend.getId());
+						tmp.setFName(friend.getName());
+						result.add(tmp);
+					}
+				}
+			}
+		}
+		// 화면에 뿌리기
 		return result;
 	}
 

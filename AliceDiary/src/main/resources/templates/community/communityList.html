@@ -12,9 +12,9 @@
 <div layout:fragment="content">
 	<div style="height: 15%;">
 		<h2 class="text-center m-0 pt-4">
-			#
-			<th:block th:text="${comName}"></th:block>
-			<a th:if="${#authentication.name} == ${hostMemId}"
+			<span class="text-primary"> #</span> <span class="text-primary"
+				th:text="${comName}"></span> <a
+				th:if="${#authentication.name} == ${hostMemId}"
 				th:href="@{|/community/${comNum}/manage|}" class="btn"> <img
 				th:src="@{/img/comMng.png}" style="width: 20px;"></a>
 
@@ -78,7 +78,9 @@
 						<tr th:each="post, status: ${list}">
 							<td th:text="${size - status.index-(nowPage-1)*list.size}" />
 							<td><a th:text="${post.title}"
-								th:href="@{|/community/${comNum}/get/${post.num}|}"></a></td>
+								th:href="@{|/community/${comNum}/get/${post.num}|}"></a><span
+								th:if="${countReply[status.index] != 0}"
+								th:text="|(${countReply[status.index]})|"></span></td>
 							<td th:text="${post.member.name}"></td>
 							<td
 								th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>

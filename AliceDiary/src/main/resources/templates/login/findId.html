@@ -2,6 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" class="h-100">
 <head>
 <meta charset="UTF-8">
+
+<!-- favicon -->
+<link rel="icon" th:href="@{/img/favicon.ico}" />
+
 <title>Alice Diary</title>
 
 <!-- bootstrap 4 -->
@@ -51,7 +55,7 @@
 							</div>
 
 							<div class="form-outline mb-3">
-								<label class="form-label">이름 : </label> <input type="text"
+								<label class="form-label">닉네임 : </label> <input type="text"
 									name="name" id="name" class="form-control" />
 							</div>
 							<div class="form-outline mb-3">
@@ -78,8 +82,8 @@
 								</div>
 							</div>
 							<div class="m-3">
-								<button type="button" class="btn btn-secondary">로그인</button>
-								<button type="button" class="btn btn-secondary">비밀번호 찾기</button>
+								<input type="button" class="btn btn-secondary" onclick="location.href='../'" value="로그인">
+								<input type="button" class="btn btn-secondary" onclick="location.href='./findPwd'" value="비밀번호 찾기">
 							</div>
 						</div>
 					</div>

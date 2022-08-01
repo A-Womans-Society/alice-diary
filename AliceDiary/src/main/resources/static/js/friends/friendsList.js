@@ -54,7 +54,7 @@ document.addEventListener('keydown', function(event) {
                      let mbti = result.mbti;
                      let target = result.name;
                      if (target === 'noFriend') {
-                     	document.getElementById("memberInfo").innerText = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
+                     	document.getElementById("memberInfo").innerHTML = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
                     	document.getElementById("checkSearch").value = false;
                      } else {
                      	
@@ -91,7 +91,7 @@ document.addEventListener('keydown', function(event) {
                          
                     }
                  } else {
-                     document.getElementById("memberInfo").innerText = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
+                     document.getElementById("memberInfo").innerHTML = "<div class='d-flex justify-content-center align-items-center h-100'>일치하는 회원이 없습니다.</div>";
                      document.getElementById("checkSearch").value = false;
                  }
              } else {
@@ -121,7 +121,7 @@ document.addEventListener('keydown', function(event) {
                 } else {
                    let resultHtml = "";
                    for (let idx in result) {
-                      resultHtml += "<tr><td>"+(Number(idx)+1)+"</td><td><a href='/AliceDiary/friends/friendInfo/"+result[idx].id+"'>"+result[idx].name+"</a></td><td>"+result[idx].mobile+"</td><td>"+result[idx].birth+"</td><td>"+result[idx].gender+"</td><td>"+result[idx].email+"</td><td>"+result[idx].groupName+"</td><td><a href='/AliceDiary/friends/friendInfo/"+result[idx].id+"'>친구관리</a></td></tr>";
+                      resultHtml += "<tr><td>"+(Number(idx)+1)+"</td><td>"+result[idx].name+"</td><td>"+result[idx].mobile+"</td><td>"+result[idx].birth+"</td><td>"+result[idx].gender+"</td><td>"+result[idx].email+"</td><td>"+result[idx].groupName+"</td><td><a href='/AliceDiary/friends/friendInfo/"+result[idx].id+"'><input type='button' class='btn btn-dark' value='정보'></a></td></tr>";
                    }
                    document.getElementById("friendsBody").innerHTML=resultHtml;               
                 }

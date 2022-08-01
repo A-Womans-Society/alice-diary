@@ -1,5 +1,6 @@
 package com.alice.project.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -42,15 +43,10 @@ import lombok.extern.slf4j.Slf4j;
 public class PostController {
 
 	private final PostService postService;
-
 	private final AttachedFileService attachedFileService;
-
 	private final MemberService memberService;
-
 	private final ReplyService replyService;
-
 	private final ReportService reportService;
-
 	private final NotificationRepository notificationRepository;
 
 	// 글쓰기
@@ -83,18 +79,29 @@ public class PostController {
 			@AuthenticationPrincipal UserDetails user,
 			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
 
-		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
-
 		String keyword = postSearchDto.getKeyword();
 		Long size = 0L;
 		Page<Post> list = null;
+		List<Long> countReply = new ArrayList<Long>();
 
 		if (keyword == null) {
 			list = postService.list(pageable);
 			size = list.getTotalElements();
+			for (Post p : list) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
+
 		} else {
 			list = postService.searchList(postSearchDto, pageable);
 			size = list.getTotalElements();
+			for (Post p : list) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
+
 		}
 
 		int nowPage = list.getPageable().getPageNumber() + 1;
@@ -114,9 +121,9 @@ public class PostController {
 			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
 		}
 
+		model.addAttribute("countReply", countReply);
 		model.addAttribute("list", list);
 		model.addAttribute("size", size);
-		log.info("size : " + size);
 		model.addAttribute("nowPage", nowPage);
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
@@ -124,11 +131,8 @@ public class PostController {
 		model.addAttribute("type", postSearchDto.getType());
 		Member mb = memberService.findById(user.getUsername());
 		model.addAttribute("member", mb);
-        long count = notificationRepository.countByMemberAndChecked(mb, false);
-        model.addAttribute("hasNotification", count > 0);
-		log.info("nowPage:" + nowPage);
-		log.info("startPage:" + startPage);
-		log.info("endPage:" + endPage);
+      		 long count = notificationRepository.countByMemberAndChecked(mb, false);
+        		model.addAttribute("hasNotification", count > 0);
 
 		return "community/list";
 	}

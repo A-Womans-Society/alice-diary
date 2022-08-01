@@ -7,85 +7,110 @@
 <th:block layout:fragment="css">
 </th:block>
 
-<div layout:fragment="content">
-	<div class="container-fluid h-100">
-		<div class="row h-100">
-			<div class="col-12 h-100">
-				<h2 class="text-center m-0 pt-5" style="height: 15%;">신고 내용</h2>
-				<h5 class="text-center m-0 pt-5" style="height: 20%;">회원들의 게시물과
-					댓글에 대한 신고를 확인할 수 있습니다.</h5>
-
-				<!--/* 회원상세보기 영역 */-->
-				<div class="container">
-					<div>
-						<!--/* 회원 정보 Rendering 영역 */-->
-						<th:block th:each="r : ${report}">
-							<p th:text="|신고번호 : ${r.num}|"></p>
-							<p>
-								신고자 닉네임 : <a th:href="@{'/admin/member/'+${report.member.id}}">
-									<span th:text="${report.member.name}"></span>
-								</a>
-							</p>
-							<p>
-								신고대상자 닉네임 :
-								<th:block th:if="${#strings.equals(report.reportType, 'REPLY')}">
-									<a th:href="@{'/admin/member/'+${report.reply.member.id}}">
-										<span th:text="${report.reply.member.name}"></span>
-									</a>
-								</th:block>
-								<th:block th:if="${#strings.equals(report.reportType, 'POST')}">
-									<a th:href="@{'/admin/member/'+${report.post.member.id}}">
-										<span th:text="${report.post.member.name}"></span>
-									</a>
-								</th:block>
-							</p>
-							<p
-								th:text="|신고일자 : ${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}|"></p>
-							<p th:text="|신고사유 : ${report.reportReason}|"></p>
-							<p th:text="|신고내용 : ${report.content}|"></p>
-							<p th:text="|신고종류 : ${report.reportType}|"></p>
-							<p>
-								<th:block th:if="${#strings.equals(report.reportType, 'POST')}">
-									<th:block
-										th:if="${#strings.equals(report.post.postType, 'OPEN')}">
-										<a th:href="@{'/admin/open/get?num='+${report.post.num}}">해당
-											게시물 링크</a>
-									</th:block>
-									<th:block
-										th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
-										<a th:href="@{'/admin/community/get?num='+${report.post.num}}">해당
-											게시물 링크</a>
-									</th:block>
-								</th:block>
-								<th:block th:if="${#strings.equals(report.reportType, 'REPLY')}">
-									<th:block
-										th:if="${#strings.equals(report.reply.post.postType, 'OPEN')}">
-										<a
-											th:href="@{'/admin/open/get?num='+${report.reply.post.num}}">해당
-											댓글 링크</a>
-									</th:block>
-									<th:block
-										th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">
-										<a
-											th:href="@{'/admin/community/get?num='+${report.reply.post.num}}">해당
-											댓글 링크</a>
-									</th:block>
-								</th:block>
-							</p>
-						</th:block>
-					</div>
-				</div>
-			</div>
-			<div class='text-right'>
-				<a th:href="@{/admin/reports}"><input type="button" class="btn"
-					value="목록"></a>
-			</div>
-
-		</div>
-	</div>
-</div>
 <th:block layout:fragment="script">
 	<script th:src="@{https://code.jquery.com/jquery-1.11.3.js}"></script>
 	<script th:src="@{/js/admin/reportList.js}"></script>
 </th:block>
+
+<div layout:fragment="content">
+	<div style="height: 17%;">
+		<h2 class="text-center m-0 pt-5">
+			신고 내용 <span class="text-primary">#</span><span class="text-primary"
+				th:text="${report.num}"></span>
+		</h2>
+		<h6 class="text-center">게시물/댓글에 대한 신고를 확인할 수 있습니다.</h6>
+	</div>
+
+	<!--/* 회원상세보기 영역 */-->
+	<div class="row justify-content-center pt-3">
+		<div class="col-5">
+			<h4 class="m-0 p-2" style="background: #dfdce3; border-radius: 8px;">신고자</h4>
+			<table class="table">
+				<tr>
+					<td rowspan="3"><img
+						th:src="@{/upload/profile/}+@{${reporter.profileImg}}" width="60%"
+						class="rounded-circle"></td>
+					<th>닉네임</th>
+					<td><a th:href="@{'/admin/member/'+${reporter.id}}"> <span
+							th:text="${reporter.name}"></span>
+					</a></td>
+				</tr>
+				<tr>
+					<th>신고 횟수</th>
+					<td th:text="${reporter.reportCnt}"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-5">
+			<h4 class="m-0 p-2" style="background: #dfdce3; border-radius: 8px;">신고
+				대상자</h4>
+			<table class="table">
+				<tr>
+					<td rowspan="3"><img
+						th:src="@{/upload/profile/}+@{${target.profileImg}}" width="60%"
+						class="rounded-circle"></td>
+					<th>닉네임</th>
+					<td><a th:href="@{'/admin/member/'+${target.id}}"> <span
+							th:text="${target.name}"></span>
+					</a></td>
+				</tr>
+				<tr>
+					<th>신고 횟수</th>
+					<td th:text="${target.reportCnt}"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="row justify-content-center pt-3">
+		<div class="col-10">
+			<table class="table table-bordered">
+				<tr>
+					<th>신고 일자</th>
+					<td
+						th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}"></td>
+					<th>신고 종류</th>
+					<td th:text="${report.content}"></td>
+				</tr>
+				<tr>
+					<th>신고 내용</th>
+					<td><textarea th:text="${report.content}"
+							style="resize: none; border: none;" readonly="readonly"
+							class="w-100" rows="5"></textarea></td>
+					<th>신고 사유</th>
+					<td th:text="${report.reportReason}"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class='text-center'>
+		<th:block th:if="${#strings.equals(report.reportType, 'POST')}">
+			<th:block th:if="${#strings.equals(report.post.postType, 'OPEN')}">
+				<a th:href="@{'/admin/open/get?num='+${report.post.num}}"><input
+					type="button" class="btn btn-dark" value="해당
+				게시물 링크"></a>
+			</th:block>
+			<th:block th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
+				<a th:href="@{'/admin/community/get?num='+${report.post.num}}"><input
+					type="button" class="btn btn-dark" value="해당
+				게시물 링크"></a>
+			</th:block>
+		</th:block>
+		<th:block th:if="${#strings.equals(report.reportType, 'REPLY')}">
+			<th:block
+				th:if="${#strings.equals(report.reply.post.postType, 'OPEN')}">
+				<a th:href="@{'/admin/open/get?num='+${report.reply.post.num}}"><input
+					type="button" class="btn btn-dark" value="해당
+				댓글 링크"></a>
+			</th:block>
+			<th:block
+				th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">
+				<a th:href="@{'/admin/community/get?num='+${report.reply.post.num}}"><input
+					type="button" class="btn btn-dark" value="해당
+				댓글 링크"></a>
+			</th:block>
+		</th:block>
+		<a th:href="@{/admin/reports}"><input type="button"
+			class="btn btn-dark" value="목록"></a>
+	</div>
+</div>
 </html>

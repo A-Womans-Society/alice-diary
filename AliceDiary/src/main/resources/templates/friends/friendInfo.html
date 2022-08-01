@@ -4,12 +4,17 @@
 	layout:decorate="~{layouts/friendInfoLayout}">
 
 <th:block layout:fragment="css">
+	<!-- bootstrap-select -->
+	<link rel="stylesheet"
+		th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css}">
 	<link rel="stylesheet" th:href="@{/css/profile/myProfile.css}" />
 </th:block>
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/friends/friendsGroup.js}"></script>
-	<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+	<!-- bootstrap-select -->
+	<script
+		th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js}"></script>
 </th:block>
 
 <div layout:fragment="content">
@@ -94,7 +99,7 @@
 
 	<!-- Modal -->
 	<div class="modal" tabindex="-1" role="dialog" id="changeGroup">
-		<div class="modal-dialog modal-dialog-centered modal-lg"
+		<div class="modal-dialog modal-dialog-centered"
 			role="document">
 			<div class="modal-content">
 				<div class="modal-header" style="align-items: baseline;">
@@ -107,11 +112,12 @@
 				</div>
 				<form th:action="@{/friends/changeGroup}" th:object="${friendsDto}"
 					method="post">
-					<div class="modal-body">
+					<div class="modal-body d-flex justify-content-center">
 						<div>
-							그룹 선택 <select id="optionGroup" th:field="*{groupNum}">
+							그룹 선택 <select id="optionGroup"
+								th:field="*{groupNum}" style="background: darkgray;"
+								class="selectpicker" data-live-search="true">
 								<option value="none">====그룹 선택====</option>
-								<option value="기본그룹" selected>기본그룹</option>
 								<option th:each="fg :${myFriendGroup}" th:value="${fg.num}"
 									th:text="${fg.groupName}">
 							</select>
@@ -121,7 +127,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btnbtn-dark" value="그룹 변경">
+						<input type="submit" class="btn btn-dark" value="그룹 변경">
 					</div>
 					<input type="hidden" id="checkSearch" value="false">
 				</form>

@@ -475,9 +475,8 @@ public class AdminPostController {
 //		model.addAttribute("creatorId", creatorId);
 
 		String[] memIdList = null;
-		if (memberListToStr != null) {
+		if (memberListToStr != null && !memberListToStr.isEmpty()) {
 			memIdList = memberListToStr.split(",");
-		}
 //		List<String> memNameList = new ArrayList<>();
 		Map<String, String> memberMap = new HashMap<String, String>();
 		for (String id : memIdList) {

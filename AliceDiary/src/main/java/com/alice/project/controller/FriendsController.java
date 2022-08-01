@@ -80,6 +80,10 @@ public class FriendsController {
 
 		for (Friend f : friendList) {
 			Member m = memberService.findByNum(f.getAddeeNum());
+			log.info("status : " + m.getStatus());
+			if (m.getStatus() == Status.USER_OUT) {
+				continue;
+			}
 			String groupName = friendsGroupService.getGroupName(f.getGroupNum());
 			FriendshipDto dto = new FriendshipDto(m.getNum(), m.getId(), m.getName(), m.getMobile(), m.getBirth(),
 					m.getGender(), m.getEmail(), groupName);

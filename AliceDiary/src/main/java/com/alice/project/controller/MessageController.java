@@ -339,6 +339,7 @@ public class MessageController {
 		msgList = messageService.findUserMsg(num);
 		if (msdto.getType().equals("name")) { // id로 검색할 경우
 			if (msgList == null) { return "message/msgList"; }
+
 			for (Message m : msgList) {
 				if (num == m.getUser1Num()) {
 					if (m.getMsgStatus() < 2) { continue; }

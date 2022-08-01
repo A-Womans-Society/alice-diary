@@ -13,39 +13,80 @@
 
 <div layout:fragment="content">
 
-	<h1 th:text="${member.name} + '님의 회원정보'" align="center"></h1>
+	<h1 th:text="${person.name} + '님의 회원정보'" class="pt-4" align="center"></h1>
 
 	<!--/* 회원상세보기 영역 */-->
-	<div class="container">
-		<div>
-			<!--/* 회원 정보 Rendering 영역 */-->
-			<th:block th:each="member : ${member}">
-				<p th:text="|회원번호 : ${member.num}|"></p>
-				<p>
-					프로필 사진 <img th:src="@{/upload/profile/}+@{${member.profileImg}}"
-						alt="user" width="45" class="rounded-circle">
-				</p>
-				<p th:text="|아이디 : ${member.id}|"></p>
-				<!-- 				<p th:text="|비밀번호 : ${member.password}|"></p> -->
-				<p th:text="|이름 : ${member.name}|"></p>
-				<p th:text="|성별 : ${member.gender}|"></p>
-				<p th:text="|생년월일 : ${member.birth}|"></p>
-				<p th:text="|전화번호 : ${member.mobile}|"></p>
-				<p th:text="|이메일 : ${member.email}|"></p>
-				<p th:text="|MBTI : ${member.mbti}|"></p>
-				<p th:text="|위시리스트 : ${member.wishlist}|"></p>
-				<p th:text="|신고 누적횟수 : ${member.reportCnt}|"></p>
-				<p th:text="|가입일자 : ${member.regDate}|"></p>
-				<p th:text="|회원상태 : ${member.status}|"></p>
-				<p>
-					<button th:if="${member.getStatus().toString().equals('USER_IN')}"
-						th:onclick="deleteMember([[${member.num}]])" type="button">내보내기</button>
-					<button th:if="${member.getStatus().toString().equals('USER_OUT')}"
-						th:onclick="returnMember([[${member.num}]])" type="button">탈퇴상태</button>
-					<button th:if="${member.getStatus().toString().equals('ADMIN')}"
-						type="button">관리자</button>
-				</p>
-			</th:block>
+	<div class="row justify-content-center">
+		<div class="col-4">
+			<p class="text-center">
+				<img th:src="@{/upload/profile/}+@{${person.profileImg}}" alt="user"
+					width="60%" class="rounded-circle">
+			</p>
+			<p>
+				아이디<input type="text" class="form-control" th:value="${person.id}"
+					readonly>
+			</p>
+
+			<p>
+				닉네임 <input type="text" class="form-control"
+					th:value="${person.name}" readonly>
+			</p>
+		</div>
+		<div class="col-5">
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">회원번호</span> <input type="text"
+					class="form-control w-75" th:value="${person.num}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">성별</span> <input type="text"
+					class="form-control w-75" th:value="${person.gender}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">생년월일</span> <input type="date"
+					class="form-control w-75" th:value="${person.birth}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">전화번호</span> <input type="text"
+					class="form-control w-75" th:value="${person.mobile}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">이메일</span> <input type="text"
+					class="form-control w-75" th:value="${person.email}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">MBTI</span> <input type="text"
+					class="form-control w-75" th:value="${person.mbti}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">신고 누적횟수</span> <input type="text"
+					class="form-control w-75" th:value="${person.reportCnt}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">가입일자</span> <input type="date"
+					class="form-control w-75" th:value="${person.regDate}"
+					readonly="readonly">
+			</p>
+			<p class="d-flex align-items-center">
+				<span class="text-center w-25">회원상태</span> <input type="text"
+					class="form-control w-75" th:value="${person.status}"
+					readonly="readonly">
+			</p>
+			<button th:if="${person.getStatus().toString().equals('USER_IN')}"
+				th:onclick="deleteMember([[${person.num}]])" class="btn btn-danger"
+				type="button">내보내기</button>
+			<button th:if="${person.getStatus().toString().equals('USER_OUT') || person.getStatus() == null}"
+				class="btn btn-dark"
+				type="button">탈퇴상태</button> <!-- th:onclick="returnMember([[${person.num}]])" -->
+			<button th:if="${person.getStatus().toString().equals('ADMIN')}"
+				class="btn btn-dark" type="button">관리자</button>
+			</p>
 
 		</div>
 	</div>

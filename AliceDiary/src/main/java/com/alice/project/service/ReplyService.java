@@ -134,4 +134,9 @@ public class ReplyService {
 
 		return replies;
 	}
+
+	// 댓글 갯수 가져오기
+	public Long getCountReply(Long postNum) {
+		return replyRepository.getCountReply(postNum);
+	}
 }

@@ -45,12 +45,12 @@
 				<th:block th:if="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div style="height: 10%;" class="text-right">
 						<button onclick="openModal()" type="button"
-							class="btn btn-primary">쪽지 보내기</button>
+							class="btn btn-dark">쪽지 보내기</button>
 					</div>
 				</th:block>
 				<th:block th:unless="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div class="text-left pl-5">
-						<button onclick="openModal()" type="button" class="btn">쪽지
+						<button onclick="openModal()" type="button" class="btn btn-dark">쪽지
 							보내기</button>
 					</div>
 				</th:block>
