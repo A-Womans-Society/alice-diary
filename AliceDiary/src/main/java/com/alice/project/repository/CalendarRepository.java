@@ -46,6 +46,6 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 	@Query("SELECT c FROM Calendar AS c WHERE calendar_num = :num")
 	Calendar findByNum(Long num);
 	
-	@Query("SELECT c FROM Calendar AS c WHERE mem_num = :num AND start_date BETWEEN :today AND :startDate")
+	@Query("SELECT c FROM Calendar AS c WHERE mem_num = :num AND start_date BETWEEN :today AND :startDate AND publicity = true")
 	List<Calendar> findFriendEvents(Long num, LocalDate today, LocalDate startDate);
 }
