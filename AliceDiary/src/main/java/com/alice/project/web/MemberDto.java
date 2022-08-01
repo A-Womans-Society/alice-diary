@@ -5,6 +5,12 @@ import java.time.LocalDate;
 import com.alice.project.domain.Gender;
 import com.alice.project.domain.Member;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter
+@NoArgsConstructor
 public class MemberDto {
 	private String id; // 회원 아이디
 	private String password; // 회원 비밀번호
