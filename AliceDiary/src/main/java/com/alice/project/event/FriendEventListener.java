@@ -28,9 +28,10 @@ public class FriendEventListener implements ApplicationListener<FriendAddEvent> 
 	private final NotificationRepository notificationRepository;
 
 	private void createNotification(Friend friend, Member member, String wording, NotificationType notificationType) {
+		
 		Notification notification = new Notification();
 		notification.setTitle("친구 목록 탭에서 확인해주세요.");
-		notification.setLink("/friends");
+		notification.setLink("/member/" + friend.getMember().getId());
 		notification.setChecked(false);
 		notification.setCreatedDateTime(LocalDateTime.now());
 		notification.setWording(wording);

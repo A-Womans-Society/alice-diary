@@ -344,19 +344,35 @@ function openModalReply(replyNum, userId){
    
 }
 
-function replyReport(userId, reportReason, content) {
-   let replyNum = document.getElementById('replyTarget').value;
+function replyReport(userId) {
+    let replyNum = document.getElementById('replyTarget').value;
+   let reportReason = "";
+   let content = document.getElementById("reportRepContent").value;
+    let httpRequest = new XMLHttpRequest();
+   
+	
+   if (document.querySelector('input[name="reportReasons"]:checked') == null){
+	   alert('신고 사유를 선택해주세요.');
+   } else if (content == '') {
+		alert('신고 내용을 입력해주세요.');
+	} else {
+		reportReason = document.querySelector('input[name="reportReasons"]:checked').value;
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
-   let httpRequest = new XMLHttpRequest();
-   let param = "userId="+userId+"&replyNum="+replyNum+
-   "&reportReason="+document.querySelector('input[name="reportReasons"]:checked').value
-   +"&content="+document.getElementById("reportRepContent").value;
-   
+    let param = "userId="+userId+"&replyNum="+replyNum+
+   "&reportReason="+reportReason+"&content="+content;
+     
+    //POST로 요청
+    httpRequest.open('POST', "/AliceDiary/open/reportreply", true);
+    httpRequest.setRequestHeader(header,token);
+    httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    httpRequest.send(param);
+  }  
     httpRequest.onreadystatechange = function(){
        if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
                 let result = JSON.parse(httpRequest.response);
+            
             document.getElementById("reportRepContent").value = "";
             var radio = document.querySelector('input[type=radio][name=reportReasons]:checked');
             radio.checked = false;
@@ -369,11 +385,6 @@ function replyReport(userId, reportReason, content) {
       }
    };
 
-    //POST로 요청
-    httpRequest.open('POST', "reportreply", true);
-    httpRequest.setRequestHeader(header,token);
-    httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    httpRequest.send(param);
 
 }
 

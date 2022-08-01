@@ -49,7 +49,9 @@ public class ReplyEventListener implements ApplicationListener<ReplyCreatedEvent
 		Member replier = reply.getMember();
 		Member member = reply.getPost().getMember();
 		if (member.isReplyCreated()) {
-			createNotification(reply, member, replier.getName() + "님이 내 글에 댓글을 달았습니다.", NotificationType.REPLY);
+			if (replier.getNum() != member.getNum()) {
+				createNotification(reply, member, replier.getName() + "님이 내 글에 댓글을 달았습니다.", NotificationType.REPLY);				
+			}
 		}
 	}
 

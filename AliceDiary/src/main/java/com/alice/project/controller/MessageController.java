@@ -192,7 +192,6 @@ public class MessageController {
 		List<MsgListDto> mldtos = new ArrayList<>();
 		Long receiverNum = 0L;
 		for (Message m : msgListAll) {
-//		         receiverNum = m.getUser1Num() == num ? m.getUser2Num() : m.getUser1Num(); 
 			if (fromNum == m.getUser1Num()) { // user1Num이 사용자라면 (2, 3만 보여야 함)
 				if (m.getMsgStatus() < 2) { // 0, 1
 					continue;
