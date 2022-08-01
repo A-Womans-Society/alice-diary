@@ -31,7 +31,7 @@ public class ReplyEventListener implements ApplicationListener<ReplyCreatedEvent
 		notification.setTitle("커뮤니티 탭에서 확인하세요.");
 		PostType pt = reply.getPost().getPostType();
 		if (pt.equals(PostType.OPEN)) {
-			notification.setLink("/open/list"); // 공개게시판 댓글일 경우
+			notification.setLink("/open/get?num=" + reply.getPost().getNum()); // 공개게시판 댓글일 경우
 		} else if (pt.equals(PostType.CUSTOM)) {
 			notification.setLink("/community/" + reply.getPost().getCommunity().getNum() + "/list"); // 개별 커뮤니티 댓글일 경우			
 		}
