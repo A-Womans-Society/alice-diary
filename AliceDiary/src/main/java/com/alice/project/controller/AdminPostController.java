@@ -469,15 +469,12 @@ public class AdminPostController {
 		String memberListToStr = community.getMemberList();
 
 		model.addAttribute("community", community);
-//		model.addAttribute("comName", comName);
-//		model.addAttribute("comDescription", comDescription);
-//		model.addAttribute("creatorName", creatorName);
-//		model.addAttribute("creatorId", creatorId);
 
 		String[] memIdList = null;
 		if (memberListToStr != null && !memberListToStr.isEmpty()) {
 			memIdList = memberListToStr.split(",");
-//		List<String> memNameList = new ArrayList<>();
+		}
+
 		Map<String, String> memberMap = new HashMap<String, String>();
 		for (String id : memIdList) {
 			memberMap.put(id, memberService.findById(id).getName());
