@@ -4,6 +4,9 @@
 <head>
 <meta charset="UTF-8">
 
+<!-- favicon -->
+<link rel="icon" th:href="@{/img/favicon.ico}" />
+
 <title>Alice Diary</title>
 
 <!-- ajax token -->
@@ -45,10 +48,7 @@
 	<!-- import header -->
 	<div th:replace="fragments/header::header"></div>
 	<div style="height: 92%;" class="container-fluid">
-		<div class="row">
-			<!-- import sidebar -->
-			<!-- 			<div th:replace="fragments/sidebar::sidebar" class="col-3"></div> -->
-			<!-- import content -->
+		<div class="row justify-content-center h-100">
 			<div layout:fragment="content" class="col-9"></div>
 		</div>
 	</div>
