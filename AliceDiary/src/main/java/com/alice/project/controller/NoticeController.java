@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alice.project.domain.AttachedFile;
+import com.alice.project.domain.Member;
 import com.alice.project.domain.Post;
 import com.alice.project.domain.Reply;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.PostService;
@@ -43,6 +45,7 @@ public class NoticeController {
 	private final MemberService memberService;
 	private final AttachedFileService attachedFileService;
 	private final ReplyService replyService;
+	private final NotificationRepository notificationRepository;
 
 	/* 공지사항 목록 */
 	@GetMapping("/list")
@@ -54,7 +57,8 @@ public class NoticeController {
 		Page<Post> notices = null;
 		String type = postSearchDto.getType();
 		String keyword = postSearchDto.getKeyword();
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		model.addAttribute("type", type);
 		model.addAttribute("keyword", keyword);
 
@@ -87,6 +91,8 @@ public class NoticeController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
+        long count = notificationRepository.countByMemberAndChecked(mb, false);
+        model.addAttribute("hasNotification", count > 0);
 
 		return "/notice/noticeList";
 	}

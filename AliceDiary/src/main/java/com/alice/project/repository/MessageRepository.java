@@ -14,5 +14,9 @@ public interface MessageRepository
 
 	/* 모든 메시지 반환 */
 	List<Message> findAll();
+	
+	Message findByNum(Long num);
+	
+	String findByUser1Num(Long user1Num);
 
 }

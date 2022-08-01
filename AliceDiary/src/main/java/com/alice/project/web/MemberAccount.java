@@ -3,16 +3,16 @@ package com.alice.project.web;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.alice.project.domain.Member;
 
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Getter 
 public class MemberAccount extends User {
 
 	private static final long serialVersionUID = 1L;
@@ -30,5 +30,15 @@ public class MemberAccount extends User {
 		super(member.getId(), member.getPassword(), authorities);
 		this.member = member;
 	}
+	
+//	public MemberAccount(Member member) {
+//		super(member.getId(), member.getPassword(), MemberAccount.createAuthor());
+//		this.member = member;
+//	}
+//	
+//	public static MemberAccount memberAccount(SecurityContextHolder sch) {
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		return (MemberAccount) authentication.getPrincipal();
+//	}
 
 }

@@ -21,6 +21,7 @@ import com.alice.project.domain.Member;
 import com.alice.project.domain.Report;
 import com.alice.project.domain.ReportType;
 import com.alice.project.domain.Suggestion;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.PostService;
@@ -44,6 +45,7 @@ public class AdminController {
 	private final SuggestionService suggestionService;
 	private final PostService postService;
 	private final AttachedFileService attachedFileService;
+	private final NotificationRepository notificationRepository;
 
 	// 회원관리
 	/* 회원 목록 */
@@ -54,7 +56,8 @@ public class AdminController {
 			Long num) {
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 
 		Page<Member> members = null;
 
@@ -93,7 +96,8 @@ public class AdminController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
-
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 		return "/admin/memberList";
 	}
 
@@ -101,7 +105,6 @@ public class AdminController {
 	@GetMapping(value = "/member/{id}")
 	public String showMemberOne(@PathVariable("id") String id, Model model, @AuthenticationPrincipal UserDetails user) {
 		Member userInfo = memberService.findById(id);
-//      Member member = memberService.findOne(num);
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 		model.addAttribute("person", userInfo);
 		return "/admin/memberDetail";
@@ -133,16 +136,8 @@ public class AdminController {
 			@ModelAttribute("searchDto") SearchDto searchDto, Model model, Long num,
 			@AuthenticationPrincipal UserDetails user) {
 		Page<Report> reports = reportService.findReports(pageable);
-		model.addAttribute("member", memberService.findById(user.getUsername()));
-
-//		for (Report r : reports) {
-//			//log.info("r.getReply() : " + r.getReply().toString());
-//			r.get
-//			r.setReply(null)
-//			Long replyNum = r.getReply().getNum();
-//			Post post = replyService.getPostByReplyNum(replyNum);
-//			r.getReply().setPost(post);
-//		}
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
@@ -187,6 +182,9 @@ public class AdminController {
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
 
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
+
 		return "/admin/reportList";
 	}
 
@@ -213,7 +211,8 @@ public class AdminController {
 			@ModelAttribute("searchDto") SearchDto searchDto, Model model, Long num,
 			@AuthenticationPrincipal UserDetails user) {
 		Page<Suggestion> suggestions = null;
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		String type = searchDto.getType();
 		String keyword = searchDto.getKeyword();
 
@@ -248,6 +247,8 @@ public class AdminController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 
 		return "/admin/suggestionList";
 	}

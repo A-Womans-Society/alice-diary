@@ -39,5 +39,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long>, QuerydslP
 
 	@Query("SELECT m FROM Friend AS m WHERE friend_num = :num")
 	Long findByFriendNum(Long num);
+	
+	// 알림 때문에 추가한 쿼리
+	@Query("SELECT m FROM Friend AS m WHERE friend_num = :num")
+	Friend searchByFriendNum(Long num);
 
 }

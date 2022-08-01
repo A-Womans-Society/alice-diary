@@ -3,7 +3,7 @@
 	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
 
 <div th:fragment="sidebar" class="col-2 h-100 pt-5 pb-5">
-	<div class="border-right pr-3 h-100">
+	<div class="border-right pr-3 h-100" th:if="${!#strings.equals(#authentication.name, 'admin')}">
 		<div class="text-right pb-3">
 			<input type="button" onclick="location.href='/AliceDiary/community/create'"
 				value="커뮤니티 추가하기" class="btn btn-md">

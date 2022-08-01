@@ -92,5 +92,5 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
 	Member findAllById(String[] members);
 	
 	List<Member> findByNameContaining(String keyword);
-
+	
 }

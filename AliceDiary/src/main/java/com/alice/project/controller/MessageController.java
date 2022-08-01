@@ -23,6 +23,7 @@ import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Message;
 import com.alice.project.handler.Alert;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.MessageService;
@@ -44,6 +45,8 @@ public class MessageController {
 	private final MessageService messageService;
 	private final MemberService memberService;
 	private final FriendService friendService;
+	private final NotificationRepository notificationRepository;
+
 
 	// 쪽지 목록 보기
 	@GetMapping(value = "/messagebox/{id}")
@@ -58,7 +61,8 @@ public class MessageController {
 		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromId", id);
 		model.addAttribute("msdto", msdto);
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member host = memberService.findById(user.getUsername());
+		model.addAttribute("member", host);
 
 		// 친구목록 가져오기
 		List<Friend> friendsList = friendService.friendship(num);
@@ -132,11 +136,14 @@ public class MessageController {
 			}
 		} else if (type == null || keyword == null) {
 			model.addAttribute("mldtos", mldtos);
+	        long count = notificationRepository.countByMemberAndChecked(host, false);
+	        model.addAttribute("hasNotification", count > 0);
 			return "message/msgList";
 		}
 
 		model.addAttribute("mldtos", mldtos);
-
+        long count = notificationRepository.countByMemberAndChecked(host, false);
+        model.addAttribute("hasNotification", count > 0);
 		return "message/msgList";
 	}
 
@@ -159,8 +166,9 @@ public class MessageController {
 		model.addAttribute("toNum", toNum);
 		model.addAttribute("toId", toId);
 		model.addAttribute("mdto", mdto);
-		model.addAttribute("member", memberService.findById(user.getUsername()));
-
+		Member host = memberService.findById(user.getUsername());
+		model.addAttribute("member", host);
+		
 		// 쪽지목록도 가져오기!!
 		// 친구목록 가져오기
 		List<Friend> friendsList = friendService.friendship(fromNum);
@@ -215,7 +223,8 @@ public class MessageController {
 		model.addAttribute("receiverNum", receiverNum);
 		model.addAttribute("mldtos", mldtos);
 		model.addAttribute("fromNum", fromNum);
-		
+        long count = notificationRepository.countByMemberAndChecked(host, false);
+        model.addAttribute("hasNotification", count > 0);
 		return "message/msgList";
 	}
 
@@ -320,8 +329,6 @@ public class MessageController {
 		Long num = messageService.findNumById(id); // tester의 userNum = 1
 		model.addAttribute("member", memberService.findById(user.getUsername()));
 
-		log.info("사용자 id : " + id);
-		log.info("사용자 num : " + num);
 		model.addAttribute("mdto", mdto);
 		model.addAttribute("fromId", id);
 		model.addAttribute("msdto", msdto);
@@ -331,19 +338,14 @@ public class MessageController {
 		Long receiverNum = 0L;
 		msgList = messageService.findUserMsg(num);
 		if (msdto.getType().equals("name")) { // id로 검색할 경우
-			if (msgList == null) {
-				return "message/msgList";
-			}
+			if (msgList == null) { return "message/msgList"; }
+
 			for (Message m : msgList) {
 				if (num == m.getUser1Num()) {
-					if (m.getMsgStatus() < 2) {
-						continue;
-					}
+					if (m.getMsgStatus() < 2) { continue; }
 					receiverNum = m.getUser2Num();
-				} else {
-					if (m.getMsgStatus() % 2 == 0) {
-						continue;
-					}
+				} else { 
+					if (m.getMsgStatus() % 2 == 0) { continue; }
 					receiverNum = m.getUser1Num();
 				}
 				MsgListDto mldto = new MsgListDto();
@@ -362,9 +364,7 @@ public class MessageController {
 				if (mldto.getMessageFromName().contains(msdto.getKeyword())
 						|| mldto.getMessageToName().contains(msdto.getKeyword())) {
 					mldtos.add(mldto);
-				} else {
-					continue;
-				}
+				} else { continue; }
 			}
 		} else if (msdto.getType().equals("content")) { // 내용으로 검색
 			for (Message m : msgList) {
@@ -372,14 +372,10 @@ public class MessageController {
 					continue;
 				} else {
 					if (num == m.getUser1Num()) {
-						if (m.getMsgStatus() < 2) {
-							continue;
-						}
+						if (m.getMsgStatus() < 2) { continue; }
 						receiverNum = m.getUser2Num();
 					} else {
-						if (m.getMsgStatus() % 2 == 0) {
-							continue;
-						}
+						if (m.getMsgStatus() % 2 == 0) { continue; }
 						receiverNum = m.getUser1Num();
 					}
 					MsgListDto mldto = new MsgListDto();
@@ -442,7 +438,8 @@ public class MessageController {
 
 		model.addAttribute("mpdtos", mpdtos);
 		model.addAttribute("size", size);
-
+        long count = notificationRepository.countByMemberAndChecked(member, false);
+        model.addAttribute("hasNotification", count > 0);
 		return "/message/pictureList";
 	}
 
@@ -478,6 +475,8 @@ public class MessageController {
 
 		model.addAttribute("mpdtos", mpdtos);
 		model.addAttribute("size", size);
+        long count = notificationRepository.countByMemberAndChecked(member, false);
+        model.addAttribute("hasNotification", count > 0);
 
 		return "/message/docList";
 	}

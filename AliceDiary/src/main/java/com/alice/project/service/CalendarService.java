@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.ArrayUtils;
@@ -12,6 +13,7 @@ import com.alice.project.controller.AliceController;
 import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
+import com.alice.project.event.AliceCreatedEvent;
 import com.alice.project.repository.CalendarRepository;
 import com.alice.project.repository.FriendRepository;
 import com.alice.project.repository.MemberRepository;
@@ -30,12 +32,17 @@ public class CalendarService {
 
 	private final CalendarRepository calendarRepository;
 	private final MemberRepository memberRepository;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 	private final FriendRepository friendRepository;
 
 	@Transactional
-	public void addEvent(CalendarFormDto dto, Member m) {
+	public Calendar addEvent(CalendarFormDto dto, Member m) {
 		Calendar cal = Calendar.createCalendar(dto, m);
-		calendarRepository.save(cal);
+		
+		Calendar result = calendarRepository.save(cal);
+		result.setMember(m); // for notification
+		this.eventPublisher.publishEvent(new AliceCreatedEvent(result));
+		return cal;
 	}
 
 	public List<Calendar> eventsList(Long num) {
