@@ -82,8 +82,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	/* 공지사항 게시판 쿼리 */
 	// 공지사항 목록 조회
-	@Query(value = "select post_num, community_num, member_num, view_cnt, content, post_date, post_type, title, update_date from Post where post_type = 'NOTICE' order by post_num desc", nativeQuery = true)
+	@Query(value = "select * from Post where post_type = 'NOTICE' order by post_num desc", nativeQuery = true)
 	Page<Post> findAllNotices(Pageable pageable);
+	//@Query(value = "select post_num, community_num, member_num, view_cnt, content, post_date, post_type, title, update_date from Post where post_type = 'NOTICE' order by post_num desc", nativeQuery = true)
 
 	// 공지사항 검색
 	@Query(value = "select * from Post where title like '%'||:title||'%' and post_type = 'NOTICE' order by post_num desc", nativeQuery = true)

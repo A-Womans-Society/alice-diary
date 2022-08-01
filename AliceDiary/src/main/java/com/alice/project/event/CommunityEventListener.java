@@ -41,6 +41,7 @@ public class CommunityEventListener implements ApplicationListener<CommunityInvi
 		notification.setMember(member);
 		notification.setNotificationType(notificationType);
 		notificationRepository.save(notification);
+		log.info("커뮤 노티 세이브~");
 	}
 
 	@Override

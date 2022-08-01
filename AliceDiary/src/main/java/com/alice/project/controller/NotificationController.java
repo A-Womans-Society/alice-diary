@@ -68,6 +68,7 @@ public class NotificationController {
 		List<Notification> newFriendNotifications = new ArrayList<>();
 		List<Notification> newCommunityNotifications = new ArrayList<>();
 		List<Notification> newReplyNotifications = new ArrayList<>();
+		List<Notification> newNoticeNotifications = new ArrayList<>();
 		
 		for (var notification : notifications) {
 			switch (notification.getNotificationType()) {
@@ -86,6 +87,9 @@ public class NotificationController {
 			case REPLY:
 				newReplyNotifications.add(notification);
 				break;
+			case NOTICE:
+				newNoticeNotifications.add(notification);
+				break;
 			}
 		}
 
@@ -97,5 +101,6 @@ public class NotificationController {
 		model.addAttribute("newFriendNotifications", newFriendNotifications);
 		model.addAttribute("newCommunityNotifications", newCommunityNotifications);
 		model.addAttribute("newReplyNotifications", newReplyNotifications);
+		model.addAttribute("newNoticeNotifications", newNoticeNotifications);
 	}
 }

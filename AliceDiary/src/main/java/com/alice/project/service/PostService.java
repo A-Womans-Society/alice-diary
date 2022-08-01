@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Post;
+import com.alice.project.domain.PostType;
+import com.alice.project.event.PostCreatedEvent;
 import com.alice.project.repository.AttachedFileRepository;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.PostRepository;
@@ -32,11 +35,16 @@ public class PostService {
 	private final MemberRepository memberRepository;
 	private final AttachedFileRepository attachedFileRepository;
 	private final ReplyRepository replyRepository;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 
 	// 글쓰기
 	@Transactional
 	public Post write(Post post) {
-		return postRepository.save(post);
+		Post result = postRepository.save(post);
+		if (post.getPostType().equals(PostType.NOTICE)) { // 공지사항 등록 시 알림 설정
+			this.eventPublisher.publishEvent(new PostCreatedEvent(result));
+		}
+		return result;
 	}
 
 	// 글번호로 post객체 하나 찾기

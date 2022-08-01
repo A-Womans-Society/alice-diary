@@ -31,18 +31,21 @@ public class MessageEventListener implements ApplicationListener<MessageCreatedE
 		Notification notification = new Notification();
 		Long dir = message.getDirection();
 		String senderName = "";
-		String receiverId = "";
+		String senderId = "";
+//		String receiverId = "";
 		if (dir == 0) {
 			Member m = memberRepository.findByNum(message.getUser1Num()); // 보내는 사람
 			senderName = m.getName();
-			receiverId = memberRepository.findByNum(message.getUser2Num()).getId();
+			senderId = m.getId();
+//			receiverId = memberRepository.findByNum(message.getUser2Num()).getId();
 		} else if (dir == 1) {
 			Member m = memberRepository.findByNum(message.getUser2Num()); // 보내는 사람
 			senderName = m.getName();
-			receiverId = memberRepository.findByNum(message.getUser1Num()).getId();
+			senderId = m.getId();
+//			receiverId = memberRepository.findByNum(message.getUser1Num()).getId();
 		}
 		notification.setTitle("쪽지함에서 확인해주세요.");
-		notification.setLink("/messagebox/" + member.getId() + "/" + receiverId);
+		notification.setLink("/messagebox/" + member.getId() + "/" + senderId);
 		notification.setChecked(false);
 		notification.setCreatedDateTime(LocalDateTime.now());
 		notification.setWording(comment);
