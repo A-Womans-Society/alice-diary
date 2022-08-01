@@ -103,7 +103,7 @@ public class CalendarService {
 			List<Calendar> calList = calendarRepository.findFriendEvents(friend.getNum(), today, today.plusDays(7));
 			if (calList != null) {
 				for (Calendar c : calList) {
-					if (c.getMemberList().length() != 0
+					if (c.getMemberList() != null && c.getMemberList().length() != 0
 							&& ArrayUtils.contains(c.getMemberList().split(","), "" + me.getNum())) {
 						EventAlarmDto tmp = new EventAlarmDto();
 						tmp.setContent(c.getContent());

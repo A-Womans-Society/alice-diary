@@ -1,6 +1,7 @@
 package com.alice.project.controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -62,10 +63,22 @@ public class NoticeController {
 		model.addAttribute("type", type);
 		model.addAttribute("keyword", keyword);
 
+		List<Long> countReply = new ArrayList<Long>();
+		
 		if (keyword==null || type==null || keyword.isEmpty() || type.isEmpty()) {
 			notices = postService.notceList(pageable);
+			for (Post p : notices) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
 		} else {
 			notices = postService.searchNoticeList(postSearchDto, pageable); // 새로운 서비스의 메서드 사용할 예정
+			for (Post p : notices) {
+				Long cnttmp = 0L;
+				cnttmp = replyService.getCountReply(p.getNum());
+				countReply.add(cnttmp);
+			}
 		}
 
 		Long size = notices.getTotalElements();
@@ -86,6 +99,7 @@ public class NoticeController {
 			startPage = (endPage - 4 <= 0) ? 1 : endPage - 4;
 		}
 
+		model.addAttribute("countReply", countReply);
 		model.addAttribute("notices", notices);
 		model.addAttribute("nowPage", nowPage);
 		model.addAttribute("startPage", startPage);

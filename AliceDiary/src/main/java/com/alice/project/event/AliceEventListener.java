@@ -29,15 +29,17 @@ public class AliceEventListener implements ApplicationListener<AliceCreatedEvent
 
 	private void createNotification(Calendar calendar, Member member, String wording,
 			NotificationType notificationType) {
-		Notification notification = new Notification();
-		notification.setTitle("앨리스 탭에서 확인해주세요.");
-		notification.setLink("/alice/");
-		notification.setWording(wording);
-		notification.setChecked(false);
-		notification.setMember(member);
-		notification.setCreatedDateTime(LocalDateTime.now());
-		notification.setNotificationType(notificationType);
-		notificationRepository.save(notification);
+		if (calendar.getPublicity().equals(true)) { // 공개일정만 알림 보내기
+			Notification notification = new Notification();
+			notification.setTitle("앨리스 탭에서 확인해주세요.");
+			notification.setLink("/alice/");
+			notification.setWording(wording);
+			notification.setChecked(false);
+			notification.setMember(member);
+			notification.setCreatedDateTime(LocalDateTime.now());
+			notification.setNotificationType(notificationType);
+			notificationRepository.save(notification);		
+		}
 	}
 
 	@Override

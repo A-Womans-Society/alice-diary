@@ -51,14 +51,14 @@
 								<tr class="text-center">
 									<th>No.</th>
 									<th>파일이름</th>
-									<th>아이디</th>
+									<th>닉네임</th>
 									<th>주고받은 날짜</th>
 								</tr>
 							</thead>
 							<th:block th:if="${mpdtos == null || #lists.size(mpdtos) == 0}">
 								<tbody class="text-center">
 									<tr class="text-center">
-										<td colspan="5">문서파일 목록이 비었습니다</td>
+										<td colspan="4">문서파일 목록이 비었습니다</td>
 									</tr>
 								</tbody>
 							</th:block>
@@ -70,7 +70,7 @@
 										<td><a th:href="|./download/${m.fileNum}|"
 											th:text="${m.originName}"></a></td>
 										<td th:text="${m.theOtherName}"></td>
-										<tds
+										<td
 											th:text="${#temporals.format(m.sendDate, 'yyyy-MM-dd HH:mm')}">
 										</td>
 									</tr>
