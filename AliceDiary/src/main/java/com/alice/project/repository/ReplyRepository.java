@@ -39,5 +39,8 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
 	@Query(value = "select count(*) from Reply where post_num = :postNum", nativeQuery = true)
 	Long getCountReply(Long postNum);
+	
+	@Query(value = "select * from Reply where member_num = :memNum", nativeQuery = true)
+	List<Reply> selectByMemberNum(Long memNum);
 
 }

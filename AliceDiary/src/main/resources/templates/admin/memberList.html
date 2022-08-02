@@ -88,10 +88,10 @@
 
 											<button th:if="${#strings.equals(member.status, 'USER_OUT') || member.status == null}"
 												type="button"
-												class="btn btn-danger text-white">탈퇴</button>
+												class="btn btn-danger text-white" disabled="disabled">탈퇴</button>
 
 											<button th:if="${#strings.equals(member.status, 'ADMIN')}"
-												type="button" class="btn btn-info text-white">관리자</button>
+												type="button" class="btn btn-info text-white" disabled="disabled">관리자</button>
 										</td>
 									</tr>
 								</tbody>

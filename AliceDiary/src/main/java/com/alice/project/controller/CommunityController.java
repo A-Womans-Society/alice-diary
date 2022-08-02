@@ -168,12 +168,13 @@ public class CommunityController {
 		Member member = memberService.findById(user.getUsername());
 
 		Community com = Community.createCommunity(dto.getComMembers(), dto.getComName(), dto.getDescription(), member);
-
+		log.info("service create하기 전!");
 		communityService.create(com);
-		
+		log.info("service create한 후!");
 
 		// 초대장 쪽지발송
 		Long messageFromNum = member.getNum();
+		log.info("초대장 발송");
 
 		for (String f : com.getMemberList().split(",")) {
 			Long messageToNum = memberService.findNumById(f);

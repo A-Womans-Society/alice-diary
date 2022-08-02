@@ -41,22 +41,20 @@ public class CommunityEventListener implements ApplicationListener<CommunityInvi
 		notification.setMember(member);
 		notification.setNotificationType(notificationType);
 		notificationRepository.save(notification);
-		log.info("커뮤 노티 세이브~");
 	}
 
 	@Override
 	public void onApplicationEvent(CommunityInvitedEvent event) {
 		Community community = communityRepository.findByNum(event.getCommunity().getNum());
-		log.info("커뮤니티 이름 : " + community.getName());
 		String memberList = community.getMemberList();
 		if (memberList.length() != 0) {
 			List<Member> members = new ArrayList<>();
 			for (String f : memberList.split(",")) {
 				members.add(memberRepository.findById(f));
 			}
-			members.forEach(member -> {
-				if (member.isCommunityInvited()) {
-					createNotification(community, member, member.getName() + "님이 새로운 커뮤니티에 초대되었습니다!", NotificationType.COMMUNITY);
+			members.forEach(person -> {
+				if (person.isCommunityInvited()) {
+					createNotification(community, person, community.getMember().getName() + "님이 당신을 새로운 커뮤니티에 초대했습니다!", NotificationType.COMMUNITY);
 				}
 			});		
 		}

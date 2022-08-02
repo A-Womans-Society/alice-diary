@@ -234,7 +234,7 @@ public class MessageService {
 			String originName = m.getFile().getOriginName();
 			String saveNmae = m.getFile().getSaveName();
 			if (originName != null) {
-				if (originName.endsWith(".jpg") || originName.endsWith(".png") || originName.endsWith(".jpeg")) {
+				if (originName.endsWith(".jpg") || originName.endsWith(".png") || originName.endsWith(".jpeg") || originName.endsWith(".tif")) {
 					mpdto.setOriginName(originName);
 					mpdto.setSaveName(saveNmae);
 					mpdto.setSendDate(m.getSendDate());
@@ -297,7 +297,8 @@ public class MessageService {
 			String saveNmae = m.getFile().getSaveName();
 			if (originName != null) {
 				if (originName.endsWith(".txt") || originName.endsWith(".pdf") || originName.endsWith(".docx")
-						|| originName.endsWith(".hwpx")) {
+						|| originName.endsWith(".hwpx") || originName.endsWith(".xlsx") || originName.endsWith(".xls")
+						|| originName.endsWith(".pptx")) {
 					mpdto.setOriginName(originName);
 					mpdto.setSaveName(saveNmae);
 					mpdto.setSendDate(m.getSendDate());

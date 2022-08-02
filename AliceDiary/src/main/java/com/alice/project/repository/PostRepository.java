@@ -92,5 +92,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@Query(value = "select * from Post where content like '%'||:content||'%' and post_type = 'NOTICE' order by post_num desc", nativeQuery = true)
 	Page<Post> searchNoticeContent(String content, Pageable pageable);
-
+	
+	@Query(value = "select * from Post where member_num = :memNum", nativeQuery = true)
+	List<Post> selectByMemberNum(Long memNum);
 }

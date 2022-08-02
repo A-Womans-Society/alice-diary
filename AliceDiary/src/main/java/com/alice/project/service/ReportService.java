@@ -169,5 +169,24 @@ public class ReportService {
 	public void deleteReportWithPost(Long postNum) {
 		reportRepository.deleteByPostNum(postNum);
 	}
+//	
+//	@Transactional
+//	public void deleteReportWithOutMember(Long memNum) {
+//		// 탈퇴회원이 쓴 댓글에 대한 신고 지우기
+//		List<Reply> replies = replyRepository.selectByMemberNum(memNum);
+//		for (Reply r : replies) {
+//			reportRepository.deleteByPostNum(r.getNum());
+//		}	
+//		
+//		// 탈퇴회원이 쓴 게시물에 대한 신고 지우기 
+//		List<Post> posts = postRepository.selectByMemberNum(memNum);
+//		for (Post p : posts) { 
+//			reportRepository.deleteByPostNum(p.getNum());
+//		}
+//	
+//		// 탈퇴회원이 한 신고 다 지우기
+//		reportRepository.deleteByMemNum(memNum);
+//		
+//	}
 
 }

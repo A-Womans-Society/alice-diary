@@ -48,9 +48,20 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		// OAuth2 로그인 진행 시 키가 되는 필드 값 (PK)
 		String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint()
 				.getUserNameAttributeName();
-		String providerId = oAuth2UserInfo.getProviderId();
-
-		String id = provider + "_" + providerId;
+		//String providerId = oAuth2UserInfo.getProviderId();
+		String id = "";
+		// 아이디 난수로 중복없게 만들기 
+		boolean check = true;
+		while (check) {
+			Integer i = (int) (Math.random() * 100000000) +1; // 1~100000000까지의 난수 생성
+			id = provider+"_" + i; // google_83912342
+			if (memberRepository.existsById(id)) { // 아이디가 있으면 안 돼! 다시 돌려
+				continue;
+			} else { // 아이디가 없어서 쓸 수 있어
+				check = false;
+			}
+		}
+					
 		String password = passwordEncoder.encode("password");
 		String email = oAuth2UserInfo.getEmail();
 		String status = "ROLE_USER_IN";

@@ -18,7 +18,7 @@ public class CommunityInvitedEvent extends ApplicationEvent {
     	super(c);
 		this.community = c;
 		log.info("CommunityInvitedEvent 생성자");
-		log.info("c.getMember()" + c.getMember().getName());
+		log.info("c.getMember() 누구야 너 " + c.getMember().getName());
 	}
 
 }

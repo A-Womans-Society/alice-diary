@@ -94,7 +94,9 @@
 				<div
 					class="border-top border-bottom d-flex justify-content-between pt-2 pb-2"
 					style="flex-direction: column; height: 60%;">
-					<div style="overflow-y: scroll; height: 90%;"><pre style="font-family:alice;" th:text="${postView.content}"></pre></div>
+					<div style="overflow-y: scroll; height: 90%;">
+						<pre style="font-family: alice;" th:text="${postView.content}"></pre>
+					</div>
 					<div>
 						<div th:each="file : ${files}" th:if="${file.originName != null}">
 							첨부파일: <a th:href="|./download/${file.num}|"
@@ -147,21 +149,25 @@
 											</p>
 										</div>
 										<li th:if="${reply.parentRepNum} == null"
-											th:id="|replyReplyBox${reply.num}|" style="display: none;">
-											<span> <input type="text" placeholder="답글을 입력해주세요"
-												th:id="|replyReplyContent${reply.num}|">
-										</span> <span>
-												<button type="button"
-													th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button>
-										</span>
-										</li>
+											th:id="|replyReplyBox${reply.num}|" style="display: none;"><div
+												class="d-flex">
+												<span> <input type="text" placeholder="답글을 입력해주세요"
+													class="form-control rounded-0 border-2 bg-light"
+													th:id="|replyReplyContent${reply.num}|">
+												</span> <span>
+													<button type="button" class="btn "
+														th:onclick="replyReply([[${postView.num}]],[[${reply.num}]],[[${#authentication.name}]], replyReplyBox[[${reply.num}]], replyReplyContent[[${reply.num}]], parentRepContentTable[[${reply.num}]])">등록</button>
+												</span>
+											</div></li>
 									</th:block>
 								</ul>
 						</div>
 
-						<div class="card-footer commentBox">
-							<input type="text" placeholder="댓글을 입력해주세요" id="replyContent">
-							<button type="button"
+						<div class="card-footer commentBox d-flex">
+							<input type="text" placeholder="댓글을 입력해주세요" id="replyContent"
+								style="width: 85%;" required>
+							<button type="button" class="btn btn-secondary"
+								style="width: 15%;"
 								th:onclick="replySubmit([[${postView.num}]],[[${#authentication.name}]])">등록</button>
 						</div>
 					</div>

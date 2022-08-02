@@ -78,15 +78,15 @@
 						<tr th:each="report, status: ${reports}">
 							<td th:text="${size - status.index-(nowPage-1)*reports.size}"></td>
 							<td><a th:href="@{'/admin/member/'+${report.member.id}}">
-									<span th:text="${report.member.name}"></span>
+									<span th:text="${report.member.id}"></span>
 							</a></td>
 							<td th:if="${#strings.equals(report.reportType, 'REPLY')}"><a
 								th:href="@{'/admin/member/'+${report.reply.member.id}}"> <span
-									th:text="${report.reply.member.name}"></span>
+									th:text="${report.reply.member.id}"></span>
 							</a></td>
 							<td th:if="${#strings.equals(report.reportType, 'POST')}"><a
 								th:href="@{'/admin/member/'+${report.post.member.id}}"> <span
-									th:text="${report.post.member.name}"></span>
+									th:text="${report.post.member.id}"></span>
 							</a></td>
 							<td
 								th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}"></td>

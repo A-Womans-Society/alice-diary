@@ -27,12 +27,12 @@
 			<h4 class="m-0 p-2" style="background: #dfdce3; border-radius: 8px;">신고자</h4>
 			<table class="table">
 				<tr>
-					<td rowspan="3"><img
-						th:src="@{/upload/profile/}+@{${reporter.profileImg}}" width="60%"
-						class="rounded-circle"></td>
+					<td rowspan="3" class="text-center"><img
+						th:src="@{/upload/profile/}+@{${reporter.profileImg}}"
+						style="width: 106px;" class="rounded-circle"></td>
 					<th>닉네임</th>
 					<td><a th:href="@{'/admin/member/'+${reporter.id}}"> <span
-							th:text="${reporter.name}"></span>
+							th:text="${reporter.id}"></span>
 					</a></td>
 				</tr>
 				<tr>
@@ -46,12 +46,12 @@
 				대상자</h4>
 			<table class="table">
 				<tr>
-					<td rowspan="3"><img
-						th:src="@{/upload/profile/}+@{${target.profileImg}}" width="60%"
-						class="rounded-circle"></td>
+					<td rowspan="3" class="text-center"><img
+						th:src="@{/upload/profile/}+@{${target.profileImg}}"
+						style="width: 106px;" class="rounded-circle"></td>
 					<th>닉네임</th>
 					<td><a th:href="@{'/admin/member/'+${target.id}}"> <span
-							th:text="${target.name}"></span>
+							th:text="${target.id}"></span>
 					</a></td>
 				</tr>
 				<tr>
@@ -90,7 +90,8 @@
 				게시물 링크"></a>
 			</th:block>
 			<th:block th:if="${#strings.equals(report.post.postType, 'CUSTOM')}">
-				<a th:href="@{'/admin/community/get?num='+${report.post.num}}"><input
+				<a
+					th:href="@{|/community/${report.post.community.num}/get/${report.post.num}|}"><input
 					type="button" class="btn btn-dark" value="해당
 				게시물 링크"></a>
 			</th:block>
@@ -104,7 +105,8 @@
 			</th:block>
 			<th:block
 				th:if="${#strings.equals(report.reply.post.postType, 'CUSTOM')}">
-				<a th:href="@{'/admin/community/get?num='+${report.reply.post.num}}"><input
+				<a
+					th:href="@{|/community/${report.reply.post.community.num}/get/${report.reply.post.num}|}"><input
 					type="button" class="btn btn-dark" value="해당
 				댓글 링크"></a>
 			</th:block>

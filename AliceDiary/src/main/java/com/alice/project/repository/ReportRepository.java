@@ -53,5 +53,10 @@ public interface ReportRepository extends JpaRepository<Report, Long>, QuerydslP
 	@Transactional
 	@Query(value = "DELETE FROM Report WHERE post_num = :postNum", nativeQuery = true)
 	void deleteByPostNum(Long postNum);
+	
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM Report WHERE mem_num = :memNum", nativeQuery = true)
+	void deleteByMemNum(Long memNum);
 
 }

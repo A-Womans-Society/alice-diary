@@ -20,10 +20,12 @@ import com.alice.project.web.CommunityCreateDto;
 import com.alice.project.web.PostSearchDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class CommunityService {
 
 	private final CommunityRepository comRepository;
@@ -33,10 +35,11 @@ public class CommunityService {
 	// 커뮤니티 생성하기
 	@Transactional
 	public Community create(Community com) {
+		log.info("여기까지는 옴 : 커뮤 서비스");
 		Community community = comRepository.save(com);
-		
 		// for notification
 		this.eventPublisher.publishEvent(new CommunityInvitedEvent(community));
+		log.info("이벤트 퍼블리시 날려~");
 
 		return community;
 	}
