@@ -78,9 +78,6 @@
 					class="form-control w-75" th:value="${person.status}"
 					readonly="readonly">
 			</p>
-			<button th:if="${person.getStatus().toString().equals('USER_IN')}"
-				th:onclick="deleteMember([[${person.num}]])" class="btn btn-danger"
-				type="button">내보내기</button>
 			<button th:if="${person.getStatus().toString().equals('USER_OUT') || person.getStatus() == null}"
 				class="btn btn-dark"
 				type="button">탈퇴상태</button> <!-- th:onclick="returnMember([[${person.num}]])" -->

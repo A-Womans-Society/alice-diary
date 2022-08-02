@@ -1,4 +1,9 @@
-function checkId() {
+function checkId(id) {
+	var check = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+	if (check.test(id)){
+		alert("ID에는 한글을 입력할 수 없습니다.");
+	} else {
+	
 		var header = $("meta[name='_csrf_header']").attr('content');
 		var token = $("meta[name='_csrf']").attr('content');
 		var input = document.getElementById("id").value;//id값이 "id"인 입력란의 값을 저장
@@ -29,6 +34,7 @@ function checkId() {
 			document.getElementById('id_ok').style.display="none";
 			document.getElementById('id_already').style.display="none";
 		}
+}
 	};
 	
 function checkNickname() {
@@ -83,6 +89,7 @@ function checkPwd() {
 		
 	}
 }	
+
 function regSuccess() {
 		if (document.getElementById("id").value.length == 0 || 
 			document.getElementById("password").value.length <= 7 ||
@@ -100,29 +107,62 @@ function regSuccess() {
 		}else if(document.getElementById("gender").value=="none") {
 			alert("성별을 선택해주세요.");
 			return false;
-		}else {
+		}else{
 			alert("이메일에서 회원 가입 인증을 진행해주세요.");
 			return true;
 	}
 }
 	
 	
-	function regCancle() {
-		if(!confirm("가입을 취소하시겠습니까?")) {
-			return;
-		}else {
-			alert("가입이 취소되었습니다.");
-			var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
-			location = contextPath + "/";
-		}
+function regCancle() {
+	if(!confirm("가입을 취소하시겠습니까?")) {
+		return;
+	}else {
+		alert("가입이 취소되었습니다.");
+		var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
+		location = contextPath + "/";
 	}
-	
+}
 
 
-	function PreviewImage() {
-		var preview = new FileReader();
-		preview.onload = function(e) {
-			document.getElementById("profileImage").src = e.target.result;
-		};
-		preview.readAsDataURL(document.getElementById("file").files[0]);
+
+function PreviewImage() {
+	var preview = new FileReader();
+	preview.onload = function(e) {
+		document.getElementById("profileImage").src = e.target.result;
 	};
+	preview.readAsDataURL(document.getElementById("file").files[0]);
+};
+
+function existEmail(email){
+	var header = $("meta[name='_csrf_header']").attr('content');
+	var token = $("meta[name='_csrf']").attr('content');
+	console.log(email);
+	if (email.length > 0){
+		$.ajax({
+			url : './register/emailCheck', 
+			type : 'POST', //POST 방식으로 전달
+			data : {
+				email : email
+			},
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+			success : function(result) { //컨트롤러에서 넘어온 check값을 받는다
+				console.log(result);
+				if (result == 'true') {
+					$('#emailSpanNo').css("display", "none");
+					$('#emailSpanYes').css("display", "inline-block");
+					$('#checkedEmail').value="true";
+				} else {
+					$('#emailSpanYes').css("display", "none");
+					$('#emailSpanNo').css("display", "inline-block");
+					$('#checkedEmail').value="false";
+				}
+			},
+			error : function() {
+				alert("에러가 발생했습니다.");
+			}
+		});
+	}
+}

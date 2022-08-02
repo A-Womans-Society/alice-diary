@@ -10,7 +10,7 @@ function deleteMessage(fromId, toId) {
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
-   let detail = document.getElementById('detail').value;
+//   let detail = document.getElementById('detail').value;
    
    let param = "fromId=" + fromId + "&toId=" + toId;
     httpRequest.onreadystatechange = function(){
@@ -30,10 +30,10 @@ function deleteMessage(fromId, toId) {
       }
    };
 
-    if (detail == 'true') {
-    	httpRequest.open('POST', "../delete", true);
-    } else {
-	    httpRequest.open('POST', "./delete", true);
+    if (document.getElementById('detail') == null) { // 쪽지함 목록에서 삭제 누른 상태
+    	httpRequest.open('POST', "./delete", true);
+    } else if (document.getElementById('detail') != null) { // 쪽지함 상세보기에서 삭제 누른 상태
+	    httpRequest.open('POST', "../delete", true);
     }
     httpRequest.setRequestHeader(header,token);
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');

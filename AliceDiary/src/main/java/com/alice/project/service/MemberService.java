@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberService implements UserDetailsService { // MemberService가 UserDetailService를 구현
 
 	private final MemberRepository memberRepository;
+	private final CalendarService calendarService;
 	private final PasswordEncoder passwordEncoder;
 	private final EntityManager em;
 	private final AppProperties appProperties;
@@ -103,6 +104,9 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		member.completeRegister();
 		login(member);
 		Member.changeMemberIn(member);
+
+		// 유저 생일 5개 추가
+		calendarService.addBirthEvents(member);
 	}
 
 	@Transactional

@@ -14,6 +14,7 @@ import com.alice.project.config.PrincipalDetails;
 import com.alice.project.domain.Gender;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
+import com.alice.project.repository.CalendarRepository;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.web.GoogleUserInfo;
 import com.alice.project.web.NaverUserInfo;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final CalendarService calendarService;
 
 	// 구글로부터 받은 userRequest 데이터에 대한 후처리가 되는 함수
 	@Override
@@ -48,20 +50,20 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		// OAuth2 로그인 진행 시 키가 되는 필드 값 (PK)
 		String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint()
 				.getUserNameAttributeName();
-		//String providerId = oAuth2UserInfo.getProviderId();
+		// String providerId = oAuth2UserInfo.getProviderId();
 		String id = "";
-		// 아이디 난수로 중복없게 만들기 
+		// 아이디 난수로 중복없게 만들기
 		boolean check = true;
 		while (check) {
-			Integer i = (int) (Math.random() * 100000000) +1; // 1~100000000까지의 난수 생성
-			id = provider+"_" + i; // google_83912342
+			Integer i = (int) (Math.random() * 100000000) + 1; // 1~100000000까지의 난수 생성
+			id = provider + "_" + i; // google_83912342
 			if (memberRepository.existsById(id)) { // 아이디가 있으면 안 돼! 다시 돌려
 				continue;
 			} else { // 아이디가 없어서 쓸 수 있어
 				check = false;
 			}
 		}
-					
+
 		String password = passwordEncoder.encode("password");
 		String email = oAuth2UserInfo.getEmail();
 		String status = "ROLE_USER_IN";
@@ -76,6 +78,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 					.status(Status.USER_IN).build();
 			Member.setProfileImg(member);
 			memberRepository.save(member);
+
+			// 소셜 유저 생일 저장
+			calendarService.addBirthEvents(member);
 		} else {
 			System.out.println("이미 가입한 적이 있습니다.");
 		}

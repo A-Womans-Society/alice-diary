@@ -8,7 +8,7 @@ function deleteMember(num) {
 	console.log(num);
 	$.ajax({
 		type : 'delete',
-		url : "./" + num
+		url : "/AliceDiary/admin/member/" + num
 	}).done(function(result) {
 		if (result == 0) {
 			alert("회원 내보내기에 실패했습니다! 다시 시도해주세요😥");
@@ -30,7 +30,7 @@ function returnMember(num) {
 	}
 	$.ajax({
 		type: 'patch',
-		url: './member/'+num
+		url: '/AliceDiary/admin/member/'+num
 	}).done(function(result) {
 		if (result == 0) {
 			alert("회원 복구처리에 실패했습니다! 다시 시도해주세요😥");

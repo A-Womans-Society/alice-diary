@@ -33,7 +33,6 @@ public class SearchController {
 	private final MemberService memberService;
 	private final NotificationRepository notificationRepository;
 
-
 	@GetMapping("/search")
 	public String searchEvent(Model model, @AuthenticationPrincipal UserDetails user) {
 		Member member = memberService.findById(user.getUsername());
@@ -61,8 +60,8 @@ public class SearchController {
 		model.addAttribute("resultEvents", resultDto);
 		model.addAttribute("dto", new SearchEventFormDto());
 		model.addAttribute("member", member);
-        long count = notificationRepository.countByMemberAndChecked(member, false);
-        model.addAttribute("hasNotification", count > 0);
+		long count = notificationRepository.countByMemberAndChecked(member, false);
+		model.addAttribute("hasNotification", count > 0);
 		return "alice/searchEvent";
 	}
 
@@ -73,19 +72,21 @@ public class SearchController {
 		Member m = memberService.findById(user.getUsername());
 		List<Calendar> resultEvents = new ArrayList<Calendar>();
 		List<SearchEventsResultDto> resultDto = new ArrayList<SearchEventsResultDto>();
-
+		LocalDate startDate = (dto.getStartDateStr() != "")
+				? LocalDate.parse(dto.getStartDateStr(), DateTimeFormatter.ISO_DATE)
+				: null;
 		LocalDate endDate = (dto.getEndDateStr() != "")
 				? LocalDate.parse(dto.getEndDateStr(), DateTimeFormatter.ISO_DATE).plusDays(1L)
 				: null;
 		// 모두 입력할 경우
 		if (dto.getContent() != "" && dto.getStartDateStr() != "" && dto.getEndDateStr() != "") {
 			log.info("search by all");
-			resultEvents = calendarService.searchByAll(m.getNum(), dto.getContent(), dto.getStartDateStr(), endDate);
+			resultEvents = calendarService.searchByAll(m.getNum(), dto.getContent(), startDate, endDate);
 
 		} else if (dto.getContent() != "" && dto.getStartDateStr() != "") {
 			// 내용, 시작 날짜만 입력할 경우
 			log.info("search by content, start");
-			resultEvents = calendarService.searchByContentStart(m.getNum(), dto.getContent(), dto.getStartDateStr());
+			resultEvents = calendarService.searchByContentStart(m.getNum(), dto.getContent(), startDate);
 		} else if (dto.getContent() != "" && dto.getEndDateStr() != "") {
 			// 내용, 끝나는 날짜만 입력할 경우
 			log.info("search by content, end");
@@ -94,12 +95,12 @@ public class SearchController {
 		} else if (dto.getStartDateStr() != "" && dto.getEndDateStr() != "") {
 			// 시작 날짜, 끝나는 날짜로 검색
 			log.info("search by start, end");
-			resultEvents = calendarService.searchByStartEnd(m.getNum(), dto.getStartDateStr(), endDate);
+			resultEvents = calendarService.searchByStartEnd(m.getNum(), startDate, endDate);
 
 		} else if (dto.getStartDateStr() != "") {
 			// 시작하는 날짜로 검색
 			log.info("search by start");
-			resultEvents = calendarService.searchByStart(m.getNum(), dto.getStartDateStr());
+			resultEvents = calendarService.searchByStart(m.getNum(), startDate);
 
 		} else if (dto.getEndDateStr() != "") {
 			// 끝나는 날짜로 검색
