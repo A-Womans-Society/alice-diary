@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.expression.Calendars;
 
-import com.alice.project.config.PrincipalDetails;
 import com.alice.project.domain.Member;
+import com.alice.project.repository.NotificationRepository;
+import com.alice.project.service.CalendarService;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.ProfileService;
@@ -41,6 +43,8 @@ public class ProfileController {
 	private final PasswordEncoder passwordEncoder;
 	private final MemberService memberService;
 	private final FriendService friendService;
+	private final NotificationRepository notificationRepository;
+	private final CalendarService calendarService;
 
 	// 내 프로필 보기 GET
 	@GetMapping(value = "/member/{id}")
@@ -61,6 +65,8 @@ public class ProfileController {
 			model.addAttribute("person", null);
 			model.addAttribute("member", member);
 			model.addAttribute("wishList", wishList);
+			long count = notificationRepository.countByMemberAndChecked(member, false);
+			model.addAttribute("hasNotification", count > 0);
 			return "profile/myProfile";
 		} else {
 			// 친구인지 확인
@@ -113,6 +119,11 @@ public class ProfileController {
 
 		LocalDate newBirth = LocalDate.parse(userDto.getBirthStr(), DateTimeFormatter.ISO_DATE);
 		userDto.setBirth(newBirth);
+		Member updateInfo = memberService.findById(id);
+		if (updateInfo.getBirth() != newBirth) {
+			calendarService.updateBirthEvent(updateInfo, newBirth);
+		}
+		
 		if (!userDto.getProfileImg().getOriginalFilename().equals("")) {
 			String originName = userDto.getProfileImg().getOriginalFilename();
 			String saveName = id + "." + originName.split("\\.")[1];

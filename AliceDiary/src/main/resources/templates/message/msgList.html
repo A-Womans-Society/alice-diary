@@ -44,8 +44,8 @@
 				</div>
 				<th:block th:if="${mldtos == null || #lists.size(mldtos) == 0}">
 					<div style="height: 10%;" class="text-right">
-						<button onclick="openModal()" type="button"
-							class="btn btn-dark">쪽지 보내기</button>
+						<button onclick="openModal()" type="button" class="btn btn-dark">쪽지
+							보내기</button>
 					</div>
 				</th:block>
 				<th:block th:unless="${mldtos == null || #lists.size(mldtos) == 0}">
@@ -75,7 +75,7 @@
 										<div class="media" style="cursor: pointer;"
 											th:onclick="'location.href=\''+ @{|/messagebox/${m.messageFromId}/${m.messageToId}|} + '\''">
 											<img th:src="@{/upload/profile/}+@{${m.senderProfileImg}}"
-												alt="user" width="50" class="rounded-circle">
+												alt="user" width="50" height="50" class="rounded-circle">
 											<div class="media-body ml-4">
 												<div
 													class="d-flex align-items-center justify-content-between mb-1">
@@ -115,7 +115,7 @@
 							<input type="hidden" id="detail" value='true'>
 							<div class="card-header" style="height: 16%;">
 								<img th:src="@{/upload/profile/}+@{${friendProfile}}" alt="user"
-									width="50" class="rounded-circle"> <span
+									width="50" height="50" class="rounded-circle"> <span
 									th:text="${friendName}"></span>
 							</div>
 							<div class="card chat-box" style="height: 66%;">

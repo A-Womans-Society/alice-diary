@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Status;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.FriendService;
 import com.alice.project.service.FriendsGroupService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.ProfileService;
 import com.alice.project.web.FriendsDto;
 import com.alice.project.web.FriendshipDto;
+import com.alice.project.web.MemberDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,8 @@ public class FriendsController {
 	private final MemberService memberService;
 	private final FriendsGroupService friendsGroupService;
 	private final ProfileService profileService;
+	private final NotificationRepository notificationRepository;
+
 
 	// 친구 추가(회원 name으로 id검색)
 	@PostMapping("/friends/add")
@@ -53,18 +57,25 @@ public class FriendsController {
 	// 친구 검색해서 추가
 	@PostMapping("/friends/searchMember")
 	@ResponseBody
-	public Member searchMember(String name, @AuthenticationPrincipal UserDetails user) {
+	public MemberDto searchMember(String name, @AuthenticationPrincipal UserDetails user) {
 		log.info("member name : " + name);
-
+		MemberDto mdto = new MemberDto();
 		Member member = memberService.findByName(name);
+		
 		if (member == null || member.equals("") || member.getStatus().equals(Status.ADMIN)
 				|| member.getStatus().equals(Status.USER_OUT))
-
 		{
-			return Member.createMember(); // name이 "noFriend"인 사람
+			log.info("!?????????????????????????????!!!!!!!!!!!!!");
+			mdto.setName("noFriend");
+			return mdto; // name이 "noFriend"인 사람
 		}
 		log.info("member.getnum : " + member.getNum());
-		return member;
+		mdto.setId(member.getId());
+		mdto.setMbti(member.getMbti());
+		mdto.setName(member.getName());
+		mdto.setProfileImg(member.getProfileImg());
+		
+		return mdto;
 	}
 
 	// 추가된 친구 목록 조회
@@ -87,8 +98,11 @@ public class FriendsController {
 
 			friendship.add(dto);
 		}
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		model.addAttribute("friendList", friendship);
+        long count = notificationRepository.countByMemberAndChecked(mb, false);
+        model.addAttribute("hasNotification", count > 0);
 		return "friends/friendslist";
 	}
 

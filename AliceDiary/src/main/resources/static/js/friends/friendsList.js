@@ -31,6 +31,7 @@ document.addEventListener('keydown', function(event) {
      let name = document.getElementById("searchName").value;
      let check = document.getElementById("checkSearch").value;
      let userName = document.getElementById("userName").value;
+     console.log(name);
      if (name.length == 0) {
          alert('친구의 닉네임을 입력하세요!');
      } else if (name == userName) {

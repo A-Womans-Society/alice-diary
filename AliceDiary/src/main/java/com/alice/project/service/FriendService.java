@@ -2,12 +2,14 @@ package com.alice.project.service;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.FriendsGroup;
 import com.alice.project.domain.Member;
+import com.alice.project.event.FriendAddEvent;
 import com.alice.project.repository.FriendRepository;
 import com.alice.project.repository.FriendsGroupRepository;
 import com.alice.project.repository.MemberRepository;
@@ -25,6 +27,7 @@ public class FriendService {
 	private final MemberRepository memberRepository;
 	private final FriendsGroupRepository fgRepository;
 	private final MemberService ms;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 
 	// 새로운 친구추가 서비스(추가하는 멤버회원 번호, 추가되는 멤버회원의 아이디)
 	@Transactional
@@ -45,7 +48,13 @@ public class FriendService {
 		Long groupNum = 1L; // 기본그룹에 추가
 		if (check.size() <= 0) {
 			Friend friend = new Friend(member, addee.getNum(), groupNum);
-			friendRepository.save(friend);
+			
+			// for notification
+			Friend result = friendRepository.save(friend);
+			friend.setMember(member);
+			this.eventPublisher.publishEvent(new FriendAddEvent(result));
+			log.info("friendService 퍼블리쉬 때려~");
+			
 			return true; // 추기되면 true
 		} else {
 			return false;

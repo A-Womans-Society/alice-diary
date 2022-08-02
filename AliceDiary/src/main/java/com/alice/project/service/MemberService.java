@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberService implements UserDetailsService { // MemberService가 UserDetailService를 구현
 
 	private final MemberRepository memberRepository;
+	private final CalendarService calendarService;
 	private final PasswordEncoder passwordEncoder;
 	private final EntityManager em;
 	private final AppProperties appProperties;
@@ -103,6 +104,9 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		member.completeRegister();
 		login(member);
 		Member.changeMemberIn(member);
+
+		// 유저 생일 5개 추가
+		calendarService.addBirthEvents(member);
 	}
 
 	@Transactional
@@ -110,7 +114,6 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		List<SimpleGrantedAuthority> authorities = MemberAccount.createAuthor();
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				new MemberAccount(member, authorities), member.getPassword());
-
 		log.info("token getName: " + token.getName());
 		log.info("token getAuthorities: " + token.getAuthorities());
 
@@ -199,6 +202,7 @@ public class MemberService implements UserDetailsService { // MemberService가 U
 		return memberRepository.save(member);
 	}
 
+	@Transactional
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException { // 로그인 할 유저의 id를 파라미터로 전달받음
 		Member member = memberRepository.findById(id);

@@ -42,7 +42,7 @@ public class Friend {
 	@Column(nullable = false)
 	private Long groupNum; // 등록된 그룹 번호 (기본그룹 = 1)
 
-	@ManyToOne(fetch = FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+	@ManyToOne(fetch = FetchType.EAGER) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
 	@JoinColumn(name = "adder_num")
 	@JsonBackReference
 	private Member member; // 친구 등록하는 회원 객체

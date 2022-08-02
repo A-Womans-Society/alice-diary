@@ -88,6 +88,12 @@ public class Calendar {
 		return calendar;
 	}
 
+	public static Calendar updateBirth(Calendar c, LocalDate newBirth) {
+		Calendar calendar = new Calendar("", newBirth, newBirth, c.getContent(), c.getMemo(), c.getLocation(),
+				c.getColor(), c.getPublicity(), newBirth, c.getMember());
+		return calendar;
+	}
+
 	@Builder
 	public Calendar(String memberList, LocalDate startDate, LocalDate endDate, String content, String memo,
 			String location, String color, Boolean publicity, LocalDate alarm, Member member) {
@@ -102,5 +108,20 @@ public class Calendar {
 		this.publicity = publicity;
 		this.alarm = alarm;
 		this.member = member;
+	}
+
+	@Builder
+	public Calendar(Member m, LocalDate date) {
+		super();
+		this.content = "🎉생일🎉";
+		this.startDate = date;
+		this.endDate = date;
+		this.alarm = date;
+		this.memo = "";
+		this.color = "black";
+		this.location = "";
+		this.memberList = "";
+		this.publicity = true;
+		this.member = m;
 	}
 }

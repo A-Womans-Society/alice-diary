@@ -24,6 +24,7 @@ import com.alice.project.domain.AttachedFile;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Post;
 import com.alice.project.domain.Reply;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.MemberService;
 import com.alice.project.service.PostService;
@@ -42,14 +43,11 @@ import lombok.extern.slf4j.Slf4j;
 public class PostController {
 
 	private final PostService postService;
-
 	private final AttachedFileService attachedFileService;
-
 	private final MemberService memberService;
-
 	private final ReplyService replyService;
-
 	private final ReportService reportService;
+	private final NotificationRepository notificationRepository;
 
 	// 글쓰기
 	@GetMapping("/open/post")
@@ -80,8 +78,6 @@ public class PostController {
 	public String list(Model model, @ModelAttribute("postSearchDto") PostSearchDto postSearchDto,
 			@AuthenticationPrincipal UserDetails user,
 			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
-
-		log.info("컨트롤러 로그 postSearchDto :" + postSearchDto.toString());
 
 		String keyword = postSearchDto.getKeyword();
 		Long size = 0L;
@@ -128,17 +124,15 @@ public class PostController {
 		model.addAttribute("countReply", countReply);
 		model.addAttribute("list", list);
 		model.addAttribute("size", size);
-		log.info("size : " + size);
 		model.addAttribute("nowPage", nowPage);
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", postSearchDto.getType());
-		model.addAttribute("member", memberService.findById(user.getUsername()));
-
-		log.info("nowPage:" + nowPage);
-		log.info("startPage:" + startPage);
-		log.info("endPage:" + endPage);
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
+      		 long count = notificationRepository.countByMemberAndChecked(mb, false);
+        		model.addAttribute("hasNotification", count > 0);
 
 		return "community/list";
 	}

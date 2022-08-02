@@ -6,10 +6,12 @@ import java.util.Comparator;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -40,9 +42,9 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 	@Column(name = "message_num")
 	private Long num; // 쪽지 번호
 	@Column(nullable = false)
-	private Long user1Num; // 쪽지 보내는회원 번호 -> 아래 객체있으니까 필요없지?
+	private Long user1Num; // 두 사람 중 작은 num 가진 사람 번호
 	@Column(nullable = false)
-	private Long user2Num; // 쪽지 받는회원 번호
+	private Long user2Num; // 두 사람 중 큰 num 가진 사람 번호
 	@Column(nullable = false)
 	private Long msgStatus; // default 3, user1만 지우면 2, user2만 지우면 1, 둘 다 지우면 0
 	@Column(nullable = false)
@@ -120,14 +122,14 @@ public class Message implements Comparator<Message>, Comparable<Message> {
 		return message;
 	}
 
-//   @ManyToOne(fetch=FetchType.LAZY) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
-//   @JoinColumn(name="member_num")
-//   private Member member; // 쪽지 보내는회원 객체
+   @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL) // 모든 연관관계는 항상 지연로딩으로 설정(성능상이점)
+   @JoinColumn(name="receiver_num")
+   private Member member; // 쪽지 받는회원 객체
 
 	// 연관관계 메서드 (양방향관계)
-//   public void setMember(Member member) {
-//      this.member = member;
-//      member.getMessages().add(this);
-//   }
+   public void setMember(Member member) {
+      this.member = member;
+      member.getMessages().add(this);
+   }
 
 }

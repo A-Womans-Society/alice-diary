@@ -28,6 +28,7 @@ import com.alice.project.domain.Community;
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Post;
 import com.alice.project.domain.Reply;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.CommunityService;
 import com.alice.project.service.MemberService;
@@ -53,6 +54,7 @@ public class AdminPostController {
 	private final MemberService memberService;
 	private final ReportService reportService;
 	private final CommunityService communityService;
+	private final NotificationRepository notificationRepository;
 
 	// 공지사항 관리
 	/* 공지사항 목록 */
@@ -64,8 +66,8 @@ public class AdminPostController {
 		Page<Post> notices = null;
 		String type = postSearchDto.getType();
 		String keyword = postSearchDto.getKeyword();
-		model.addAttribute("member", memberService.findById(user.getUsername()));
-
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		if (keyword == null || type == null || keyword.isEmpty() || type.isEmpty()) {
 			notices = postService.notceList(pageable);
 		} else {
@@ -95,6 +97,8 @@ public class AdminPostController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 
 		return "/admin/noticeList";
 	}
@@ -103,8 +107,8 @@ public class AdminPostController {
 	@GetMapping("/notice/get")
 	public String postNoticeView(Model model, Long num, Pageable pageable, HttpSession session,
 			@AuthenticationPrincipal UserDetails user) {
-		model.addAttribute("member", memberService.findById(user.getUsername()));
-
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		log.info("num :" + num);
 		Post viewPost = postService.postView(num);
 
@@ -118,7 +122,8 @@ public class AdminPostController {
 		List<ReplyDto> replyList = replyService.replyList(num);
 
 		model.addAttribute("replyList", replyList);
-
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 		return "/admin/noticeView";
 	}
 
@@ -270,7 +275,8 @@ public class AdminPostController {
 		Page<Post> opens = null;
 		String type = postSearchDto.getType();
 		String keyword = postSearchDto.getKeyword();
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", type);
 
@@ -303,6 +309,8 @@ public class AdminPostController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 
 		return "/admin/openList";
 	}
@@ -396,7 +404,7 @@ public class AdminPostController {
 
 		return "redirect:list";
 	}
-	
+
 	/* 커뮤니티 목록 보기 */
 	@GetMapping("/community/list")
 	public String showCommunityList(
@@ -406,7 +414,8 @@ public class AdminPostController {
 		Page<Community> communities = null;
 		String type = postSearchDto.getType();
 		String keyword = postSearchDto.getKeyword();
-		model.addAttribute("member", memberService.findById(user.getUsername()));
+		Member mb = memberService.findById(user.getUsername());
+		model.addAttribute("member", mb);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", type);
 
@@ -439,16 +448,17 @@ public class AdminPostController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("size", size);
+		long count = notificationRepository.countByMemberAndChecked(mb, false);
+		model.addAttribute("hasNotification", count > 0);
 
 		return "/admin/communityList";
 	}
-	
+
 	/* 커뮤니티 상세정보 보기 */
 	// 게시글 리스트 가져오기
 	@GetMapping("community/{comNum}/list")
 	public String list(@PathVariable Long comNum, Model model,
-			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, 
-			@AuthenticationPrincipal UserDetails user,
+			@ModelAttribute("postSearchDto") PostSearchDto postSearchDto, @AuthenticationPrincipal UserDetails user,
 			@PageableDefault(page = 0, size = 5, direction = Sort.Direction.DESC) Pageable pageable) {
 
 		Community community = communityService.findByNum(comNum);
@@ -457,24 +467,19 @@ public class AdminPostController {
 		String creatorName = community.getMember().getName();
 		String creatorId = community.getMember().getId();
 		String memberListToStr = community.getMemberList();
-		
+
 		model.addAttribute("community", community);
-//		model.addAttribute("comName", comName);
-//		model.addAttribute("comDescription", comDescription);
-//		model.addAttribute("creatorName", creatorName);
-//		model.addAttribute("creatorId", creatorId);
-		
+
 		String[] memIdList = null;
 		if (memberListToStr != null && !memberListToStr.isEmpty()) {
 			memIdList = memberListToStr.split(",");
-//		List<String> memNameList = new ArrayList<>();
-			Map<String, String> memberMap = new HashMap<String, String>();
-			for (String id : memIdList) {
-				memberMap.put(id, memberService.findById(id).getName());
-			}
-			model.addAttribute("memberMap", memberMap);
 		}
-		
+
+		Map<String, String> memberMap = new HashMap<String, String>();
+		for (String id : memIdList) {
+			memberMap.put(id, memberService.findById(id).getName());
+		}
+		model.addAttribute("memberMap", memberMap);
 
 		String keyword = postSearchDto.getKeyword();
 		Long size = 0L;
@@ -522,7 +527,7 @@ public class AdminPostController {
 
 		return "admin/communityView";
 	}
-	
+
 	// 커뮤니티 삭제하기
 	@PostMapping("/community/delete")
 	@ResponseBody

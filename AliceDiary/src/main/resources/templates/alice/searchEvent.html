@@ -16,16 +16,17 @@
 						style="border: 2px solid #dccae9; border-radius: 25px; width: 70%;">
 						<form th:action="@{/alice/search}" th:object="${dto}"
 							method="POST" class="row h-100 align-items-center">
-							<div class="col-5 text-center">
-								기간 : <input th:field="*{startDateStr}" type="date">&nbsp;~&nbsp;<input
-									th:field="*{endDateStr}" type="date">
+							<div class="col-6 text-center d-flex">
+								<input th:field="*{startDateStr}" type="date"
+									class="form-control">&nbsp;~&nbsp;<input
+									th:field="*{endDateStr}" type="date" class="form-control">
 							</div>
-							<div class="col-5 text-center">
-								<label>내용 :&nbsp;</label><input th:field="*{content}"
-									placeholder="내용을 입력하세요.">
+							<div class="col-4 text-center d-flex justify-content-center align-items-center">
+								내용&nbsp;<input th:field="*{content}" class="form-control"
+									style="width: 60%;" placeholder="내용을 입력하세요.">
 							</div>
 							<div class="col-2 text-center">
-								<input type="submit" class="btn" value="일정 찾기">
+								<input type="submit" class="btn btn-secondary" value="일정 찾기">
 							</div>
 						</form>
 					</div>

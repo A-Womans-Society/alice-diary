@@ -10,7 +10,7 @@ function deleteMessage(fromId, toId) {
    let token = $("meta[name='_csrf']").attr("content");
    let header = $("meta[name='_csrf_header']").attr("content");
    let httpRequest = new XMLHttpRequest();
-   let detail = document.getElementById('detail').value;
+//   let detail = document.getElementById('detail').value;
    
    let param = "fromId=" + fromId + "&toId=" + toId;
     httpRequest.onreadystatechange = function(){
@@ -21,7 +21,7 @@ function deleteMessage(fromId, toId) {
             alert("쪽지함 삭제에 실패했습니다! 다시 시도해주세요😥");
          } else if (result == 1) {
             alert("쪽지함이 성공적으로 삭제되었습니다!");
-            location.reload();
+            location.href = "/AliceDiary/messagebox/" + fromId;
             return false;
             } else {
                alert('request에 뭔가 문제가 있어요.');
@@ -30,10 +30,10 @@ function deleteMessage(fromId, toId) {
       }
    };
 
-    if (detail == 'true') {
-    	httpRequest.open('POST', "../delete", true);
-    } else {
-	    httpRequest.open('POST', "./delete", true);
+    if (document.getElementById('detail') == null) { // 쪽지함 목록에서 삭제 누른 상태
+    	httpRequest.open('POST', "./delete", true);
+    } else if (document.getElementById('detail') != null) { // 쪽지함 상세보기에서 삭제 누른 상태
+	    httpRequest.open('POST', "../delete", true);
     }
     httpRequest.setRequestHeader(header,token);
     httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');

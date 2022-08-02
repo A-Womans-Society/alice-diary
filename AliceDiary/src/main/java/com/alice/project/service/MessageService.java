@@ -8,11 +8,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alice.project.domain.Member;
 import com.alice.project.domain.Message;
+import com.alice.project.event.MessageCreatedEvent;
 import com.alice.project.repository.MemberRepository;
 import com.alice.project.repository.MessageRepository;
 import com.alice.project.web.MessageDto;
@@ -34,6 +36,7 @@ public class MessageService {
 	private final MessageRepository messageRepository;
 	private final MemberRepository memberRepository;
 	private final HttpSession httpSession;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 
 	public List<Message> findUserMsg(Long userNum) {
 		HashMap<Long, Message> map = new HashMap<>();
@@ -127,28 +130,17 @@ public class MessageService {
 		msgs.addAll(msgF);
 		msgs.addAll(msgT);
 		Collections.reverse(msgs);
-//		for (Message msg : msgs) {
-//			log.info("*****************내용 각각 : " + msg.getContent());
-//		}
 		return msgs;
 	}
 
 	// 사용자측에서 삭제하지 않은 메시지만 가져오기
 	public List<Message> findLiveMsgs(Long mfn, Long mtn) {
 		List<Message> msgF = messageRepository.findLiveMsgs(mfn, mtn);
-		// List<Message> msgT = messageRepository.findLiveMsgs(mtn, mfn);
 		List<Message> msgs = new ArrayList<>();
 		msgs.addAll(msgF);
-		// msgs.addAll(msgT);
 		Collections.sort(msgs);
-//      Collections.reverse(msgs);
-
-		for (Message msg : msgs) {
-			log.info("*****************내용 각각 : " + msg.getContent());
-		}
 
 		return msgs;
-
 	}
 
 	/* f번이 t번과의 쪽지함 삭제(관계상태0으로 업데이트) */
@@ -167,17 +159,23 @@ public class MessageService {
 
 		Message message = new Message(mdto.getUser1Num(), mdto.getUser2Num(), mdto.getSendDate(), mdto.getContent(),
 				msgStatus, mdto.getDirection());
-		String id = "";
+		String senderId = "";
+		Long receiverNum = 0L;
 		if (mdto.getDirection() == 0) {
-			id = ms.findByNum(mdto.getUser1Num()).getId();
+			senderId = ms.findByNum(mdto.getUser1Num()).getId(); // 보내는 사람 아이디
+			receiverNum = mdto.getUser2Num();
 		} else if (mdto.getDirection() == 1) {
-			id = ms.findByNum(mdto.getUser2Num()).getId();
+			senderId = ms.findByNum(mdto.getUser2Num()).getId(); // 보내는 사람 아이디
+			receiverNum = mdto.getUser2Num();
 		}
 		if (mdto.getOriginName() != null) {
-			afs.saveMsgFile(mdto.getOriginName(), message, httpSession, id);
+			afs.saveMsgFile(mdto.getOriginName(), message, httpSession, senderId);
 		}
 		log.info("!!!!!!!!!!!!요기!!!!!! : " + message.toString());
 		Message result = messageRepository.save(message);
+		
+		result.setMember(ms.findByNum(receiverNum)); // 쪽지에 '받는' 회원객체 넣어주기
+		eventPublisher.publishEvent(new MessageCreatedEvent(result)); // for notification
 		return result;
 	}
 
@@ -236,7 +234,7 @@ public class MessageService {
 			String originName = m.getFile().getOriginName();
 			String saveNmae = m.getFile().getSaveName();
 			if (originName != null) {
-				if (originName.endsWith(".jpg") || originName.endsWith(".png") || originName.endsWith(".jpeg")) {
+				if (originName.endsWith(".jpg") || originName.endsWith(".png") || originName.endsWith(".jpeg") || originName.endsWith(".tif")) {
 					mpdto.setOriginName(originName);
 					mpdto.setSaveName(saveNmae);
 					mpdto.setSendDate(m.getSendDate());
@@ -299,7 +297,8 @@ public class MessageService {
 			String saveNmae = m.getFile().getSaveName();
 			if (originName != null) {
 				if (originName.endsWith(".txt") || originName.endsWith(".pdf") || originName.endsWith(".docx")
-						|| originName.endsWith(".hwpx")) {
+						|| originName.endsWith(".hwpx") || originName.endsWith(".xlsx") || originName.endsWith(".xls")
+						|| originName.endsWith(".pptx")) {
 					mpdto.setOriginName(originName);
 					mpdto.setSaveName(saveNmae);
 					mpdto.setSendDate(m.getSendDate());
@@ -343,6 +342,16 @@ public class MessageService {
 	/* 댓글 쪽지 전송 */
 	@Transactional
 	public Message replyMsg(Message message) {
+		Long dir = message.getDirection();
+		Long receiverNum = 0L;
+		if (dir == 0) {
+			receiverNum = message.getUser2Num();
+		} else if (dir == 1) {
+			receiverNum = message.getUser1Num();
+		}
+		Message result = messageRepository.save(message);
+		result.setMember(ms.findByNum(receiverNum)); // 쪽지에 '받는' 회원객체 넣어주기
+		eventPublisher.publishEvent(new MessageCreatedEvent(result)); // for notification
 		return messageRepository.save(message);
 	}
 

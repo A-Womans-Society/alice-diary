@@ -62,10 +62,11 @@
 														with </small> <small
 														th:if="${!#strings.isEmpty(alarm.memberList)}"
 														th:each="friend : ${alarm.memberList}"> <a
-														th:href="|./friends/friendInfo/${friend.id}|"><span
+														th:href="|../friends/friendInfo/${friend.id}|"><span
 															th:text="${friend.name}" data-toggle="tooltip"
 															data-placement="bottom" title="프로필 보기"> </span></a>
-													</small><small><span th:text="|(${alarm.startDate})|"> </span></small>
+													</small><small><span th:text="|(${alarm.startDate})|">
+													</span></small>
 												</p>
 											</li>
 										</ul>
@@ -90,7 +91,8 @@
 														th:href="|./friends/friendInfo/${alarm.fId}|"><span
 															th:text="${alarm.fName}" data-toggle="tooltip"
 															data-placement="bottom" title="프로필 보기"> </span></a>
-													</small> <small><span th:text="|(${alarm.startDate})|"> </span></small>
+													</small> <small><span th:text="|(${alarm.startDate})|">
+													</span></small>
 												</p>
 											</li>
 										</ul>
@@ -109,15 +111,16 @@
 							</div>
 							<form th:action="@{/alice/search}" th:object="${dto}"
 								method="POST">
-								<p class="m-0">기간 :</p>
-								<div class="w-100">
+								<div class="w-100 d-flex">
 									<input th:field="*{startDateStr}" type="date"
-										style="width: 45%;">&nbsp;~&nbsp;<input
-										th:field="*{endDateStr}" type="date" style="width: 45%;">
+										class="form-control" style="width: 45%;">&nbsp;~&nbsp;<input
+										class="form-control" th:field="*{endDateStr}" type="date"
+										style="width: 45%;">
 								</div>
-								<p class="pt-3 mb-1">
-									<label>내용 :&nbsp;</label><input th:field="*{content}"
-										placeholder="내용을 입력하세요.">
+								<p class="pt-3 mb-1 d-flex justify-content-center align-items-center">
+									내용&nbsp;<input th:field="*{content}"
+										placeholder="내용을 입력하세요." class="form-control"
+										style="width: 60%;">
 								</p>
 								<div class="text-center">
 									<input type="submit" class="btn" th:value="검색">

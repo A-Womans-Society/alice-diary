@@ -65,6 +65,17 @@ public class MemberController {
 		return "redirect:/";
 	}
 
+	@PostMapping(value = "/register/emailCheck")
+	@ResponseBody
+	public String emailCheck(String email) {
+		// 존재하지 않음
+		if (memberService.findByEmail(email) == null) {
+			return "true";
+		} else {
+			return "false";
+		}
+	}
+
 	@GetMapping("/check-email-token")
 	public String checkEmailToken(String token, String email, Model model) {
 		Member member = memberRepository.searchByEmailForToken(email);
@@ -99,7 +110,7 @@ public class MemberController {
 		memberService.sendSignUpConfirmEmail(member);
 		return "redirect:/";
 	}
-	
+
 	// ID 중복체크 PostMapping
 	@PostMapping("/register/idCheck")
 	@ResponseBody
@@ -107,7 +118,7 @@ public class MemberController {
 		String check = String.valueOf(memberService.checkIdDuplicate(id));
 		return check;
 	}
-	
+
 	// nickname 중복체크 PostMapping
 	@PostMapping("/register/nicknameCheck")
 	@ResponseBody
@@ -171,5 +182,5 @@ public class MemberController {
 
 		return "redirect:/";
 	}
-	
+
 }

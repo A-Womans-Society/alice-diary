@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.ArrayUtils;
@@ -12,6 +13,7 @@ import com.alice.project.controller.AliceController;
 import com.alice.project.domain.Calendar;
 import com.alice.project.domain.Friend;
 import com.alice.project.domain.Member;
+import com.alice.project.event.AliceCreatedEvent;
 import com.alice.project.repository.CalendarRepository;
 import com.alice.project.repository.FriendRepository;
 import com.alice.project.repository.MemberRepository;
@@ -30,12 +32,47 @@ public class CalendarService {
 
 	private final CalendarRepository calendarRepository;
 	private final MemberRepository memberRepository;
+	private final ApplicationEventPublisher eventPublisher; // for notification
 	private final FriendRepository friendRepository;
 
 	@Transactional
-	public void addEvent(CalendarFormDto dto, Member m) {
+	public Calendar addEvent(CalendarFormDto dto, Member m) {
 		Calendar cal = Calendar.createCalendar(dto, m);
-		calendarRepository.save(cal);
+
+		Calendar result = calendarRepository.save(cal);
+		result.setMember(m); // for notification
+		this.eventPublisher.publishEvent(new AliceCreatedEvent(result));
+		return cal;
+	}
+
+	@Transactional
+	public void addBirthEvents(Member member) {
+		int year = member.getBirth().getYear();
+		LocalDate birth = member.getBirth().plusYears(LocalDate.now().getYear() - year);
+		for (int i = 0; i < 5; i++) {
+			Calendar birthEvent = new Calendar(member, birth.plusYears(i));
+			calendarRepository.save(birthEvent);
+		}
+	}
+
+	@Transactional
+	public void addNewBirthEvents(Member member, LocalDate newBirth) {
+		int year = member.getBirth().getYear();
+		LocalDate birth = newBirth.plusYears(LocalDate.now().getYear() - year);
+		for (int i = 0; i < 5; i++) {
+			Calendar birthEvent = new Calendar(member, birth.plusYears(i));
+			calendarRepository.save(birthEvent);
+		}
+	}
+
+	@Transactional
+	public void updateBirthEvent(Member m, LocalDate newBirth) {
+		int years = LocalDate.now().getYear() - newBirth.getYear();
+		List<Long> myDays = calendarRepository.findBirthEvents(m.getNum(), "black");
+		for (Long n : myDays) {
+			calendarRepository.deleteById(n);
+		}
+		addNewBirthEvents(m, newBirth);
 	}
 
 	public List<Calendar> eventsList(Long num) {
@@ -96,7 +133,7 @@ public class CalendarService {
 			List<Calendar> calList = calendarRepository.findFriendEvents(friend.getNum(), today, today.plusDays(7));
 			if (calList != null) {
 				for (Calendar c : calList) {
-					if (c.getMemberList().length() != 0
+					if (c.getMemberList() != null && c.getMemberList().length() != 0
 							&& ArrayUtils.contains(c.getMemberList().split(","), "" + me.getNum())) {
 						EventAlarmDto tmp = new EventAlarmDto();
 						tmp.setContent(c.getContent());
@@ -116,7 +153,7 @@ public class CalendarService {
 		return calendarRepository.findByContent(num, content);
 	}
 
-	public List<Calendar> searchByStart(Long num, String start) {
+	public List<Calendar> searchByStart(Long num, LocalDate start) {
 		return calendarRepository.findByStart(num, start);
 	}
 
@@ -124,7 +161,7 @@ public class CalendarService {
 		return calendarRepository.findByEnd(num, end);
 	}
 
-	public List<Calendar> searchByStartEnd(Long num, String start, LocalDate end) {
+	public List<Calendar> searchByStartEnd(Long num, LocalDate start, LocalDate end) {
 		return calendarRepository.findByStartEnd(num, start, end);
 	}
 
@@ -132,11 +169,11 @@ public class CalendarService {
 		return calendarRepository.findByContentEnd(num, content, end);
 	}
 
-	public List<Calendar> searchByContentStart(Long num, String content, String start) {
+	public List<Calendar> searchByContentStart(Long num, String content, LocalDate start) {
 		return calendarRepository.findByContentStart(num, content, start);
 	}
 
-	public List<Calendar> searchByAll(Long num, String content, String start, LocalDate end) {
+	public List<Calendar> searchByAll(Long num, String content, LocalDate start, LocalDate end) {
 		return calendarRepository.findByAll(num, content, start, end);
 	}
 }

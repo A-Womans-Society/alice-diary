@@ -28,6 +28,7 @@ import com.alice.project.domain.Member;
 import com.alice.project.domain.Message;
 import com.alice.project.domain.Post;
 import com.alice.project.domain.Reply;
+import com.alice.project.repository.NotificationRepository;
 import com.alice.project.service.AttachedFileService;
 import com.alice.project.service.CommunityService;
 import com.alice.project.service.FriendService;
@@ -61,6 +62,7 @@ public class CommunityController {
 	private final ReplyService replyService;
 	private final ReportService reportService;
 	private final MessageService messageService;
+	private final NotificationRepository notificationRepository;
 
 	@GetMapping("/community/checkExist")
 	public String checkExist(@AuthenticationPrincipal UserDetails user) {
@@ -134,6 +136,8 @@ public class CommunityController {
 
 		model.addAttribute("ccdto", ccdto);
 		model.addAttribute("member", hostMem);
+        long count = notificationRepository.countByMemberAndChecked(hostMem, false);
+        model.addAttribute("hasNotification", count > 0);
 
 		return "community/createCommunity";
 	}
@@ -164,11 +168,13 @@ public class CommunityController {
 		Member member = memberService.findById(user.getUsername());
 
 		Community com = Community.createCommunity(dto.getComMembers(), dto.getComName(), dto.getDescription(), member);
-
+		log.info("service create하기 전!");
 		communityService.create(com);
+		log.info("service create한 후!");
 
 		// 초대장 쪽지발송
 		Long messageFromNum = member.getNum();
+		log.info("초대장 발송");
 
 		for (String f : com.getMemberList().split(",")) {
 			Long messageToNum = memberService.findNumById(f);

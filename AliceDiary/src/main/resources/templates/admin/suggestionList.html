@@ -51,7 +51,6 @@
 					<tr class="text-center">
 						<th>No.</th>
 						<th>아이디</th>
-						<th>닉네임</th>
 						<th>건의일자</th>
 						<th>건의내용</th>
 						<th>회원상태</th>
@@ -69,10 +68,10 @@
 					<tbody class="text-center">
 						<tr th:each="s, status: ${suggestions}">
 							<td th:text="${size - status.index-(nowPage-1)*suggestions.size}"></td>
-							<td><span th:text="${s.member.id}"></span></td>
-							<td><a th:href="@{'/admin/member/'+${s.member.id}}"> <span
-									th:text="${s.member.name}"></span>
+							<td><a th:href="@{'/admin/member/'+${s.member.id}}">
+							<span th:text="${s.member.id}"></span>
 							</a></td>
+
 							<td
 								th:text="${#temporals.format(s.suggestDate, 'yyyy-MM-dd HH:mm')}"></td>
 							<td><span th:text="${s.content}"> </span></td>

@@ -32,6 +32,9 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 
+<script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+
+
 <!-- navbar css -->
 <link rel="stylesheet" th:href="@{/css/layout/navbar.css}">
 <link rel="stylesheet" th:href="@{/css/layout/sidebar.css}">
@@ -44,10 +47,7 @@
 	<div th:replace="fragments/header::header"></div>
 	<div style="height: 92%;" class="container-fluid">
 		<div class="row h-100">
-			<!-- import sidebar -->
-			<!-- 			<div th:replace="fragments/adminSidebar::sidebar" class="col-3"></div> -->
-			<!-- import content -->
-			<div layout:fragment="content" class="col-12"></div>
+			<div layout:fragment="content" class="col-12 h-100"></div>
 		</div>
 	</div>
 </body>
